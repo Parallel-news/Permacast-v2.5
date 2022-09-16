@@ -10,7 +10,7 @@ export function TrackView({episode, includeDescription=false, playButtonSize="20
   const appState = useContext(appContext);
   const history = useHistory();
   const { cover, title, creatorName, description } = episode;
-  const queue = appState.queue;
+  const { playEpisode } = appState.queue;
   const c = color ? color : episode?.rgb;
 
   return (
@@ -41,7 +41,7 @@ export function TrackView({episode, includeDescription=false, playButtonSize="20
         </div>
       </div>
       {playButtonSize == 0 ? null : (
-        <div onClick={() => queue.playEpisode(episode)}>
+        <div onClick={() => playEpisode(episode)}>
           <div className="cursor-pointer rounded-[34px] p-3" style={getButtonRGBs(c)}>
             <FaPlay className="w-3 h-3" />
           </div>

@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
+import Shikwasa from './shikwasa-src/main.js';
+// import 'shikwasa/dist/shikwasa.min.css';
 import { useTranslation } from 'react-i18next';
 import { HashRouter as Router, Route } from 'react-router-dom';
 import { Sidenav, NavBar } from './component/navbars.jsx';
@@ -13,6 +15,7 @@ import FeaturedView from './component/featured.jsx';
 import { fetchPodcastTitles, convertToEpisode, convertToPodcast, convertSearchItem, sortPodcasts } from './utils/podcast.js';
 import { appContext } from './utils/initStateGen.js';
 import { MOCK_CREATORS } from './utils/ui.js';
+import { MESON_ENDPOINT } from './utils/arweave.js';
 
 
 export default function App() {
@@ -80,7 +83,24 @@ export default function App() {
     //   // do something here to trigger a re-render maybe or force a re-render for featured episode
     //   setCurrentEpisode(queue)
     // }
-    setCurrentEpisode(episode);
+    // debugger;
+    const player = new Shikwasa({
+      container: () => document.querySelector('.podcast-player'),
+      themeColor: 'yellow',
+      theme: 'dark',
+      autoplay: true,
+      audio: {
+        title: episode?.title || 'titel',
+        artist: episode?.creatorName || 'creator',
+        cover: episode.cover,
+        src: `${MESON_ENDPOINT}/${episode?.contentTx}`,
+      },
+    })
+    // debugger;
+    player.play()
+    window.scrollTo(0, document.body.scrollHeight)
+
+    // setCurrentEpisode(episode);
   };
 
   window.addEventListener('keydown', function(e) {
@@ -145,21 +165,23 @@ export default function App() {
   // finish tab switching gradient color animation
   // make buttons and stuff consistent accross app
   // mobile view
+  // re-write fetch logic to await ALL urls asynchronously (put callbacks into array and promise.all)
+  // use fuse.js for search (?)
+  // re-write getAverageColor functions to use in-memory images (?)
 
   return (
     <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
       <appContext.Provider value={appState}>
         <Router>
           <div className="flex h-screen">
-            <div className="md:hidden absolute z-10 bottom-0 w-screen">
-              {!loading ? <PlayerMobile episode={currentEpisode} /> : <div>Loading...</div>}
+            <div className="absolute z-20 bottom-0 w-full">
+              <div className="relative podcast-player">
+                {/* {!loading && currentEpisode ? <Player episode={currentEpisode} />: <div>Loading...</div>} */}
+              </div>
             </div>
             <div className="hidden md:block">
               <div className="w-[100px] flex justify-center">
                 <Sidenav />
-              </div>
-              <div className="absolute z-20 bottom-0">
-                {!loading && currentEpisode ? <Player episode={currentEpisode} />: <div>Loading...</div>}
               </div>
               <div className="absolute z-10 bottom-0 right-0" style={{display: queueVisible ? 'block': 'none'}}>
                 {!loading ? <EpisodeQueue />: <div>Loading...</div>}
@@ -168,7 +190,7 @@ export default function App() {
             <Background className="w-screen overflow-scroll">
               <div className="ml-8 pr-8 pt-9">
                 <div className="mb-10">
-                  {!loading ? <NavBar />: <div>Loading...</div>}
+                  <NavBar />
                 </div>
                 <div className="w-full overflow-hidden">
                   <Route

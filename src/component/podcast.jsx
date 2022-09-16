@@ -4,7 +4,6 @@ import { FaRss, FaRegGem } from 'react-icons/fa';
 import { PlusIcon, HeartIcon } from '@heroicons/react/solid';
 import Swal from 'sweetalert2';
 import Shikwasa from 'shikwasa';
-import 'shikwasa/dist/shikwasa.min.css';
 import { TrackView } from './trackView.jsx';
 import { tipPrompt } from './tipPrompt.jsx';
 import UploadEpisode from './uploadEpisode.jsx';
