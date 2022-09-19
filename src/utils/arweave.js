@@ -41,7 +41,7 @@ export const FEE_MULTIPLIER = 3;
 //export const CONTRACT_SRC = "aDDvmtV6Rg15LZ5Hp1yjL6strnyCsVbmhpfPe0gT21Y"
 export const NEWS_CONTRACT = "HJFEnaWHLMp2ryrR0nzDKb0DSW7aBplDjcs3vQoVbhw";
 // + tag { name: "Protocol", values: "permacast-testnet-v3"}
-export const MESON_ENDPOINT = "https://coldcdn.com/api/cdn/f38vax";
+export const MESON_ENDPOINT = "https://pz-prepnb.meson.network";
 export const WEBSITE_URL = "https://whispering-retreat-94540.herokuapp.com";
 
 export const TREASURY_ADDRESS = 'eBYuvy8mlxUsm8JZNTpV6fisNaJt0cEbg-znvPeQ4A0';
