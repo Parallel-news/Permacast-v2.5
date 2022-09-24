@@ -2,7 +2,7 @@ import { React, useState, useEffect } from 'react'
 import PodcastHtml from './podcast_html.jsx'
 import { MESON_ENDPOINT } from '../utils/arweave.js'
 import { useTranslation } from 'react-i18next'
-import { fetchPodcasts, sortPodcasts } from '../utils/podcast.js'
+import { getPodcasts, sortPodcasts } from '../utils/podcast.js'
 import { Dropdown } from '../component/podcast_utils.jsx'
 
 export default function Index() {

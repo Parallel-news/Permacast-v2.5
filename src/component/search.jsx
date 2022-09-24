@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { SearchIcon } from '@heroicons/react/outline';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { appContext } from '../utils/initStateGen';
-import { TrackView } from './trackView';
+import Track from './track';
 
 export function Searchbar() {
   const appState = useContext(appContext);
@@ -14,7 +14,7 @@ export function Searchbar() {
     <div>
       <form className="relative">
         <div className="flex absolute inset-y-0 left-0 items-center pl-3 pr-10 pointer-events-none">
-          <SearchIcon className="h-5 w-5 text-zinc-600 focus:text-white" />
+          <MagnifyingGlassIcon className="h-5 w-5 text-zinc-600 focus:text-white" />
         </div>
         <input
           value={input}
@@ -55,7 +55,7 @@ export default function SearchView() {
               <>
                 {filteredPodcasts?.map((filtered, idx) => (
                   <div key={idx} className="mb-6 p-2.5 border rounded-xl border-zinc-600">
-                    <TrackView episode={filtered} />
+                    <Track episode={filtered} />
                   </div>
                 ))}
               </>
@@ -67,7 +67,7 @@ export default function SearchView() {
               <>
                 {filteredEpisodes?.map((filtered, idx) => (
                   <div key={idx} className="mb-6 p-2.5 border rounded-xl border-zinc-600">
-                    <TrackView episode={filtered} />
+                    <Track episode={filtered} episodeNumber={idx} />
                   </div>
                 ))}
               </>

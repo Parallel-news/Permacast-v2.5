@@ -1,58 +1,31 @@
 
 import ArDB from 'ardb';
 import Swal from 'sweetalert2';
-import { Fragment, useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Transition, Dialog } from '@headlessui/react';
 import { FiFile } from 'react-icons/fi';
 import { appContext } from '../utils/initStateGen';
-import { UploadIcon } from '@heroicons/react/outline';
-import { CONTRACT_SRC, NFT_SRC, FEE_MULTIPLIER, arweave, smartweave, EPISODE_UPLOAD_FEE_PERCENTAGE, TREASURY_ADDRESS } from '../utils/arweave.js';
-import { processFile, calculateStorageFee, fetchWalletAddress, userHasEnoughAR } from '../utils/shorthands.js';
+import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
+import Modal from '../component/reusables/modal';
+import {
+  processFile,
+  userHasEnoughAR,
+  fetchWalletAddress,
+  calculateStorageFee
+} from '../utils/shorthands.js';
+import { 
+  arweave,
+  smartweave,
+  NFT_SRC,
+  CONTRACT_SRC,
+  FEE_MULTIPLIER,
+  VERTO_CONTRACT,
+  TREASURY_ADDRESS,
+  EPISODE_UPLOAD_FEE_PERCENTAGE
+} from '../utils/arweave.js';
 
 const ardb = new ArDB(arweave);
 
-
-export function Modal(props) {
-  const { t } = useTranslation();
-  const appState = useContext(appContext);
-  const {isOpen, setIsOpen} = appState.globalModal;
-
-  return (
-    <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10 " open={isOpen} onClose={() => setIsOpen(false)}>
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-black backdrop-blur bg-opacity-25" />
-        </Transition.Child>
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4 text-center">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-zinc-900 transition-all">
-                {props.children}
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </div>
-      </Dialog>
-    </Transition>
-  )
-}
 
 export default function UploadEpisode({ podcast }) {
   const { t } = useTranslation()
@@ -65,7 +38,7 @@ export default function UploadEpisode({ podcast }) {
   const [uploadPercentComplete, setUploadPercentComplete] = useState(0)
 
   const listEpisodeOnVerto = async (episodeId) => {
-    const vertoContractId = 't9T7DIOGxx4VWXoCEeYYarFYeERTpWIC1V3y-BPZgKE';
+    const vertoContractId = VERTO_CONTRACT;
     const input = {
       "function": "list",
       "id": episodeId,
@@ -75,7 +48,7 @@ export default function UploadEpisode({ podcast }) {
     await contract.writeInteraction(input);
   }
 
-  const uploadToArweave = async (data, fileType, epObj, event, serviceFee) => {
+  const uploadEpisodeToArweave = async (data, fileType, epObj, event, serviceFee) => {
     const wallet = await fetchWalletAddress() // window.arweaveWallet.getActiveAddress();
     console.log(wallet);
     if (!wallet) {
@@ -165,7 +138,7 @@ export default function UploadEpisode({ podcast }) {
         userHasEnoughAR(t, bytes, serviceFee).then((result) => {
           if (result === "all good") {
             console.log('Fee cost: ' + (serviceFee))
-            uploadToArweave(file, fileType, epObj, event, serviceFee)
+            uploadEpisodeToArweave(file, fileType, epObj, event, serviceFee)
           } else console.log('upload failed');
         })
       })
@@ -188,7 +161,6 @@ export default function UploadEpisode({ podcast }) {
       .tag('Contract-Src', CONTRACT_SRC)
       .find()
 
-
     if (!tx || tx.length === 0) {
       Swal.fire(
         {
@@ -202,7 +174,7 @@ export default function UploadEpisode({ podcast }) {
     }
   }
 
-  const uploadShow = async (show) => { 
+  const uploadShow = async (show) => {
     const theContractId = await getSwcId()
     console.log("theContractId", theContractId)
     console.log("show", show)
@@ -255,10 +227,10 @@ export default function UploadEpisode({ podcast }) {
     <Modal>
       <div className="bg-zinc-900" data-theme="permacast">
         <div className="relative mt-6 mb-3">
-          <div className="font-semibold">
+          <div className="font-semibold select-none">
             Add Episode
           </div>
-          <div className="absolute text-2xl right-10 btn btn-sm btn-ghost top-[-6px]" onClick={() => setIsOpen(false)}>
+          <div className="absolute text-2xl right-10 top-[-6px] w-10 h-10 rounded-lg border-2 border-transparent hover:border-gray-100 cursor-pointer" onClick={() => setIsOpen(false)}>
             ×
           </div>
         </div>
@@ -311,7 +283,7 @@ export default function UploadEpisode({ podcast }) {
                     className="btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8"
                     type="submit"
                   >
-                    <UploadIcon className="h-5 w-5 mr-2" />
+                    <ArrowUpTrayIcon className="h-5 w-5 mr-2" />
                     {t("uploadepisode.upload")}
                   </button>
                   :

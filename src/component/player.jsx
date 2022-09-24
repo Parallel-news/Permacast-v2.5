@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useContext } from 'react';
 
-import { TrackView } from './trackView';
-import { GlobalPlayButton } from './icons';
-import { ViewListIcon, ShareIcon, ArrowsExpandIcon, PauseIcon, VolumeUpIcon, FastForwardIcon, RewindIcon } from "@heroicons/react/outline";
+import Track from './track';
+import { GlobalPlayButton } from './reusables/icons';
+import { Bars4Icon, ShareIcon, ArrowsPointingOutIcon, PauseIcon, SpeakerWaveIcon, ForwardIcon, BackwardIcon } from "@heroicons/react/24/outline";
 import { appContext } from '../utils/initStateGen';
 
 const AudioPlayer = ({ url }) => {
@@ -150,7 +150,7 @@ export function AudioControls ({isPlaying, onPlayPauseClick, onPrevClick, onNext
         aria-label="Previous"
         onClick={onPrevClick}
       >
-        <RewindIcon height="28" width="28" />
+        <BackwardIcon height="28" width="28" />
       </button>
       {isPlaying ? (
         <button
@@ -174,7 +174,7 @@ export function AudioControls ({isPlaying, onPlayPauseClick, onPrevClick, onNext
         aria-label="Next"
         onClick={onNextClick}
       >
-        <FastForwardIcon height="28" width="28" />
+        <ForwardIcon height="28" width="28" />
       </button>
     </div>
   )
@@ -187,11 +187,11 @@ export function PlayerMobile({ episode }) {
   return (
     <div className="w-full h-20 pt-2 px-4 rounded-t-md bg-zinc-900 text-zinc-200 overflow-y-hidden flex items-center">
       <div className="flex-1">
-        <TrackView episode={episode} playButtonSize="0" />
+        <Track episode={episode} playButtonSize="0" />
       </div>
       <div className="flex items-center text-zinc-400">
          <GlobalPlayButton size="14" />
-         <ViewListIcon onClick={() => appState.queue.toggleVisibility()} width="28" height="28" />
+         <Bars4Icon onClick={() => appState.queue.toggleVisibility()} width="28" height="28" />
       </div>
     </div>
   )
@@ -205,7 +205,7 @@ export function Player({episode}) {
     <div className="w-screen rounded-t-3xl h-[84px] pt-4 px-8 bg-zinc-900 text-zinc-200 overflow-y-hidden">
       <div className="grid grid-cols-12 items-center justify-between">
         <div className="col-span-3">
-          <TrackView episode={episode} playButtonSize="0" color={themeColor} />
+          <Track episode={episode} playButtonSize="0" color={themeColor} />
         </div>
         <div className="col-span-6">
           <div className="flex">
@@ -216,10 +216,10 @@ export function Player({episode}) {
         </div>
         <div className="col-span-3 text-zinc-400 ">
           <div className="flex items-center justify-center">
-            <VolumeUpIcon width="28" height="28" />
+            <SpeakerWaveIcon width="28" height="28" />
             <ShareIcon width="28" height="28" />
-            <ViewListIcon onClick={() => appState.queue.toggleVisibility()} width="28" height="28" />
-            <ArrowsExpandIcon width="28" height="28" />
+            <Bars4Icon onClick={() => appState.queue.toggleVisibility()} width="28" height="28" />
+            <ArrowsPointingOutIcon width="28" height="28" />
           </div>
         </div>
       </div>

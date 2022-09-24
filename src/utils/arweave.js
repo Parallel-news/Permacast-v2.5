@@ -3,14 +3,6 @@ import Arweave from "arweave";
 import ArDB from 'ardb';
 import { SmartWeaveWebFactory } from "redstone-smartweave";
 import { generateFactoryState } from "./initStateGen";
-/*
-export const arweave = ArweaveMultihost.initWithDefaultHosts({
-  timeout: 10000,         // Network request timeouts in milliseconds
-  logging: false,          // Enable network request logging
-  logger: null,    // Logger function
-  onError: console.error, // On request error callback
-});
-*/
 
 export const arweave = Arweave.init({
   host: "arweave.net",
@@ -33,20 +25,33 @@ export const smartweave = SmartWeaveWebFactory.memCached(arweave);
 //export const CONTRACT_SRC = "6wHEQehU7FtAax4bbVtx5uYVkGHX-Qnstd7dw-UKjEM";
 //export const CONTRACT_SRC = 'NavYxQSs268ije1-srcbPxYzEQLHPPE9ERkTGH3PB60';
 //export const CONTRACT_SRC = "6wHEQehU7FtAax4bbVtx5uYVkGHX-Qnstd7dw-UKjEM";
-// export const CONTRACT_SRC = "KrMNSCljeT0sox8bengHf0Z8dxyE0vCTLEAOtkdrfjM";
+//export const CONTRACT_SRC = "KrMNSCljeT0sox8bengHf0Z8dxyE0vCTLEAOtkdrfjM";
+//export const CONTRACT_SRC = "aDDvmtV6Rg15LZ5Hp1yjL6strnyCsVbmhpfPe0gT21Y"
+
+// CONTRACT ADDRESSES:
+
 export const CONTRACT_SRC = "-SoIrUzyGEBklizLQo1w5AnS7uuOB87zUrg-kN1QWw4"
 export const NFT_SRC = "-xoIBH2TxLkVWo6XWAjdwXZmTbUH09_hPYD6itHFeZY";
-export const FEE_MULTIPLIER = 3;
-// PROD CONTRACT:
-//export const CONTRACT_SRC = "aDDvmtV6Rg15LZ5Hp1yjL6strnyCsVbmhpfPe0gT21Y"
-export const NEWS_CONTRACT = "HJFEnaWHLMp2ryrR0nzDKb0DSW7aBplDjcs3vQoVbhw";
-// + tag { name: "Protocol", values: "permacast-testnet-v3"}
+export const VERTO_CONTRACT = 't9T7DIOGxx4VWXoCEeYYarFYeERTpWIC1V3y-BPZgKE';
+export const TREASURY_ADDRESS = 'eBYuvy8mlxUsm8JZNTpV6fisNaJt0cEbg-znvPeQ4A0';
+export const NEWS_CONTRACT = "HJFEnaWHLMp2ryrR0nzDKb0DSW7aBplDjcs3vQoVbhw"; // PROD CONTRACT
+
+
+
 export const MESON_ENDPOINT = "https://pz-prepnb.meson.network";
 export const WEBSITE_URL = "https://whispering-retreat-94540.herokuapp.com";
 
-export const TREASURY_ADDRESS = 'eBYuvy8mlxUsm8JZNTpV6fisNaJt0cEbg-znvPeQ4A0';
+export const API_MAP = {
+  "podcasts": `${WEBSITE_URL}/feeds/podcasts`,
+  "episodes": WEBSITE_URL + "/feeds/episodes/", // podcast id comes to the end
+  "rss": WEBSITE_URL + "/feeds/rss/", // podcast id comes to the end
+  "mapping": WEBSITE_URL + "/feeds/content/mapping",
+}
+
 export const SHOW_UPLOAD_FEE = 0.25;
 export const EPISODE_UPLOAD_FEE_PERCENTAGE = 10;
+export const FEE_MULTIPLIER = 3; // for uploading content to arweave
+
 
 export const queryObject = {
   query: `query {
@@ -78,8 +83,9 @@ export async function compoundTreasury(amount, callback, debug=false) {
   })
 }
 
+// + tag { name: "Protocol", values: "permacast-testnet-v3"}
 export async function queryTXsByAddress(address) {
-  return ardb.search('transactions')
+  return await ardb.search('transactions')
     .from(address)
     .tag('App-Name', 'SmartWeaveContract')
     .tag('Permacast-Version', 'amber')

@@ -1,3 +1,6 @@
+import Shikwasa from '../shikwasa-src/main.js';
+import { isDarkMode } from '../utils/theme.js';
+
 export function RGBobjectToString(rgb) {
   return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
 }
@@ -99,10 +102,10 @@ export function isTooLight(rgbArg, lightness=0.9) {
   return hsl.l > lightness;
 }
 
-export function getButtonRGBs(rgb) {
+export function getButtonRGBs(rgb, textLightness=0.8, backgroundLightness=0.15) {
   const replacedRGB = RGBobjectToString(replaceDarkColorsRGB(rgb, 0.45));
-  const iconColor = replacedRGB?.replace('rgb', 'rgba')?.replace(')', ', 0.8)');
-  const background = replacedRGB?.replace('rgb', 'rgba')?.replace(')', ', 0.15)');
+  const iconColor = replacedRGB?.replace('rgb', 'rgba')?.replace(')', `, ${textLightness})`);
+  const background = replacedRGB?.replace('rgb', 'rgba')?.replace(')', `, ${backgroundLightness})`);
   return {backgroundColor: background, color: iconColor}
 }
 
@@ -113,6 +116,24 @@ export const shortenAddress = (addr) => {
 // capitalize first letter, remove ar from label
 export const trimANSLabel = (label) => {
   return label.replace(/\w/, c => c.toUpperCase()).replace('ar', '')
+}
+
+export const showPlayer = (podcast, episode) => {
+  const player = new Shikwasa({
+    container: () => document.querySelector('.podcast-player'),
+    themeColor: 'gray',
+    theme: `dark`,
+    autoplay: true,
+    audio: {
+      title: episode.episodeName,
+      artist: podcast.podcastName,
+      cover: `${MESON_ENDPOINT}/${podcast.cover}`,
+      src: `${MESON_ENDPOINT}/${episode.contentTx}`,
+    },
+    download: true
+  })
+  player.play()
+  window.scrollTo(0, document.body.scrollHeight)
 }
 
 export const MOCK_CREATORS = [

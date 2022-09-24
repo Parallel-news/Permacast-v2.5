@@ -5,11 +5,12 @@ import { BsArrowRightShort } from 'react-icons/bs';
 import { CONTRACT_SRC, FEE_MULTIPLIER, SHOW_UPLOAD_FEE, arweave, deployContract, queryTXsByAddress, compoundTreasury, TREASURY_ADDRESS } from '../utils/arweave'
 import { languages_en, languages_zh, categories_en, categories_zh } from '../utils/languages';
 import { processFile, userHasEnoughAR, fetchWalletAddress, calculateStorageFee } from '../utils/shorthands';
-import ArConnect from './arconnect';
-import { PhotographIcon } from '@heroicons/react/outline';
+import ArConnect from '../component/arconnect';
+import { PhotoIcon } from '@heroicons/react/24/outline';
 
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
+
 const ardb = new ArDB(arweave)
 
 export default function UploadPodcastView() {
@@ -20,7 +21,7 @@ export default function UploadPodcastView() {
   const [isUploading, setIsUploading] = useState(false);
   const [cost, setCost] = useState(0);
   const isLoggedIn = appState.user.address;
-  let finalShowObj = {}
+  let finalShowObj = {};
   const podcastCoverRef = useRef()
   const { t, i18n } = useTranslation()
   const languages = i18n.language === 'zh' ? languages_zh : languages_en
@@ -38,12 +39,7 @@ export default function UploadPodcastView() {
     console.log("ADDRESSS")
     console.log(addr)
     // const tx = await queryTXsByAddress(addr) // TODO test
-    const tx = await ardb.search('transactions')
-      .from(addr)
-      .tag('App-Name', 'SmartWeaveContract')
-      .tag('Permacast-Version', 'amber')
-      .tag('Contract-Src', CONTRACT_SRC)
-      .find();
+    const tx = await queryTXsByAddress(addr)
 
     console.log(tx)
     if (tx.length !== 0) {
@@ -236,7 +232,7 @@ export default function UploadPodcastView() {
                   <div className="cursor-pointer outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                     <div className="flex justify-center">
                       <div className="cursor-pointer">
-                        <PhotographIcon className="h-11 w-11" />
+                        <PhotoIcon className="h-11 w-11" />
                       </div>
                     </div>
                     <div className="flex justify-center pt-2">

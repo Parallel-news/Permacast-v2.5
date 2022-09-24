@@ -1,8 +1,8 @@
-import { React, useState } from 'react'
-import { SortAscendingIcon } from '@heroicons/react/24/solid'
-import { Transition } from '@headlessui/react'
+import { useState } from 'react';  
+import { SortAscendingIcon } from '@heroicons/react/24/solid';
+import { Transition } from '@headlessui/react';
 
-export function Dropdown({filters, selection, changeSorting}) {
+export function Dropdown({choices, selection, changeSorting}) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -37,16 +37,15 @@ export function Dropdown({filters, selection, changeSorting}) {
         leaveFrom="transform scale-100 opacity-100"
         leaveTo="transform scale-95 opacity-95"
       >
-        <div className="origin-top-right absolute right-0 mt-14 w-44 shadow-lg ">
+        <div className="origin-top-right absolute right-0 mt-14 w-44 shadow-lg">
           <ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box">
-            {filters.map((filter, index) => (
+            {choices.map((choice, index) => (
               <li key={index} onClick={() => {
                 changeSorting(index)
                 setOpen(!open);
               }} className={`
                 rounded-lg
                 bg-base-100
-                rounded-lg
                 py-2
                 px-4
                 w-full
@@ -54,7 +53,7 @@ export function Dropdown({filters, selection, changeSorting}) {
                 cursor-pointer
                 ${selection === index ? 'bg-base-300' : 'hover:bg-base-200'}
               `}>
-                {filter.desc}
+                {choice.desc}
               </li>
             ))}
           </ul>

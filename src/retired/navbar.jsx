@@ -6,8 +6,8 @@ import { isDarkMode } from '../utils/theme'
 import { themeChange } from "theme-change";
 import { useTranslation } from 'react-i18next'
 import { Disclosure } from '@headlessui/react'
-import { TranslateIcon } from '@heroicons/react/outline'
-import { MenuIcon, XIcon } from "@heroicons/react/outline";
+import { TranslateIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, XIcon } from "@heroicons/react/24/outline";
 
 
 const language = [
@@ -87,7 +87,7 @@ export default function NavBar() {
                 {open ? (
                   <XIcon className="block h-6 w-6" aria-hidden="true" />
                 ) : (
-                  <MenuIcon className="block h-6 w-6" aria-hidden="true" />
+                  <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
                 )}
               </Disclosure.Button>
             </div>

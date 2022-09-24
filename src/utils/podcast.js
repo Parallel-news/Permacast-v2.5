@@ -1,4 +1,4 @@
-import { WEBSITE_URL, MESON_ENDPOINT } from "./arweave";
+import { WEBSITE_URL, API_MAP, MESON_ENDPOINT } from "./arweave";
 import FastAverageColor from 'fast-average-color';
 
 export async function getColor (url) {
@@ -85,19 +85,41 @@ export function filterTypes(filters) {
   return filters.map(f => f.type)
 }
 
-export const fetchPodcasts = async () => {
+export const getPodcasts = async () => {
   const json = await (
-    await fetch(`${WEBSITE_URL}/feeds/podcasts`)
+    await fetch(API_MAP.podcasts)
   ).json();
   return json.res;
 };
 
+export const getPodcastEpisodes = async (podcastId) => {
+
+  const response = await fetch(API_MAP.episodes + podcastId, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json', }
+  });
+
+  const episodes = (await response.json())["episodes"];
+  return episodes;
+};
+
+// only accepts podcasts object from the getPodcasts() function 
+export const getPodcast = (podcasts, podcastId) => {
+  let filteredPodcasts = podcasts.filter(
+    obj => !(obj && Object.keys(obj).length === 0)
+  );
+
+  const podcast = filteredPodcasts.find(podcast => podcast.pid === podcastId)
+  return podcast;
+};
+
+
 export const fetchPodcastTitles = async () => {
   const json = await (
-    await fetch(`${WEBSITE_URL}/feeds/content/mapping`)
+    await fetch(API_MAP.mapping)
   ).json();
   return json.res;
-}
+};
 
 export const sortPodcasts = async (filters) => {
   let url = `${WEBSITE_URL}/feeds/podcasts/sort/`;

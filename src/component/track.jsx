@@ -1,24 +1,26 @@
 import { useContext } from 'react';
 import { useHistory, useLocation } from "react-router-dom";
 import { FaPlay } from 'react-icons/fa';
-import { Cooyub } from './icons';
+import { Cooyub } from './reusables/icons';
 import { appContext } from '../utils/initStateGen';
-import { getButtonRGBs } from './../utils/ui';
+import { getButtonRGBs } from '../utils/ui';
 import { MESON_ENDPOINT } from "../utils/arweave";
 
-export function TrackView({episode, includeDescription=false, playButtonSize="20", color=""}) {
+export default function Track({episode, episodeNumber=1, includeDescription=false, playButtonSize="20", color=""}) {
   const appState = useContext(appContext);
   const history = useHistory();
-  const { cover, title, creatorName, description } = episode;
+  const { cover, title, creatorName, description, podcastId, objectType } = episode;
   const { playEpisode } = appState.queue;
   const c = color ? color : episode?.rgb;
+  // const id = objectType === 'episode' ? episodeId : podcastId;
+  const url = `/podcast/${podcastId}` + (objectType === 'episode' ? `/${episodeNumber}` : '');
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center">
         <img className="w-14 h-14 rounded-lg" src={cover} alt={title} />
         <div className="ml-4 flex flex-col">
-          <div className="cursor-pointer line-clamp-1 pr-2 text-sm" onClick={() => history.push(`/episode/${1}`)}>{title}</div>
+          <div className="cursor-pointer line-clamp-1 pr-2 text-sm" onClick={() => history.push(url)}>{title}</div>
           <div className="flex items-center">
             {creatorName && (
               <>

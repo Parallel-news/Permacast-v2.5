@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { appContext } from '../utils/initStateGen';
-import { TrackView } from './trackView';
+import Track from './track';
 
 export default function EpisodeQueue() {
   const appState = useContext(appContext);
@@ -11,7 +11,7 @@ export default function EpisodeQueue() {
       <div className="overflow-y-auto">
         {appState.queue.get().map((episode, index) => (
           <div key={index} className="grid grid-rows-3 mb-[-80px]">
-            <TrackView episode={episode} playButtonSize="16" />
+            <Track episode={episode} playButtonSize="16" />
           </div>
         ))}
         {appState.queue.get().length === 0 && (

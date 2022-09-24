@@ -2,78 +2,15 @@ import { useEffect, useState, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import Swal from 'sweetalert2'
 import { shortenAddress } from '../utils/ui'
-import { SortAscendingIcon } from '@heroicons/react/solid'
-import { Transition } from '@headlessui/react'
 import { appContext } from '../utils/initStateGen'
 
 const requiredPermissions = ['ACCESS_ADDRESS', 'ACCESS_ALL_ADDRESSES', 'SIGNATURE', 'SIGN_TRANSACTION']
 
 
-export function Dropdown({choices, selection, changeSorting}) {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <div className="relative z-10 inline-block text-left float-right">
-      <button onClick={() => setOpen(!open)}
-        className={`
-          btn btn-outline btn-secondary
-          z-10
-          px-4
-          py-3
-          text-sm
-          rounded-lg
-          text-center
-          font-medium
-          float-right
-          inline-flex
-          items-center
-          flex-shrink-0
-          shadow-lg
-          border
-          border-transparent
-          hover:border-gray-200
-      `}>
-        <SortAscendingIcon className={`h-5 w-5`} />
-      </button>
-      <Transition
-        show={open}
-        enter="transition duration-100 ease-out"
-        enterFrom="transform scale-95 opacity-95"
-        enterTo="transform scale-100 opacity-100"
-        leave="transition duration-75 ease-out"
-        leaveFrom="transform scale-100 opacity-100"
-        leaveTo="transform scale-95 opacity-95"
-      >
-        <div className="origin-top-right absolute right-0 mt-14 w-44 shadow-lg">
-          <ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box">
-            {choices.map((choice, index) => (
-              <li key={index} onClick={() => {
-                changeSorting(index)
-                setOpen(!open);
-              }} className={`
-                rounded-lg
-                bg-base-100
-                py-2
-                px-4
-                w-full
-                inline-flex
-                cursor-pointer
-                ${selection === index ? 'bg-base-300' : 'hover:bg-base-200'}
-              `}>
-                {choice.desc}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </Transition>
-    </div>
-  )
-}
-
-
 export default function ArConnect() {
   const appState = useContext(appContext)
-  const {address, setAddress, ANSData, setANSData, walletConnected, setWalletConnected } = appState.user
+  const {address, setAddress, ANSData, setANSData, walletConnected, setWalletConnected } = appState.user;
+  console.log(ANSData)
   const { t } = useTranslation()
   
   useEffect(() => {
@@ -169,12 +106,12 @@ export default function ArConnect() {
   }
 
   return (
-    <div className="text-zinc-300 hover:text-white cursor-pointer">
+    <button className="text-zinc-300 hover:text-white cursor-pointer btn btn-secondary rounded-full bg-zinc-900 hover:bg-zinc-600 w-full ">
       <>
         {(walletConnected && (
           <>
             <div
-              className="btn btn-secondary flex justify-center bg-zinc-900 hover:bg-zinc-600 px-3 rounded-full w-full mx-auto text-sm md:text-base normal-case"
+              className="flex px-3 justify-center mx-auto text-sm md:text-base normal-case"
               onClick={arconnectDisconnect}
             >
               <span>
@@ -197,7 +134,7 @@ export default function ArConnect() {
             </div>
           )}
       </>
-    </div>
+    </button>
   )
 
 }

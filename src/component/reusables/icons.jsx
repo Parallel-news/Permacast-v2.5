@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { appContext } from "../utils/initStateGen";
+import { appContext } from "../../utils/initStateGen";
 
 export function Cooyub({svgStyle, rectStyle, fill}) {
   return (

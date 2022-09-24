@@ -8,11 +8,16 @@ export default function Background(props) {
   const { themeColor, currentPodcastColor, setCurrentPodcastColor } = appState.theme;
   const location = useLocation();
   // TODO re-write this later on
-  const color = location.pathname.includes("podcast") && location.pathname.toLowerCase() !== '/uploadpodcast' ? currentPodcastColor?.replace('rgb', 'rgba')?.replace(')', ', 0.4)') : themeColor.replace('rgb', 'rgba').replace(')', ', 0.2)');
-  const check = () => location.pathname === "/featured" || location.pathname === "/";
+  const color = (location.pathname.includes("podcast") && location.pathname.toLowerCase() !== '/uploadpodcast') ? currentPodcastColor?.replace('rgb', 'rgba')?.replace(')', ', 0.4)') : themeColor.replace('rgb', 'rgba').replace(')', ', 0.2)');
+  const check = () => location.pathname === "/";
+
+  const useDefaultBackground = [
+    "/uploadpodcast",
+    "/search",
+  ]
 
   useEffect(() => {
-    if (location.pathname !== '/' || location.pathname !== '/featured') setCurrentPodcastColor(themeColor);  
+    if (useDefaultBackground.includes(location.pathname)) setCurrentPodcastColor(themeColor);  
   }, [location])
   // finish the animation for this transition later on
   const transition = {transition: 'opacity 2.5s ease', backgroundImage: `linear-gradient(${color}, black)`};

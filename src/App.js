@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import Shikwasa from './shikwasa-src/main.js';
-// import 'shikwasa/dist/shikwasa.min.css';
 import { useTranslation } from 'react-i18next';
 import { HashRouter as Router, Route } from 'react-router-dom';
 import { Sidenav, NavBar } from './component/navbars.jsx';
 import Background from './component/background.jsx';
 import SearchView from "./component/search.jsx";
 import ArConnect from './component/arconnect.jsx';
-import UploadPodcastView from './component/uploadPodcast.jsx';
-import EpisodeQueue from '././component/episode_queue.jsx';
-import { PodcastView, Podcast } from './component/podcast.jsx';
+import UploadPodcastView from './pages/uploadPodcast.jsx';
+import EpisodeQueue from './component/episode_queue.jsx';
+import Podcast from './pages/podcast.jsx';
+import Episode from './pages/episode.jsx';
 import { Player, PlayerMobile } from './component/player.jsx';
-import FeaturedView from './component/featured.jsx';
+import Home from './pages/home.jsx';
 import { fetchPodcastTitles, convertToEpisode, convertToPodcast, convertSearchItem, sortPodcasts } from './utils/podcast.js';
 import { appContext } from './utils/initStateGen.js';
 import { MOCK_CREATORS } from './utils/ui.js';
@@ -22,6 +22,7 @@ export default function App() {
   const { t } = useTranslation();
 
   const [loading, setLoading] = useState(true);
+  const [appLoaded, setAppLoaded] = useState(false);
   const [selection, setSelection] = useState(0);
 
   const playerRef = useRef();
@@ -75,15 +76,14 @@ export default function App() {
       // setPodcasts(sorted[filterTypes[selection]])
       setLoading(false)
     }
-    fetchData()
+    if (!appLoaded) {
+      fetchData()
+      setAppLoaded(true)
+    }
   }, [])
 
+
   const playEpisode = (episode) => {
-    // if (episode.contentUrl === currentEpisode.contentUrl) {
-    //   // do something here to trigger a re-render maybe or force a re-render for featured episode
-    //   setCurrentEpisode(queue)
-    // }
-    // debugger;
     const player = new Shikwasa({
       container: () => document.querySelector('.podcast-player'),
       themeColor: 'yellow',
@@ -96,7 +96,6 @@ export default function App() {
         src: `${MESON_ENDPOINT}/${episode?.contentTx}`,
       },
     })
-    // debugger;
     player.play()
     window.scrollTo(0, document.body.scrollHeight)
 
@@ -112,6 +111,8 @@ export default function App() {
   const appState = {
     t: t,
     loading: loading,
+    appLoaded: appLoaded,
+    setAppLoaded: setAppLoaded,
     globalModal: {
       isOpen: modalIsOpen,
       setIsOpen: setModalIsOpen,
@@ -184,7 +185,7 @@ export default function App() {
                 <Sidenav />
               </div>
               <div className="absolute z-10 bottom-0 right-0" style={{display: queueVisible ? 'block': 'none'}}>
-                {!loading ? <EpisodeQueue />: <div>Loading...</div>}
+                {!loading ? <EpisodeQueue />: <div className="h-full w-full animate-pulse bg-gray-900/30"></div>}
               </div>
             </div>
             <Background className="w-screen overflow-scroll">
@@ -195,8 +196,8 @@ export default function App() {
                 <div className="w-full overflow-hidden">
                   <Route
                     exact
-                    path={["/", "/featured"]}
-                    component={({match}) => <div><FeaturedView recentlyAdded={recentlyAdded} featuredPodcasts={featuredPodcasts} creators={MOCK_CREATORS} /></div>}
+                    path="/"
+                    component={({match}) => <div><Home recentlyAdded={recentlyAdded} featuredPodcasts={featuredPodcasts} creators={MOCK_CREATORS} /></div>}
                   />
                   <Route
                     exact
@@ -217,6 +218,11 @@ export default function App() {
                     exact
                     path="/podcast/:podcastId"
                     render={({ match }) => <Podcast match={match} />}
+                  />
+                  <Route
+                    exact
+                    path="/podcast/:podcastId/:episodeNumber"
+                    render={({ match }) => <Episode match={match} />}
                   />
                 </div>
               </div>

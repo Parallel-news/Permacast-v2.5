@@ -1,11 +1,28 @@
+import React, { useContext } from 'react';
 import Swal from 'sweetalert2';
+import { HeartIcon } from '@heroicons/react/24/solid';
+import { appContext } from '../../utils/initStateGen.js';
+import { getButtonRGBs } from '../../utils/ui';
+
+export default function TipButton() {
+  const appState = useContext(appContext);
+  const { currentPodcastColor } = appState.theme;
+
+  // TODO translation appState.t("tip")
+  return (
+    <div className="tooltip" data-tip="Coming soon!">
+      <button disabled className="btn btn-outline btn-sm normal-case rounded-full border-0 min-w-max" style={getButtonRGBs(currentPodcastColor)} onClick={() => tipPrompt(appContext.t)}>
+        <HeartIcon className="mr-2 w-4 h-4" /><span className="font-normal">{"Tip"}</span>
+      </button>
+    </div>
+  )
+}
 
 export function tipPrompt (t) {
-
   Swal.fire({
-      title: t("podcasthtml.swal.title"),
-      text: t("podcasthtml.swal.text"),
-      customClass: "font-mono",
+    title: t("podcasthtml.swal.title"),
+    text: t("podcasthtml.swal.text"),
+    customClass: "font-mono",
   })
   return false
 

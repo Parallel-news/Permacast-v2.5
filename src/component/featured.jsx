@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
+import { appContext } from '../utils/initStateGen.js';
+
 import { useLocation, useHistory } from 'react-router-dom';
 import { replaceDarkColorsRGB, isTooLight, trimANSLabel, RGBobjectToString } from '../utils/ui';
-import { Cooyub, PlayButton, GlobalPlayButton } from './icons';
-import { EyeIcon } from '@heroicons/react/outline';
+import { Cooyub, PlayButton, GlobalPlayButton } from './reusables/icons';
+import { EyeIcon } from '@heroicons/react/24/outline';
 import { FaPlay } from 'react-icons/fa';
 import { FiEye } from 'react-icons/fi';
 
-import { TrackView } from './trackView';
-import { appContext } from '../utils/initStateGen.js';
+import Track from './track';
 import { getButtonRGBs } from '../utils/ui';
 
 export function Greeting() {
@@ -126,7 +127,7 @@ export function RecentlyAdded({episodes}) {
       <div className="grid grid-rows-3 gap-y-4 text-zinc-100">
         {episodes.map((episode, index) => (
           <div key={index} className="border border-zinc-800 rounded-3xl p-3 w-full">
-            <TrackView episode={episode} />
+            <Track episode={episode} />
           </div>
         ))}
       </div>
@@ -163,43 +164,6 @@ export function FeaturedCreators({creators}) {
           </div>
         </div>
       ))}
-    </div>
-  )
-}
-
-export default function FeaturedView({recentlyAdded, featuredPodcasts, creators}) {
-  const appState = useContext(appContext)
-
-  return (
-    <div className="overflow-scroll w-full pb-10">
-      {!appState.loading ? (
-        <Greeting />
-      ): <div>Loading...</div>}
-      {!appState.loading ? (
-        <div className="hidden md:block">
-          <FeaturedEpisode episode={recentlyAdded[0]} />
-        </div>
-      ): <div>Loading...</div>}
-      {/* {!appState.loading ? (
-        <div className="hidden md:grid w-full mt-8 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-x-12">
-          <FeaturedPodcasts podcasts={featuredPodcasts} />
-        </div>
-      ): <div>Loading...</div>} */}
-      {!appState.loading ? (
-        <FeaturedPodcastsMobile podcasts={featuredPodcasts} />
-      ): <div>Loading...</div>}
-      <div className="my-9 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-x-12">
-        <div className="xl:col-span-3 lg:col-span-2 md:col-span-1 mb-9">
-          {!appState.loading ? (
-            <RecentlyAdded episodes={recentlyAdded} />
-          ): <div>Loading...</div>}
-        </div>
-        {!appState.loading ? (
-          <div className="w-full">
-            <FeaturedCreators creators={creators} />
-          </div>
-        ): <div>Loading...</div>}
-      </div>
     </div>
   )
 }
