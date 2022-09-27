@@ -133,6 +133,7 @@ export default class UI {
     this.title.innerHTML = audio.title
     this.titleInner.setAttribute('data-title', audio.title)
     this.artist.innerHTML = audio.artist
+    this.artist.className = 'shk-artist_wrap rounded-full px-3 py-1 ' + (audio.color ? audio.color : 'bg-yellow-300/20 text-yellow-300')
     if (audio.duration) {
       this.duration.innerHTML = secondToTime(audio.duration)
     }

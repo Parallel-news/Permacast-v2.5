@@ -88,7 +88,8 @@
   font-family: inherit;
 }
 .shk-player {
-  height: 100px;
+  height: 90px;
+  width: full;
   box-sizing: border-box;
   border-radius: 8px;
   background: var(--background-body);
@@ -104,10 +105,8 @@
   position: relative;
 }
 .shk-cover {
-  width: 80px;
-  height: 80px;
-  flex: 0 0 auto;
-  margin-right: 16px;
+  width: 60px;
+  height: 60px;
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -207,7 +206,6 @@ a.shk-btn:visited {
 }
 .shk-controls {
   position: relative;
-  width: 280px;
   margin: 0 auto;
   flex: 0 0 auto;
 }
@@ -220,7 +218,6 @@ a.shk-btn:visited {
   display: flex;
 }
 .shk-controls_basic {
-  justify-content: space-between;
 }
 .shk-controls_extra {
   position: absolute;
@@ -290,14 +287,17 @@ svg.shk-btn_mute,
   z-index: 1;
 }
 .shk-bar {
+  
   position: relative;
-  height: 4px;
+  border-radius: 9999px;
+  height: 10px;
   width: 100%;
   box-sizing: border-box;
-  background: rgb(39 39 42);
+  background: black;
 }
 .shk-bar_loaded,
 .shk-bar_played {
+  border-radius: 9999px;
   position: absolute;
   top: 0;
   left: 0;
@@ -315,6 +315,7 @@ svg.shk-btn_mute,
   transition: none;
 }
 .shk-bar-handle {
+  border-radius: 9999px;
   background: var(--color-handle);
   position: absolute;
   right: -10px;
@@ -335,7 +336,7 @@ svg.shk-btn_mute,
   cursor: grabbing;
 }
 .shk-display {
-  position: absolute;
+  position: relative;
 }
 .shk-loader {
   display: none;
@@ -412,17 +413,13 @@ svg.shk-btn_mute,
     flex: 2 1 auto;
   }
   .shk-bar_wrap {
-    position: absolute;
-    bottom: 4px;
     left: 0px;
     right: 0px;
-    padding: 4px 0 16px;
   }
   .shk-bar {
     transition: height .15s ease-in;
   }
   .shk-bar_wrap:hover .shk-bar {
-    height: 10px;
   }
   .shk-bar-handle {
     top: -9.5px;
@@ -437,7 +434,7 @@ svg.shk-btn_mute,
     transform: scale(0.8);
   }
   .shk-display {
-    top: -6px;
+    top: -2px;
     right: 8px;
   }
   .shk-loader {
@@ -464,7 +461,7 @@ svg.shk-btn_mute,
     bottom: auto;
   }
   .shk[data-live] .shk-bar_wrap {
-    height: 4px;
+    height: 10px;
   }
   .shk-cover {
     display: none;

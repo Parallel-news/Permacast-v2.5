@@ -61,13 +61,30 @@ export default function App() {
   // }
 
   useEffect(() => {
+    if (!localStorage.getItem("checkupDate")) localStorage.setItem("checkupDate", new Date()); 
+    playEpisode(currentEpisode);
     const fetchData = async () => {
       setLoading(true)
-      const sorted = await sortPodcasts(filterTypes)
-      const podcasts = sorted[filterTypes[selection]].splice(0, 6)
+      let sorted = [];
+      if (Date.parse(localStorage.getItem("checkupDate")) <= new Date()) {
+        console.log('fetching new data')
+        const sortedPodcasts = await sortPodcasts(filterTypes)
+        sorted = sortedPodcasts[filterTypes[selection]]
+        const oldDateObj = new Date();
+        const newDateObj = new Date();
+        newDateObj.setTime(oldDateObj.getTime() + (10 * 60 * 1000));
+
+        localStorage.setItem("sortedPodcasts", JSON.stringify(sorted))
+        localStorage.setItem("checkupDate", newDateObj) 
+      } else {
+        sorted = JSON.parse(localStorage.getItem("sortedPodcasts"))
+        console.log("using cached data")
+      }
+      const podcasts = sorted.splice(0, 6)
       const convertedPodcasts = await Promise.all(podcasts.map(p => convertToPodcast(p)))
       const convertedEpisodes = await Promise.all(podcasts.splice(0, 3).map(p => convertToEpisode(p, p.episodes[0])))
-      const searchTitles = await Promise.all((await fetchPodcastTitles()).map(p => convertSearchItem(p)))
+      // TODO search temporarily disabled due to a lack of image caching (which downloads 35mbs on each page load)
+      const searchTitles = []; // await Promise.all((await fetchPodcastTitles()).map(p => convertSearchItem(p)))
       setTitles(searchTitles)
       setCurrentEpisode(convertedEpisodes[0])
       setRecentlyAdded(convertedEpisodes)
@@ -90,9 +107,10 @@ export default function App() {
       theme: 'dark',
       autoplay: true,
       audio: {
-        title: episode?.title || 'titel',
-        artist: episode?.creatorName || 'creator',
-        cover: episode.cover,
+        title: episode?.title || 'No track selected',
+        artist: episode?.creatorName || '',
+        cover: episode?.cover || 'https://arweave.net/LFG804jivA0mLagJdvbYEYx9VB_3Nivtz_dw4gN1PgY',
+        // color: episode?.color,
         src: `${MESON_ENDPOINT}/${episode?.contentTx}`,
       },
     })
@@ -160,14 +178,21 @@ export default function App() {
 
   // TODO
   // add a loading skeleton for the app
-  // clean up useEffect and appState code
+  // save ALL fetched data to local storage, update it every 5 minutes
   // add translations
   // improve AR rounding
   // finish tab switching gradient color animation
-  // make buttons and stuff consistent accross app
-  // mobile view
-  // re-write fetch logic to await ALL urls asynchronously (put callbacks into array and promise.all)
-  // use fuse.js for search (?)
+  // make buttons consistent accross app
+  /* mobile view
+    - episode list
+    - podcast list
+    - podcast page
+    - episode page
+    - search
+    - queue (maybe)
+  */
+  // re-write fetch logic to not block the rest of the app
+  // use fuse.js for better search (?)
   // re-write getAverageColor functions to use in-memory images (?)
 
   return (
