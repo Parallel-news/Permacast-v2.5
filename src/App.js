@@ -51,6 +51,8 @@ export default function App() {
   const [featuredPodcasts, setFeaturedPodcasts] = useState();
   const [searchInput, setSearchInput] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const [titlesLoading, setTitlesLoading] = useState(true);
   const [titles, setTitles] = useState([]);
 
   const filters = [
@@ -87,15 +89,17 @@ export default function App() {
       const podcasts = sorted.splice(0, 6)
       const convertedPodcasts = await Promise.all(podcasts.map(p => convertToPodcast(p)))
       const convertedEpisodes = await Promise.all(podcasts.splice(0, 3).map(p => convertToEpisode(p, p.episodes[0])))
-      // TODO search temporarily disabled due to a lack of image caching (which downloads 35mbs on each page load)
-      const searchTitles = []; // await Promise.all((await fetchPodcastTitles()).map(p => convertSearchItem(p)))
-      setTitles(searchTitles)
       setCurrentEpisode(convertedEpisodes[0])
       setRecentlyAdded(convertedEpisodes)
       setFeaturedPodcasts(convertedPodcasts)
       // setSortedPodcasts(sorted)
       // setPodcasts(sorted[filterTypes[selection]])
       setLoading(false)
+      setTitlesLoading(true)
+      Promise.all((await fetchPodcastTitles()).map(p => convertSearchItem(p))).then(titles => {
+        setTitles(titles)
+        setTitlesLoading(false)
+      })
     }
     if (!appLoaded) {
       fetchData()
@@ -112,6 +116,9 @@ export default function App() {
   const appState = {
     t: t,
     loading: loading,
+    otherComponentsLoading: {
+      titles: titlesLoading
+    },
     appLoaded: appLoaded,
     setAppLoaded: setAppLoaded,
     globalModal: {
@@ -138,6 +145,7 @@ export default function App() {
       setWalletConnected: setWalletConnected,
     },
     queue: {
+      currentEpisode: currentEpisode,
       get: () => queue,
       enqueueEpisode: (episode) => setQueue([episode]),
       enqueuePodcast: (episodes) => setQueue(episodes),
@@ -150,16 +158,11 @@ export default function App() {
       // This can be used for playback history tracking
     },
     player: player,
-    // TODO remove this later
-    playback: {
-      videoRef: videoRef,
-      currentEpisode: currentEpisode,
-    },
   }
 
-  const playEpisode = (episode, queueVisible) => {
+  const playEpisode = (episode) => {
     // setPlayer(
-    localStorage.setItem("queue", JSON.stringify(false))
+    localStorage.setItem("queue", "false")
     const player = new Shikwasa({
         container: () => document.querySelector('.podcast-player'),
         themeColor: 'yellow',
@@ -174,6 +177,7 @@ export default function App() {
         },
         queueVisible: () => {
           // I hate JavaScript
+          setQueueVisible(null)
           if (localStorage.getItem("queue") === "false") {
             localStorage.setItem('queue', "true")
             setQueueVisible(true);

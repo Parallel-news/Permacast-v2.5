@@ -39,7 +39,7 @@ export default function Episode (props) {
       const convertedNextEpisode = foundNextEpisode && await convertToEpisode(foundPodcast, foundNextEpisode)
       setEpisode(convertedEpisode);
       setNextEpisode(convertedNextEpisode);
-      setRgb(getButtonRGBs(convertedEpisode.rgb, 0.8, 0.3));
+      setRgb(getButtonRGBs(convertedEpisode?.rgb));
       setCurrentPodcastColor(convertedEpisode?.rgb)
     }
     fetchData()
@@ -67,23 +67,23 @@ export default function Episode (props) {
           <div className="mt-5 flex items-center gap-x-4">
             <button 
               className="-ml-1 p-3 rounded-full pointer scale-[0.8]"
-              style={{backgroundColor: rgb?.backgroundColor, rgb: rgb?.color}}
+              style={{backgroundColor: rgb?.backgroundColor, color: rgb?.color}}
               onClick={() => {}}
             >
               <FaPlay />
             </button>
             <TipButton />
-            <a 
+            <a
               href={`${MESON_ENDPOINT}/${episode.contentTx}`}
-              className="flex items-center rounded-full btn btn-sm normal-case text-sm font-medium"
-              style={{backgroundColor: rgb?.backgroundColor, rgb: rgb?.color}}
+              className="flex items-center rounded-full btn btn-sm normal-case text-sm font-medium border-0"
+              style={{backgroundColor: rgb?.backgroundColor, color: rgb?.color}}
               download>
               <ArrowDownTrayIcon className="w-4 h-4 mr-2" />
               Download
             </a>
             <button
-              className="flex items-center rounded-full btn btn-sm normal-case text-sm font-medium"
-              style={{backgroundColor: rgb?.backgroundColor, rgb: rgb?.color}}
+              className="flex items-center rounded-full btn btn-sm normal-case text-sm font-medium border-0"
+              style={{backgroundColor: rgb?.backgroundColor, color: rgb?.color}}
               onClick={() => {
                 setCopied(true);
                 setTimeout(() => {if (!copied) setCopied(false)}, 2000)

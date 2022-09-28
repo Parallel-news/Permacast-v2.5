@@ -66,7 +66,7 @@ export function FeaturedPodcast({podcast}) {
   const history = useHistory();
   const { rgb, episodesCount, cover, podcastName, title, description, firstTenEpisodes, podcastId } = podcast;
   const textColor = isTooLight(rgb) ? 'black' : 'white';
-  const {enqueuePodcast, play} = appState.queue;
+  const { enqueuePodcast, play } = appState.queue;
 
   return (
     <>
@@ -80,8 +80,10 @@ export function FeaturedPodcast({podcast}) {
           </div>
           <div className="h-16 flex items-center">
             <div className="z-10" onClick={() => {
-              enqueuePodcast(firstTenEpisodes());
-              play(firstTenEpisodes()[0]);
+              Promise.all(firstTenEpisodes(true)).then((episodes) => {
+                enqueuePodcast(episodes)
+                play(episodes[0]);
+              });
             }}>
               <GlobalPlayButton size="20" innerColor={rgb} outerColor={textColor} />
             </div>
