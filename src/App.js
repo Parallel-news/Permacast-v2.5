@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { HashRouter as Router, Route } from 'react-router-dom';
 import { Sidenav, NavBar } from './component/navbars.jsx';
 import Background from './component/background.jsx';
-import SearchView from "./component/search.jsx";
+import Search from "./pages/search.jsx";
 import ArConnect from './component/arconnect.jsx';
 import UploadPodcastView from './pages/uploadPodcast.jsx';
 import EpisodeQueue from './component/episode_queue.jsx';
@@ -257,7 +257,7 @@ export default function App() {
                   <Route
                     exact
                     path="/search"
-                    component={({match}) => <SearchView />}
+                    component={({match}) => <Search />}
                   />
                   <Route
                     exact

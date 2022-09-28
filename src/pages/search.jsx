@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { appContext } from '../utils/initStateGen';
-import Track from './track';
+import Track from '../component/track';
 
 export function Searchbar() {
   const appState = useContext(appContext);
@@ -30,7 +30,7 @@ export function Searchbar() {
   )
 }
 
-export default function SearchView() {
+export default function Search() {
   const appState = useContext(appContext);
   const {input, titles} = appState.search;
   const loading = appState.otherComponentsLoading.titles;

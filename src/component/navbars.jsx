@@ -7,7 +7,7 @@ import { HomeIcon, RectangleStackIcon, LanguageIcon, PlusIcon, QuestionMarkCircl
 import YellowRec from '../yellow-rec.svg'
 import { Cooyub } from './reusables/icons';
 import ArConnect from './arconnect';
-import { Searchbar } from './search';
+import { Searchbar } from '../pages/search';
 import { appContext } from '../utils/initStateGen';
 import { LANGUAGES } from '../utils/languages';
 
