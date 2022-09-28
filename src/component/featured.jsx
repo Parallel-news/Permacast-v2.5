@@ -127,7 +127,7 @@ export function RecentlyAdded({episodes}) {
       <div className="grid grid-rows-3 gap-y-4 text-zinc-100">
         {episodes.map((episode, index) => (
           <div key={index} className="border border-zinc-800 rounded-3xl p-3 w-full">
-            <Track episode={episode} />
+            <Track episode={episode} includeDescription={true} />
           </div>
         ))}
       </div>

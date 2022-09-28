@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from 'react';
+import React, { useEffect, useState, useRef, useContext, useCallback } from 'react';
 import Shikwasa from './shikwasa-src/main.js';
 import { useTranslation } from 'react-i18next';
 import { HashRouter as Router, Route } from 'react-router-dom';
@@ -25,10 +25,8 @@ export default function App() {
   const [appLoaded, setAppLoaded] = useState(false);
   const [selection, setSelection] = useState(0);
 
-  const playerRef = useRef();
   const videoRef = useRef();
-  const playButtonRef = useRef();
-
+  const [player, setPlayer] = useState();
   const [currentEpisode, setCurrentEpisode] = useState(null);
 
   const [themeColor, setThemeColor] = useState('rgb(255, 255, 0)');
@@ -43,10 +41,16 @@ export default function App() {
   // const [sortedPodcasts, setSortedPodcasts] = useState();
   const [queue, setQueue] = useState([]);
   const [queueVisible, setQueueVisible] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem("queue") === "true") localStorage.setItem('queue', "false");
+    else localStorage.setItem("queue", "true")
+  }, [queueVisible]);
+
   const [recentlyAdded, setRecentlyAdded] = useState([]);
   const [featuredPodcasts, setFeaturedPodcasts] = useState();
   const [searchInput, setSearchInput] = useState("");
-  const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [titles, setTitles] = useState([]);
 
   const filters = [
@@ -62,7 +66,7 @@ export default function App() {
 
   useEffect(() => {
     if (!localStorage.getItem("checkupDate")) localStorage.setItem("checkupDate", new Date()); 
-    playEpisode(currentEpisode);
+    playEpisode(currentEpisode, queueVisible);
     const fetchData = async () => {
       setLoading(true)
       let sorted = [];
@@ -98,27 +102,6 @@ export default function App() {
       setAppLoaded(true)
     }
   }, [])
-
-
-  const playEpisode = (episode) => {
-    const player = new Shikwasa({
-      container: () => document.querySelector('.podcast-player'),
-      themeColor: 'yellow',
-      theme: 'dark',
-      autoplay: true,
-      audio: {
-        title: episode?.title || 'No track selected',
-        artist: episode?.creatorName || '',
-        cover: episode?.cover || 'https://arweave.net/LFG804jivA0mLagJdvbYEYx9VB_3Nivtz_dw4gN1PgY',
-        // color: episode?.color,
-        src: `${MESON_ENDPOINT}/${episode?.contentTx}`,
-      },
-    })
-    player.play()
-    window.scrollTo(0, document.body.scrollHeight)
-
-    // setCurrentEpisode(episode);
-  };
 
   window.addEventListener('keydown', function(e) {
     if(e.key == " " && e.target == document.body) {
@@ -156,25 +139,58 @@ export default function App() {
     },
     queue: {
       get: () => queue,
-      set: setQueue,
       enqueueEpisode: (episode) => setQueue([episode]),
       enqueuePodcast: (episodes) => setQueue(episodes),
       play: (episode) => playEpisode(episode),
       playEpisode: (episode) => {setQueue([episode]); playEpisode(episode)},
       visibility: queueVisible,
-      toggleVisibility: () => setQueueVisible(!queueVisible),
+      toggleVisibility: () => queueVisible = !queueVisible,
     },
     queueHistory: {
       // This can be used for playback history tracking
     },
+    player: player,
+    // TODO remove this later
     playback: {
-      player: playerRef.current,
-      playerRef: playerRef,
       videoRef: videoRef,
-      playButtonRef: playButtonRef,
       currentEpisode: currentEpisode,
     },
   }
+
+  const playEpisode = (episode, queueVisible) => {
+    // setPlayer(
+    localStorage.setItem("queue", JSON.stringify(false))
+    const player = new Shikwasa({
+        container: () => document.querySelector('.podcast-player'),
+        themeColor: 'yellow',
+        theme: 'dark',
+        autoplay: true,
+        audio: {
+          title: episode?.title || 'No track selected',
+          artist: episode?.creatorName || '',
+          cover: episode?.cover || 'https://arweave.net/LFG804jivA0mLagJdvbYEYx9VB_3Nivtz_dw4gN1PgY',
+          color: episode?.color || 'text-[rgb(255,255,0)] bg-[rgb(255,255,0)]/20',
+          src: `${MESON_ENDPOINT}/${episode?.contentTx}`,
+        },
+        queueVisible: () => {
+          // I hate JavaScript
+          if (localStorage.getItem("queue") === "false") {
+            localStorage.setItem('queue', "true")
+            setQueueVisible(true);
+          } else if (localStorage.getItem("queue") === "true") {
+            localStorage.setItem("queue", "false")
+            setQueueVisible(false)
+          }
+        },
+      })
+    // )
+    player.play()
+    window.scrollTo(0, document.body.scrollHeight)
+    // setCurrentEpisode(episode);
+  };
+  useEffect(() => {
+    if (player) player.play()
+  }, [player])
 
   // TODO
   // add a loading skeleton for the app
@@ -222,12 +238,12 @@ export default function App() {
                   <Route
                     exact
                     path="/"
-                    component={({match}) => <div><Home recentlyAdded={recentlyAdded} featuredPodcasts={featuredPodcasts} creators={MOCK_CREATORS} /></div>}
+                    component={({match}) => <Home recentlyAdded={recentlyAdded} featuredPodcasts={featuredPodcasts} creators={MOCK_CREATORS} />}
                   />
                   <Route
                     exact
                     path="/uploadpodcast"
-                    component={({match}) => <div><UploadPodcastView /></div>}
+                    component={({match}) => <UploadPodcastView />}
                   />
                   {/* <Route
                     exact
@@ -237,7 +253,7 @@ export default function App() {
                   <Route
                     exact
                     path="/search"
-                    component={({match}) => <div><SearchView /></div>}
+                    component={({match}) => <SearchView />}
                   />
                   <Route
                     exact

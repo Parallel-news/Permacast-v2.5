@@ -35,7 +35,7 @@ export default function Track({episode, episodeNumber=1, includeDescription=fals
               </>
             )}
             {includeDescription && description && (
-              <div className="w-full line-clamp-1">
+              <div className="ml-2 w-full line-clamp-1 text-xs">
                 {description}
               </div>
             )}

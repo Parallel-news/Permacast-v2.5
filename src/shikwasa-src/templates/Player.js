@@ -112,11 +112,44 @@ const Volume = `
   </button>
 `
 
-const controlsBasic = `
+const ShareButton = `
+  <button class="shk-btn shk-btn_share" aria-label="share" title="share">
+    <svg aria-hidden="true">
+      <use xlink:href="#shk-icon_share" />
+    </svg>
+  </button>
+`
+
+const Fullscreen = `
+  <button class="shk-btn shk-btn_fullscreen" aria-label="toggle fullscreen" title="fullscreen">
+    <svg class="shk-btn_fullscreen" aria-hidden="true">
+      <use xlink:href="#shk-icon_fullscreen" />
+    </svg>
+    <svg class="shk-btn_exitfullscreen" aria-hidden="true">
+      <use xlink:href="#shk-icon_exitfullscreen" />
+    </svg>
+  </button>
+`
+
+const Queue = `
+  <button class="shk-btn shk-btn_queue" aria-label="toggle queue" title="queue">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="text-[rgb(255,255,0]">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
+    </svg>
+    <use xlink:href="#shk-icon_queue" />
+  </button>
+`
+
+
+// ${ShareButton}
+// ${Fullscreen}
+
+const extrabuttons = `
   <div class="shk-controls">
     <div class="shk-controls_basic">
       ${PlaybackSpeed}
       ${Volume}
+      ${Queue}
       <div class="hidden">
         ${More}
       </div>
@@ -137,8 +170,8 @@ const info = `
           <span class="shk-title"></span>
         </div>
       </div>
-      <div class="shk-artist_wrap max-w-max rounded-full px-3 py-0.5 ">
-        <span class="shk-artist text-yellow-300"></span>
+      <div class="shk-artist_wrap max-w-max mt-0.5">
+        <span class="shk-artist text-[rgb(0,255,255]"></span>
       </div>
     </div>
   </div>
@@ -159,7 +192,7 @@ const PlayerTemplate = /* template */ `
         ${bar}
       </div>
       <div>
-        ${controlsBasic}
+        ${extrabuttons}
       </div>
     </div>
   </div>

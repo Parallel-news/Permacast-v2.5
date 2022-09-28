@@ -36,6 +36,7 @@ export default class UI {
     this.speedBtn = this.el.querySelector('.shk-btn_speed')
     this.moreBtn = this.el.querySelector('.shk-btn_more')
     this.muteBtn = this.el.querySelector('.shk-btn_volume')
+    this.queueBtn = this.el.querySelector('.shk-btn_queue')
     this.extraControls = this.el.querySelector('.shk-controls_extra')
     this.texts = this.el.querySelector('.shk-text')
     this.artist = this.el.querySelector('.shk-artist')
@@ -133,7 +134,7 @@ export default class UI {
     this.title.innerHTML = audio.title
     this.titleInner.setAttribute('data-title', audio.title)
     this.artist.innerHTML = audio.artist
-    this.artist.className = 'shk-artist_wrap rounded-full px-3 py-1 ' + (audio.color ? audio.color : 'bg-yellow-300/20 text-yellow-300')
+    this.artist.className = 'rounded-full px-3 py-1 ' + (audio.color ? audio.color : 'bg-yellow-300/20 text-[rgb(255,255,0)]')
     if (audio.duration) {
       this.duration.innerHTML = secondToTime(audio.duration)
     }
