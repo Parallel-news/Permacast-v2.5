@@ -122,11 +122,6 @@ class Player {
       this.playbackRate = index + 1 >= speedRange.length ? speedRange[0] : speedRange[index + 1]
       this.ui.setSpeed(this.playbackRate)
     })
-    this.ui.queueBtn.addEventListener('click', () => {
-      this.queueVisible()
-      // this.ui.queueBtn.classList.toggle('active')
-      // this.queueVisible
-    })
   }
 
   initBarEvents() {
@@ -202,7 +197,6 @@ class Player {
       })
       this.audio.preload = this.options.preload
       this.muted = this.options.muted
-      this.queueVisible = this.options.queueVisible
       this.update(this.options.audio)
     }
   }

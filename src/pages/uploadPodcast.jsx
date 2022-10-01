@@ -267,7 +267,7 @@ export default function UploadPodcastView() {
                   {languageOptions()}
                 </select>
               </div>
-              <label className="flex mb-5">
+              <label className="flex mb-5 items-center">
                 <input id="podcastExplicit" type="checkbox" className="checkbox checkbox-ghost bg-yellow mr-2" />
                 <span className="label-text cursor-pointer">{t("uploadshow.explicit")}</span>
               </label>

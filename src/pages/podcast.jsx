@@ -120,7 +120,7 @@ export default function Podcast(props) {
       audio: {
         title: e.episodeName,
         artist: podcast.podcastName,
-        cover: `${MESON_ENDPOINT}/${podcast.cover}`,
+        cover: `${MESON_ENDPOINT}/${podcast?.cover}`,
         src: `${MESON_ENDPOINT}/${e.contentTx}`,
       },
       download: true
@@ -155,8 +155,8 @@ export default function Podcast(props) {
         <div className="pb-14 flex flex-col justify-center md:flex-row md:items-center w-full">
           <img className="w-40 cursor-pointer rounded-sm mr-8" src={thePodcast.cover} alt={thePodcast.title} />
           <div className="col-span-2 my-3 text-zinc-100 w-4/6 mr-2">
-            <div className="text-lg font-medium tracking-wide select-text line-clamp-1">{thePodcast?.title}</div>
-            <div className="line-clamp-5 select-text">{thePodcast?.description}</div>
+            <div className="text-lg font-semibold8 tracking-wide select-text line-clamp-1 hover:line-clamp-none">{thePodcast?.title}</div>
+            <div className="line-clamp-5 hover:line-clamp-none select-text">{thePodcast?.description}</div>
           </div>
           <div className="ml-auto mr-9">
             <div className="flex items-center justify-between">
@@ -178,10 +178,10 @@ export default function Podcast(props) {
       <div className="w-full">
         {podcastEpisodes && podcastEpisodes.map((e, i) => (
           <div key={i} className="mb-6 p-2.5 border rounded-xl border-zinc-600">
-            <Track episode={e} episodeNumber={i+1} />
+            <Track episode={e} includeDescription={true} episodeNumber={i+1} />
           </div>
         ))}
-        {!loading && podcastEpisodes.length === 0 && <h5 className="p-5">{t("podcast.noepisodes")}</h5>}
+        {!loading && podcastEpisodes.length === 0 && <h5 className="py-5">{t("noepisodes")}</h5>}
       </div>
       <div className="podcast-player sticky bottom-0 w-screen" />
     </div>

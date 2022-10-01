@@ -31,26 +31,37 @@ export function Greeting() {
   )
 }
 
-export function FeaturedEpisode({episode}) {
+export function FeaturedEpisode({episode, episodeId}) {
   const appState = useContext(appContext);
-  const {cover, title, description} = episode;
+  const {cover, title, description, podcastId} = episode;
+  let history = useHistory();
+  let location = useLocation();
 
   const rgb = RGBobjectToString(replaceDarkColorsRGB(episode.rgb))
-
+  const url = `/podcast/${podcastId}/${episodeId}`;
+  
   return (
     <div className="p-14 flex w-full border border-zinc-800 rounded-3xl">
-      <img className="w-40 cursor-pointer  mr-8" src={cover} alt={title} />
+      <img className="w-40 cursor-pointer mr-8" src={cover} alt={title} onClick={() => history.push(url)} />
       <div className="col-span-2 my-3 text-zinc-100 max-w-xs md:max-w-lg mr-2">
-        <div onClick={() => ('')} className="font-medium cursor-pointer line-clamp-1">{title}</div>
+        <div onClick={() => history.push(url)} className="font-medium cursor-pointer line-clamp-1">{title}</div>
         <div className="text-sm line-clamp-5">{description}</div>
       </div>
       <div className="ml-auto">
         <>
-          <div className="w-24 btn btn-primary border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md" style={getButtonRGBs(rgb)} onClick={() => 'appState.queue.playEpisode(episode)'}>
+          <div 
+            className="w-24 btn btn-primary border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md"
+            style={getButtonRGBs(rgb)}
+            onClick={() => appState.queue.playEpisode(episode)}
+          >
             <FaPlay className="w-3 h-3" />
             <div className="ml-2">Play</div>
           </div>
-          <div className="w-24 btn btn-primary border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md" style={getButtonRGBs(rgb)}>
+          <div
+            className="w-24 btn btn-primary border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md"
+            style={getButtonRGBs(rgb)}
+            onClick={() => history.push(url)}
+          >
             <FiEye className="h-5 w-5" />
             <div className="ml-2">View</div>
           </div>
@@ -74,8 +85,8 @@ export function FeaturedPodcast({podcast}) {
         <div className="h-1/6 w-full px-5 pb-2 cursor-pointer">
           <div onClick={() => history.push(`/podcast/${podcastId}`)}>
             <div className="pt-5 pb-3 text-xs">{episodesCount} Episode{episodesCount == 1 ? '' : 's'}</div>
-            <div className="w-full mb-7">
-              <img className="object-contain h-[180px] w-full" src={cover} alt={podcastName} />
+            <div className="w-full mb-7 max-w-[180px] overflow-x-hidden mx-auto">
+              <img className="object-cover aspect-square h-[180px]" src={cover} alt={podcastName} />
             </div>
           </div>
           <div className="h-16 flex items-center">

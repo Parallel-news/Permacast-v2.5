@@ -10,7 +10,6 @@ const requiredPermissions = ['ACCESS_ADDRESS', 'ACCESS_ALL_ADDRESSES', 'SIGNATUR
 export default function ArConnect() {
   const appState = useContext(appContext)
   const {address, setAddress, ANSData, setANSData, walletConnected, setWalletConnected } = appState.user;
-  console.log(ANSData)
   const { t } = useTranslation()
   
   useEffect(() => {

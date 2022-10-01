@@ -27,7 +27,8 @@ export default function App() {
 
   const videoRef = useRef();
   const [player, setPlayer] = useState();
-  const [currentEpisode, setCurrentEpisode] = useState(null);
+  const [isPaused, setIsPaused] = useState();
+  const [currentEpisode, setCurrentEpisode] = useState(); 
 
   const [themeColor, setThemeColor] = useState('rgb(255, 255, 0)');
   const [currentPodcastColor, setCurrentPodcastColor] = useState('rgb(255, 255, 0)');
@@ -42,10 +43,15 @@ export default function App() {
   const [queue, setQueue] = useState([]);
   const [queueVisible, setQueueVisible] = useState(false);
 
+  // for the queue button
   useEffect(() => {
-    if (localStorage.getItem("queue") === "true") localStorage.setItem('queue', "false");
-    else localStorage.setItem("queue", "true")
-  }, [queueVisible]);
+    console.log(player)
+    if (!player) return;
+    const queue = player.ui.queueBtn;
+    const paused = player.ui.playBtn;
+    queue.addEventListener('click', () => setQueueVisible(visible => !visible));
+    paused.addEventListener('click', () => setIsPaused(paused => !paused));
+  }, [player]);
 
   const [recentlyAdded, setRecentlyAdded] = useState([]);
   const [featuredPodcasts, setFeaturedPodcasts] = useState();
@@ -68,7 +74,7 @@ export default function App() {
 
   useEffect(() => {
     if (!localStorage.getItem("checkupDate")) localStorage.setItem("checkupDate", new Date()); 
-    playEpisode(currentEpisode, queueVisible);
+    playEpisode(null);
     const fetchData = async () => {
       setLoading(true)
       let sorted = [];
@@ -86,10 +92,10 @@ export default function App() {
         sorted = JSON.parse(localStorage.getItem("sortedPodcasts"))
         console.log("using cached data")
       }
-      const podcasts = sorted.splice(0, 6)
+      const podcasts = sorted.splice(0, 9)
       const convertedPodcasts = await Promise.all(podcasts.map(p => convertToPodcast(p)))
       const convertedEpisodes = await Promise.all(podcasts.splice(0, 3).map(p => convertToEpisode(p, p.episodes[0])))
-      setCurrentEpisode(convertedEpisodes[0])
+      // setCurrentEpisode(convertedEpisodes[0])
       setRecentlyAdded(convertedEpisodes)
       setFeaturedPodcasts(convertedPodcasts)
       // setSortedPodcasts(sorted)
@@ -150,51 +156,49 @@ export default function App() {
       enqueueEpisode: (episode) => setQueue([episode]),
       enqueuePodcast: (episodes) => setQueue(episodes),
       play: (episode) => playEpisode(episode),
-      playEpisode: (episode) => {setQueue([episode]); playEpisode(episode)},
+      playEpisode: (episode) => {
+        setQueue([episode])
+        playEpisode(episode)
+      },
       visibility: queueVisible,
-      toggleVisibility: () => queueVisible = !queueVisible,
     },
     queueHistory: {
       // This can be used for playback history tracking
     },
     player: player,
+    playback: {
+      isPaused: isPaused,
+      setIsPaused: setIsPaused,
+    },
+    videoRef: videoRef,
   }
 
   const playEpisode = (episode) => {
-    // setPlayer(
     localStorage.setItem("queue", "false")
     const player = new Shikwasa({
-        container: () => document.querySelector('.podcast-player'),
-        themeColor: 'yellow',
-        theme: 'dark',
-        autoplay: true,
-        audio: {
-          title: episode?.title || 'No track selected',
-          artist: episode?.creatorName || '',
-          cover: episode?.cover || 'https://arweave.net/LFG804jivA0mLagJdvbYEYx9VB_3Nivtz_dw4gN1PgY',
-          color: episode?.color || 'text-[rgb(255,255,0)] bg-[rgb(255,255,0)]/20',
-          src: `${MESON_ENDPOINT}/${episode?.contentTx}`,
-        },
-        queueVisible: () => {
-          // I hate JavaScript
-          setQueueVisible(null)
-          if (localStorage.getItem("queue") === "false") {
-            localStorage.setItem('queue', "true")
-            setQueueVisible(true);
-          } else if (localStorage.getItem("queue") === "true") {
-            localStorage.setItem("queue", "false")
-            setQueueVisible(false)
-          }
-        },
-      })
-    // )
-    player.play()
-    window.scrollTo(0, document.body.scrollHeight)
-    // setCurrentEpisode(episode);
+      container: () => document.querySelector('.podcast-player'),
+      themeColor: 'yellow',
+      theme: 'dark',
+      autoplay: true,
+      audio: {
+        title: episode?.title || 'No track selected',
+        artist: episode?.creatorName || '',
+        cover: episode?.cover || 'https://arweave.net/LFG804jivA0mLagJdvbYEYx9VB_3Nivtz_dw4gN1PgY',
+        color: episode?.color || 'text-[rgb(255,255,0)] bg-[rgb(255,255,0)]/20',
+        src: `${MESON_ENDPOINT}/${episode?.contentTx}`,
+      },
+    })
+    if (episode) {
+      setPlayer(player)
+      setCurrentEpisode(episode) // add it to local storage for later
+      player.play()
+      window.scrollTo(0, document.body.scrollHeight)  
+    }
   };
-  useEffect(() => {
-    if (player) player.play()
-  }, [player])
+
+  // useEffect(() => {
+  //   if (player) player.play()
+  // }, [player])
 
   // TODO
   // add a loading skeleton for the app

@@ -152,7 +152,7 @@ export function NavBarMobile() {
                 <Disclosure.Button
                   as="a"
                   href="https://t.me/permacast"
-                  target="_blank" rel="noreferrer"
+                  target="_blank" rel="noreferrer noopener"
                   className="block px-3 py-2 rounded-md"
                 >
                   📨 {t("navbar.help")}

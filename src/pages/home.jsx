@@ -21,7 +21,7 @@ export default function Home({recentlyAdded, featuredPodcasts, creators}) {
       ): <Loading />}
       {!appState.loading ? (
         <div className="hidden md:block">
-          <FeaturedEpisode episode={recentlyAdded[0]} />
+          <FeaturedEpisode episode={recentlyAdded[0]} episodeId={1} />
         </div>
       ): <Loading />}
       {/* {!appState.loading ? (
