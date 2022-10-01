@@ -17,6 +17,12 @@
 			"footer": "Download ArConnect here"
 		}
 	},
+	"home": {
+    "hi": "Hi, ",
+		"welcome": "Welcome!",
+		"subtext": "Let's see what we have for today",
+		"episodes": "Episodes"
+  },
 	"uploadshow": {
 		"addpodcast": "Add a podcast",
 		"title": "Add a new show",

@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { appContext } from '../utils/initStateGen.js';
+import { useTranslation } from 'react-i18next';
 
 import { useLocation, useHistory } from 'react-router-dom';
 import { replaceDarkColorsRGB, isTooLight, trimANSLabel, RGBobjectToString } from '../utils/ui';
@@ -14,6 +15,8 @@ import { getButtonRGBs } from '../utils/ui';
 export function Greeting() {
   const appState = useContext(appContext);
   const user = appState.user;
+  const { t } = useTranslation();
+
   const label = user.ANSData?.currentLabel
   // what about randomizing greetings?
 
@@ -22,11 +25,11 @@ export function Greeting() {
       <h1 className="text-zinc-100 text-xl">
       {label ? (
         <>
-          Hello {trimANSLabel(label)}!
+          {t("home.hi")} {trimANSLabel(label)}!
         </>
-      ) : 'Welcome!'}
+      ) : <>{t("home.welcome")}</>}
       </h1>
-      <p className="text-zinc-400 mb-9">Let's see what we have for today</p>
+      <p className="text-zinc-400 mb-9">{t("home.subtext")}</p>
     </div>
   )
 }
@@ -78,13 +81,14 @@ export function FeaturedPodcast({podcast}) {
   const { rgb, episodesCount, cover, podcastName, title, description, firstTenEpisodes, podcastId } = podcast;
   const textColor = isTooLight(rgb) ? 'black' : 'white';
   const { enqueuePodcast, play } = appState.queue;
+  const { t } = useTranslation();
 
   return (
     <>
       <div style={{backgroundColor: rgb, color: textColor}} className="mt-4 backdrop-blur-md rounded-3xl">
         <div className="h-1/6 w-full px-5 pb-2 cursor-pointer">
           <div onClick={() => history.push(`/podcast/${podcastId}`)}>
-            <div className="pt-5 pb-3 text-xs">{episodesCount} Episode{episodesCount == 1 ? '' : 's'}</div>
+            <div className="pt-5 pb-3 text-xs">{episodesCount} {t("home.episodes")}</div>
             <div className="w-full mb-7 max-w-[180px] overflow-x-hidden mx-auto">
               <img className="object-cover aspect-square h-[180px]" src={cover} alt={podcastName} />
             </div>

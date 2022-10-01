@@ -7,6 +7,10 @@ export const LANGUAGES = [
     "code": "zh",
     "name": "简体中文"
   },
+  {
+    "code": "uk",
+    "name": "Українська"
+  }
 ]
 
 export const categories_en = [

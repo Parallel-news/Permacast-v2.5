@@ -17,6 +17,12 @@
 			"footer": "下载 ArConnect"
 		}
 	},
+	"home": {
+    "hi": "你好, ",
+		"welcome": "欢迎",
+		"subtext": "让我们看看我们今天有什么",
+		"episodes": "剧集"
+  },
 	"uploadshow": {
 		"addpodcast": "添加播客",
 		"title": "添加新的节目",
