@@ -21,11 +21,27 @@
     "hi": "Hi, ",
 		"welcome": "Welcome!",
 		"subtext": "Let's see what we have for today",
+		"playfeaturedepisode": "Play",
+		"viewfeaturedepisode": "View",
 		"episodes": "Episodes"
   },
+	"search" : {
+		"placeholder": "Search for a podcast",
+		"loading": "Fetching titles...",
+		"starttyping": "Start typing to search",
+		"podcasts": "Podcasts",
+		"nopodcasts": "No podcasts found.",
+		"episodes": "Episodes",
+		"noepisodes":"No episodes found."
+	},
+	"queue": {
+		"currentlyplaying": "Currently playing",
+		"upnext": "Up next",
+		"emptyqueue": "Your queue is empty, add some episodes to it!"
+	},
 	"uploadshow": {
-		"addpodcast": "Add a podcast",
-		"title": "Add a new show",
+		"addpodcast": "New Show",
+		"title": "Title name",
 		"label": "You'll add episodes to the show next.",
 		"name": "Show name",
 		"description": "Show description",
@@ -38,8 +54,8 @@
 		"upload": "Create",
 		"uploading": "Processing...",
 		"cancel": "Cancel",
-		"feeText": "Uploading the show will cost: ",
-		"feeExplanation": "We charge a flat fee to prevent spam",
+		"feetext": "Uploading the show will cost: ",
+		"feeexplanation": "We charge a flat fee to prevent spam",
 		"swal": {
 			"showadded": {
 				"title": "Show added",
@@ -78,11 +94,11 @@
 				"text": "Check your AR balance and network connection"
 			}
 		},
-		"feeText": "Uploading the episode will cost: ",
-		"title": "Add new episode to",
+		"feetext": "Uploading the episode will cost: ",
+		"title": "Add new episode",
 		"name": "Episode name",
 		"description": "Episode description",
-		"file": "Audio file",
+		"file": "Episode media",
 		"verto": "Upload to Verto",
 		"toupload": "to upload",
 		"upload": "Upload",
@@ -92,8 +108,16 @@
 	"podcast": {
 		"newepisode": "Add episode"
 	},
-	"loadingPodcasts": "Loading podcasts...",
-	"loadingEpisodes": "Loading episodes...",
+	"episode": {
+		"number": "Episode",
+		"download": "Download",
+		"nextepisode": "Next Episode",
+		"share": "Share",
+		"copied": "Copied to clipboard",
+		"nodescription": "No description provided"
+	},
+	"loadingpodcasts": "Loading podcasts...",
+	"loadingepisodes": "Loading episodes...",
 	"nopodcasts": "No podcasts here yet. Upload one!",
 	"noepisodes": "No episodes uploaded yet.",	
 	"sortpodcastsby": "Sort podcasts by",

@@ -3,7 +3,7 @@ import ArDB from 'ardb';
 import { appContext } from '../utils/initStateGen';
 import { BsArrowRightShort } from 'react-icons/bs';
 import { CONTRACT_SRC, FEE_MULTIPLIER, SHOW_UPLOAD_FEE, arweave, deployContract, queryTXsByAddress, compoundTreasury, TREASURY_ADDRESS } from '../utils/arweave'
-import { languages_en, languages_zh, categories_en, categories_zh } from '../utils/languages';
+import LANGUAGES from '../utils/languages';
 import { processFile, userHasEnoughAR, fetchWalletAddress, calculateStorageFee } from '../utils/shorthands';
 import ArConnect from '../component/arconnect';
 import { PhotoIcon } from '@heroicons/react/24/outline';
@@ -24,8 +24,9 @@ export default function UploadPodcastView() {
   let finalShowObj = {};
   const podcastCoverRef = useRef()
   const { t, i18n } = useTranslation()
-  const languages = i18n.language === 'zh' ? languages_zh : languages_en
-  const categories = i18n.language === 'zh' ? categories_zh : categories_en
+  const currentLanguage = LANGUAGES.find(language => i18n.language === language.code)
+  const languages = currentLanguage?.languages || []
+  const categories = currentLanguage?.categories || []
 
   const uploadShow = async (show) => {
     Swal.fire({
@@ -38,7 +39,6 @@ export default function UploadPodcastView() {
     let addr = await fetchWalletAddress()
     console.log("ADDRESSS")
     console.log(addr)
-    // const tx = await queryTXsByAddress(addr) // TODO test
     const tx = await queryTXsByAddress(addr)
 
     console.log(tx)
@@ -217,7 +217,7 @@ export default function UploadPodcastView() {
 
   return (
     <div className="text-zinc-400 h-full">
-      <h1 className="text-2xl tracking-wider text-white">New Show</h1>
+      <h1 className="text-2xl tracking-wider text-white">{t("uploadshow.title")}</h1>
       <div className="form-control">
         <form onSubmit={handleShowUpload}>
           <input required type="file" accept="image/*" className="opacity-0 z-index-[-1] absolute cursor-pointer" ref={podcastCoverRef} onChange={e => handleChangeImage(e)} name="podcastCover" id="podcastCover" />
@@ -236,7 +236,7 @@ export default function UploadPodcastView() {
                       </div>
                     </div>
                     <div className="flex justify-center pt-2">
-                      <div className="text-lg cursor-pointer tracking-wider">Cover image</div>
+                      <div className="text-lg cursor-pointer tracking-wider">{t("uploadshow.image")}</div>
                     </div>
                   </div>
                 </div>
@@ -245,17 +245,41 @@ export default function UploadPodcastView() {
             <div className="ml-0 md:ml-10 mt-10 md:mt-0 fields w-5/6">
               <div className="h-48 mb-10">
                 <div className="mb-5">
-                  <input className="input input-secondary w-full bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white" placeholder="Show name..." required pattern=".{2,500}" title="Between 2 and 500 characters" type="text" name="podcastName" />
+                  <input 
+                    className="input input-secondary w-full bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                    placeholder={t("uploadshow.name")}
+                    pattern=".{2,500}"
+                    title="Between 2 and 500 characters"
+                    type="text"
+                    name="podcastName"
+                    required
+                  />
                 </div>
                 <div>
-                  <textarea className="input input-secondary resize-none py-3 px-5 w-full h-[124px] bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white" placeholder="Description..." required pattern=".{10,15000}" title="Between 10 and 15000 characters" name="podcastDescription" />
+                  <textarea 
+                    className="input input-secondary resize-none py-3 px-5 w-full h-[124px] bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                    placeholder={t("uploadshow.description")}
+                    pattern=".{10,15000}"
+                    title="Between 10 and 15000 characters"
+                    name="podcastDescription"
+                    required
+                  />
                 </div>
               </div>
               <div className="mb-5">
-                <input className="input input-secondary w-1/2 py-3 px-5 bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white" placeholder="Author name..." name="podcastAuthor" />
+                <input 
+                  className="input input-secondary w-1/2 py-3 px-5 bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                  placeholder={t("uploadshow.author")}
+                  name="podcastAuthor"
+                />
               </div>
               <div className="mb-10 ">
-                <input className="input input-secondary w-1/2 py-3 px-5 bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white" placeholder="Email..." type="email" name="podcastEmail" />
+                <input
+                  className="input input-secondary w-1/2 py-3 px-5 bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                  placeholder="Email..."
+                  type={t("uploadshow.email")}
+                  name="podcastEmail"
+                />
               </div>
               <div className="mb-5">
                 <select className="select select-secondary w-1/2 py-3 px-5 font-light bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white" id="podcastCategory" name="category">
@@ -273,7 +297,7 @@ export default function UploadPodcastView() {
               </label>
               <div className="flex items-center place-content-end pb-28">
                 <div className="bg-zinc-800 rounded-lg px-4 py-[9px] mr-4">
-                  {t("uploadshow.feeText")}
+                  {t("uploadshow.feetext")}
                   <span className="text-lg font-bold underline">
                     {(SHOW_UPLOAD_FEE + cost).toFixed(3)} AR
                   </span>

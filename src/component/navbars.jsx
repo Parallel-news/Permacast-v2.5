@@ -9,7 +9,7 @@ import { Cooyub } from './reusables/icons';
 import ArConnect from './arconnect';
 import { Searchbar } from '../pages/search';
 import { appContext } from '../utils/initStateGen';
-import { LANGUAGES } from '../utils/languages';
+import LANGUAGES from '../utils/languages';
 
 export function Sidenav() {
   const { t, i18n } = useTranslation();

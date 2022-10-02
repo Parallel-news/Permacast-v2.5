@@ -21,8 +21,24 @@
     "hi": "你好, ",
 		"welcome": "欢迎",
 		"subtext": "让我们看看我们今天有什么",
+		"playfeaturedepisode": "播放录音",
+		"viewfeaturedepisode": "查看录音",
 		"episodes": "剧集"
   },
+	"search" : {
+		"placeholder": "搜索播客",
+		"loading": "下载播客标题...",
+		"starttyping": "开始输入搜索",
+		"podcasts": "播客",
+		"nopodcasts": "未找到播客。",
+		"episodes": "剧集",
+		"noepisodes": "未找到任何剧集。"
+	},
+	"queue": {
+		"currentlyplaying": "正在播放",
+		"upnext": "下一集",
+		"emptyqueue": "播放队列为空"
+	},
 	"uploadshow": {
 		"addpodcast": "添加播客",
 		"title": "添加新的节目",
@@ -38,7 +54,7 @@
 		"upload": "上传",
 		"uploading": "加工...",
 		"cancel": "取消",
-		"feeText": "上传节目的费用：",
+		"feetext": "上传节目的费用：",
 		"swal": {
 			"showadded": {
 				"title": "节目已添加",
@@ -77,8 +93,8 @@
 				"text": "检查您的 AR 余额和网络连接"
 			}
 		},
-		"feeText": "上传剧集将花费：",
-		"feeExplanation": "我们收取固定费用以防止垃圾邮件",
+		"feetext": "上传剧集将花费：",
+		"feeexplanation": "我们收取固定费用以防止垃圾邮件",
 		"title": "添加新的剧集到",
 		"name": "剧集名称",
 		"description": "剧集描述",
@@ -92,8 +108,16 @@
 	"podcast": {
 		"newepisode": "添加新剧集"
 	},
-	"loadingPodcasts": "正在加载播客...",
-	"loadingEpisodes": "加载剧集...",
+	"episode": {
+    "number": "数字",
+		"download": "下载",
+		"nextepisode": "下一集",
+		"share": "分享",
+		"copied": "已复制",
+		"nodescription": "无描述"
+  },
+	"loadingpodcasts": "正在加载播客...",
+	"loadingepisodes": "加载剧集...",
 	"nopodcasts": "这里还没有播客，请上传一个!",
 	"sortpodcastsby": "播客排序",
 	"sorting": {

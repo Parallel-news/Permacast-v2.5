@@ -37,9 +37,10 @@ export function Greeting() {
 export function FeaturedEpisode({episode, episodeId}) {
   const appState = useContext(appContext);
   const {cover, title, description, podcastId} = episode;
+  const { t } = useTranslation();
+
   let history = useHistory();
   let location = useLocation();
-
   const rgb = RGBobjectToString(replaceDarkColorsRGB(episode.rgb))
   const url = `/podcast/${podcastId}/${episodeId}`;
   
@@ -53,20 +54,20 @@ export function FeaturedEpisode({episode, episodeId}) {
       <div className="ml-auto">
         <>
           <div 
-            className="w-24 btn btn-primary border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md"
+            className="min-w-min btn btn-primary border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md"
             style={getButtonRGBs(rgb)}
             onClick={() => appState.queue.playEpisode(episode)}
           >
             <FaPlay className="w-3 h-3" />
-            <div className="ml-2">Play</div>
+            <div className="ml-2">{t("home.playfeaturedepisode")}</div>
           </div>
           <div
-            className="w-24 btn btn-primary border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md"
+            className="min-w-min btn btn-primary border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md"
             style={getButtonRGBs(rgb)}
             onClick={() => history.push(url)}
           >
             <FiEye className="h-5 w-5" />
-            <div className="ml-2">View</div>
+            <div className="ml-2">{t("home.viewfeaturedepisode")}</div>
           </div>
         </>
       </div>

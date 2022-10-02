@@ -105,7 +105,10 @@ export default function ArConnect() {
   }
 
   return (
-    <button className="text-zinc-300 hover:text-white cursor-pointer btn btn-secondary rounded-full bg-zinc-900 hover:bg-zinc-600 w-full ">
+    <button 
+      className="text-zinc-300 hover:text-white cursor-pointer btn btn-secondary rounded-full bg-zinc-900 hover:bg-zinc-600 w-full "
+      onClick={arconnectConnect}
+    >
       <>
         {(walletConnected && (
           <>
@@ -126,8 +129,7 @@ export default function ArConnect() {
           </>
         )) || (
             <div
-              className="btn btn-secondary bg-zinc-900 hover:bg-zinc-600 px-3 rounded-full text-center w-full"
-              onClick={arconnectConnect}
+              className="text-center w-full"
             >
               🦔 {t("connector.login")}
             </div>

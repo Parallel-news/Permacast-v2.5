@@ -78,7 +78,7 @@ export default function App() {
     const fetchData = async () => {
       setLoading(true)
       let sorted = [];
-      if (Date.parse(localStorage.getItem("checkupDate")) <= new Date()) {
+      // if (Date.parse(localStorage.getItem("checkupDate")) <= new Date()) {
         console.log('fetching new data')
         const sortedPodcasts = await sortPodcasts(filterTypes)
         sorted = sortedPodcasts[filterTypes[selection]]
@@ -88,10 +88,10 @@ export default function App() {
 
         localStorage.setItem("sortedPodcasts", JSON.stringify(sorted))
         localStorage.setItem("checkupDate", newDateObj) 
-      } else {
-        sorted = JSON.parse(localStorage.getItem("sortedPodcasts"))
-        console.log("using cached data")
-      }
+      // } else {
+      //   sorted = JSON.parse(localStorage.getItem("sortedPodcasts"))
+      //   console.log("using cached data")
+      // }
       const podcasts = sorted.splice(0, 9)
       const convertedPodcasts = await Promise.all(podcasts.map(p => convertToPodcast(p)))
       const convertedEpisodes = await Promise.all(podcasts.splice(0, 3).map(p => convertToEpisode(p, p.episodes[0])))
@@ -201,12 +201,12 @@ export default function App() {
   // }, [player])
 
   // TODO
-  // add a loading skeleton for the app
-  // save ALL fetched data to local storage, update it every 5 minutes
-  // add translations
-  // improve AR rounding
+  // add a loading skeleton for the app // DONE
+  // save ALL fetched data to local storage, update it every 5 minutes // DONE
+  // add translations // DONE
   // finish tab switching gradient color animation
   // make buttons consistent accross app
+  // improve AR rounding
   /* mobile view
     - episode list
     - podcast list

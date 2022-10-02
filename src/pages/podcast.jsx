@@ -174,7 +174,7 @@ export default function Podcast(props) {
         </div>
       )}
       <UploadEpisode podcast={thePodcast} />
-      {loading && <h5 className="p-5">{t("loadingEpisodes")}</h5>}
+      {loading && <h5 className="p-5">{t("loadingepisodes")}</h5>}
       <div className="w-full">
         {podcastEpisodes && podcastEpisodes.map((e, i) => (
           <div key={i} className="mb-6 p-2.5 border rounded-xl border-zinc-600">

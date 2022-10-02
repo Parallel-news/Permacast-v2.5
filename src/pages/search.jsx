@@ -3,12 +3,14 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { appContext } from '../utils/initStateGen';
 import Track from '../component/track';
+import { useTranslation } from 'react-i18next';
 
 export function Searchbar() {
   const appState = useContext(appContext);
-  const {input, setInput} = appState.search;
+  const { t } = useTranslation();
   const history = useHistory();
   const location = useLocation();
+  const { input, setInput } = appState.search;
 
   return (
     <div>
@@ -23,7 +25,7 @@ export function Searchbar() {
             if (!location.pathname.includes("search")) history.push("/search");
           }}
           className="input input-secondary block pl-10 py-2.5 md:py-[14px] text-xs md:text-base w-full placeholder-zinc-600 focus:placeholder-white rounded-lg md:rounded-full bg-zinc-900 text-zinc-100 outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-          placeholder="Search for anything..."
+          placeholder={t("search.placeholder")}
         />
       </form>
     </div>
@@ -34,6 +36,7 @@ export default function Search() {
   const appState = useContext(appContext);
   const {input, titles} = appState.search;
   const loading = appState.otherComponentsLoading.titles;
+  const { t } = useTranslation();
 
   const filteredPodcasts = titles.filter((p) => {
     if (input === '') return;
@@ -48,12 +51,12 @@ export default function Search() {
 
   return (
     <div className="text-white h-full pb-80">
-      {loading ? <div className="text-2xl text-white font-bold mb-6">Fetching Titles...</div> : (
+      {loading ? <div className="text-2xl text-white font-bold mb-6">{t("search.loading")}</div> : (
         <div>
           {input.length !== 0 ?
             (
               <>
-                <div className="text-2xl text-white font-bold mb-6">Podcasts</div>
+                <div className="text-2xl text-white font-bold mb-6">{t("search.podcasts")}</div>
                 {filteredPodcasts.length !== 0 ? (
                   <>
                     {filteredPodcasts?.map((filtered, idx) => (
@@ -63,9 +66,9 @@ export default function Search() {
                     ))}
                   </>
                 ) : (
-                  <div className="text-2xl text-white font-bold mb-12">No podcasts found</div>
+                  <div className="text-2xl text-white font-bold mb-12">{t("search.nopodcasts")}</div>
                 )}
-                <div className="text-2xl text-white font-bold mb-6">Episodes</div>
+                <div className="text-2xl text-white font-bold mb-6">{t("search.episodes")}</div>
                 {filteredEpisodes.length !== 0 ? (
                   <>
                     {filteredEpisodes?.map((filtered, idx) => (
@@ -75,7 +78,7 @@ export default function Search() {
                     ))}
                   </>
                 ) : (
-                  <div className="text-2xl text-white font-bold mb-12">No Episodes found</div>
+                  <div className="text-2xl text-white font-bold mb-12">{t("search.noepisodes")}</div>
                 )}
               </>
             )
