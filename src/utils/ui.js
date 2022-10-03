@@ -1,5 +1,5 @@
 import Shikwasa from '../shikwasa-src/main.js';
-import { isDarkMode } from '../utils/theme.js';
+import { MESON_ENDPOINT } from './arweave.js';
 
 export function RGBobjectToString(rgb) {
   return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;

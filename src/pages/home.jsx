@@ -10,7 +10,7 @@ import {
 } from '../component/featured';
 
 
-export default function Home({recentlyAdded, featuredPodcasts, creators}) {
+export default function Home({recentlyAdded, featuredPodcasts}) {
   const appState = useContext(appContext)
   const Loading = () => <div className="w-full h-[100px] rounded-3xl mt-2 animate-pulse bg-gray-300/30"></div>
 
@@ -40,7 +40,7 @@ export default function Home({recentlyAdded, featuredPodcasts, creators}) {
         </div>
         {!appState.loading ? (
           <div className="w-full">
-            <FeaturedCreators creators={creators} />
+            <FeaturedCreators />
           </div>
         ): <Loading />}
       </div>

@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { appContext } from '../utils/initStateGen.js';
 import { useTranslation } from 'react-i18next';
 
 import { useLocation, useHistory } from 'react-router-dom';
 import { replaceDarkColorsRGB, isTooLight, trimANSLabel, RGBobjectToString } from '../utils/ui';
+import { getCreator } from '../utils/podcast.js';
 import { Cooyub, PlayButton, GlobalPlayButton } from './reusables/icons';
 import { EyeIcon } from '@heroicons/react/24/outline';
 import { FaPlay } from 'react-icons/fa';
@@ -11,6 +12,7 @@ import { FiEye } from 'react-icons/fi';
 
 import Track from './track';
 import { getButtonRGBs } from '../utils/ui';
+
 
 export function Greeting() {
   const appState = useContext(appContext);
@@ -139,9 +141,11 @@ export function FeaturedPodcastsMobile({podcasts}) {
 }
 
 export function RecentlyAdded({episodes}) {
+  const { t } = useTranslation();
+
   return (
     <div className="">
-      <h2 className="text-zinc-400 mb-4">Recently Added</h2>
+      <h2 className="text-zinc-400 mb-4">{t("home.recentlyadded")}</h2>
       <div className="grid grid-rows-3 gap-y-4 text-zinc-100">
         {episodes.map((episode, index) => (
           <div key={index} className="border border-zinc-800 rounded-3xl p-3 w-full">
@@ -153,35 +157,58 @@ export function RecentlyAdded({episodes}) {
   )
 }
 
-export function FeaturedCreators({creators}) {
+export function FeaturedCreators() {
   const appState = useContext(appContext);
-  const {themeColor} = appState.theme;
+  const history = useHistory();
+  const { t } = useTranslation();
+  const { themeColor } = appState.theme;
   const bg = themeColor.replace('rgb', 'rgba').replace(')', ', 0.1)')
 
+  const loading = appState.otherComponentsLoading.creators
+  const creators = appState.creators
+  
   return (
     <div>
-      <h2 className="text-zinc-400 mb-4">Featured Creators</h2>
-      {creators.map((creator, index) => (
-        <div key={index} className="flex justify-between items-center py-4 mb-4">
-          <div className="flex">
-            {creator?.avatar ? (
-              <img className="rounded-lg h-12 w-12" src={creator.avatar} alt={creator.fullname} />
-              ) : (
-                <Cooyub svgStyle="rounded-lg h-12 w-12" rectStyle="h-6 w-6" fill={'rgb(255, 80, 0)'} />
-              )
-            }
-            <div className="ml-4 flex items-center">
-              <div className="flex flex-col">
-                <div className="text-zinc-100 text-sm cursor-pointer">{creator.fullname}</div>
-                <div className="text-zinc-400 cursor-pointer text-[8px]">@{creator.anshandle}</div>
-              </div>
-              <div className=" ">
-                <p style={{backgroundColor: bg, color: themeColor}} className="px-3 py-2 rounded-full text-[10px] ml-5 cursor-pointer">{appState.t("view")}</p>
+      <h2 className="text-zinc-400 mb-4">{t("home.featuredcreators")}</h2>
+      {loading ? (
+        <>
+          <div className="bg-gray-300/30 animate-pulse w-full h-20 mb-4 mt-4 rounded-full"></div>
+          <div className="bg-gray-300/30 animate-pulse w-full h-20 mb-4 rounded-full"></div>
+          <div className="bg-gray-300/30 animate-pulse w-full h-20 mb-4 rounded-full"></div>
+        </>
+      ) : (
+        <>
+          {creators.map((creator, index) => (
+            <div key={index}>
+              <div className="flex justify-between items-center p-4 mb-4 w-5/6 border-zinc-800 border rounded-3xl">
+                <div className="flex items-center">
+                  {creator?.avatar ? (
+                    <img className="rounded-full h-12 w-12 object-cover" src={"https://arweave.net/" + creator?.avatar} alt={creator?.nickname} />
+                    ) : (
+                      <Cooyub svgStyle="rounded-lg h-12 w-12" rectStyle="h-6 w-6" fill={'rgb(255, 80, 0)'} />
+                    )
+                  }
+                  <div className="ml-4 flex items-center">
+                    <div className="flex flex-col">
+                      <div className="text-zinc-100 text-sm cursor-pointer">{creator?.nickname || creator?.user}</div>
+                      {creator?.label && 
+                        <div className="text-zinc-400 cursor-pointer text-[8px]">@{creator?.label}</div>
+                      }
+                    </div>
+                  </div>
+                </div>
+                <div className=" ">
+                  <p 
+                    className="px-3 py-2 rounded-full text-[10px] ml-5 cursor-pointer"
+                    style={{backgroundColor: bg, color: themeColor}}
+                    onClick={() => history.push("/creator/" + creator?.user)}
+                  >{t("view")}</p>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      ))}
+          ))}
+        </>
+      )}
     </div>
   )
 }

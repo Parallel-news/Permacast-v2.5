@@ -40,12 +40,17 @@ export const NEWS_CONTRACT = "HJFEnaWHLMp2ryrR0nzDKb0DSW7aBplDjcs3vQoVbhw"; // P
 
 export const MESON_ENDPOINT = "https://pz-prepnb.meson.network";
 export const WEBSITE_URL = "https://whispering-retreat-94540.herokuapp.com";
-
 export const API_MAP = {
   "podcasts": `${WEBSITE_URL}/feeds/podcasts`,
   "episodes": WEBSITE_URL + "/feeds/episodes/", // podcast id comes to the end
   "rss": WEBSITE_URL + "/feeds/rss/", // podcast id comes to the end
   "mapping": WEBSITE_URL + "/feeds/content/mapping",
+}
+
+export const ANS_TESTNET = "https://ans-testnet.herokuapp.com/";
+
+export const ANS_TESTNET_MAP = {
+  "profile" : ANS_TESTNET + "profile/", // arweave address comes to the end
 }
 
 export const SHOW_UPLOAD_FEE = 0.25;

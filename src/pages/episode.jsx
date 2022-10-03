@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next'
 import { FaPlay } from "react-icons/fa";
 
@@ -15,6 +16,9 @@ import Track from '../component/track';
 export default function Episode (props) {
   const { podcastId, episodeNumber } = props.match.params;
   const { t } = useTranslation()
+  const history = useHistory();
+  const location = useLocation();
+
   const appState = useContext(appContext);
   
   const { currentPodcastColor, setCurrentPodcastColor } = appState.theme;
@@ -47,13 +51,13 @@ export default function Episode (props) {
     fetchData()
     setLoading(false);
   }, [episodeNumber])
-
+  
   return (
     <div>
       {!loading && episode ? (
         <div>
           <div className="flex items-center">
-            <img src={episode?.cover} className="w-40 h-40" />
+            <img src={episode?.cover} className="w-40 h-40 cursor-pointer" onClick={() => history.push(`/podcast/${episode?.podcastId}`)} />
             <div className="ml-8 flex flex-col">
               <div className="text-3xl font-medium text-gray-200 select-text">
                 {episode?.title}

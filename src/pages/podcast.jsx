@@ -153,7 +153,7 @@ export default function Podcast(props) {
     <div className="flex flex-col items-center justify-center mb-20">
       {!loading && (
         <div className="pb-14 flex flex-col justify-center md:flex-row md:items-center w-full">
-          <img className="w-40 cursor-pointer rounded-sm mr-8" src={thePodcast.cover} alt={thePodcast.title} />
+          <img className="w-40 cursor-pointer rounded-sm mr-8" src={thePodcast?.cover} alt={thePodcast.title} />
           <div className="col-span-2 my-3 text-zinc-100 w-4/6 mr-2">
             <div className="text-lg font-semibold8 tracking-wide select-text line-clamp-1 hover:line-clamp-none">{thePodcast?.title}</div>
             <div className="line-clamp-5 hover:line-clamp-none select-text">{thePodcast?.description}</div>

@@ -1,4 +1,4 @@
-import { WEBSITE_URL, API_MAP, MESON_ENDPOINT } from "./arweave";
+import { WEBSITE_URL, API_MAP, ANS_TESTNET_MAP, MESON_ENDPOINT } from "./arweave";
 import FastAverageColor from 'fast-average-color';
 
 export async function getColor (url) {
@@ -131,4 +131,18 @@ export const sortPodcasts = async (filters) => {
   }))
 
   return result;
+};
+
+
+// accepts a podcast object from the getPodcast() function
+export const findCreator = async (creatorAddress, podcasts) => {
+  let creatorPodcasts = podcasts.filter(podcast => podcast.owner === creatorAddress);
+  return creatorPodcasts;
+};
+
+export const getCreator = async (address) => {
+  const re = /([a-zA-Z0-9_-]{43})/;
+  if (!address.match(re)) return;
+  const creator = await fetch(ANS_TESTNET_MAP.profile + address);
+  return creator.json();
 };

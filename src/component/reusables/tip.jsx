@@ -3,16 +3,18 @@ import Swal from 'sweetalert2';
 import { HeartIcon } from '@heroicons/react/24/solid';
 import { appContext } from '../../utils/initStateGen.js';
 import { getButtonRGBs } from '../../utils/ui';
+import { useTranslation } from 'react-i18next';
 
-export default function TipButton() {
+export default function TipButton({tipColor=false}) {
   const appState = useContext(appContext);
+  const { t } = useTranslation();
   const { currentPodcastColor } = appState.theme;
+  let color = tipColor || currentPodcastColor;
 
-  // TODO translation appState.t("tip")
   return (
     <div className="tooltip" data-tip="Coming soon!">
-      <button disabled className="btn btn-outline btn-sm normal-case rounded-full border-0 min-w-max" style={getButtonRGBs(currentPodcastColor)} onClick={() => tipPrompt(appContext.t)}>
-        <HeartIcon className="mr-2 w-4 h-4" /><span className="font-normal">{"Tip"}</span>
+      <button disabled className="btn btn-outline btn-sm normal-case rounded-full border-0 min-w-max" style={getButtonRGBs(color)} onClick={() => tipPrompt(appContext.t)}>
+        <HeartIcon className="mr-2 w-4 h-4" /><span className="font-normal">{t("tip")}</span>
       </button>
     </div>
   )

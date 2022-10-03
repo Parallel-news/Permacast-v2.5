@@ -10,11 +10,11 @@ import UploadPodcastView from './pages/uploadPodcast.jsx';
 import EpisodeQueue from './component/episode_queue.jsx';
 import Podcast from './pages/podcast.jsx';
 import Episode from './pages/episode.jsx';
+import Creator from './pages/creator.jsx';
 import { Player, PlayerMobile } from './component/player.jsx';
 import Home from './pages/home.jsx';
-import { fetchPodcastTitles, convertToEpisode, convertToPodcast, convertSearchItem, sortPodcasts } from './utils/podcast.js';
+import { fetchPodcastTitles, convertToEpisode, convertToPodcast, convertSearchItem, sortPodcasts, getPodcasts, getCreator } from './utils/podcast.js';
 import { appContext } from './utils/initStateGen.js';
-import { MOCK_CREATORS } from './utils/ui.js';
 import { MESON_ENDPOINT } from './utils/arweave.js';
 
 
@@ -28,7 +28,7 @@ export default function App() {
   const videoRef = useRef();
   const [player, setPlayer] = useState();
   const [isPaused, setIsPaused] = useState();
-  const [currentEpisode, setCurrentEpisode] = useState(); 
+  const [currentEpisode, setCurrentEpisode] = useState({contentTx: 'null', pid: 'null', eid: 'null'});
 
   const [themeColor, setThemeColor] = useState('rgb(255, 255, 0)');
   const [currentPodcastColor, setCurrentPodcastColor] = useState('rgb(255, 255, 0)');
@@ -45,13 +45,21 @@ export default function App() {
 
   // for the queue button
   useEffect(() => {
-    console.log(player)
     if (!player) return;
     const queue = player.ui.queueBtn;
     const paused = player.ui.playBtn;
     queue.addEventListener('click', () => setQueueVisible(visible => !visible));
     paused.addEventListener('click', () => setIsPaused(paused => !paused));
   }, [player]);
+
+  const [creatorsLoading, setCreatorsLoading] = useState(true)
+  const [creators, setCreators] = useState([]);
+
+  const veryGoodWhitelistOfVeryGoodPeople = [
+    "kaYP9bJtpqON8Kyy3RbqnqdtDBDUsPTQTNUCvZtKiFI",
+    "vZY2XY1RD9HIfWi8ift-1_DnHLDadZMWrufSh-_rKF0",
+    "lIg5mdDMAAIj5Pn2BSYKI8SEo8hRIdh-Zrn_LSy_3Qg"
+  ]
 
   const [recentlyAdded, setRecentlyAdded] = useState([]);
   const [featuredPodcasts, setFeaturedPodcasts] = useState();
@@ -79,9 +87,11 @@ export default function App() {
       setLoading(true)
       let sorted = [];
       // if (Date.parse(localStorage.getItem("checkupDate")) <= new Date()) {
-        console.log('fetching new data')
+        // console.log('fetching new data')
+        // const unsortedPodcasts = await Promise.all((await getPodcasts()).map(p => convertToPodcast(p)))
         const sortedPodcasts = await sortPodcasts(filterTypes)
         sorted = sortedPodcasts[filterTypes[selection]]
+        // setAllPodcasts(sortedPodcasts)
         const oldDateObj = new Date();
         const newDateObj = new Date();
         newDateObj.setTime(oldDateObj.getTime() + (10 * 60 * 1000));
@@ -93,6 +103,7 @@ export default function App() {
       //   console.log("using cached data")
       // }
       const podcasts = sorted.splice(0, 9)
+      // const recentPodcasts = sorted.splice(0, 9)
       const convertedPodcasts = await Promise.all(podcasts.map(p => convertToPodcast(p)))
       const convertedEpisodes = await Promise.all(podcasts.splice(0, 3).map(p => convertToEpisode(p, p.episodes[0])))
       // setCurrentEpisode(convertedEpisodes[0])
@@ -102,10 +113,19 @@ export default function App() {
       // setPodcasts(sorted[filterTypes[selection]])
       setLoading(false)
       setTitlesLoading(true)
-      Promise.all((await fetchPodcastTitles()).map(p => convertSearchItem(p))).then(titles => {
-        setTitles(titles)
-        setTitlesLoading(false)
-      })
+      if (localStorage.getItem("titles")) {
+        setTitles(JSON.parse(localStorage.getItem("titles")))
+      } else {
+        Promise.all((await fetchPodcastTitles()).map(p => convertSearchItem(p))).then(titles => {
+          setTitles(titles)
+          console.log('yeah')
+          localStorage.setItem("titles", JSON.stringify(titles))
+        })
+      }
+      setTitlesLoading(false);
+      setCreatorsLoading(true);
+      setCreators(await Promise.all(veryGoodWhitelistOfVeryGoodPeople.map(creatorAddress => getCreator(creatorAddress))))
+      setCreatorsLoading(false);
     }
     if (!appLoaded) {
       fetchData()
@@ -121,9 +141,11 @@ export default function App() {
 
   const appState = {
     t: t,
+    creators: creators,
     loading: loading,
     otherComponentsLoading: {
-      titles: titlesLoading
+      titles: titlesLoading,
+      creators: creatorsLoading
     },
     appLoaded: appLoaded,
     setAppLoaded: setAppLoaded,
@@ -183,7 +205,7 @@ export default function App() {
       audio: {
         title: episode?.title || 'No track selected',
         artist: episode?.creatorName || '',
-        cover: episode?.cover || 'https://arweave.net/LFG804jivA0mLagJdvbYEYx9VB_3Nivtz_dw4gN1PgY',
+        cover: episode?.cover || 'https://arweave.net/LFG804jivA0mLagJdvbYEYx9VB_3Nivtz_dw4gN1PgY', // TODO: add a default cover
         color: episode?.color || 'text-[rgb(255,255,0)] bg-[rgb(255,255,0)]/20',
         src: `${MESON_ENDPOINT}/${episode?.contentTx}`,
       },
@@ -202,8 +224,9 @@ export default function App() {
 
   // TODO
   // add a loading skeleton for the app // DONE
-  // save ALL fetched data to local storage, update it every 5 minutes // DONE
+  // save ALL fetched data to local storage, update it every 5 minutes // Needs rework
   // add translations // DONE
+  // add creator page // DONE
   // finish tab switching gradient color animation
   // make buttons consistent accross app
   // improve AR rounding
@@ -215,7 +238,7 @@ export default function App() {
     - search
     - queue (maybe)
   */
-  // re-write fetch logic to not block the rest of the app
+  // re-write fetch logic to not block the rest of the app // Mostly done
   // use fuse.js for better search (?)
   // re-write getAverageColor functions to use in-memory images (?)
 
@@ -246,7 +269,7 @@ export default function App() {
                   <Route
                     exact
                     path="/"
-                    component={({match}) => <Home recentlyAdded={recentlyAdded} featuredPodcasts={featuredPodcasts} creators={MOCK_CREATORS} />}
+                    component={({match}) => <Home recentlyAdded={recentlyAdded} featuredPodcasts={featuredPodcasts} />}
                   />
                   <Route
                     exact
@@ -272,6 +295,11 @@ export default function App() {
                     exact
                     path="/podcast/:podcastId/:episodeNumber"
                     render={({ match }) => <Episode match={match} />}
+                  />
+                  <Route
+                    exact
+                    path="/creator/:creatorAddress"
+                    render={({ match }) => <Creator match={match} />}
                   />
                 </div>
               </div>

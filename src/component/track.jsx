@@ -1,26 +1,37 @@
-import { useContext } from 'react';
+import { useEffect, useContext, useCallback } from 'react';
 import { useHistory, useLocation } from "react-router-dom";
-import {  } from 'react-icons/fa';
 import { Cooyub } from './reusables/icons';
 import { appContext } from '../utils/initStateGen';
 import { getButtonRGBs } from '../utils/ui';
 import { PlayIcon, PauseIcon } from '@heroicons/react/24/outline';
-import { useEffect } from 'react';
 
 export default function Track({episode, episodeNumber=1, includeDescription=false, playButtonSize="20", color=""}) {
   const appState = useContext(appContext);
   const history = useHistory();
-  const { cover, title, creatorName, description, podcastId, objectType } = episode;
+  const { cover, title, creatorName, description, podcastId, objectType, creatorAddress } = episode;
   const { currentEpisode, playEpisode } = appState.queue;
   const { isPaused, setIsPaused } = appState.playback;
-  
-  const episodeIsCurrent = currentEpisode?.contentTx === episode.contentTx;
+
+  const episodeIsCurrent = (currentEpisode?.contentTx === episode.contentTx) || (currentEpisode?.contentTx === episode?.eid);
   const { player } = appState;
   const c = color ? color : episode?.rgb;
   // const id = objectType === 'episode' ? episodeId : podcastId;
   const url = `/podcast/${podcastId}` + (objectType === 'episode' ? `/${episodeNumber}` : '');
 
+  function getHex(string) {
+    let newstr = string + ""
+    newstr = string.split("").reduce((hex,c)=>hex+=c.charCodeAt(0).toString(16).padStart(4,"0"),"")
+    if (newstr.length > 6) {
+      newstr = newstr.slice(0,6)
+    }
+    if (newstr.length < 6) {
+      newstr = string + '0'.repeat(6 - string.length)
+    }
+    return newstr
+  }
+
   const playCurrentTrack = () => {
+    if (!player) return;
     player.toggle()
     setIsPaused(!isPaused)
   }
@@ -35,11 +46,11 @@ export default function Track({episode, episodeNumber=1, includeDescription=fals
             {creatorName && (
               <>
                 <p className="text-zinc-400 text-[8px]">by</p>
-                <div style={{backgroundColor: getButtonRGBs(c)?.backgroundColor}} className="ml-1.5 p-1 rounded-full cursor-pointer">
+                <div style={getButtonRGBs(c)} className="ml-1.5 p-1 rounded-full cursor-pointer">
                   <div className="flex items-center min-w-max">
                     {/* <img className="h-6 w-6" src={cover} alt={title} /> */}
-                    <Cooyub className="rounded-full" svgStyle="h-2 w-2" rectStyle="h-6 w-6" fill={'rgb(255, 130, 0)'} />
-                    <p style={{color: getButtonRGBs(c)?.color}} className="text-[8px] pr-1 ml-1 ">@{creatorName}</p>
+                    <Cooyub className="rounded-full" svgStyle="h-2 w-2" rectStyle="h-6 w-6" fill={"#"+getHex(creatorAddress)} />
+                    <p className="text-[8px] pr-1 ml-1 " onClick={() => history.push("/creator/" + creatorAddress)}>@{creatorName}</p>
                   </div>
                 </div>
               </>

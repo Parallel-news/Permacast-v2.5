@@ -23,7 +23,10 @@
 		"subtext": "让我们看看我们今天有什么",
 		"playfeaturedepisode": "播放录音",
 		"viewfeaturedepisode": "查看录音",
-		"episodes": "剧集"
+		"episodes": "剧集",
+		"recentlyadded": "最近添加",
+		"featuredcreators": "精选创作者"
+
   },
 	"search" : {
 		"placeholder": "搜索播客",
@@ -116,6 +119,14 @@
 		"copied": "已复制",
 		"nodescription": "无描述"
   },
+	"creator": {
+		"ans": "ANS 地址",
+		"podcasts": "播客",
+		"nopodcasts": "未找到播客。",
+		"address": "地址",
+		"notfound": "未找到"
+	},
+	"tip": "打赏",
 	"loadingpodcasts": "正在加载播客...",
 	"loadingepisodes": "加载剧集...",
 	"nopodcasts": "这里还没有播客，请上传一个!",
