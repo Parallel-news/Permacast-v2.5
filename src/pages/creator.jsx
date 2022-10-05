@@ -69,7 +69,7 @@ export default function Creator (creatorAddress) {
             </div>
             <div className="flex items-center gap-x-7 mr-8">
               {creator?.currentLabel && (
-                <a className="text-[rgb(255,255,0)]" href={`https://${creator?.currentLabel}/ar.page`} target="_blank" rel="noopener noreferrer">
+                <a className="text-[rgb(255,255,0)]" href={`https://${creator?.currentLabel}.ar.page`} target="_blank" rel="noopener noreferrer">
                   {t('creator.ans')}
                 </a>
               )}
