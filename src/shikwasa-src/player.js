@@ -122,6 +122,10 @@ class Player {
       this.playbackRate = index + 1 >= speedRange.length ? speedRange[0] : speedRange[index + 1]
       this.ui.setSpeed(this.playbackRate)
     })
+    this.ui.fullscreenBtn.addEventListener('click', () => {
+      this.fullscreen = !this.fullscreen;
+      toggleAttribute(this.el, 'data-fullscreen')
+    })
   }
 
   initBarEvents() {
@@ -197,6 +201,7 @@ class Player {
       })
       this.audio.preload = this.options.preload
       this.muted = this.options.muted
+      this.fullscreen = false
       this.update(this.options.audio)
     }
   }

@@ -37,6 +37,7 @@ export default class UI {
     this.moreBtn = this.el.querySelector('.shk-btn_more')
     this.muteBtn = this.el.querySelector('.shk-btn_volume')
     this.queueBtn = this.el.querySelector('.shk-btn_queue')
+    this.fullscreenBtn = this.el.querySelector('.shk-btn_fullscreen')
     this.extraControls = this.el.querySelector('.shk-controls_extra')
     this.texts = this.el.querySelector('.shk-text')
     this.artist = this.el.querySelector('.shk-artist')
@@ -95,6 +96,9 @@ export default class UI {
     // mute status display
     if (options.muted) {
       this.el.setAttribute('data-mute', '')
+    }
+    if (options.fullscreen) {
+      this.el.setAttribute('data-fullscreen', '')
     }
   }
 

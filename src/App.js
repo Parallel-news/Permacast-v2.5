@@ -6,16 +6,17 @@ import { Sidenav, NavBar } from './component/navbars.jsx';
 import Background from './component/background.jsx';
 import Search from "./pages/search.jsx";
 import ArConnect from './component/arconnect.jsx';
-import UploadPodcastView from './pages/uploadPodcast.jsx';
 import EpisodeQueue from './component/episode_queue.jsx';
+import Fullscreen from './component/fullscreen.jsx';
+import UploadPodcastView from './pages/uploadPodcast.jsx';
 import Podcast from './pages/podcast.jsx';
 import Episode from './pages/episode.jsx';
 import Creator from './pages/creator.jsx';
-import { Player, PlayerMobile } from './component/player.jsx';
 import Home from './pages/home.jsx';
 import { fetchPodcastTitles, convertToEpisode, convertToPodcast, convertSearchItem, sortPodcasts, getPodcasts, getCreator } from './utils/podcast.js';
 import { appContext } from './utils/initStateGen.js';
 import { MESON_ENDPOINT } from './utils/arweave.js';
+import { current } from 'tailwindcss/colors.js';
 
 
 export default function App() {
@@ -26,6 +27,7 @@ export default function App() {
   const [selection, setSelection] = useState(0);
 
   const videoRef = useRef();
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [player, setPlayer] = useState();
   const [isPaused, setIsPaused] = useState();
   const [currentEpisode, setCurrentEpisode] = useState({contentTx: 'null', pid: 'null', eid: 'null'});
@@ -48,8 +50,11 @@ export default function App() {
     if (!player) return;
     const queue = player.ui.queueBtn;
     const paused = player.ui.playBtn;
+    const fullscreen = player.ui.fullscreenBtn;
+
     queue.addEventListener('click', () => setQueueVisible(visible => !visible));
     paused.addEventListener('click', () => setIsPaused(paused => !paused));
+    fullscreen.addEventListener('click', () => setIsFullscreen(isFullscreen => !isFullscreen));
   }, [player]);
 
   const [creatorsLoading, setCreatorsLoading] = useState(true)
@@ -247,19 +252,20 @@ export default function App() {
       <appContext.Provider value={appState}>
         <Router>
           <div className="flex h-screen">
-            <div className="absolute z-20 bottom-0 w-full">
-              <div className="relative podcast-player">
+            <div className="absolute z-[60] bottom-0 w-full">
+              <div className={`relative podcast-player rounded-t-xl backdrop-blur-sm ${isFullscreen ? "bg-zinc-900/60" : "bg-zinc-900"}`}>
                 {/* {!loading && currentEpisode ? <Player episode={currentEpisode} />: <div>Loading...</div>} */}
               </div>
             </div>
-            <div className="hidden md:block">
-              <div className="w-[100px] flex justify-center">
+            <div className="hidden md:block z-50">
+              <div className="w-[100px] z-50 flex justify-center">
                 <Sidenav />
               </div>
-              <div className="absolute z-10 bottom-0 right-0" style={{display: queueVisible ? 'block': 'none'}}>
+              <div className="absolute z-50 bottom-0 right-0" style={{display: queueVisible ? 'block': 'none'}}>
                 {!loading ? <EpisodeQueue />: <div className="h-full w-full animate-pulse bg-gray-900/30"></div>}
               </div>
             </div>
+            {isFullscreen && <Fullscreen episode={currentEpisode} />}
             <Background className="w-screen overflow-scroll">
               <div className="ml-8 pr-8 pt-9">
                 <div className="mb-10">

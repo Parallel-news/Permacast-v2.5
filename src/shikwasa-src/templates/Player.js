@@ -122,8 +122,8 @@ const ShareButton = `
 
 const Fullscreen = `
   <button class="shk-btn shk-btn_fullscreen" aria-label="toggle fullscreen" title="fullscreen">
-    <svg class="shk-btn_fullscreen" aria-hidden="true">
-      <use xlink:href="#shk-icon_fullscreen" />
+    <svg class="shk-btn_enterfullscreen" aria-hidden="true">
+      <use xlink:href="#shk-icon_enterfullscreen" />
     </svg>
     <svg class="shk-btn_exitfullscreen" aria-hidden="true">
       <use xlink:href="#shk-icon_exitfullscreen" />
@@ -150,6 +150,7 @@ const extrabuttons = `
       ${PlaybackSpeed}
       ${Volume}
       ${Queue}
+      ${Fullscreen}
       <div class="hidden">
         ${More}
       </div>
@@ -179,7 +180,7 @@ const info = `
 
 
 const PlayerTemplate = /* template */ `
-  <div class="h-[92px] max-w-full bg-zinc-900">
+  <div class="h-[92px] max-w-full">
     <div class="grid grid-cols-6 items-center">
       ${info}
       <div class="flex items-center col-span-3">

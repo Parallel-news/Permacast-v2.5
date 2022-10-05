@@ -281,6 +281,14 @@ svg.shk-btn_mute,
 .shk[data-mute] svg.shk-btn_unmute {
   display: none;
 }
+svg.shk-btn_enterfullscreen,
+.shk[data-fullscreen] svg.shk-btn_exitfullscreen {
+  display: inline-block;
+}
+svg.shk-btn_exitfullscreen,
+.shk[data-fullscreen] svg.shk-btn_enterfullscreen {
+  display: none;
+}
 .shk-bar_wrap {
   cursor: pointer;
   position: relative;

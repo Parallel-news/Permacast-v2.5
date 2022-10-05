@@ -16,6 +16,9 @@ export default function Creator (creatorAddress) {
   const [creator, setCreator] = useState(); // ANS user goes here
   const [podcasts, setPodcasts] = useState([]);
 
+  function convertE(words) {
+    return words.filter((word) => word.toLowerCase().split("e"))
+  }
   useEffect(() => {
     setLoading(true)
     async function fetchData() {
