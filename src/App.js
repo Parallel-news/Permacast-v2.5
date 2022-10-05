@@ -178,7 +178,7 @@ export default function App() {
       setWalletConnected: setWalletConnected,
     },
     queue: {
-      currentEpisode: currentEpisode,
+      currentEpisode: currentEpisode, // move this down to playback
       get: () => queue,
       enqueueEpisode: (episode) => setQueue([episode]),
       enqueuePodcast: (episodes) => setQueue(episodes),
@@ -201,7 +201,6 @@ export default function App() {
   }
 
   const playEpisode = (episode) => {
-    localStorage.setItem("queue", "false")
     const player = new Shikwasa({
       container: () => document.querySelector('.podcast-player'),
       themeColor: 'yellow',

@@ -3,6 +3,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { Cooyub } from './reusables/icons';
 import { appContext } from '../utils/initStateGen';
 import { getButtonRGBs } from '../utils/ui';
+import PlayButton from './reusables/playButton';
 import { PlayIcon, PauseIcon } from '@heroicons/react/24/outline';
 
 export default function Track({episode, episodeNumber=1, includeDescription=false, playButtonSize="20", color=""}) {
@@ -64,19 +65,7 @@ export default function Track({episode, episodeNumber=1, includeDescription=fals
         </div>
       </div>
       {playButtonSize != 0 && (
-        <div onClick={() => episodeIsCurrent ? playCurrentTrack() : playEpisode(episode)}>
-          <div className="cursor-pointer rounded-[34px] p-3" style={getButtonRGBs(c)}>
-            {episodeIsCurrent && !isPaused ? (
-              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth="3" stroke="currentColor" className="w-4 h-4">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
-              </svg>            
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth="3" stroke="currentColor" className="w-4 h-4">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
-              </svg>
-            )}
-          </div>
-        </div>
+        <PlayButton episode={episode} />
       )}
     </div>
   )

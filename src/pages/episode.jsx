@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
-import { useTranslation } from 'react-i18next'
-import { FaPlay } from "react-icons/fa";
+import { useTranslation } from 'react-i18next';
 
 import { ArrowDownTrayIcon, ArrowUpOnSquareIcon } from '@heroicons/react/24/outline';
 
@@ -11,6 +10,7 @@ import { getPodcasts, getPodcastEpisodes, convertToEpisode } from '../utils/podc
 import { appContext } from '../utils/initStateGen.js';
 
 import TipButton from '../component/reusables/tip';
+import PlayButton from '../component/reusables/playButton';
 import Track from '../component/track';
 
 export default function Episode (props) {
@@ -22,6 +22,7 @@ export default function Episode (props) {
   const appState = useContext(appContext);
   
   const { currentPodcastColor, setCurrentPodcastColor } = appState.theme;
+  const { playEpisode, currentEpisode } = appState.queue;
   const [copied, setCopied] = useState(false);
   const [episode, setEpisode] = useState();
   const [nextEpisode, setNextEpisode] = useState();
@@ -71,13 +72,9 @@ export default function Episode (props) {
               </div>
             </div>
             <div className="mt-5 flex items-center gap-x-4">
-              <button 
-                className="-ml-1 p-3 rounded-full pointer scale-[0.8]"
-                style={{backgroundColor: rgb?.backgroundColor, color: rgb?.color}}
-                onClick={() => {}}
-              >
-                <FaPlay />
-              </button>
+              <div className="-ml-1.5 rounded-full pointer scale-[0.8]">
+                <PlayButton episode={episode} />
+              </div>
               <TipButton />
               <a
                 href={`${MESON_ENDPOINT}/${episode.contentTx}`}
