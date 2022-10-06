@@ -84,28 +84,44 @@ export default function App() {
   //   setSelection(n)
   // }
 
+  // TODO: generalize
+  const cacheTitles = async () => {
+    if (Date.parse(localStorage.getItem("checkupDate")) <= new Date()) {
+      const oldDateObj = new Date();
+      const newDateObj = new Date();
+      newDateObj.setTime(oldDateObj.getTime() + (20 * 60 * 1000)); // 20 minutes
+      localStorage.setItem("checkupDate", newDateObj)
+      Promise.all((await fetchPodcastTitles()).map(p => convertSearchItem(p))).then(titles => {
+        setTitles(titles)
+        localStorage.setItem("titles", JSON.stringify(titles))
+      })
+    } else {
+      if (localStorage.getItem("titles")) {
+        setTitles(JSON.parse(localStorage.getItem("titles")))
+      } else {
+        Promise.all((await fetchPodcastTitles()).map(p => convertSearchItem(p))).then(titles => {
+          setTitles(titles)
+          localStorage.setItem("titles", JSON.stringify(titles))
+        })
+      }
+      // console.log("using cached data")
+    }
+  }
+
+  // page load
   useEffect(() => {
+    // TODO: generalize
     if (!localStorage.getItem("checkupDate")) localStorage.setItem("checkupDate", new Date()); 
     playEpisode(null);
     const fetchData = async () => {
       setLoading(true)
       let sorted = [];
       // if (Date.parse(localStorage.getItem("checkupDate")) <= new Date()) {
-        // console.log('fetching new data')
-        // const unsortedPodcasts = await Promise.all((await getPodcasts()).map(p => convertToPodcast(p)))
-        const sortedPodcasts = await sortPodcasts(filterTypes)
-        sorted = sortedPodcasts[filterTypes[selection]]
-        // setAllPodcasts(sortedPodcasts)
-        const oldDateObj = new Date();
-        const newDateObj = new Date();
-        newDateObj.setTime(oldDateObj.getTime() + (10 * 60 * 1000));
-
-        localStorage.setItem("sortedPodcasts", JSON.stringify(sorted))
-        localStorage.setItem("checkupDate", newDateObj) 
-      // } else {
-      //   sorted = JSON.parse(localStorage.getItem("sortedPodcasts"))
-      //   console.log("using cached data")
-      // }
+      // console.log('fetching new data')
+      const sortedPodcasts = await sortPodcasts(filterTypes)
+      sorted = sortedPodcasts[filterTypes[selection]]
+      // localStorage.setItem("sortedPodcasts", JSON.stringify(sorted))
+      // setAllPodcasts(sortedPodcasts)
       const podcasts = sorted.splice(0, 9)
       // const recentPodcasts = sorted.splice(0, 9)
       const convertedPodcasts = await Promise.all(podcasts.map(p => convertToPodcast(p)))
@@ -116,18 +132,12 @@ export default function App() {
       // setSortedPodcasts(sorted)
       // setPodcasts(sorted[filterTypes[selection]])
       setLoading(false)
+
       setTitlesLoading(true)
-      if (localStorage.getItem("titles")) {
-        setTitles(JSON.parse(localStorage.getItem("titles")))
-      } else {
-        Promise.all((await fetchPodcastTitles()).map(p => convertSearchItem(p))).then(titles => {
-          setTitles(titles)
-          console.log('yeah')
-          localStorage.setItem("titles", JSON.stringify(titles))
-        })
-      }
-      setTitlesLoading(false);
-      setCreatorsLoading(true);
+      cacheTitles()
+      setTitlesLoading(false)
+
+      setCreatorsLoading(true)
       setCreators(await Promise.all(veryGoodWhitelistOfVeryGoodPeople.map(creatorAddress => getCreator(creatorAddress))))
       setCreatorsLoading(false);
     }
@@ -223,12 +233,7 @@ export default function App() {
   };
 
   // TODO
-  // add a loading skeleton for the app // DONE
-  // save ALL fetched data to local storage, update it every 5 minutes // Needs rework
-  // add translations // DONE
-  // add creator page // DONE
   // finish tab switching gradient color animation
-  // make buttons consistent accross app
   // improve AR rounding
   /* mobile view
     - episode list
