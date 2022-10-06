@@ -58,7 +58,7 @@ export function FeaturedEpisode({episode, episodeId}) {
           <div 
             className="min-w-min btn btn-primary border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md"
             style={getButtonRGBs(rgb)}
-            onClick={() => appState.queue.playEpisode(episode)}
+            onClick={() => appState.queue.playEpisode(episode, episodeId)}
           >
             <FaPlay className="w-3 h-3" />
             <div className="ml-2">{t("home.playfeaturedepisode")}</div>

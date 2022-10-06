@@ -4,7 +4,7 @@ import { getButtonRGBs } from '../../utils/ui';
 import { PlayIcon, PauseIcon } from '@heroicons/react/24/outline';
 
 
-export default function PlayButton({episode, color=""}) {
+export default function PlayButton({episode, episodeNumber="1", color=""}) {
   const appState = useContext(appContext);
   
   const { currentEpisode, playEpisode } = appState.queue;
@@ -21,7 +21,7 @@ export default function PlayButton({episode, color=""}) {
   }
 
   return (
-    <div onClick={() => episodeIsCurrent ? playCurrentTrack() : playEpisode(episode)}>
+    <div onClick={() => episodeIsCurrent ? playCurrentTrack() : playEpisode(episode, episodeNumber)}>
       <div className="cursor-pointer rounded-[34px] p-3" style={getButtonRGBs(c)}>
         {episodeIsCurrent && !isPaused ? (
           <PauseIcon className="w-4 h-4 fill-current stroke-[3]" />

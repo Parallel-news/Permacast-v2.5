@@ -65,7 +65,7 @@ export default function Track({episode, episodeNumber=1, includeDescription=fals
         </div>
       </div>
       {playButtonSize != 0 && (
-        <PlayButton episode={episode} />
+        <PlayButton episode={episode} episodeNumber={episodeNumber} />
       )}
     </div>
   )

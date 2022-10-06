@@ -16,7 +16,6 @@ import Home from './pages/home.jsx';
 import { fetchPodcastTitles, convertToEpisode, convertToPodcast, convertSearchItem, sortPodcasts, getPodcasts, getCreator } from './utils/podcast.js';
 import { appContext } from './utils/initStateGen.js';
 import { MESON_ENDPOINT } from './utils/arweave.js';
-import { current } from 'tailwindcss/colors.js';
 
 
 export default function App() {
@@ -30,7 +29,7 @@ export default function App() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [player, setPlayer] = useState();
   const [isPaused, setIsPaused] = useState();
-  const [currentEpisode, setCurrentEpisode] = useState({contentTx: 'null', pid: 'null', eid: 'null'});
+  const [currentEpisode, setCurrentEpisode] = useState({contentTx: 'null', pid: 'null', eid: 'null', number: '1'});
 
   const [themeColor, setThemeColor] = useState('rgb(255, 255, 0)');
   const [currentPodcastColor, setCurrentPodcastColor] = useState('rgb(255, 255, 0)');
@@ -183,9 +182,9 @@ export default function App() {
       enqueueEpisode: (episode) => setQueue([episode]),
       enqueuePodcast: (episodes) => setQueue(episodes),
       play: (episode) => playEpisode(episode),
-      playEpisode: (episode) => {
+      playEpisode: (episode, number) => {
         setQueue([episode])
-        playEpisode(episode)
+        playEpisode(episode, number)
       },
       visibility: queueVisible,
     },
@@ -200,7 +199,7 @@ export default function App() {
     videoRef: videoRef,
   }
 
-  const playEpisode = (episode) => {
+  const playEpisode = (episode, number=1) => {
     const player = new Shikwasa({
       container: () => document.querySelector('.podcast-player'),
       themeColor: 'yellow',
@@ -214,17 +213,14 @@ export default function App() {
         src: `${MESON_ENDPOINT}/${episode?.contentTx}`,
       },
     })
+
     if (episode) {
       setPlayer(player)
-      setCurrentEpisode(episode) // add it to local storage for later
+      setCurrentEpisode({...episode, number: number}) // add it to local storage for later
       player.play()
       window.scrollTo(0, document.body.scrollHeight)  
     }
   };
-
-  // useEffect(() => {
-  //   if (player) player.play()
-  // }, [player])
 
   // TODO
   // add a loading skeleton for the app // DONE
@@ -264,7 +260,7 @@ export default function App() {
                 {!loading ? <EpisodeQueue />: <div className="h-full w-full animate-pulse bg-gray-900/30"></div>}
               </div>
             </div>
-            {isFullscreen && <Fullscreen episode={currentEpisode} />}
+            {isFullscreen && <Fullscreen episode={currentEpisode} number={currentEpisode?.number || 1} />}
             <Background className="w-screen overflow-scroll">
               <div className="ml-8 pr-8 pt-9">
                 <div className="mb-10">

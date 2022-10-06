@@ -43,7 +43,7 @@
 	},
 	"uploadshow": {
 		"addpodcast": "New Show",
-		"title": "Title name",
+		"title": "New Show",
 		"label": "You'll add episodes to the show next.",
 		"name": "Show name",
 		"description": "Show description",
@@ -134,6 +134,9 @@
 	"sorting": {
 		"podcastsactivity": "Latest Active podcast",
 		"episodescount": "Episodes Count"
+	},
+	"fullscreen": {
+		"episode": "Episode"
 	},
 	"view": "View"
 }
