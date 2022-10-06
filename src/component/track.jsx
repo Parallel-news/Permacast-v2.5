@@ -6,14 +6,13 @@ import { getButtonRGBs } from '../utils/ui';
 import PlayButton from './reusables/playButton';
 import { PlayIcon, PauseIcon } from '@heroicons/react/24/outline';
 
-export default function Track({episode, episodeNumber=1, includeDescription=false, playButtonSize="20", color=""}) {
+export default function Track({episode, episodeNumber=1, includeDescription=false, includePlayButton=true, color=""}) {
   const appState = useContext(appContext);
   const history = useHistory();
   const { cover, title, creatorName, description, podcastId, objectType, creatorAddress } = episode;
   const { currentEpisode, playEpisode } = appState.queue;
   const { isPaused, setIsPaused } = appState.playback;
 
-  const episodeIsCurrent = (currentEpisode?.contentTx === episode.contentTx) || (currentEpisode?.contentTx === episode?.eid);
   const { player } = appState;
   const c = color ? color : episode?.rgb;
   // const id = objectType === 'episode' ? episodeId : podcastId;
@@ -64,7 +63,7 @@ export default function Track({episode, episodeNumber=1, includeDescription=fals
           </div>
         </div>
       </div>
-      {playButtonSize != 0 && (
+      {includePlayButton && (
         <PlayButton episode={episode} episodeNumber={episodeNumber} />
       )}
     </div>

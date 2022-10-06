@@ -1,6 +1,7 @@
 {
 	"language": "Language",
 	"navbar": {
+		"home": "Home",
 		"help": "Get help",
 		"new": "What's new",
 		"swal": {
@@ -123,7 +124,7 @@
 		"podcasts": "Podcasts",
 		"nopodcasts": "No podcasts found",
 		"address": "Address",
-		"notfound": "not found"
+		"notfound": "not found on ANS"
 	},
 	"tip": "Tip",
 	"loadingpodcasts": "Loading podcasts...",

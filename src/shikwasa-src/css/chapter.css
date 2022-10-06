@@ -186,12 +186,3 @@
   padding-right: 60px;
   color: currentColor;
 }
-@media (max-width: 640px) {
-  .shk-chapter {
-    left: 10px;
-    right: 10px;
-  }
-  .shk-chapter_main {
-    padding: 0 10px;
-  }
-}

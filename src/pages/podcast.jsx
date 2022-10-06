@@ -153,12 +153,12 @@ export default function Podcast(props) {
     <div className="flex flex-col items-center justify-center mb-20">
       {!loading && (
         <div className="pb-14 flex flex-col justify-center md:flex-row md:items-center w-full">
-          <img className="w-40 cursor-pointer rounded-sm mr-8" src={thePodcast?.cover} alt={thePodcast.title} />
-          <div className="col-span-2 my-3 text-zinc-100 w-4/6 mr-2">
-            <div className="text-lg font-semibold8 tracking-wide select-text line-clamp-1 hover:line-clamp-none">{thePodcast?.title}</div>
+          <img className="w-40 cursor-pointer rounded-sm mx-auto md:mx-0 md:mr-8" src={thePodcast?.cover} alt={thePodcast.title} />
+          <div className="col-span-2 my-3 text-zinc-100 w-full md:w-4/6 md:mr-2">
+            <div className="text-center md:text-left text-xl font-semibold tracking-wide select-text line-clamp-1 hover:line-clamp-none">{thePodcast?.title}</div>
             <div className="line-clamp-5 hover:line-clamp-none select-text">{thePodcast?.description}</div>
           </div>
-          <div className="ml-auto mr-9">
+          <div className="mx-auto md:mx-0 md:ml-auto md:mr-9">
             <div className="flex items-center justify-between">
               <button className="btn btn-primary btn-sm normal-case rounded-full border-0" style={getButtonRGBs(currentPodcastColor)} onClick={() => loadRss()}>
                 <FaRss className="mr-2 w-3 h-3" /><span className="font-normal">RSS</span>

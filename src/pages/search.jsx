@@ -44,6 +44,8 @@ export default function Search() {
     if (p.type === "eid") return;
     else return p.title.toLowerCase().includes(input.toLowerCase());
   })
+  // console.log(filteredPodcasts);
+  // TODO: add podcastId to episodes
   // const filteredEpisodes = titles.filter((p) => {
   //   if (input === '') return;
   //   if (p.type === "pid") return;
@@ -65,7 +67,7 @@ export default function Search() {
                   <>
                     {filteredPodcasts?.map((filtered, idx) => (
                       <div key={idx} className="mb-6 p-2.5 border rounded-xl border-zinc-600">
-                        <Track episode={filtered} />
+                        <Track episode={filtered} includePlayButton={false} />
                       </div>
                     ))}
                   </>

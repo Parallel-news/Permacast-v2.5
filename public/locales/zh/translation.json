@@ -1,6 +1,7 @@
 {
 	"language": "语言",
 	"navbar": {
+		"home": "主页",
 		"help": "获取帮助",
 		"new": "新功能",
 		"swal": {
@@ -124,7 +125,7 @@
 		"podcasts": "播客",
 		"nopodcasts": "未找到播客。",
 		"address": "地址",
-		"notfound": "未找到"
+		"notfound": "在 ANS 上找不到"
 	},
 	"tip": "打赏",
 	"loadingpodcasts": "正在加载播客...",

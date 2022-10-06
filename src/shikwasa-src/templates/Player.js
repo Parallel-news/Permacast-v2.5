@@ -1,5 +1,5 @@
 const bar = `
-  <div class="shk-bar_wrap w-[25vw] rounded-lg">
+  <div class="shk-bar_wrap rounded-lg">
     <div class="shk-bar" aria-label="progress bar">
       <div class="shk-bar_loaded"
         role="progressbar"
@@ -147,8 +147,8 @@ const Queue = `
 const extrabuttons = `
   <div class="shk-controls">
     <div class="shk-controls_basic">
-      ${PlaybackSpeed}
       ${Volume}
+      ${PlaybackSpeed}
       ${Queue}
       ${Fullscreen}
       <div class="hidden">
@@ -161,12 +161,12 @@ const extrabuttons = `
 `
 
 const info = `
-  <div class="col-span-2 flex items-center">
+  <div class="shk-info flex items-center">
     <div class="shk-cover m-4">
       <div class="shk-img"></div>
     </div>
     <div class="ml-2 flex flex-col mr-8">
-      <div class="shk-title_wrap max-w-[320px]">
+      <div class="shk-title_wrap">
         <div class="shk-title_inner">
           <span class="shk-title"></span>
         </div>
@@ -180,17 +180,19 @@ const info = `
 
 
 const PlayerTemplate = /* template */ `
-  <div class="h-[92px] max-w-full">
-    <div class="grid grid-cols-6 items-center">
+  <div class="shk-template max-w-screen">
+    <div class="shk-inner-template flex flex-row items-center">
       ${info}
-      <div class="flex items-center col-span-3">
+      <div class="shk-primary">
         <div class="shk-controls_basic flex items-center pb-1">
           ${Backwards}
           ${PlayPause}
           ${Forwards}
         </div>
-        ${time}
-        ${bar}
+        <div class="shk-timing">
+          ${time}
+          ${bar}
+        </div>
       </div>
       <div>
         ${extrabuttons}

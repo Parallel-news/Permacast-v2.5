@@ -49,15 +49,17 @@ export default function Creator (creatorAddress) {
         </>
       ): (
         <>
-          <div className="flex items-center justify-between">
-            <div className="ml-8 flex items-center">
-              {creator?.avatar ? 
-                <img src={"https://arweave.net/" + creator?.avatar} className="w-[120px] h-[120px] rounded-full object-cover" alt="" />
-                :
-                <div className={`w-[120px] h-[120px] rounded-full`} style={{backgroundColor: creator?.address_color || "#E5E7EB" }}></div>
-              }
-              <div className="ml-8 flex flex-col">
-                <div className="text-3xl font-medium text-gray-100 select-text">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="md:ml-8 flex items-center flex-col md:flex-row">
+              <div className="mx-auto md:mx-0">
+                {creator?.avatar ? 
+                  <img src={"https://arweave.net/" + creator?.avatar} className="w-[120px] h-[120px] rounded-full object-cover" alt="" />
+                  :
+                  <div className={`w-[120px] h-[120px] rounded-full`} style={{backgroundColor: creator?.address_color || "#E5E7EB" }}></div>
+                }
+              </div>
+              <div className="md:ml-8 flex flex-col">
+                <div className="text-xl font-medium text-gray-100 select-text mt-8 md:mt-0">
                   {creator?.nickname || creator?.user || t("creator.address") + " " + address?.slice(0, 4) + "..." + address?.slice(-4) + " " + t("creator.notfound")}
                 </div>
                 {creator?.currentLabel && 
@@ -67,7 +69,7 @@ export default function Creator (creatorAddress) {
                 }
               </div>
             </div>
-            <div className="flex items-center gap-x-7 mr-8">
+            <div className="flex items-center gap-x-7 md:mr-8">
               {creator?.currentLabel && (
                 <a className="text-[rgb(255,255,0)]" href={`https://${creator?.currentLabel}.ar.page`} target="_blank" rel="noopener noreferrer">
                   {t('creator.ans')}

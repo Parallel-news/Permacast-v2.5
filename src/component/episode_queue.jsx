@@ -13,7 +13,7 @@ export default function EpisodeQueue() {
           {index === 0 && <div className="text-zinc-500 mb-4">{t("queue.currentlyplaying")}</div>}
           {index === 1 && <div className="text-zinc-500 mb-4">{t("queue.upnext")}</div>}
           <div className="grid grid-rows-3 mb-[-80px]">
-            <Track episode={episode} episodeNumber={index+1} playButtonSize="16" />
+            <Track episode={episode} episodeNumber={index+1} />
           </div>
         </React.Fragment>
       ))}

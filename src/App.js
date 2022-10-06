@@ -255,7 +255,7 @@ export default function App() {
       <appContext.Provider value={appState}>
         <Router>
           <div className="flex h-screen">
-            <div className="absolute z-[60] bottom-0 w-full">
+            <div className="absolute z-[60] bottom-0 w-full ">
               <div className={`relative podcast-player rounded-t-xl backdrop-blur-sm ${isFullscreen ? "bg-zinc-900/60" : "bg-zinc-900"}`}>
                 {/* {!loading && currentEpisode ? <Player episode={currentEpisode} />: <div>Loading...</div>} */}
               </div>

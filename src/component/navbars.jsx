@@ -110,9 +110,9 @@ export function NavBarMobile() {
   })
 
   return (
-    <div className="border border-zinc-400 rounded-lg text-white p-2">
-      <div className="flex gap-x-8 px-2 justify-center">
-        <Disclosure as="nav" className="shadow-lg rounded-box w-full">
+    <div className="text-white">
+      <div className="flex gap-x-8 justify-center">
+        <Disclosure as="nav" className="rounded-box w-full">
         {({ open }) =>
           <>
             <div className="navbar flex items-center">
@@ -136,7 +136,7 @@ export function NavBarMobile() {
               </div>
             </div>
             <Disclosure.Panel>
-              <div className="px-2 pt-2 pb-3 space-y-1">
+              <div className="px-2 pt-2 pb-3 space-y-1 border border-zinc-800 rounded-lg">
                 <div className="dropdown dropdown-hover block px-3 py-2 rounded-md">
                   <label tabIndex="0">
                     <LanguageIcon className="h-5 w-5" aria-hidden="true" />
@@ -150,12 +150,20 @@ export function NavBarMobile() {
                   </ul>
                 </div>
                 <Disclosure.Button
+                  as="div"
+                  className="block px-3 py-2 rounded-md"
+                >
+                  <div onClick={() => switchView("")}>
+                    {t("navbar.home")}
+                  </div>
+                </Disclosure.Button>
+                <Disclosure.Button
                   as="a"
                   href="https://t.me/permacast"
                   target="_blank" rel="noreferrer noopener"
                   className="block px-3 py-2 rounded-md"
                 >
-                  📨 {t("navbar.help")}
+                  {t("navbar.help")}
                 </Disclosure.Button>
                 <Disclosure.Button
                   as="a"
