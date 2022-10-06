@@ -264,6 +264,8 @@ export default function App() {
               <div className="w-[100px] z-50 flex justify-center">
                 <Sidenav />
               </div>
+            </div>
+            <div className="z-50">
               <div className="absolute z-50 bottom-0 right-0" style={{display: queueVisible ? 'block': 'none'}}>
                 {!loading ? <EpisodeQueue />: <div className="h-full w-full animate-pulse bg-gray-900/30"></div>}
               </div>
