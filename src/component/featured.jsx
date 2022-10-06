@@ -180,7 +180,7 @@ export function FeaturedCreators() {
         <>
           {creators.map((creator, index) => (
             <div key={index}>
-              <div className="flex justify-between items-center p-4 mb-4 w-5/6 border-zinc-800 border rounded-3xl">
+              <div className="flex justify-between items-center p-4 mb-4 w-full border-zinc-800 border rounded-3xl">
                 <div className="flex items-center">
                   {creator?.avatar ? (
                     <img className="rounded-full h-12 w-12 object-cover" src={"https://arweave.net/" + creator?.avatar} alt={creator?.nickname} />
