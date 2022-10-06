@@ -34,7 +34,8 @@ export function Searchbar() {
 
 export default function Search() {
   const appState = useContext(appContext);
-  const {input, titles} = appState.search;
+  const { input, titles } = appState.search;
+  const { allPodcasts } = appState;
   const loading = appState.otherComponentsLoading.titles;
   const { t } = useTranslation();
 
@@ -43,11 +44,14 @@ export default function Search() {
     if (p.type === "eid") return;
     else return p.title.toLowerCase().includes(input.toLowerCase());
   })
-  const filteredEpisodes = titles.filter((p) => {
-    if (input === '') return;
-    if (p.type === "pid") return;
-    else return p.title.toLowerCase().includes(input.toLowerCase());
-  })
+  // const filteredEpisodes = titles.filter((p) => {
+  //   if (input === '') return;
+  //   if (p.type === "pid") return;
+  //   else {
+  //     const podcast = allPodcasts.podcastsactivity.find(p => p.episodes.find(e => e.eid === p.eid))
+  //     return p.title.toLowerCase().includes(input.toLowerCase());
+  //   }
+  // })
 
   return (
     <div className="text-white h-full pb-80">
@@ -68,8 +72,8 @@ export default function Search() {
                 ) : (
                   <div className="text-2xl text-white font-bold mb-12">{t("search.nopodcasts")}</div>
                 )}
-                <div className="text-2xl text-white font-bold mb-6">{t("search.episodes")}</div>
-                {filteredEpisodes.length !== 0 ? (
+                {/* <div className="text-2xl text-white font-bold mb-6">{t("search.episodes")}</div> */}
+                {/* {filteredEpisodes.length !== 0 ? (
                   <>
                     {filteredEpisodes?.map((filtered, idx) => (
                       <div key={idx} className="mb-6 p-2.5 border rounded-xl border-zinc-600">
@@ -79,7 +83,7 @@ export default function Search() {
                   </>
                 ) : (
                   <div className="text-2xl text-white font-bold mb-12">{t("search.noepisodes")}</div>
-                )}
+                )} */}
               </>
             )
             :

@@ -30,6 +30,7 @@ export default function App() {
   const [player, setPlayer] = useState();
   const [isPaused, setIsPaused] = useState();
   const [currentEpisode, setCurrentEpisode] = useState({contentTx: 'null', pid: 'null', eid: 'null', number: '1'});
+  const [allPodcasts, setAllPodcasts] = useState();
 
   const [themeColor, setThemeColor] = useState('rgb(255, 255, 0)');
   const [currentPodcastColor, setCurrentPodcastColor] = useState('rgb(255, 255, 0)');
@@ -121,7 +122,7 @@ export default function App() {
       const sortedPodcasts = await sortPodcasts(filterTypes)
       sorted = sortedPodcasts[filterTypes[selection]]
       // localStorage.setItem("sortedPodcasts", JSON.stringify(sorted))
-      // setAllPodcasts(sortedPodcasts)
+      setAllPodcasts(sortedPodcasts)
       const podcasts = sorted.splice(0, 9)
       // const recentPodcasts = sorted.splice(0, 9)
       const convertedPodcasts = await Promise.all(podcasts.map(p => convertToPodcast(p)))
@@ -157,6 +158,7 @@ export default function App() {
     t: t,
     creators: creators,
     loading: loading,
+    allPodcasts: allPodcasts,
     otherComponentsLoading: {
       titles: titlesLoading,
       creators: creatorsLoading
@@ -233,6 +235,7 @@ export default function App() {
   };
 
   // TODO
+  // cache images
   // finish tab switching gradient color animation
   // improve AR rounding
   /* mobile view
