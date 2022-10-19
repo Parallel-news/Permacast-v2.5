@@ -15,7 +15,7 @@ export default function Home({recentlyAdded, featuredPodcasts}) {
   const Loading = () => <div className="w-full h-[100px] rounded-3xl mt-2 animate-pulse bg-gray-300/30"></div>
 
   return (
-    <div className="overflow-scroll w-full pb-10">
+    <div className="overflow-scroll w-full pb-10 mb-10">
       {!appState.loading ? (
         <Greeting />
       ): <Loading />}
