@@ -65,9 +65,9 @@ export default function UploadPodcastView() {
     console.log("CONTRACT ID:")
     console.log(contractId);
 
-    let tags = { "Contract": contractId, "App-Name": "SmartWeaveAction", "App-Version": "0.3.0", "Content-Type": "text/plain", "Input": JSON.stringify(input)};
+    let tags = { "Contract": contractId, "App-Name": "SmartWeaveAction", "App-Version": "0.3.0", "Content-Type": "text/plain", "Input": JSON.stringify(input) };
 
-    const interaction = await arweave.createTransaction({data: show.desc});
+    const interaction = await arweave.createTransaction({ data: show.desc });
 
     for (const key in tags) {
       interaction.addTag(key, tags[key]);
@@ -99,32 +99,68 @@ export default function UploadPodcastView() {
       console.log('created')
       arweave.transactions.sign(tx).then(() => {
         console.log('signed')
-        arweave.transactions.post(tx).then((response) => {
-          console.log(response)
-          if (response.statusText === "OK") {
-            // compoundTreasury(SHOW_UPLOAD_FEE) // TODO TEST
-            arweave.createTransaction({target: TREASURY_ADDRESS, quantity: arweave.ar.arToWinston('' + SHOW_UPLOAD_FEE)}).then((tx) => {
-              arweave.transactions.sign(tx).then(() => {
-                arweave.transactions.post(tx).then((response) => {
-                  console.log(response)
-                  setIsUploading(false)
-                })
-              })
-            })
-            showObj.cover = tx.id
-            finalShowObj = showObj;
-            console.log(finalShowObj)
-            uploadShow(finalShowObj)
-            setShow(false)
-          } else {
-            Swal.fire({
-              title: t("uploadshow.swal.uploadfailed.title"),
-              text: t("uploadshow.swal.uploadfailed.text"),
-              icon: 'danger',
-              customClass: "font-mono",
+        // arweave.transactions.post(tx).then((response) => {
+        //   console.log(response)
+        //   if (response.statusText === "OK") {
+        //     // compoundTreasury(SHOW_UPLOAD_FEE) // TODO TEST
+        //     arweave.createTransaction({target: TREASURY_ADDRESS, quantity: arweave.ar.arToWinston('' + SHOW_UPLOAD_FEE)}).then((tx) => {
+        //       arweave.transactions.sign(tx).then(() => {
+        //         arweave.transactions.post(tx).then((response) => {
+        //           console.log(response)
+        //           setIsUploading(false)
+        //         })
+        //       })
+        //     })
+        //     showObj.cover = tx.id
+        //     finalShowObj = showObj;
+        //     console.log(finalShowObj)
+        //     uploadShow(finalShowObj)
+        //     setShow(false)
+        //   } else {
+        //     Swal.fire({
+        //       title: t("uploadshow.swal.uploadfailed.title"),
+        //       text: t("uploadshow.swal.uploadfailed.text"),
+        //       icon: 'danger',
+        //       customClass: "font-mono",
+        //     })
+        //   }
+        // });
+        arweave.transactions.getUploader(tx).then(uploader => {
+          while (!uploader.isComplete) {
+            uploader.uploadChunk().then(() => {
+              // setPercent(uploader.pctComplete)
+              console.log(uploader.pctComplete) //pass uploader.pctComplete to a UI element to show progress
             })
           }
-        });
+        }).finally(() => {
+          arweave.transactions.getStatus(tx).then(res => {
+            console.log(res);
+            if (res.status === 200) {
+              // compoundTreasury(SHOW_UPLOAD_FEE) // TODO TEST
+              arweave.createTransaction({ target: TREASURY_ADDRESS, quantity: arweave.ar.arToWinston('' + SHOW_UPLOAD_FEE) }).then((tx) => {
+                arweave.transactions.sign(tx).then(() => {
+                  arweave.transactions.post(tx).then((response) => {
+                    console.log(response)
+                    setIsUploading(false)
+                  })
+                })
+              })
+              showObj.cover = tx.id
+              finalShowObj = showObj;
+              console.log(finalShowObj)
+              uploadShow(finalShowObj)
+              setShow(false)
+            } else {
+              Swal.fire({
+                title: t("uploadshow.swal.uploadfailed.title"),
+                text: t("uploadshow.swal.uploadfailed.text"),
+                icon: 'danger',
+                customClass: "font-mono",
+              })
+            }
+          })
+        })
+
       });
     });
   }
@@ -245,7 +281,7 @@ export default function UploadPodcastView() {
             <div className="ml-0 md:ml-10 mt-10 md:mt-0 fields w-5/6">
               <div className="h-48 mb-10">
                 <div className="mb-5">
-                  <input 
+                  <input
                     className="input input-secondary w-full bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
                     placeholder={t("uploadshow.name")}
                     pattern=".{2,500}"
@@ -256,7 +292,7 @@ export default function UploadPodcastView() {
                   />
                 </div>
                 <div>
-                  <textarea 
+                  <textarea
                     className="input input-secondary resize-none py-3 px-5 w-full h-[124px] bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
                     placeholder={t("uploadshow.description")}
                     pattern=".{10,15000}"
@@ -267,7 +303,7 @@ export default function UploadPodcastView() {
                 </div>
               </div>
               <div className="mb-5">
-                <input 
+                <input
                   className="input input-secondary w-1/2 py-3 px-5 bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
                   placeholder={t("uploadshow.author")}
                   name="podcastAuthor"
@@ -309,7 +345,7 @@ export default function UploadPodcastView() {
                         <div className="animate-spin border-t-3 rounded-t-full border-yellow-100 h-5 w-5 mr-3" viewBox="0 0 24 24"></div>
                         {t("uploadshow.uploading")}
                       </button>
-                    ): (
+                    ) : (
                       <button type="submit" className="btn btn-secondary">
                         {t("uploadshow.upload")}
                         <BsArrowRightShort className="w-7 h-7" />
