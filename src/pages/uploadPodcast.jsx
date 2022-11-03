@@ -10,6 +10,9 @@ import { PhotoIcon } from '@heroicons/react/24/outline';
 
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
+import { UploadsList } from '../component/uploads_list';
+import { useSetRecoilState } from 'recoil';
+import { uploadPercent } from '../atoms';
 
 const ardb = new ArDB(arweave)
 
@@ -27,6 +30,8 @@ export default function UploadPodcastView() {
   const currentLanguage = LANGUAGES.find(language => i18n.language === language.code)
   const languages = currentLanguage?.languages || []
   const categories = currentLanguage?.categories || []
+
+  const setPercent = useSetRecoilState(uploadPercent);
 
   const uploadShow = async (show) => {
     Swal.fire({
@@ -128,8 +133,8 @@ export default function UploadPodcastView() {
         arweave.transactions.getUploader(tx).then(uploader => {
           while (!uploader.isComplete) {
             uploader.uploadChunk().then(() => {
-              // setPercent(uploader.pctComplete)
-              console.log(uploader.pctComplete) //pass uploader.pctComplete to a UI element to show progress
+              setPercent(uploader.pctComplete);
+              console.log(uploader.pctComplete); //pass uploader.pctComplete to a UI element to show progress
             })
           }
         }).finally(() => {
@@ -253,6 +258,7 @@ export default function UploadPodcastView() {
 
   return (
     <div className="text-zinc-400 h-full">
+      <UploadsList t={t} />
       <h1 className="text-2xl tracking-wider text-white">{t("uploadshow.title")}</h1>
       <div className="form-control">
         <form onSubmit={handleShowUpload}>

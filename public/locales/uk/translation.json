@@ -45,6 +45,7 @@
 	"uploadshow": {
 		"addpodcast": "Додай подкаст",
 		"title": "Додай нове шоу",
+		"uploadstitle": "завантажень",
 		"label": "Ви додасте епізоди до шоу далі.",
 		"name": "Назва шоу",
 		"description": "Опис шоу",

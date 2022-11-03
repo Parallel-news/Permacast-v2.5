@@ -16,7 +16,7 @@ import Home from './pages/home.jsx';
 import { fetchPodcastTitles, convertToEpisode, convertToPodcast, convertSearchItem, sortPodcasts, getPodcasts, getCreator } from './utils/podcast.js';
 import { appContext } from './utils/initStateGen.js';
 import { MESON_ENDPOINT } from './utils/arweave.js';
-
+import { RecoilRoot } from 'recoil';
 
 export default function App() {
   const { t } = useTranslation();
@@ -251,6 +251,7 @@ export default function App() {
   // re-write getAverageColor functions to use in-memory images (?)
 
   return (
+    <RecoilRoot>
     <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
       <appContext.Provider value={appState}>
         <Router>
@@ -319,5 +320,6 @@ export default function App() {
         </Router>
       </appContext.Provider>
     </div>
+    </RecoilRoot>
   );
 }

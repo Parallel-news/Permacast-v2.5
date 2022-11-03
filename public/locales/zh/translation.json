@@ -46,6 +46,7 @@
 	"uploadshow": {
 		"addpodcast": "添加播客",
 		"title": "添加新的节目",
+		"uploadstitle": "上传",
 		"label": "之后您可在节目中添加剧集",
 		"name": "节目名称",
 		"description": "节目描述",

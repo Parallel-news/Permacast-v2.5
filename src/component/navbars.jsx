@@ -10,6 +10,7 @@ import ArConnect from './arconnect';
 import { Searchbar } from '../pages/search';
 import { appContext } from '../utils/initStateGen';
 import LANGUAGES from '../utils/languages';
+import { UploadCount } from './upload_count';
 
 export function Sidenav() {
   const { t, i18n } = useTranslation();
@@ -52,8 +53,9 @@ export function Sidenav() {
             ))}
           </ul>
         </div>
-        <button className="w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200" onClick={() => {switchView("uploadpodcast")}} style={{color: cond("/uploadpodcast") ? 'white': ''}} disabled={cond("/uploadpodcast") ? true: false}>
+        <button className="w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200 relative" onClick={() => {switchView("uploadpodcast")}} style={{color: cond("/uploadpodcast") ? 'white': ''}} disabled={cond("/uploadpodcast") ? true: false}>
           <PlusIcon />
+          <UploadCount />
         </button>
         <a target="_blank" rel="noreferrer" href="https://t.me/permacast" className="w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200">
           <QuestionMarkCircleIcon />
