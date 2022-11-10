@@ -26,7 +26,6 @@ import {
 
 const ardb = new ArDB(arweave);
 
-
 export default function UploadEpisode({ podcast }) {
   const { t } = useTranslation()
   const appState = useContext(appContext);

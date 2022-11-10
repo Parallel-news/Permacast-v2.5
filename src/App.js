@@ -17,6 +17,7 @@ import { fetchPodcastTitles, convertToEpisode, convertToPodcast, convertSearchIt
 import { appContext } from './utils/initStateGen.js';
 import { MESON_ENDPOINT } from './utils/arweave.js';
 import { RecoilRoot } from 'recoil';
+import UploadVideoView from './pages/uploadVideoShow.jsx';
 
 export default function App() {
   const { t } = useTranslation();
@@ -287,6 +288,11 @@ export default function App() {
                     exact
                     path="/uploadpodcast"
                     component={({match}) => <UploadPodcastView />}
+                  />
+                  <Route
+                    exact
+                    path="/uploadvideoshow"
+                    component={({match}) => <UploadVideoView />}
                   />
                   {/* <Route
                     exact

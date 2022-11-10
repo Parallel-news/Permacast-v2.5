@@ -97,11 +97,11 @@ export function Sidenav() {
           className={`w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200 absolute top-0 transition-all duration-300 left-[-18px]
           ${!showUploadOptions ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'}`}
           onClick={() => {
-            // switchView("uploadvideo");
+            switchView("uploadvideoshow");
             setUploadOptions(false)
           }}
-          style={{ color: cond("/uploadpodcast") ? "white" : "" }}
-          disabled={cond("/uploadpodcast") ? true : false}
+          style={{ color: cond("/uploadvideoshow") ? "white" : "" }}
+          disabled={cond("/uploadvideoshow") ? true : false}
         >
           <VideoCameraIcon />
           <UploadCount />
