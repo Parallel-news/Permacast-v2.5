@@ -6,7 +6,7 @@ import { CONTRACT_SRC, FEE_MULTIPLIER, SHOW_UPLOAD_FEE, arweave, deployContract,
 import LANGUAGES from '../utils/languages';
 import { processFile, userHasEnoughAR, fetchWalletAddress, calculateStorageFee } from '../utils/shorthands';
 import ArConnect from '../component/arconnect';
-import { PhotoIcon } from '@heroicons/react/24/outline';
+import { PhotoIcon, VideoCameraIcon } from '@heroicons/react/24/outline';
 
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +25,7 @@ export default function UploadVideoView() {
   const [cost, setCost] = useState(0);
   const isLoggedIn = appState.user.address;
   let finalShowObj = {};
-  const podcastCoverRef = useRef()
+  const VSCoverRef = useRef()
   const { t, i18n } = useTranslation()
   const currentLanguage = LANGUAGES.find(language => i18n.language === language.code)
   const languages = currentLanguage?.languages || []
@@ -170,16 +170,16 @@ export default function UploadVideoView() {
     });
   }
 
-  const isPodcastCoverSquared = (event) => {
+  const isVSCoverSquared = (event) => {
     if (event.target.files.length !== 0) {
-      const podcastCoverImage = new Image()
-      podcastCoverImage.src = window.URL.createObjectURL(event.target.files[0])
-      podcastCoverImage.onload = () => {
+      const vsCoverImage = new Image()
+      vsCoverImage.src = window.URL.createObjectURL(event.target.files[0])
+      vsCoverImage.onload = () => {
         calculateStorageFee(event.target.files[0].size).then((fee) => {
           setCost(fee)
         })
-        if (podcastCoverImage.width !== podcastCoverImage.height) {
-          podcastCoverRef.current.value = ""
+        if (vsCoverImage.width !== vsCoverImage.height) {
+          VSCoverRef.current.value = ""
           Swal.fire({
             text: t("uploadshow.swal.reset.text"),
             icon: 'warning',
@@ -201,13 +201,13 @@ export default function UploadVideoView() {
     const showObj = {}
     const podcastName = event.target.podcastName.value
     const podcastDescription = event.target.podcastDescription.value
-    const podcastCover = event.target.podcastCover.files[0]
+    const vsCover = event.target.vsCover.files[0]
     const podcastAuthor = event.target.podcastAuthor.value
     const podcastEmail = event.target.podcastEmail.value
     const podcastCategory = event.target.podcastCategory.value
     const podcastExplicit = event.target.podcastExplicit.checked ? "yes" : "no"
     const podcastLanguage = event.target.podcastLanguage.value
-    const coverFileType = podcastCover.type
+    const coverFileType = vsCover.type
     // add attrs to input for SWC
     showObj.name = podcastName
     showObj.desc = podcastDescription
@@ -217,7 +217,7 @@ export default function UploadVideoView() {
     showObj.isExplicit = podcastExplicit
     showObj.lang = podcastLanguage
     // upload cover, send all to Arweave
-    let cover = await processFile(podcastCover)
+    let cover = await processFile(vsCover)
     let showObjSize = JSON.stringify(showObj).length
     let bytes = cover.byteLength + showObjSize + coverFileType.length
     setIsUploading(true)
@@ -253,19 +253,19 @@ export default function UploadVideoView() {
   }
 
   const handleChangeImage = e => {
-    isPodcastCoverSquared(e)
+    isVSCoverSquared(e)
   }
 
   return (
     <div className="text-zinc-400 h-full">
       <UploadsList t={t} />
-      <h1 className="text-2xl tracking-wider text-white">{t("uploadshow.title")}</h1>
+      <h1 className="text-2xl tracking-wider text-white">Upload New Video Show</h1>
       <div className="form-control">
         <form onSubmit={handleShowUpload}>
-          <input required type="file" accept="image/*" className="opacity-0 z-index-[-1] absolute cursor-pointer" ref={podcastCoverRef} onChange={e => handleChangeImage(e)} name="podcastCover" id="podcastCover" />
+          <input required type="file" accept="image/*" className="opacity-0 z-index-[-1] absolute cursor-pointer" ref={VSCoverRef} onChange={e => handleChangeImage(e)} name="vsCover" id="vsCover" />
           <div className="md:flex mt-7">
-            <label htmlFor="podcastCover" className="cursor-pointer transition duration-300 ease-in-out hover:text-white flex md:block md:h-full w-48">
-              {podcastCoverRef.current?.files?.[0] ? (
+            <label htmlFor="vsCover" className="cursor-pointer transition duration-300 ease-in-out hover:text-white flex md:block md:h-full w-48">
+              {VSCoverRef.current?.files?.[0] ? (
                 <div className="cursor-pointer bg-zinc-900 h-48 w-48 rounded-[20px] flex items-center justify-center">
                   <img src={img} className="h-48 w-48" />
                 </div>
@@ -274,11 +274,11 @@ export default function UploadVideoView() {
                   <div className="cursor-pointer outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                     <div className="flex justify-center">
                       <div className="cursor-pointer">
-                        <PhotoIcon className="h-11 w-11" />
+                        <VideoCameraIcon className="h-11 w-11" />
                       </div>
                     </div>
                     <div className="flex justify-center pt-2">
-                      {/* <div className="text-lg cursor-pointer tracking-wider">{t("uploadshow.image")}</div> */}
+                      <div className="text-lg cursor-pointer tracking-wider">Video Show</div>
                     </div>
                   </div>
                 </div>
