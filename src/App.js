@@ -18,6 +18,7 @@ import { appContext } from './utils/initStateGen.js';
 import { MESON_ENDPOINT } from './utils/arweave.js';
 import { RecoilRoot } from 'recoil';
 import UploadVideoView from './pages/uploadVideoShow.jsx';
+import VideoModal from './component/video_modal.jsx';
 
 export default function App() {
   const { t } = useTranslation();
@@ -30,7 +31,7 @@ export default function App() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [player, setPlayer] = useState();
   const [isPaused, setIsPaused] = useState();
-  const [currentEpisode, setCurrentEpisode] = useState({contentTx: 'null', pid: 'null', eid: 'null', number: '1'});
+  const [currentEpisode, setCurrentEpisode] = useState({ contentTx: 'null', pid: 'null', eid: 'null', number: '1' });
   const [allPodcasts, setAllPodcasts] = useState();
 
   const [themeColor, setThemeColor] = useState('rgb(255, 255, 0)');
@@ -38,7 +39,7 @@ export default function App() {
   const [backdropColor, setBackdropColor] = useState();
 
   const [address, setAddress] = useState();
-  const [ANSData, setANSData] = useState({address_color: "", currentLabel: "", avatar: ""});
+  const [ANSData, setANSData] = useState({ address_color: "", currentLabel: "", avatar: "" });
   const [walletConnected, setWalletConnected] = useState(false);
 
   // const [podcasts, setPodcasts] = useState();
@@ -76,8 +77,8 @@ export default function App() {
   const [titles, setTitles] = useState([]);
 
   const filters = [
-    {type: "episodescount", desc: t("sorting.episodescount")},
-    {type: "podcastsactivity", desc: t("sorting.podcastsactivity")}
+    { type: "episodescount", desc: t("sorting.episodescount") },
+    { type: "podcastsactivity", desc: t("sorting.podcastsactivity") }
   ];
   const filterTypes = filters.map(f => f.type)
 
@@ -113,7 +114,7 @@ export default function App() {
   // page load
   useEffect(() => {
     // TODO: generalize
-    if (!localStorage.getItem("checkupDate")) localStorage.setItem("checkupDate", new Date()); 
+    if (!localStorage.getItem("checkupDate")) localStorage.setItem("checkupDate", new Date());
     playEpisode(null);
     const fetchData = async () => {
       setLoading(true)
@@ -149,8 +150,8 @@ export default function App() {
     }
   }, [])
 
-  window.addEventListener('keydown', function(e) {
-    if(e.key == " " && e.target == document.body) {
+  window.addEventListener('keydown', function (e) {
+    if (e.key == " " && e.target == document.body) {
       e.preventDefault();
     }
   });
@@ -212,7 +213,7 @@ export default function App() {
     videoRef: videoRef,
   }
 
-  const playEpisode = (episode, number=1) => {
+  const playEpisode = (episode, number = 1) => {
     const player = new Shikwasa({
       container: () => document.querySelector('.podcast-player'),
       themeColor: 'yellow',
@@ -229,9 +230,9 @@ export default function App() {
 
     if (episode) {
       setPlayer(player)
-      setCurrentEpisode({...episode, number: number}) // add it to local storage for later
+      setCurrentEpisode({ ...episode, number: number }) // add it to local storage for later
       player.play()
-      window.scrollTo(0, document.body.scrollHeight)  
+      window.scrollTo(0, document.body.scrollHeight)
     }
   };
 
@@ -253,79 +254,85 @@ export default function App() {
 
   return (
     <RecoilRoot>
-    <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
-      <appContext.Provider value={appState}>
-        <Router>
-          <div className="flex h-screen">
-            <div className="fixed z-[60] bottom-0 w-full">
-              <div className={`relative podcast-player rounded-t-xl backdrop-blur-sm ${isFullscreen ? "bg-zinc-900/60" : "bg-zinc-900"}`}>
-                {/* {!loading && currentEpisode ? <Player episode={currentEpisode} />: <div>Loading...</div>} */}
-              </div>
-            </div>
-            <div className="hidden md:block z-50">
-              <div className="w-[100px] z-50 flex justify-center">
-                <Sidenav />
-              </div>
-            </div>
-            <div className="z-50">
-              <div className="absolute z-50 bottom-0 right-0" style={{display: queueVisible ? 'block': 'none'}}>
-                {!loading ? <EpisodeQueue />: <div className="h-full w-full animate-pulse bg-gray-900/30"></div>}
-              </div>
-            </div>
-            {isFullscreen && <Fullscreen episode={currentEpisode} number={currentEpisode?.number || 1} />}
-            <Background className="w-screen overflow-scroll">
-              <div className="ml-8 pr-8 pt-9">
-                <div className="mb-10">
-                  <NavBar />
+      <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
+        <appContext.Provider value={appState}>
+          <Router>
+            <div className="flex h-screen">
+              <div className="fixed z-[60] bottom-0 w-full">
+                <div className={`relative podcast-player rounded-t-xl backdrop-blur-sm ${isFullscreen ? "bg-zinc-900/60" : "bg-zinc-900"}`}>
+                  {/* {!loading && currentEpisode ? <Player episode={currentEpisode} />: <div>Loading...</div>} */}
                 </div>
-                <div className="w-full overflow-hidden">
-                  <Route
-                    exact
-                    path="/"
-                    component={({match}) => <Home recentlyAdded={recentlyAdded} featuredPodcasts={featuredPodcasts} />}
-                  />
-                  <Route
-                    exact
-                    path="/uploadpodcast"
-                    component={({match}) => <UploadPodcastView />}
-                  />
-                  <Route
-                    exact
-                    path="/uploadvideoshow"
-                    component={({match}) => <UploadVideoView />}
-                  />
-                  {/* <Route
+              </div>
+              <div className="hidden md:block z-50">
+                <div className="w-[100px] z-50 flex justify-center">
+                  <Sidenav />
+                </div>
+              </div>
+              
+              <div className="z-50">
+                <div className="absolute z-50 bottom-0 right-0" style={{ display: queueVisible ? 'block' : 'none' }}>
+                  {!loading ? <EpisodeQueue /> : <div className="h-full w-full animate-pulse bg-gray-900/30"></div>}
+                </div>
+              </div>
+              {isFullscreen && <Fullscreen episode={currentEpisode} number={currentEpisode?.number || 1} />}
+              <Background className="w-screen overflow-scroll">
+                <div className="ml-8 pr-8 pt-9">
+                  <div className="mb-10">
+                    <NavBar />
+                  </div>
+                  <div className="w-full overflow-hidden">
+                    <Route
+                      exact
+                      path="/"
+                      component={({ match }) => <Home recentlyAdded={recentlyAdded} featuredPodcasts={featuredPodcasts} />}
+                    />
+                    <Route
+                      exact
+                      path="/uploadpodcast"
+                      component={({ match }) => <UploadPodcastView />}
+                    />
+                    <Route
+                      exact
+                      path="/uploadvideoshow"
+                      component={({ match }) => <UploadVideoView />}
+                    />
+                    {/* <Route
                     exact
                     path="/following"
                     component={({match}) => <div className="text-3xl">Coming soon!</div>}
                   /> */}
-                  <Route
-                    exact
-                    path="/search"
-                    component={({match}) => <Search />}
-                  />
-                  <Route
-                    exact
-                    path="/podcast/:podcastId"
-                    render={({ match }) => <Podcast match={match} />}
-                  />
-                  <Route
-                    exact
-                    path="/podcast/:podcastId/:episodeNumber"
-                    render={({ match }) => <Episode match={match} />}
-                  />
-                  <Route
-                    exact
-                    path="/creator/:creatorAddress"
-                    render={({ match }) => <Creator match={match} />}
-                  />
+                    <Route
+                      exact
+                      path="/search"
+                      component={({ match }) => <Search />}
+                    />
+                    <Route
+                      exact
+                      path="/podcast/:podcastId"
+                      render={({ match }) => <Podcast match={match} />}
+                    />
+                    <Route
+                      exact
+                      path="/podcast/:podcastId/:episodeNumber"
+                      render={({ match }) => <Episode match={match} />}
+                    />
+                    <Route
+                      exact
+                      path="/creator/:creatorAddress"
+                      render={({ match }) => <Creator match={match} />}
+                    />
+                  </div>
                 </div>
+              </Background>
+
+              <div className={`w-full h-full fixed flex flex-col justify-center items-center bg-black/30 backdrop-blur-[4px] transition-all duration-200 z-[61]`}>
+                <VideoModal />
               </div>
-            </Background>
-          </div>
-        </Router>
-      </appContext.Provider>
-    </div>
+
+            </div>
+          </Router>
+        </appContext.Provider>
+      </div>
     </RecoilRoot>
   );
 }

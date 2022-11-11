@@ -43,7 +43,8 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "react-error-overlay": "6.0.9"
+    "react-error-overlay": "6.0.9",
+    "video.js": "^7.20.3"
   },
   "scripts": {
     "start": "concurrently \"npm run start:css\" \"react-scripts start\"",
