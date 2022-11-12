@@ -70,6 +70,7 @@ export default function App() {
 
   const [recentlyAdded, setRecentlyAdded] = useState([]);
   const [featuredPodcasts, setFeaturedPodcasts] = useState();
+  const [featuredVideoShows, setFeaturedVideoShows] = useState();
   const [searchInput, setSearchInput] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -132,6 +133,8 @@ export default function App() {
       // setCurrentEpisode(convertedEpisodes[0])
       setRecentlyAdded(convertedEpisodes)
       setFeaturedPodcasts(convertedPodcasts)
+      console.log(convertedPodcasts[0])
+      // setFeaturedVideoShows(convertedVideoShows)
       // setSortedPodcasts(sorted)
       // setPodcasts(sorted[filterTypes[selection]])
       setLoading(false)

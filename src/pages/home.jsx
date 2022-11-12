@@ -12,6 +12,29 @@ import {
 import { useRecoilState } from "recoil";
 import { showPodcasts } from '../atoms';
 
+// var featuredVideoShows = [{
+// contentTx: null,
+// contentUrl: null,
+// cover: "https://pz-prepnb.meson.network/06tCA0ZK6NwYktkPS0Y1mO8cRdoKTIDNanJhdYl0DBc",
+// createdAt: 1652871579,
+// creatorANS: "darwin.ar",
+// creatorAddress: "vZY2XY1RD9HIfWi8ift-1_DnHLDadZMWrufSh-_rKF0",
+// creatorEmail: "",
+// creatorName: "Darwin",
+// description: "Terra Public Radio and TerraSpaces was created to provide a free platform and service to help educate the public. TerraSpaces is an auditory time capsule of the early days of a world changing ecosystem.",
+// episodesCount: 452,
+// explicit: "no",
+// firstTenEpisodes: function firstTenEpisodes(),​
+// getEpisodes: function getEpisodes(start, end),
+// language: "en",
+// mediaType: null,
+// objectType: "podcast",
+// podcastId: "IKsjaUBJiKNDtLPIOyobkUM6iPtTKAK2bMDBu30KdmE",
+// rgb: "rgb(179,198,225)",
+// superAdmins: Array [ "vZY2XY1RD9HIfWi8ift-1_DnHLDadZMWrufSh-_rKF0", "kaYP9bJtpqON8Kyy3RbqnqdtDBDUsPTQTNUCvZtKiFI" ],
+// title: "TerraSpaces.org",
+// visible: true
+// }]
 
 export default function Home({recentlyAdded, featuredPodcasts}) {
   const appState = useContext(appContext)
@@ -49,7 +72,9 @@ export default function Home({recentlyAdded, featuredPodcasts}) {
         </div>
       </div>) : <Loading />}
       {!appState.loading ? (
-        <FeaturedPodcastsMobile podcasts={featuredPodcasts} />
+        showPods_ ?
+        <FeaturedPodcastsMobile podcasts={featuredPodcasts} /> :
+        <FeaturedPodcastsMobile podcasts={[featuredPodcasts[0]]} />
       ): <Loading />}
       <div className="my-9 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-x-12">
         <div className="xl:col-span-3 lg:col-span-2 md:col-span-1 mb-9">
