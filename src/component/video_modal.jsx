@@ -32,11 +32,11 @@ export default function VideoModal() {
         class="video-js"
         controls
         preload="auto"
-        poster="https://images.pexels.com/photos/8657665/pexels-photo-8657665.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+        poster={vs_[1].cover}
         data-setup="{}"
         className="rounded-[4px]"
       >
-        <source src="https://www.pexels.com/video/853921/download/?fps=25.0&h=720&w=1280" type="video/mp4"></source>
+        <source src={'https://mdn.github.io/learning-area/javascript/apis/video-audio/finished/video/sintel-short.webm'} type="video/webm"></source>
         <p class="vjs-no-js">
           To view this video please enable JavaScript, and consider upgrading to
           a web browser that
