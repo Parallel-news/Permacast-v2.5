@@ -325,9 +325,9 @@ export default function App() {
                 </div>
               </Background>
 
-              <div className={`w-full h-full fixed flex flex-col justify-center items-center bg-black/30 backdrop-blur-[4px] transition-all duration-200 z-[61]`}>
+              
                 <VideoModal />
-              </div>
+            
 
             </div>
           </Router>
