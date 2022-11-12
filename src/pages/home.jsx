@@ -5,6 +5,7 @@ import {
   Greeting,
   FeaturedEpisode,
   FeaturedPodcastsMobile,
+  FeaturedVideoShows,
   RecentlyAdded,
   FeaturedCreators
 } from '../component/featured';
@@ -74,7 +75,7 @@ export default function Home({recentlyAdded, featuredPodcasts}) {
       {!appState.loading ? (
         showPods_ ?
         <FeaturedPodcastsMobile podcasts={featuredPodcasts} /> :
-        <FeaturedPodcastsMobile podcasts={[featuredPodcasts[0]]} />
+        <FeaturedVideoShows videoShows={[{}]} />
       ): <Loading />}
       <div className="my-9 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-x-12">
         <div className="xl:col-span-3 lg:col-span-2 md:col-span-1 mb-9">

@@ -11,11 +11,11 @@ export default function VideoModal() {
   const [vs_, setVS_] = useRecoilState(videoSelection);
 
   return (
-    <div className={`w-full h-full fixed flex flex-col justify-center items-center bg-black/70 transition-all duration-200 z-[61] ${!(vs_[0].length == 0) ? 'backdrop-blur-none opacity-0 pointer-events-none' : 'backdrop-blur-[10px] opacity-100 pointer-events-auto'}`}>
+    <div className={`w-full h-full fixed flex flex-col justify-center items-center bg-black/70 transition-all duration-200 z-[61] ${vs_[0].length == 0 ? 'backdrop-blur-none opacity-0 pointer-events-none' : 'backdrop-blur-[10px] opacity-100 pointer-events-auto'}`}>
     <div className={`w-[700px] flex flex-col justify-center items-center`}>
       <div className={`w-[700px] h-[20px] flex flex-row`}>
       <div className={`w-[70px] h-[20px] flex flex-row justify-center items-center ml-auto text-white/70 cursor-pointer z-[63] bottom-[16px] relative`} onClick={() => {
-        setVS_(['2', {}])
+        setVS_(['', {}])
       }}>
       <FontAwesomeIcon icon={faArrowLeft} className={`relative bottom-[-0px] right-2`} onClick={() => {
         
