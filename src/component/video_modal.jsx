@@ -11,10 +11,10 @@ export default function VideoModal() {
   const [vs_, setVS_] = useRecoilState(videoSelection);
 
   return (
-    <div className={`w-full h-full fixed flex flex-col justify-center items-center bg-black/70 transition-all duration-200 z-[61] ${vs_[0].length == 0 ? 'backdrop-blur-none opacity-0 pointer-events-none' : 'backdrop-blur-[10px] opacity-100 pointer-events-auto'}`}>
+    <div className={`w-full h-full fixed flex flex-col justify-center items-center bg-black/70 transition-all duration-200 z-[61] ${!(vs_[0].length == 0) ? 'backdrop-blur-none opacity-0 pointer-events-none' : 'backdrop-blur-[10px] opacity-100 pointer-events-auto'}`}>
     <div className={`w-[700px] flex flex-col justify-center items-center`}>
       <div className={`w-[700px] h-[20px] flex flex-row`}>
-      <div className={`w-[70px] h-[20px] flex flex-row justify-center items-center ml-auto text-white/70 cursor-pointer bg-white/40 z-[63] bottom-[16px] relative`} onClick={() => {
+      <div className={`w-[70px] h-[20px] flex flex-row justify-center items-center ml-auto text-white/70 cursor-pointer z-[63] bottom-[16px] relative`} onClick={() => {
         setVS_(['2', {}])
       }}>
       <FontAwesomeIcon icon={faArrowLeft} className={`relative bottom-[-0px] right-2`} onClick={() => {
@@ -32,13 +32,11 @@ export default function VideoModal() {
         class="video-js"
         controls
         preload="auto"
-        poster="//vjs.zencdn.net/v/oceans.png"
+        poster="https://images.pexels.com/photos/8657665/pexels-photo-8657665.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
         data-setup="{}"
         className="rounded-[4px]"
       >
-        <source src="//vjs.zencdn.net/v/oceans.mp4" type="video/mp4"></source>
-        <source src="//vjs.zencdn.net/v/oceans.webm" type="video/webm"></source>
-        <source src="//vjs.zencdn.net/v/oceans.ogv" type="video/ogg"></source>
+        <source src="https://www.pexels.com/video/853921/download/?fps=25.0&h=720&w=1280" type="video/mp4"></source>
         <p class="vjs-no-js">
           To view this video please enable JavaScript, and consider upgrading to
           a web browser that
