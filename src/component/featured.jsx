@@ -118,50 +118,6 @@ export function FeaturedPodcast({podcast}) {
   )
 }
 
-export function FeaturedVS({videoShows_}) {
-  const appState = useContext(appContext);
-  const history = useHistory();
-  const { rgb, episodesCount, cover, podcastName, title, description, firstTenEpisodes, podcastId } = videoShows_;
-  const textColor = isTooLight(rgb) ? 'black' : 'white';
-  const { enqueuePodcast, play } = appState.queue;
-  const { t } = useTranslation();
-
-  // Recoil atom, stores focus data..
-  const [vs_, setVS_] = useRecoilState(videoSelection);
-  return (
-    <>
-      <div style={{backgroundColor: rgb, color: textColor}} className="mt-4 backdrop-blur-md rounded-3xl">
-        <div className="h-1/6 w-full px-5 pb-2 cursor-pointer">
-          <div onClick={() => {
-            setVS_(['Blurred Pool Flamingo', {link: 'https://www.pexels.com/video/853921/download/?fps=25.0&h=720&w=1280', title: 'Flamingo Stuff'}])
-          }}>
-            {/* <div className="pt-5 pb-3 text-xs">{episodesCount} {t("home.episodes")}</div> */}
-            <div className="w-full mb-7 max-w-[180px] overflow-x-hidden mx-auto">
-              <img className="object-cover aspect-square h-[180px]" src={'https://images.pexels.com/photos/8657665/pexels-photo-8657665.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'} alt={'Flamingo Stuff'} />
-            </div>
-          </div>
-          <div className="h-16 flex items-center">
-            <div className="z-10" onClick={() => {
-              // Promise.all(firstTenEpisodes(true)).then((episodes) => {
-              //   enqueuePodcast(episodes)
-              //   play(episodes[0]);
-              // });
-            }}>
-              <GlobalPlayButton size="20" innerColor={'pink'} outerColor={'white'} />
-            </div>
-            <div className="ml-3" onClick={() => {
-              setVS_(['Blurred Pool Flamingo', {link: 'https://www.pexels.com/video/853921/download/?fps=25.0&h=720&w=1280', title: 'Flamingo Stuff'}])
-            }}>
-              <div className="text-lg line-clamp-1 cursor-pointer">Flamingo Stuff</div>
-              <div className="text-xs max-w-[95%] line-clamp-2">Flamingos Unite..</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  )
-}
-
 export function FeaturedPodcasts({podcasts}) {
   return (
     <>

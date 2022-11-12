@@ -25,6 +25,9 @@ import { appContext } from '../utils/initStateGen.js';
 import { isDarkMode } from '../utils/theme.js';
 import { API_MAP } from '../utils/arweave.js';
 
+import { useRecoilState } from "recoil";
+import { showPodcasts } from '../atoms';
+
 
 export default function Podcast(props) {
   const { t } = useTranslation()
@@ -149,6 +152,7 @@ export default function Podcast(props) {
   }, [])
 
   const isOwner = (thePodcast?.creatorAddress === address || thePodcast?.superAdmins?.includes(address))
+  const [showPods_, setShowPods_] = useRecoilState(showPodcasts);
   return (
     <div className="flex flex-col items-center justify-center mb-20">
       {!loading && (
@@ -175,12 +179,56 @@ export default function Podcast(props) {
       )}
       <UploadEpisode podcast={thePodcast} />
       {loading && <h5 className="p-5">{t("loadingepisodes")}</h5>}
+
       <div className="w-full">
-        {podcastEpisodes && podcastEpisodes.map((e, i) => (
+      {!loading && <div className={`w-full h-[25px] flex flex-row ml-[-4px] relative bottom-8`}>
+        <div className={`h-full min-w-[30px] rounded-[4px] flex flex-row justify-center items-center mx-1 cursor-pointer ${showPods_ ? 'bg-white/80 hover:bg-white/80' : 'bg-white/50 hover:bg-white/80'} transition-all duration-200`} onClick={() => {
+          setShowPods_(true)
+        }}>
+          <p className={`m-2 text-black/80 font-black`}>Podcasts</p>
+        </div>
+
+        <div className={`h-full min-w-[30px] rounded-[4px] flex flex-row justify-center items-center mx-1 cursor-pointer ${!showPods_ ? 'bg-white/80 hover:bg-white/80' : 'bg-white/50 hover:bg-white/80'} transition-all duration-200`} onClick={() => {
+          setShowPods_(false)
+        }}>
+          <p className={`m-2 text-black/80 font-black`}>Videos</p>
+        </div>
+      </div>}
+        {
+        showPods_ ?
+        podcastEpisodes && podcastEpisodes.map((e, i) => (
           <div key={i} className="mb-6 p-2.5 border rounded-xl border-zinc-600">
             <Track episode={e} includeDescription={true} episodeNumber={i+1} />
           </div>
-        ))}
+        ))
+        :
+        <div className="mb-6 p-2.5 border rounded-xl border-zinc-600">
+            <div className="flex items-center justify-between">
+      <div className="flex items-center">
+        <img className="w-14 h-14 rounded-lg cursor-pointer" src={'cover'} alt={'title'} onClick={() => {}} />
+        <div className="ml-4 flex flex-col">
+          <div className="cursor-pointer line-clamp-1 pr-2 text-sm" onClick={() => {}}>{'title'}</div>
+          <div className="flex items-center">
+            {true && (
+              <>
+                <p className="text-zinc-400 text-[8px]">by</p>
+                
+              </>
+            )}
+            {/* {includeDescription && description && (
+              <div className="mx-1.5 w-full line-clamp-1 text-xs">
+                {description}
+              </div>
+            )} */}
+          </div>
+        </div>
+      </div>
+      {/* {includePlayButton && (
+        <PlayButton episode={episode} episodeNumber={episodeNumber} />
+      )} */}
+    </div>
+          </div>
+        }
         {!loading && podcastEpisodes.length === 0 && <h5 className="py-5">{t("noepisodes")}</h5>}
       </div>
       <div className="podcast-player sticky bottom-0 w-screen" />
