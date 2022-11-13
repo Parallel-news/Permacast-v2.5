@@ -4,6 +4,7 @@ import Shikwasa from '../shikwasa-src/main.js';
 import { useTranslation } from 'react-i18next';
 import { FaRss, FaRegGem } from 'react-icons/fa';
 import { PlusIcon, HeartIcon } from '@heroicons/react/24/solid';
+import { PlayIcon, PauseIcon } from '@heroicons/react/24/outline';
 import Track from '../component/track.jsx';
 import TipButton from '../component/reusables/tip.jsx';
 import UploadEpisode from './uploadEpisode.jsx';
@@ -19,6 +20,7 @@ import {
   getPodcastEpisodes,
   getPodcast
 } from '../utils/podcast.js';
+import { Cooyub } from '../component/reusables/icons';
 
 import { getButtonRGBs } from '../utils/ui.js';
 import { appContext } from '../utils/initStateGen.js';
@@ -26,7 +28,7 @@ import { isDarkMode } from '../utils/theme.js';
 import { API_MAP } from '../utils/arweave.js';
 
 import { useRecoilState } from "recoil";
-import { showPodcasts } from '../atoms';
+import { showPodcasts, videoSelection } from '../atoms';
 
 
 export default function Podcast(props) {
@@ -153,6 +155,7 @@ export default function Podcast(props) {
 
   const isOwner = (thePodcast?.creatorAddress === address || thePodcast?.superAdmins?.includes(address))
   const [showPods_, setShowPods_] = useRecoilState(showPodcasts);
+  const [vs_, setVS_] = useRecoilState(videoSelection);
   return (
     <div className="flex flex-col items-center justify-center mb-20">
       {!loading && (
@@ -204,28 +207,35 @@ export default function Podcast(props) {
         :
         <div className="mb-6 p-2.5 border rounded-xl border-zinc-600">
             <div className="flex items-center justify-between">
-      <div className="flex items-center">
-        <img className="w-14 h-14 rounded-lg cursor-pointer" src={'cover'} alt={'title'} onClick={() => {}} />
+      <div className="flex items-center relative">
+        <img className="h-14 w-14 rounded-lg cursor-pointer object-cover" src={'https://upload.wikimedia.org/wikipedia/commons/8/8f/Sintel_poster.jpg'} alt={'title'} onClick={() => {}} />
         <div className="ml-4 flex flex-col">
-          <div className="cursor-pointer line-clamp-1 pr-2 text-sm" onClick={() => {}}>{'title'}</div>
+          <div className="cursor-pointer line-clamp-1 pr-2 text-sm" onClick={() => {}}>{'Sintel by Blender'}</div>
           <div className="flex items-center">
             {true && (
               <>
                 <p className="text-zinc-400 text-[8px]">by</p>
-                
+                <div className="ml-1.5 p-1 bg-black/40 rounded-full cursor-pointer">
+                  <div className="flex items-center min-w-max">
+                    {/* <img className="h-6 w-6" src={cover} alt={title} /> */}
+                    <Cooyub className="rounded-full" svgStyle="h-2 w-2" rectStyle="h-6 w-6" fill={"#007600"} />
+                    <p className="text-[8px] pr-1 ml-1 " onClick={() => {}}>@LwaziNF</p>
+                  </div>
+                </div>
               </>
             )}
-            {/* {includeDescription && description && (
+            
               <div className="mx-1.5 w-full line-clamp-1 text-xs">
-                {description}
+              Sintel, code-named Project Durian during production, is a 2010 computer-animated fantasy short film. It was the third Blender "open movie". It was produced by Ton Roosendaal, chairman of the Blender Foundation, written by Esther Wouda, directed by Colin Levy, at the time an artist at Pixar and art direction by David Revoy, who is known for Pepper&Carrot an open source webcomic series.
               </div>
-            )} */}
           </div>
         </div>
       </div>
-      {/* {includePlayButton && (
-        <PlayButton episode={episode} episodeNumber={episodeNumber} />
-      )} */}
+      <div className="cursor-pointer rounded-[34px] p-3 bg-black/40" onClick={() => {
+        setVS_(['w', {}])
+      }}>
+      <PlayIcon className="w-4 h-4 fill-current" />
+    </div>
     </div>
           </div>
         }

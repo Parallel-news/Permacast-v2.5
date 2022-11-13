@@ -191,7 +191,7 @@ export function PlayerMobile({ episode }) {
       </div>
       <div className="flex items-center text-zinc-400">
          <GlobalPlayButton size="14" />
-         <Bars4Icon onClick={() => appState.queue.toggleVisibility()} width="28" height="28" />
+         {/* <Bars4Icon onClick={() => appState.queue.toggleVisibility()} width="28" height="28" /> */}
       </div>
     </div>
   )
@@ -218,7 +218,7 @@ export function Player({episode}) {
           <div className="flex items-center justify-center">
             <SpeakerWaveIcon width="28" height="28" />
             <ShareIcon width="28" height="28" />
-            <Bars4Icon onClick={() => appState.queue.toggleVisibility()} width="28" height="28" />
+            {/* <Bars4Icon onClick={() => appState.queue.toggleVisibility()} width="28" height="28" /> */}
             <ArrowsPointingOutIcon width="28" height="28" />
           </div>
         </div>

@@ -13,7 +13,7 @@ export default function Fullscreen({episode, number}) {
     <div className="absolute h-full w-full z-[20] bg-black" onClick={console.log/*`url("${episode?.cover}")`}}> */}>
       <img className="absolute h-full w-full blur-lg opacity-30 object-cover" src={episode?.cover} alt={episode?.title} />
       <div className="absolute mt-28 w-full text-center select-text">
-        {/* <img className="w-[25%] cursor-pointer mx-auto" src={episode?.cover} alt={episode?.title} /> */}
+        <img className="w-[25%] cursor-pointer mx-auto" src={episode?.cover} alt={episode?.title} />
         <div className="mt-5 text-3xl font-bold text-white">{t("fullscreen.episode")} {number}</div>
         <div className="mt-5 text-xl text-gray-300">{episode?.title}</div>
       </div>
