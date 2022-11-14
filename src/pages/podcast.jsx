@@ -214,7 +214,7 @@ export default function Podcast(props) {
       <div className="flex items-center relative">
         <img className="h-14 w-14 rounded-lg cursor-pointer object-cover" src={'https://upload.wikimedia.org/wikipedia/commons/8/8f/Sintel_poster.jpg'} alt={'title'} onClick={() => {}} />
         <div className="ml-4 flex flex-col">
-          <div className="cursor-pointer line-clamp-1 pr-2 text-sm" onClick={() => history.push('/shows')}>{'Sintel by Blender'}</div>
+          <div className="cursor-pointer line-clamp-1 pr-2 text-sm" onClick={() => history.push(`/podcast/1/shows`)}>{'Sintel by Blender'}</div>
           <div className="flex items-center">
             {true && (
               <>
