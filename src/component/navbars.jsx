@@ -80,45 +80,31 @@ export function Sidenav() {
             ))}
           </ul>
         </div>
-        <div className={`w-9 h-9 flex flex-row relative overflow-visible`}>
-        <button
-          className={`w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200 absolute top-0 transition-all duration-300 left-0
-          ${showUploadOptions ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'}`}
-          onClick={() => {
-            setUploadOptions(true)
-          }}
-          style={{ color: cond("/uploadpodcast") ? "white" : "" }}
-          disabled={cond("/uploadpodcast") ? true : false}
-        >
-          <PlusIcon />
+        <div className="dropdown dropdown-hover mb-[-6px]">
+          <button
+            tabIndex="0"
+            className="w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200"
+          >
+            <PlusIcon />
           <UploadCount />
-        </button>
-        <button
-          className={`w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200 absolute top-0 transition-all duration-300 left-[-18px]
-          ${!showUploadOptions ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'}`}
-          onClick={() => {
-            switchView("uploadvideoshow");
-            setUploadOptions(false)
-          }}
-          style={{ color: cond("/uploadvideoshow") ? "white" : "" }}
-          disabled={cond("/uploadvideoshow") ? true : false}
-        >
-          <VideoCameraIcon />
-          <UploadCount />
-        </button>
-        <button
-          className={`w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200 absolute top-0 transition-all duration-300 left-[18px]
-          ${!showUploadOptions ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'}`}
-          onClick={() => {
-            switchView("uploadpodcast");
-            setUploadOptions(false)
-          }}
-          style={{ color: cond("/uploadpodcast") ? "white" : "" }}
-          disabled={cond("/uploadpodcast") ? true : false}
-        >
-          <MicrophoneIcon />
-          <UploadCount />
-        </button>
+          </button>
+          <ul
+            tabIndex="0"
+            className="dropdown-content menu p-2 shadow bg-zinc-900 rounded-box w-32"
+          >
+              <li>
+                <span onClick={() => {
+                  switchView("uploadpodcast")
+                }}
+                >Audio</span>
+              </li>
+              <li>
+                <span onClick={() => {
+                  switchView("uploadvideoshow")
+              }}
+              >Video</span>
+              </li>
+          </ul>
         </div>
         <a
           target="_blank"

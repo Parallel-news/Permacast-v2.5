@@ -29,6 +29,7 @@ import { API_MAP } from '../utils/arweave.js';
 
 import { useRecoilState } from "recoil";
 import { showPodcasts, videoSelection } from '../atoms';
+import { useLocation, useHistory } from 'react-router-dom';
 
 
 export default function Podcast(props) {
@@ -156,6 +157,9 @@ export default function Podcast(props) {
   const isOwner = (thePodcast?.creatorAddress === address || thePodcast?.superAdmins?.includes(address))
   const [showPods_, setShowPods_] = useRecoilState(showPodcasts);
   const [vs_, setVS_] = useRecoilState(videoSelection);
+
+  const history = useHistory();
+  const location = useLocation();
   return (
     <div className="flex flex-col items-center justify-center mb-20">
       {!loading && (
@@ -188,7 +192,7 @@ export default function Podcast(props) {
         <div className={`h-full min-w-[30px] rounded-[4px] flex flex-row justify-center items-center mx-1 cursor-pointer ${showPods_ ? 'bg-white/80 hover:bg-white/80' : 'bg-white/50 hover:bg-white/80'} transition-all duration-200`} onClick={() => {
           setShowPods_(true)
         }}>
-          <p className={`m-2 text-black/80 font-black`}>Podcasts</p>
+          <p className={`m-2 text-black/80 font-black`}>Episodes</p>
         </div>
 
         <div className={`h-full min-w-[30px] rounded-[4px] flex flex-row justify-center items-center mx-1 cursor-pointer ${!showPods_ ? 'bg-white/80 hover:bg-white/80' : 'bg-white/50 hover:bg-white/80'} transition-all duration-200`} onClick={() => {
@@ -210,7 +214,7 @@ export default function Podcast(props) {
       <div className="flex items-center relative">
         <img className="h-14 w-14 rounded-lg cursor-pointer object-cover" src={'https://upload.wikimedia.org/wikipedia/commons/8/8f/Sintel_poster.jpg'} alt={'title'} onClick={() => {}} />
         <div className="ml-4 flex flex-col">
-          <div className="cursor-pointer line-clamp-1 pr-2 text-sm" onClick={() => {}}>{'Sintel by Blender'}</div>
+          <div className="cursor-pointer line-clamp-1 pr-2 text-sm" onClick={() => history.push('/shows')}>{'Sintel by Blender'}</div>
           <div className="flex items-center">
             {true && (
               <>
@@ -232,6 +236,7 @@ export default function Podcast(props) {
         </div>
       </div>
       <div className="cursor-pointer rounded-[34px] p-3 bg-black/40" onClick={() => {
+        // Video details are put here.. Links, Covers, Desc, Title, etc..
         setVS_(['w', {}])
       }}>
       <PlayIcon className="w-4 h-4 fill-current" />

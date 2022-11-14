@@ -11,6 +11,7 @@ import Fullscreen from './component/fullscreen.jsx';
 import UploadPodcastView from './pages/uploadPodcast.jsx';
 import Podcast from './pages/podcast.jsx';
 import Episode from './pages/episode.jsx';
+import Show from './pages/show.jsx';
 import Creator from './pages/creator.jsx';
 import Home from './pages/home.jsx';
 import { fetchPodcastTitles, convertToEpisode, convertToPodcast, convertSearchItem, sortPodcasts, getPodcasts, getCreator } from './utils/podcast.js';
@@ -271,6 +272,8 @@ export default function App() {
                   <Sidenav />
                 </div>
               </div>
+
+              <VideoModal />
               
               <div className="z-50">
                 <div className="absolute z-50 bottom-0 right-0" style={{ display: queueVisible ? 'block' : 'none' }}>
@@ -321,16 +324,17 @@ export default function App() {
                     />
                     <Route
                       exact
+                      path="/podcast/shows"
+                      render={({ match }) => <Show match={match} />}
+                    />
+                    <Route
+                      exact
                       path="/creator/:creatorAddress"
                       render={({ match }) => <Creator match={match} />}
                     />
                   </div>
                 </div>
-              </Background>
-
-              
-                <VideoModal />
-            
+              </Background>            
 
             </div>
           </Router>
