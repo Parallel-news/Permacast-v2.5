@@ -22,58 +22,58 @@ import { PlayIcon, PauseIcon } from "@heroicons/react/24/outline";
 import Track from "../component/track";
 
 export default function Episode(props) {
-  const { podcastId, episodeNumber } = props.match.params;
-  const { t } = useTranslation();
-  const history = useHistory();
-  const location = useLocation();
+  // const { podcastId, episodeNumber } = props.match.params;
+  // const { t } = useTranslation();
+  // const history = useHistory();
+  // const location = useLocation();
 
-  const appState = useContext(appContext);
+  // const appState = useContext(appContext);
 
-  const { currentPodcastColor, setCurrentPodcastColor } = appState.theme;
-  const { playEpisode, currentEpisode } = appState.queue;
-  const [copied, setCopied] = useState(false);
-  const [episode, setEpisode] = useState();
-  const [nextEpisode, setNextEpisode] = useState();
-  const [loading, setLoading] = useState(true);
-  const [rgb, setRgb] = useState({});
+  // const { currentPodcastColor, setCurrentPodcastColor } = appState.theme;
+  // const { playEpisode, currentEpisode } = appState.queue;
+  // const [copied, setCopied] = useState(false);
+  // const [episode, setEpisode] = useState();
+  // const [nextEpisode, setNextEpisode] = useState();
+  // const [loading, setLoading] = useState(true);
+  // const [rgb, setRgb] = useState({});
 
-  useEffect(() => {
+  // useEffect(() => {
     // setLoading(true);
-    async function fetchData() {
-      setEpisode(null);
-      setNextEpisode(null);
-      setRgb(null);
-      const podcasts = await getPodcasts();
-      const foundPodcast = podcasts?.find((p) => p.pid === podcastId);
-      if (!foundPodcast) return;
-      const episodes = foundPodcast?.episodes; //await getPodcastEpisodes(podcastId);
-      const foundEpisode = episodes?.find(
-        (episode, index) => index == episodeNumber - 1
-      );
-      if (!foundEpisode) return;
-      const foundNextEpisode = episodes?.find(
-        (episode, index) => index == episodeNumber
-      );
-      const convertedEpisode =
-        foundEpisode && (await convertToEpisode(foundPodcast, foundEpisode));
-      const convertedNextEpisode =
-        foundNextEpisode &&
-        (await convertToEpisode(foundPodcast, foundNextEpisode));
-      setEpisode(convertedEpisode);
-      setNextEpisode(convertedNextEpisode);
-      setRgb(getButtonRGBs(convertedEpisode?.rgb));
-      setCurrentPodcastColor(convertedEpisode?.rgb);
-    }
-    fetchData();
+    // async function fetchData() {
+    //   setEpisode(null);
+    //   setNextEpisode(null);
+    //   setRgb(null);
+    //   const podcasts = await getPodcasts();
+    //   const foundPodcast = podcasts?.find((p) => p.pid === podcastId);
+    //   if (!foundPodcast) return;
+    //   const episodes = foundPodcast?.episodes; //await getPodcastEpisodes(podcastId);
+    //   const foundEpisode = episodes?.find(
+    //     (episode, index) => index == episodeNumber - 1
+    //   );
+    //   if (!foundEpisode) return;
+    //   const foundNextEpisode = episodes?.find(
+    //     (episode, index) => index == episodeNumber
+    //   );
+    //   const convertedEpisode =
+    //     foundEpisode && (await convertToEpisode(foundPodcast, foundEpisode));
+    //   const convertedNextEpisode =
+    //     foundNextEpisode &&
+    //     (await convertToEpisode(foundPodcast, foundNextEpisode));
+    //   setEpisode(convertedEpisode);
+    //   setNextEpisode(convertedNextEpisode);
+    //   setRgb(getButtonRGBs(convertedEpisode?.rgb));
+    //   setCurrentPodcastColor(convertedEpisode?.rgb);
+    // }
+    // fetchData();
     // setLoading(false);
-  }, [episodeNumber]);
+  // }, [episodeNumber]);
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row items-center">
+      <div className="flex flex-col md:flex-row items-start">
         <img
           src={`https://via.placeholder.com/600`}
-          className="w-40 h-40 cursor-pointer"
+          className="w-20 h-20 cursor-pointer relative top-2 left-4"
           onClick={() => {}}
         />
         <div className="mt-8 md:mt-0 md:ml-8 flex flex-col">
@@ -81,14 +81,14 @@ export default function Episode(props) {
             Episode Title Here
           </div>
           <div className="flex flex-row justify-center md:justify-start items-center mt-2">
-            <div className="px-3 py-1 text-xs mr-2 rounded-full">
-              Episode Number
+            <div className="px-3 py-1 text-xs mr-2 rounded-full bg-black/30">
+              Episode 1
             </div>
-            <div className={"text-sm text-gray-200"}>Episode Date</div>
+            <div className={"text-sm text-gray-200"}>Sun May 20 2022</div>
           </div>
           <div className="mt-5 flex flex-col md:flex-row items-center gap-x-4">
             <div className="flex flex-row items-center gap-x-2">
-              <div className="-ml-1.5 rounded-full pointer scale-[0.8]">
+              <div className="-ml-1.5 rounded-full pointer w-8 h-8 flex flex-row items-center justify-center bg-black/30">
                 <PlayIcon className="w-4 h-4 fill-current" />
               </div>
               <TipButton />
@@ -101,7 +101,7 @@ export default function Episode(props) {
                 download
               >
                 <ArrowDownTrayIcon className="w-4 h-4 mr-2" />
-                Episode Link
+                Download
               </a>
               <button
                 className="flex items-center rounded-full btn btn-sm normal-case text-sm font-medium border-0"
@@ -113,7 +113,7 @@ export default function Episode(props) {
                 }}
               >
                 <ArrowUpOnSquareIcon className="w-4 h-4 mr-2" />
-                Copied
+                Share
               </button>
             </div>
           </div>

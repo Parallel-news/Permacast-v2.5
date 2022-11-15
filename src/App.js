@@ -324,7 +324,7 @@ export default function App() {
                     />
                     <Route
                       exact
-                      path="/podcast/:episodeNumber/shows"
+                      path="/shows"
                       render={({ match }) => <Show match={match} />}
                     />
                     <Route
