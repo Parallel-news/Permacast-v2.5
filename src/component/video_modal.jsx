@@ -10,12 +10,16 @@ export default function VideoModal() {
   // Recoil atom, stores focus data..
   const [vs_, setVS_] = useRecoilState(videoSelection);
 
+  let playerObj = document.getElementById('my-player')
+
   return (
     <div className={`w-full h-full fixed flex flex-col justify-center items-center bg-black/70 transition-all duration-200 z-[45] ${vs_[0].length == 0 ? 'backdrop-blur-none opacity-0 pointer-events-none' : 'backdrop-blur-[10px] opacity-100 pointer-events-auto'}`}>
     <div className={`w-[700px] flex flex-col justify-center items-center`}>
       <div className={`w-[700px] h-[20px] flex flex-row`}>
       <div className={`w-[70px] h-[20px] flex flex-row justify-center items-center ml-auto text-white/70 cursor-pointer bottom-[16px] relative`} onClick={() => {
         setVS_(['', {}])
+        playerObj.pause()
+        playerObj.currentTime = 0
       }}>
       <FontAwesomeIcon icon={faArrowLeft} className={`relative bottom-[-0px] right-2`} onClick={() => {
         
