@@ -22,61 +22,16 @@ import { PlayIcon, PauseIcon } from "@heroicons/react/24/outline";
 import Track from "../component/track";
 
 export default function Episode(props) {
-  // const { podcastId, episodeNumber } = props.match.params;
-  // const { t } = useTranslation();
-  // const history = useHistory();
-  // const location = useLocation();
-
-  // const appState = useContext(appContext);
-
-  // const { currentPodcastColor, setCurrentPodcastColor } = appState.theme;
-  // const { playEpisode, currentEpisode } = appState.queue;
-  // const [copied, setCopied] = useState(false);
-  // const [episode, setEpisode] = useState();
-  // const [nextEpisode, setNextEpisode] = useState();
-  // const [loading, setLoading] = useState(true);
-  // const [rgb, setRgb] = useState({});
-
-  // useEffect(() => {
-    // setLoading(true);
-    // async function fetchData() {
-    //   setEpisode(null);
-    //   setNextEpisode(null);
-    //   setRgb(null);
-    //   const podcasts = await getPodcasts();
-    //   const foundPodcast = podcasts?.find((p) => p.pid === podcastId);
-    //   if (!foundPodcast) return;
-    //   const episodes = foundPodcast?.episodes; //await getPodcastEpisodes(podcastId);
-    //   const foundEpisode = episodes?.find(
-    //     (episode, index) => index == episodeNumber - 1
-    //   );
-    //   if (!foundEpisode) return;
-    //   const foundNextEpisode = episodes?.find(
-    //     (episode, index) => index == episodeNumber
-    //   );
-    //   const convertedEpisode =
-    //     foundEpisode && (await convertToEpisode(foundPodcast, foundEpisode));
-    //   const convertedNextEpisode =
-    //     foundNextEpisode &&
-    //     (await convertToEpisode(foundPodcast, foundNextEpisode));
-    //   setEpisode(convertedEpisode);
-    //   setNextEpisode(convertedNextEpisode);
-    //   setRgb(getButtonRGBs(convertedEpisode?.rgb));
-    //   setCurrentPodcastColor(convertedEpisode?.rgb);
-    // }
-    // fetchData();
-    // setLoading(false);
-  // }, [episodeNumber]);
-
   return (
     <div>
-      <div className="flex flex-col md:flex-row items-start">
+      <div className="flex flex-col md:flex-row items-start pl-[100px]">
+        <div className={`w-[800px] h-[400px] bg-black/50 rounded-[2px]`}/>
         <img
           src={`https://via.placeholder.com/600`}
-          className="w-20 h-20 cursor-pointer relative top-2 left-4"
+          className="w-[110px] h-[110px] cursor-pointer relative top-[1px] left-4"
           onClick={() => {}}
         />
-        <div className="mt-8 md:mt-0 md:ml-8 flex flex-col">
+        <div className="mt-8 md:mt-[-2px] md:ml-8 flex flex-col">
           <div className="text-center md:text-left text-3xl font-medium text-gray-200 select-text">
             Episode Title Here
           </div>
@@ -86,7 +41,7 @@ export default function Episode(props) {
             </div>
             <div className={"text-sm text-gray-200"}>Sun May 20 2022</div>
           </div>
-          <div className="mt-5 flex flex-col md:flex-row items-center gap-x-4">
+          <div className="mt-3 flex flex-col md:flex-row items-center gap-x-4">
             <div className="flex flex-row items-center gap-x-2">
               <div className="-ml-1.5 rounded-full pointer w-8 h-8 flex flex-row items-center justify-center bg-black/30">
                 <PlayIcon className="w-4 h-4 fill-current" />
@@ -117,7 +72,9 @@ export default function Episode(props) {
               </button>
             </div>
           </div>
-        <div className="text-gray-400 mt-8 select-text">Description</div>
+          <div className="text-gray-400 mt-8 select-text w-[470px] relative right-[126px] bottom-3">
+            Aliquip proident deserunt duis anim in ullamco. Proident ea officia excepteur ea sunt magna. Elit nulla occaecat deserunt adipisicing sunt. Deserunt nulla consectetur aliquip Lorem reprehenderit in aliqua dolor mollit. Adipisicing esse ullamco sint sit proident. Aliqua commodo tempor aliqua commodo nisi id.
+          </div>
         </div>
       </div>
     </div>
