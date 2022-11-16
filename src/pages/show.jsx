@@ -23,6 +23,8 @@ import Track from "../component/track";
 import { useRecoilState } from "recoil";
 import { videoSelection } from "../atoms";
 
+import { Cooyub } from "../component/reusables/icons";
+
 export default function Episode(props) {
   const [vs_, setVS_] = useRecoilState(videoSelection);
   return (
@@ -58,7 +60,7 @@ export default function Episode(props) {
         </div>
         <img
           src={`https://upload.wikimedia.org/wikipedia/commons/8/8f/Sintel_poster.jpg`}
-          className="w-[110px] h-[110px] cursor-pointer relative top-[1px] left-4 object-cover"
+          className="w-[110px] h-[110px] cursor-pointer relative bottom-[0px] left-4 object-cover"
           onClick={() => {}}
         />
         <div className="mt-8 md:mt-[-2px] md:ml-8 flex flex-col">
@@ -104,26 +106,72 @@ export default function Episode(props) {
           </div>
           <div className="text-gray-400 mt-8 select-text w-[470px] relative right-[124px] bottom-3">
             Aliquip proident deserunt duis anim in ullamco. Proident ea officia
-            excepteur ea sunt magna. Elit nulla occaecat deserunt adipisicing
-            sunt. Deserunt nulla consectetur aliquip Lorem reprehenderit in
-            aliqua dolor mollit. Adipisicing esse ullamco sint sit proident.
-            Aliqua commodo tempor aliqua commodo nisi id.
+            excepteur ea sunt..
+          </div>
+        </div>
+        <div></div>
+      </div>
+      <div className="text-3xl text-gray-300 my-8">Next Show</div>
+
+      <div className="mb-6 p-2.5 border rounded-xl border-zinc-600">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center relative">
+            <img
+              className="h-14 w-14 rounded-lg cursor-pointer object-cover"
+              src={
+                "https://upload.wikimedia.org/wikipedia/commons/8/8f/Sintel_poster.jpg"
+              }
+              alt={"title"}
+              onClick={() => {}}
+            />
+            <div className="ml-4 flex flex-col">
+              <div
+                className="cursor-pointer line-clamp-1 pr-2 text-sm"
+                onClick={() => {}}
+              >
+                {"Sintel by Blender"}
+              </div>
+              <div className="flex items-center">
+                {true && (
+                  <>
+                    <p className="text-zinc-400 text-[8px]">by</p>
+                    <div className="ml-1.5 p-1 bg-black/40 rounded-full cursor-pointer">
+                      <div className="flex items-center min-w-max">
+                        {/* <img className="h-6 w-6" src={cover} alt={title} /> */}
+                        <Cooyub
+                          className="rounded-full"
+                          svgStyle="h-2 w-2"
+                          rectStyle="h-6 w-6"
+                          fill={"#007600"}
+                        />
+                        <p className="text-[8px] pr-1 ml-1 " onClick={() => {}}>
+                          @LwaziNF
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                <div className="mx-1.5 w-full line-clamp-1 text-xs">
+                  Sintel, code-named Project Durian during production, is a 2010
+                  computer-animated fantasy short film. It was the third Blender
+                  "open movie". It was produced by Ton Roosendaal, chairman of
+                  the Blender Foundation, written by Esther Wouda, directed by
+                  Colin Levy, at the time an artist at Pixar and art direction
+                  by David Revoy, who is known for Pepper&Carrot an open source
+                  webcomic series.
+                </div>
+              </div>
+            </div>
           </div>
           <div
-            className={`w-[470px] h-[30px] relative right-[130px] bottom-[4px] text-white/50 flex flex-col pl-2 justify-center items-center`}
+            className="cursor-pointer rounded-[34px] p-3 bg-black/40"
+            onClick={() => {
+              // Video details are put here.. Links, Covers, Desc, Title, etc..
+              setVS_(["w", {}]);
+            }}
           >
-          <div className={`w-[350px] h-[1px] bg-white/30 relative bottom-1`}/>
-            What's next?!
-          </div>
-          <div
-            className={`w-[470px] h-[110px] relative right-[130px] bottom-[2.5px] flex flex-row justify-center items-center`}
-          >
-            <div
-              className={`w-full h-full bg-black/50 rounded-[4px] m-[4px]`}
-            />
-            <div
-              className={`w-full h-full bg-black/50 rounded-[4px] m-[4px]`}
-            />
+            <PlayIcon className="w-4 h-4 fill-current" />
           </div>
         </div>
       </div>
