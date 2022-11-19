@@ -47,27 +47,11 @@ export default function Creator (creatorAddress) {
           <div className="w-full h-16 rounded-full animate-pulse bg-gray-300/30 mt-8"></div>
           <div className="w-full h-16 rounded-full animate-pulse bg-gray-300/30 mt-8"></div>
         </>
-      ): (
+      ):(
         <>
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="md:ml-8 flex items-center flex-col md:flex-row">
-              <div className="mx-auto md:mx-0">
-                {creator?.avatar ? 
-                  <img src={"https://arweave.net/" + creator?.avatar} className="w-[120px] h-[120px] rounded-full object-cover" alt="" />
-                  :
-                  <div className={`w-[120px] h-[120px] rounded-full`} style={{backgroundColor: creator?.address_color || "#E5E7EB" }}></div>
-                }
-              </div>
-              <div className="md:ml-8 flex flex-col">
-                <div className="text-xl font-medium text-gray-100 select-text mt-8 md:mt-0">
-                  {creator?.nickname || creator?.user || t("creator.address") + " " + address?.slice(0, 4) + "..." + address?.slice(-4) + " " + t("creator.notfound")}
-                </div>
-                {creator?.currentLabel && 
-                  <div className="text-xl font-medium text-gray-400 select-text">
-                    @{creator?.currentLabel}.ar
-                  </div>
-                }
-              </div>
+              
             </div>
             <div className="flex items-center gap-x-7 md:mr-8">
               {creator?.currentLabel && (
@@ -80,18 +64,30 @@ export default function Creator (creatorAddress) {
           </div>
           <div className="mt-8">
             <div className="text-xl font-bold text-white mb-8">{t("creator.podcasts")}</div>
-            {podcasts.map((podcast, index) => (
-              <div key={index} className="mb-6 p-2.5 border rounded-xl border-zinc-600">
-                <Track episode={podcast} />
-              </div>
-            ))}
-            {podcasts.length === 0 && (
-              <div className="text-xl text-center font-bold text-white mb-8">{t("creator.nopodcasts")}</div>
-            )}
+            <EpisodeModule podcasts={podcasts} />
             <div className="py-12"></div>
           </div>
         </>
       )}
     </div>
+  )
+}
+
+// // // // // // Auxiliary Functions
+
+// Podcast List module 👇👇👇
+const EpisodeModule = ({podcasts}) => {
+  const { t } = useTranslation();
+  return (
+    <>
+    {podcasts.map((podcast, index) => (
+      <div key={index} className="mb-6 p-2.5 border rounded-xl border-zinc-600">
+        <Track episode={podcast} />
+      </div>
+    ))}
+    {podcasts.length === 0 && (
+      <div className="text-xl text-center font-bold text-white mb-8">{t("creator.nopodcasts")}</div>
+    )}
+    </>
   )
 }
