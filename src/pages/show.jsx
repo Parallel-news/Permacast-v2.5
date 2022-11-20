@@ -12,7 +12,7 @@ import { useEffect } from "react";
 
 export default function Episode(props) {
   return (
-    <div>
+    <div className={`mb-[20px]`}>
       <div className="flex flex-col md:flex-row items-start pl-[100px]">
         <VideoPlayer />
         <VideoDetails />
