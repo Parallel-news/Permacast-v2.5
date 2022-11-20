@@ -8,6 +8,7 @@ import { PlayIcon, PauseIcon } from "@heroicons/react/24/outline";
 import Track from "../component/track.jsx";
 import TipButton from "../component/reusables/tip.jsx";
 import UploadEpisode from "./uploadEpisode.jsx";
+import UploadVideo from "./uploadVideo.jsx";
 import {
   arweave,
   smartweave,
@@ -47,6 +48,8 @@ export default function Podcast(props) {
   const [podcastEpisodes, setPodcastEpisodes] = useState([]);
   const [showEpisodeForm, setShowEpisodeForm] = useState(false);
   const { setCurrentPodcastColor, currentPodcastColor } = appState.theme;
+
+  const { isOpen, setIsOpen } = appState.globalModal;
 
   const loadEpisodes = async (podcast, episodes) => {
     console.log(podcast);
@@ -202,7 +205,13 @@ export default function Podcast(props) {
   const [showPods_, setShowPods_] = useRecoilState(showPodcasts);
   return (
     <div className="flex flex-col items-center justify-center mb-20">
-      <PodcastHeader thePodcast={thePodcast} isOwner={isOwner} loading={loading} currentPodcastColor={currentPodcastColor}/>
+      <PodcastHeader
+        thePodcast={thePodcast}
+        isOwner={isOwner}
+        loading={loading}
+        currentPodcastColor={currentPodcastColor}
+      />
+      {/* <UploadVideo podcast={thePodcast} /> */}
       <UploadEpisode podcast={thePodcast} />
       {loading && <h5 className="p-5">{t("loadingepisodes")}</h5>}
 
@@ -255,6 +264,12 @@ export default function Podcast(props) {
         ) : (
           <VideoItem />
         )}
+        {/* <div
+          className={`bg-white/50 rounded-[6px] w-[200px] h-[80px] cursor-pointer`}
+          onClick={() => {
+            setIsOpen(true);
+          }}
+        /> */}
         {!loading && podcastEpisodes.length === 0 && (
           <h5 className="py-5">{t("noepisodes")}</h5>
         )}
@@ -289,8 +304,13 @@ export default function Podcast(props) {
 
 // // // // // // Auxiliary Functions
 
-// Podcast Header element 👇👇👇 
-const PodcastHeader = ({thePodcast, isOwner, loading, currentPodcastColor}) => {
+// Podcast Header element 👇👇👇
+const PodcastHeader = ({
+  thePodcast,
+  isOwner,
+  loading,
+  currentPodcastColor,
+}) => {
   const { t } = useTranslation();
   const appState = useContext(appContext);
   const { setIsOpen } = appState.globalModal;
@@ -345,10 +365,10 @@ const PodcastHeader = ({thePodcast, isOwner, loading, currentPodcastColor}) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-// Video menu items, on selection this element changes the video (removed from 'Next Episode' when selected) 👇👇👇 
+// Video menu items, on selection this element changes the video (removed from 'Next Episode' when selected) 👇👇👇
 const VideoItem = (props) => {
   const [vs_, setVS_] = useRecoilState(videoSelection);
 
@@ -419,5 +439,5 @@ const VideoItem = (props) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
