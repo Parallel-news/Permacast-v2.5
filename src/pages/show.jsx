@@ -10,7 +10,7 @@ import { videoSelection } from "../atoms";
 import { Cooyub } from "../component/reusables/icons";
 import { useEffect } from "react";
 
-export default function Episode(props) {
+export default function Episode() {
   return (
     <div className={`mb-[20px]`}>
       <div className="flex flex-col md:flex-row items-start pl-[100px]">
@@ -31,6 +31,11 @@ const VideoPlayer = (props) => {
   useEffect(() => {
     let playerObj_ = document.getElementById('main-player')
     playerObj_.pause()
+    if(playerObj_.src !== 'https://hci-itil.com/Videos/mp4movies/mp4-864x480/2022%20Easter%20Greeting.mp4'){
+      playerObj_.src = 'https://hci-itil.com/Videos/mp4movies/mp4-864x480/2022%20Easter%20Greeting.mp4'
+    }else{
+      playerObj_.src = "https://mdn.github.io/learning-area/javascript/apis/video-audio/finished/video/sintel-short.webm"
+    }
   }, [vs_[1]])
   return (
     <div className="w-[800px] h-[400px] bg-black rounded-[2px]">
@@ -47,7 +52,7 @@ const VideoPlayer = (props) => {
           src={
             "https://mdn.github.io/learning-area/javascript/apis/video-audio/finished/video/sintel-short.webm"
           }
-          type="video/webm"
+          type="video/*"
         ></source>
         <p class="vjs-no-js">
           To view this video please enable JavaScript, and consider upgrading to
