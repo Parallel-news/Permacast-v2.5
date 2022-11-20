@@ -8,6 +8,7 @@ import { PlayIcon } from "@heroicons/react/24/outline";
 import { useRecoilState } from "recoil";
 import { videoSelection } from "../atoms";
 import { Cooyub } from "../component/reusables/icons";
+import { useEffect } from "react";
 
 export default function Episode(props) {
   return (
@@ -27,10 +28,14 @@ export default function Episode(props) {
 // Video player module 👇👇👇 
 const VideoPlayer = (props) => {
   const [vs_, setVS_] = useRecoilState(videoSelection);
+  useEffect(() => {
+    let playerObj_ = document.getElementById('main-player')
+    playerObj_.pause()
+  }, [vs_[1]])
   return (
     <div className="w-[800px] h-[400px] bg-black rounded-[2px]">
       <video
-        id="my-player"
+        id="main-player"
         class="video-js"
         controls
         preload="auto"
