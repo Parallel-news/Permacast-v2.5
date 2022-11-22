@@ -197,7 +197,13 @@ export default function Podcast(props) {
       setLoading(false);
     }
     fetchData();
+
+    let playerObj_ = document.getElementById('hidden-player')
+    playerObj_.pause()
+      playerObj_.src = 'https://hci-itil.com/Videos/mp4movies/mp4-864x480/2022%20Easter%20Greeting.mp4'
   }, []);
+
+  let playerObj_ = document.getElementById('hidden-player')
 
   const isOwner =
     thePodcast?.creatorAddress === address ||
@@ -205,6 +211,32 @@ export default function Podcast(props) {
   const [showPods_, setShowPods_] = useRecoilState(showPodcasts);
   return (
     <div className="flex flex-col items-center justify-center mb-20">
+      <div className={`w-full mb-6 bg-black rounded-[2px] transition-all ${showPods_ ? 'opacity-0 h-[0px] duration-200' : 'opacity-100 h-[607.50px] duration-200'}`}>
+        <video
+          id="hidden-player"
+          class="video-js"
+          controls
+          preload="auto"
+          poster={'https://upload.wikimedia.org/wikipedia/commons/8/8f/Sintel_poster.jpg'}
+          data-setup="{}"
+          className="rounded-[4px] w-full h-full"
+        >
+          <source
+            src={
+              "https://mdn.github.io/learning-area/javascript/apis/video-audio/finished/video/sintel-short.webm"
+            }
+            type="video/*"
+          ></source>
+          <p class="vjs-no-js">
+            To view this video please enable JavaScript, and consider upgrading
+            to a web browser that
+            <a href="https://videojs.com/html5-video-support/" target="_blank">
+              supports HTML5 video
+            </a>
+          </p>
+        </video>
+      </div>
+
       <PodcastHeader
         thePodcast={thePodcast}
         isOwner={isOwner}
@@ -228,9 +260,12 @@ export default function Podcast(props) {
               } transition-all duration-200`}
               onClick={() => {
                 setShowPods_(true);
+                playerObj_.pause()
               }}
             >
-              <p className={`m-2 text-black/80 font-medium text-[13px]`}>Episodes</p>
+              <p className={`m-2 text-black/80 font-medium text-[13px]`}>
+                Episodes
+              </p>
             </div>
 
             <div
@@ -243,7 +278,9 @@ export default function Podcast(props) {
                 setShowPods_(false);
               }}
             >
-              <p className={`m-2 text-black/80 font-medium text-[13px]`}>Videos</p>
+              <p className={`m-2 text-black/80 font-medium text-[13px]`}>
+                Videos
+              </p>
             </div>
           </div>
         )}
@@ -274,6 +311,7 @@ export default function Podcast(props) {
           <h5 className="py-5">{t("noepisodes")}</h5>
         )}
       </div>
+      
       <div className="podcast-player sticky bottom-0 w-screen" />
     </div>
   );

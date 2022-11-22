@@ -31,7 +31,7 @@ const VideoPlayer = (props) => {
   useEffect(() => {
     let playerObj_ = document.getElementById('main-player')
     playerObj_.pause()
-    if(playerObj_.src !== 'https://hci-itil.com/Videos/mp4movies/mp4-864x480/2022%20Easter%20Greeting.mp4'){
+    if(!playerObj_.src !== 'https://hci-itil.com/Videos/mp4movies/mp4-864x480/2022%20Easter%20Greeting.mp4'){
       playerObj_.src = 'https://hci-itil.com/Videos/mp4movies/mp4-864x480/2022%20Easter%20Greeting.mp4'
     }else{
       playerObj_.src = "https://mdn.github.io/learning-area/javascript/apis/video-audio/finished/video/sintel-short.webm"
