@@ -40,7 +40,6 @@ export default function VideoModal() {
           </div>
         </div>
         <div className="text-zinc-400 w-[700px] sm:w-full flex flex-col justify-center items-center rounded-[4px] relative overflow-hidden">
-          {vs_[0].length > 0 ??
             <video
             id="my-player"
             class="video-js"
@@ -66,7 +65,7 @@ export default function VideoModal() {
                 supports HTML5 video
               </a>
             </p>
-          </video>}
+          </video>
         </div>
       </div>
     </div>

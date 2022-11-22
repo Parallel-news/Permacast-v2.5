@@ -218,32 +218,32 @@ export default function Podcast(props) {
       <div className="w-full">
         {!loading && (
           <div
-            className={`w-full h-[25px] flex flex-row ml-[-4px] relative bottom-8`}
+            className={`w-full h-[25px] flex flex-row ml-[6px] relative bottom-8`}
           >
             <div
-              className={`h-full min-w-[30px] rounded-[4px] flex flex-row justify-center items-center mx-1 cursor-pointer ${
+              className={`h-full min-w-[30px] rounded-[20px] flex flex-row justify-center items-center mx-1 cursor-pointer ${
                 showPods_
-                  ? "bg-white/80 hover:bg-white/80"
+                  ? "bg-white/70 hover:bg-white/80"
                   : "bg-white/50 hover:bg-white/80"
               } transition-all duration-200`}
               onClick={() => {
                 setShowPods_(true);
               }}
             >
-              <p className={`m-2 text-black/80 font-black`}>Episodes</p>
+              <p className={`m-2 text-black/80 font-medium text-[13px]`}>Episodes</p>
             </div>
 
             <div
-              className={`h-full min-w-[30px] rounded-[4px] flex flex-row justify-center items-center mx-1 cursor-pointer ${
+              className={`h-full min-w-[30px] rounded-[20px] flex flex-row justify-center items-center mx-1 cursor-pointer ${
                 !showPods_
-                  ? "bg-white/80 hover:bg-white/80"
+                  ? "bg-white/70 hover:bg-white/80"
                   : "bg-white/50 hover:bg-white/80"
               } transition-all duration-200`}
               onClick={() => {
                 setShowPods_(false);
               }}
             >
-              <p className={`m-2 text-black/80 font-black`}>Videos</p>
+              <p className={`m-2 text-black/80 font-medium text-[13px]`}>Videos</p>
             </div>
           </div>
         )}
