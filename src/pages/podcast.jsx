@@ -46,6 +46,16 @@ export default function Podcast(props) {
   const [thePodcast, setThePodcast] = useState(null);
   const [podcastHtml, setPodcastHtml] = useState(null);
   const [podcastEpisodes, setPodcastEpisodes] = useState([]);
+  const [videoShows, setVideoShows] = useState([
+    {
+      title: "Sintel By Blender",
+      src: "https://mdn.github.io/learning-area/javascript/apis/video-audio/finished/video/sintel-short.webm",
+      author: "@LwaziNF",
+      poster:
+        "https://upload.wikimedia.org/wikipedia/commons/8/8f/Sintel_poster.jpg",
+      desc: 'Sintel, code-named Project Durian during production, is a 2010 computer-animated fantasy short film. It was the third Blender "open movie". It was produced by Ton Roosendaal, chairman of the Blender Foundation, written by Esther Wouda, directed by Colin Levy, at the time an artist at Pixar and art direction by David Revoy, who is known for Pepper&Carrot an open source webcomic series.',
+    },
+  ]);
   const [showEpisodeForm, setShowEpisodeForm] = useState(false);
   const { setCurrentPodcastColor, currentPodcastColor } = appState.theme;
 
@@ -198,12 +208,15 @@ export default function Podcast(props) {
     }
     fetchData();
 
-    let playerObj_ = document.getElementById('hidden-player')
-    playerObj_.pause()
-      playerObj_.src = 'https://hci-itil.com/Videos/mp4movies/mp4-864x480/2022%20Easter%20Greeting.mp4'
+    let playerObj_ = document.getElementById("hidden-player");
+    playerObj_.pause();
+    playerObj_.src =
+      "https://hci-itil.com/Videos/mp4movies/mp4-864x480/2022%20Easter%20Greeting.mp4";
   }, []);
 
-  let playerObj_ = document.getElementById('hidden-player')
+  let playerObj_ = document.getElementById("hidden-player");
+  const history = useHistory();
+  const location = useLocation();
 
   const isOwner =
     thePodcast?.creatorAddress === address ||
@@ -211,13 +224,21 @@ export default function Podcast(props) {
   const [showPods_, setShowPods_] = useRecoilState(showPodcasts);
   return (
     <div className="flex flex-col items-center justify-center mb-20">
-      <div className={`w-full mb-6 bg-black rounded-[2px] transition-all ${showPods_ ? 'opacity-0 h-[0px] duration-200' : 'opacity-100 h-[607.50px] duration-200'}`}>
+      <div
+        className={`w-full mb-6 bg-black rounded-[2px] transition-all ${
+          showPods_
+            ? "opacity-0 h-[0px] duration-200"
+            : "opacity-100 h-[607.50px] duration-200"
+        }`}
+      >
         <video
           id="hidden-player"
           class="video-js"
           controls
           preload="auto"
-          poster={'https://upload.wikimedia.org/wikipedia/commons/8/8f/Sintel_poster.jpg'}
+          poster={
+            "https://upload.wikimedia.org/wikipedia/commons/8/8f/Sintel_poster.jpg"
+          }
           data-setup="{}"
           className="rounded-[4px] w-full h-full"
         >
@@ -260,7 +281,7 @@ export default function Podcast(props) {
               } transition-all duration-200`}
               onClick={() => {
                 setShowPods_(true);
-                playerObj_.pause()
+                playerObj_.pause();
               }}
             >
               <p className={`m-2 text-black/80 font-medium text-[13px]`}>
@@ -284,34 +305,89 @@ export default function Podcast(props) {
             </div>
           </div>
         )}
-        {showPods_ ? (
-          podcastEpisodes &&
-          podcastEpisodes.map((e, i) => (
-            <div
-              key={i}
-              className="mb-6 p-2.5 border rounded-xl border-zinc-600"
-            >
-              <Track
-                episode={e}
-                includeDescription={true}
-                episodeNumber={i + 1}
-              />
-            </div>
-          ))
-        ) : (
-          <VideoItem />
-        )}
-        {/* <div
-          className={`bg-white/50 rounded-[6px] w-[200px] h-[80px] cursor-pointer`}
-          onClick={() => {
-            setIsOpen(true);
-          }}
-        /> */}
+        {showPods_
+          ? podcastEpisodes &&
+            podcastEpisodes.map((e, i) => (
+              <div
+                key={i}
+                className="mb-6 p-2.5 border rounded-xl border-zinc-600"
+              >
+                <Track
+                  episode={e}
+                  includeDescription={true}
+                  episodeNumber={i + 1}
+                />
+              </div>
+            ))
+          : videoShows.map((e, i) => {
+              return (
+              <div className={``}>
+                <div className="mb-6 p-2.5 border rounded-xl border-zinc-600">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center relative">
+                      <img
+                        className="h-14 w-14 rounded-lg cursor-pointer object-cover"
+                        src={e.poster}
+                        alt={"title"}
+                        onClick={() => {}}
+                      />
+                      <div className="ml-4 flex flex-col">
+                        <div
+                          className="cursor-pointer line-clamp-1 pr-2 text-sm"
+                          onClick={() => history.push(`/shows`)}
+                        >
+                          {e.title}
+                        </div>
+                        <div className="flex items-center">
+                          {true && (
+                            <>
+                              <p className="text-zinc-400 text-[8px]">by</p>
+                              <div className="ml-1.5 p-1 bg-black/40 rounded-full cursor-pointer">
+                                <div className="flex items-center min-w-max">
+                                  {/* <img className="h-6 w-6" src={cover} alt={title} /> */}
+                                  <Cooyub
+                                    className="rounded-full"
+                                    svgStyle="h-2 w-2"
+                                    rectStyle="h-6 w-6"
+                                    fill={"#007600"}
+                                  />
+                                  <p
+                                    className="text-[8px] pr-1 ml-1 "
+                                    onClick={() => {}}
+                                  >
+                                    {e.author}
+                                  </p>
+                                </div>
+                              </div>
+                            </>
+                          )}
+
+                          <div className="mx-1.5 w-full line-clamp-1 text-xs">
+                            {e.desc}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      className="cursor-pointer rounded-[34px] p-3 bg-black/40"
+                      onClick={() => {
+                        // Minor video control..
+                        playerObj_.src = e.src;
+                        playerObj_.play();
+                      }}
+                    >
+                      <PlayIcon className="w-4 h-4 fill-current" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              )
+            })}
         {!loading && podcastEpisodes.length === 0 && (
           <h5 className="py-5">{t("noepisodes")}</h5>
         )}
       </div>
-      
+
       <div className="podcast-player sticky bottom-0 w-screen" />
     </div>
   );
@@ -402,80 +478,6 @@ const PodcastHeader = ({
           </div>
         </div>
       )}
-    </div>
-  );
-};
-
-// Video menu items, on selection this element changes the video (removed from 'Next Episode' when selected) 👇👇👇
-const VideoItem = (props) => {
-  const [vs_, setVS_] = useRecoilState(videoSelection);
-
-  const history = useHistory();
-  const location = useLocation();
-  return (
-    <div className={``}>
-      <div className="mb-6 p-2.5 border rounded-xl border-zinc-600">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center relative">
-            <img
-              className="h-14 w-14 rounded-lg cursor-pointer object-cover"
-              src={
-                "https://upload.wikimedia.org/wikipedia/commons/8/8f/Sintel_poster.jpg"
-              }
-              alt={"title"}
-              onClick={() => {}}
-            />
-            <div className="ml-4 flex flex-col">
-              <div
-                className="cursor-pointer line-clamp-1 pr-2 text-sm"
-                onClick={() => history.push(`/shows`)}
-              >
-                {"Sintel by Blender"}
-              </div>
-              <div className="flex items-center">
-                {true && (
-                  <>
-                    <p className="text-zinc-400 text-[8px]">by</p>
-                    <div className="ml-1.5 p-1 bg-black/40 rounded-full cursor-pointer">
-                      <div className="flex items-center min-w-max">
-                        {/* <img className="h-6 w-6" src={cover} alt={title} /> */}
-                        <Cooyub
-                          className="rounded-full"
-                          svgStyle="h-2 w-2"
-                          rectStyle="h-6 w-6"
-                          fill={"#007600"}
-                        />
-                        <p className="text-[8px] pr-1 ml-1 " onClick={() => {}}>
-                          @LwaziNF
-                        </p>
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                <div className="mx-1.5 w-full line-clamp-1 text-xs">
-                  Sintel, code-named Project Durian during production, is a 2010
-                  computer-animated fantasy short film. It was the third Blender
-                  "open movie". It was produced by Ton Roosendaal, chairman of
-                  the Blender Foundation, written by Esther Wouda, directed by
-                  Colin Levy, at the time an artist at Pixar and art direction
-                  by David Revoy, who is known for Pepper&Carrot an open source
-                  webcomic series.
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            className="cursor-pointer rounded-[34px] p-3 bg-black/40"
-            onClick={() => {
-              // Video details are put here.. Links, Covers, Desc, Title, etc..
-              setVS_(["w", {}]);
-            }}
-          >
-            <PlayIcon className="w-4 h-4 fill-current" />
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
