@@ -48,18 +48,43 @@ export default function Podcast(props) {
   const [podcastEpisodes, setPodcastEpisodes] = useState([]);
   const [videoShows, setVideoShows] = useState([
     {
-      title: "Sintel By Blender",
-      src: "https://mdn.github.io/learning-area/javascript/apis/video-audio/finished/video/sintel-short.webm",
+      title: "Pocast",
+      src: "https://vod-progressive.akamaized.net/exp=1669176206~acl=%2Fvimeo-prod-skyfire-std-us%2F01%2F2915%2F20%2F514576578%2F2384746383.mp4~hmac=f88fb2d86bc618c7e595e731f5580a752ff2719aac1a54f4ae815273230b6b8c/vimeo-prod-skyfire-std-us/01/2915/20/514576578/2384746383.mp4?download=1&filename=pexels-tea-oebel-6892724.mp4",
       author: "@LwaziNF",
       poster:
-        "https://upload.wikimedia.org/wikipedia/commons/8/8f/Sintel_poster.jpg",
-      desc: 'Sintel, code-named Project Durian during production, is a 2010 computer-animated fantasy short film. It was the third Blender "open movie". It was produced by Ton Roosendaal, chairman of the Blender Foundation, written by Esther Wouda, directed by Colin Levy, at the time an artist at Pixar and art direction by David Revoy, who is known for Pepper&Carrot an open source webcomic series.',
+        "https://images.pexels.com/photos/11884525/pexels-photo-11884525.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      desc: "Proident sint elit quis deserunt laborum culpa in magna nisi in voluptate nostrud laborum excepteur. Commodo excepteur amet pariatur aliqua dolor. Velit commodo labore ut nulla.",
+    },
+    {
+      title: "Populous",
+      src: "https://vod-progressive.akamaized.net/exp=1669175708~acl=%2Fvimeo-prod-skyfire-std-us%2F01%2F409%2F15%2F377048936%2F1574403617.mp4~hmac=fff79a1d6b82cbbdf8b06ed574a3a28a7b16454487475985ec0671664f130f58/vimeo-prod-skyfire-std-us/01/409/15/377048936/1574403617.mp4?download=1&filename=video.mp4",
+      author: "@LwaziNF",
+      poster:
+        "https://images.pexels.com/photos/2826397/pexels-photo-2826397.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      desc: "Dolore qui ea cupidatat elit sint labore. Occaecat irure magna esse cupidatat nisi anim sit eu anim qui aliqua quis. Labore officia aute eu velit ad adipisicing proident ad. Esse velit nostrud consequat sit proident sint culpa velit consequat aliqua occaecat exercitation laborum. Anim sunt cupidatat minim ullamco cupidatat non commodo occaecat qui ex. Pariatur esse aliquip exercitation aliqua commodo amet aute elit mollit.",
+    },
+    {
+      title: "Deep Dive",
+      src: "https://vod-progressive.akamaized.net/exp=1669175377~acl=%2Fvimeo-prod-skyfire-std-us%2F01%2F1007%2F21%2F530035541%2F2496334075.mp4~hmac=23ea0eba503c984cae328d4c5b63593ea6ac416c5cf618f7ccab97b6fb8b951b/vimeo-prod-skyfire-std-us/01/1007/21/530035541/2496334075.mp4?download=1&filename=pexels-kindel-media-7293890.mp4",
+      author: "@LwaziNF",
+      poster:
+        "https://images.pexels.com/photos/221457/pexels-photo-221457.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      desc: "Aliquip elit pariatur labore dolor esse exercitation cupidatat nulla reprehenderit cillum magna dolor irure. Commodo eiusmod enim sunt ex. Sint in incididunt amet velit. Exercitation consequat nulla velit consectetur mollit qui non sunt duis in.",
+    },
+    {
+      title: "Drone Stuff",
+      src: "https://vod-progressive.akamaized.net/exp=1669175866~acl=%2Fvimeo-prod-skyfire-std-us%2F01%2F3457%2F15%2F392289251%2F1662078494.mp4~hmac=145c185a58ae88f41040d80cfeb3a5eb54c6f294aad9de9e9e443a4cf216f8f9/vimeo-prod-skyfire-std-us/01/3457/15/392289251/1662078494.mp4?download=1&filename=production+ID%3A3764259.mp4",
+      author: "@LwaziNF",
+      poster:
+        "https://images.pexels.com/photos/5480805/pexels-photo-5480805.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      desc: "Do culpa ullamco laborum ea amet nisi eiusmod ad consequat eu elit. Et officia laborum duis ex minim id quis reprehenderit veniam. Mollit sit non et duis non velit sint enim laboris voluptate.",
     },
   ]);
   const [showEpisodeForm, setShowEpisodeForm] = useState(false);
   const { setCurrentPodcastColor, currentPodcastColor } = appState.theme;
 
   const { isOpen, setIsOpen } = appState.globalModal;
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const loadEpisodes = async (podcast, episodes) => {
     console.log(podcast);
@@ -185,7 +210,6 @@ export default function Podcast(props) {
       download: true,
     });
     player.play();
-    window.scrollTo(0, document.body.scrollHeight);
   };
 
   useEffect(() => {
@@ -210,8 +234,7 @@ export default function Podcast(props) {
 
     let playerObj_ = document.getElementById("hidden-player");
     playerObj_.pause();
-    playerObj_.src =
-      "https://hci-itil.com/Videos/mp4movies/mp4-864x480/2022%20Easter%20Greeting.mp4";
+    playerObj_.src = videoShows[0].src;
   }, []);
 
   let playerObj_ = document.getElementById("hidden-player");
@@ -236,18 +259,11 @@ export default function Podcast(props) {
           class="video-js"
           controls
           preload="auto"
-          poster={
-            "https://upload.wikimedia.org/wikipedia/commons/8/8f/Sintel_poster.jpg"
-          }
+          poster={videoShows[0].poster}
           data-setup="{}"
           className="rounded-[4px] w-full h-full"
         >
-          <source
-            src={
-              "https://mdn.github.io/learning-area/javascript/apis/video-audio/finished/video/sintel-short.webm"
-            }
-            type="video/*"
-          ></source>
+          <source src={videoShows[0].src} type="video/*"></source>
           <p class="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading
             to a web browser that
@@ -321,67 +337,77 @@ export default function Podcast(props) {
             ))
           : videoShows.map((e, i) => {
               return (
-              <div className={``}>
-                <div className="mb-6 p-2.5 border rounded-xl border-zinc-600">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center relative">
-                      <img
-                        className="h-14 w-14 rounded-lg cursor-pointer object-cover"
-                        src={e.poster}
-                        alt={"title"}
-                        onClick={() => {}}
-                      />
-                      <div className="ml-4 flex flex-col">
-                        <div
-                          className="cursor-pointer line-clamp-1 pr-2 text-sm"
-                          onClick={() => history.push(`/shows`)}
-                        >
-                          {e.title}
-                        </div>
-                        <div className="flex items-center">
-                          {true && (
-                            <>
-                              <p className="text-zinc-400 text-[8px]">by</p>
-                              <div className="ml-1.5 p-1 bg-black/40 rounded-full cursor-pointer">
-                                <div className="flex items-center min-w-max">
-                                  {/* <img className="h-6 w-6" src={cover} alt={title} /> */}
-                                  <Cooyub
-                                    className="rounded-full"
-                                    svgStyle="h-2 w-2"
-                                    rectStyle="h-6 w-6"
-                                    fill={"#007600"}
-                                  />
-                                  <p
-                                    className="text-[8px] pr-1 ml-1 "
-                                    onClick={() => {}}
-                                  >
-                                    {e.author}
-                                  </p>
+                <div className={``}>
+                  <div className="mb-6 p-2.5 border rounded-xl border-zinc-600">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center relative">
+                        <img
+                          className="h-14 w-14 rounded-lg cursor-pointer object-cover"
+                          src={e.poster}
+                          alt={"title"}
+                          onClick={() => {}}
+                        />
+                        <div className="ml-4 flex flex-col">
+                          <div
+                            className="cursor-pointer line-clamp-1 pr-2 text-sm"
+                            onClick={() => history.push(`/shows`)}
+                          >
+                            {e.title}
+                          </div>
+                          <div className="flex items-center">
+                            {true && (
+                              <>
+                                <p className="text-zinc-400 text-[8px]">by</p>
+                                <div className="ml-1.5 p-1 bg-black/40 rounded-full cursor-pointer">
+                                  <div className="flex items-center min-w-max">
+                                    {/* <img className="h-6 w-6" src={cover} alt={title} /> */}
+                                    <Cooyub
+                                      className="rounded-full"
+                                      svgStyle="h-2 w-2"
+                                      rectStyle="h-6 w-6"
+                                      fill={"#007600"}
+                                    />
+                                    <p
+                                      className="text-[8px] pr-1 ml-1 "
+                                      onClick={() => {}}
+                                    >
+                                      {e.author}
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                            </>
-                          )}
+                              </>
+                            )}
 
-                          <div className="mx-1.5 w-full line-clamp-1 text-xs">
-                            {e.desc}
+                            <div className="mx-1.5 w-full line-clamp-1 text-xs">
+                              {e.desc}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div
-                      className="cursor-pointer rounded-[34px] p-3 bg-black/40"
-                      onClick={() => {
-                        // Minor video control..
-                        playerObj_.src = e.src;
-                        playerObj_.play();
-                      }}
-                    >
-                      <PlayIcon className="w-4 h-4 fill-current" />
+                      <div
+                        className="cursor-pointer rounded-[34px] p-3 bg-black/40"
+                        onClick={() => {
+                          // Minor video control..
+                          if (playerObj_.src === e.src) {
+                            if (isPlaying) {
+                              playerObj_.pause();
+                              setIsPlaying(false);
+                            } else {
+                              playerObj_.play();
+                              setIsPlaying(true);
+                            }
+                          } else {
+                            playerObj_.src = e.src;
+                            playerObj_.play();
+                          }
+                        }}
+                      >
+                        <PlayIcon className="w-4 h-4 fill-current" />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              )
+              );
             })}
         {!loading && podcastEpisodes.length === 0 && (
           <h5 className="py-5">{t("noepisodes")}</h5>
