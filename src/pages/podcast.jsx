@@ -9,7 +9,15 @@ import Track from "../component/track.jsx";
 import TipButton from "../component/reusables/tip.jsx";
 import UploadEpisode from "./uploadEpisode.jsx";
 import UploadVideo from "./uploadVideo.jsx";
-import { Element, Link } from "react-scroll";
+import {
+  Link,
+  DirectLink,
+  Element,
+  Events,
+  animateScroll as scroll,
+  scrollSpy,
+  scroller,
+} from "react-scroll";
 import {
   arweave,
   smartweave,
@@ -249,6 +257,7 @@ export default function Podcast(props) {
   const [showPods_, setShowPods_] = useRecoilState(showPodcasts);
   return (
     <div className="flex flex-col items-center justify-center mb-20">
+      <Element name="top" className="element"></Element>
       <div
         className={`w-full mb-6 bg-black rounded-[2px] transition-all ${
           showPods_
@@ -291,6 +300,15 @@ export default function Podcast(props) {
           <div
             className={`w-full h-[25px] flex flex-row ml-[6px] relative bottom-8`}
           >
+            <Link
+            activeClass="active"
+            className="top"
+            to="top"
+            spy={true}
+            smooth={true}
+            offset={-999}
+            duration={500}
+            >
             <div
               className={`h-full min-w-[30px] rounded-[20px] flex flex-row justify-center items-center mx-1 cursor-pointer ${
                 showPods_
@@ -306,6 +324,7 @@ export default function Podcast(props) {
                 Episodes
               </p>
             </div>
+            </Link>
 
             <div
               className={`h-full min-w-[30px] rounded-[20px] flex flex-row justify-center items-center mx-1 cursor-pointer ${
