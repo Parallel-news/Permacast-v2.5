@@ -9,6 +9,7 @@ import Track from "../component/track.jsx";
 import TipButton from "../component/reusables/tip.jsx";
 import UploadEpisode from "./uploadEpisode.jsx";
 import UploadVideo from "./uploadVideo.jsx";
+import { Element, Link } from "react-scroll";
 import {
   arweave,
   smartweave,
@@ -80,6 +81,7 @@ export default function Podcast(props) {
       desc: "Do culpa ullamco laborum ea amet nisi eiusmod ad consequat eu elit. Et officia laborum duis ex minim id quis reprehenderit veniam. Mollit sit non et duis non velit sint enim laboris voluptate.",
     },
   ]);
+  const [currentVideo, setCurrentVideo] = useState(videoShows[0])
   const [showEpisodeForm, setShowEpisodeForm] = useState(false);
   const { setCurrentPodcastColor, currentPodcastColor } = appState.theme;
 
@@ -234,7 +236,7 @@ export default function Podcast(props) {
 
     let playerObj_ = document.getElementById("hidden-player");
     playerObj_.pause();
-    playerObj_.src = videoShows[0].src;
+    playerObj_.src = currentVideo.src;
   }, []);
 
   let playerObj_ = document.getElementById("hidden-player");
@@ -259,11 +261,11 @@ export default function Podcast(props) {
           class="video-js"
           controls
           preload="auto"
-          poster={videoShows[0].poster}
+          poster={currentVideo.poster}
           data-setup="{}"
           className="rounded-[4px] w-full h-full"
         >
-          <source src={videoShows[0].src} type="video/*"></source>
+          <source src={currentVideo.src} type="video/*"></source>
           <p class="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading
             to a web browser that
@@ -384,26 +386,37 @@ export default function Podcast(props) {
                           </div>
                         </div>
                       </div>
-                      <div
-                        className="cursor-pointer rounded-[34px] p-3 bg-black/40"
-                        onClick={() => {
-                          // Minor video control..
-                          if (playerObj_.src === e.src) {
-                            if (isPlaying) {
-                              playerObj_.pause();
-                              setIsPlaying(false);
+                      {/* <Link
+                      activeClass="active"
+                      className="top"
+                        to="top"
+                        spy={true}
+                        smooth={true}
+                        offset={0}
+                        duration={500}
+                      > */}
+                        <div
+                          className="cursor-pointer rounded-[34px] p-3 bg-black/40"
+                          onClick={() => {
+                            // Minor video control..
+                            if (playerObj_.src === e.src) {
+                              if (isPlaying) {
+                                playerObj_.pause();
+                                setIsPlaying(false);
+                              } else {
+                                playerObj_.play();
+                                setIsPlaying(true);
+                              }
                             } else {
-                              playerObj_.play();
-                              setIsPlaying(true);
+                              setCurrentVideo(e)
+                              playerObj_.src = e.src;
+                              playerObj_.pause();
                             }
-                          } else {
-                            playerObj_.src = e.src;
-                            playerObj_.play();
-                          }
-                        }}
-                      >
-                        <PlayIcon className="w-4 h-4 fill-current" />
-                      </div>
+                          }}
+                        >
+                          <PlayIcon className="w-4 h-4 fill-current" />
+                        </div>
+                      {/* </Link> */}
                     </div>
                   </div>
                 </div>

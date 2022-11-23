@@ -37,6 +37,7 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "react-scroll": "^1.8.8",
     "recoil": "^0.7.6",
     "redstone-smartweave": "^0.4.29",
     "shikwasa": "^2.1.2",
