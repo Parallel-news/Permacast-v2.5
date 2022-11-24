@@ -18,7 +18,6 @@ import { fetchPodcastTitles, convertToEpisode, convertToPodcast, convertSearchIt
 import { appContext } from './utils/initStateGen.js';
 import { MESON_ENDPOINT } from './utils/arweave.js';
 import { RecoilRoot } from 'recoil';
-import VideoModal from './component/video_modal.jsx';
 
 export default function App() {
   const { t } = useTranslation();
@@ -133,7 +132,7 @@ export default function App() {
       // setCurrentEpisode(convertedEpisodes[0])
       setRecentlyAdded(convertedEpisodes)
       setFeaturedPodcasts(convertedPodcasts)
-      console.log(convertedPodcasts[0])
+      // console.log(convertedPodcasts[0])
       // setFeaturedVideoShows(convertedVideoShows)
       // setSortedPodcasts(sorted)
       // setPodcasts(sorted[filterTypes[selection]])
@@ -272,8 +271,6 @@ export default function App() {
                 </div>
               </div>
 
-              <VideoModal />
-              
               <div className="z-50">
                 <div className="absolute z-50 bottom-0 right-0" style={{ display: queueVisible ? 'block' : 'none' }}>
                   {!loading ? <EpisodeQueue /> : <div className="h-full w-full animate-pulse bg-gray-900/30"></div>}
