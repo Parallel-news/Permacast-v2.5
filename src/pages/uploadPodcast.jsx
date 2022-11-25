@@ -312,14 +312,11 @@ export default function UploadPodcastView() {
       );
       console.log("donee", { croppedImage });
       setCroppedImage(croppedImage);
+      setImg(croppedImage)
     } catch (e) {
       console.error(e);
     }
   }, [croppedAreaPixels, rotation]);
-
-  const onClose = useCallback(() => {
-    setCroppedImage(null);
-  }, []);
 
   const [showCrop, setShowCrop] = useState(false)
 
@@ -330,7 +327,7 @@ export default function UploadPodcastView() {
         showCrop
         ?
         <div
-        className={`absolute top-0 left-0 w-full h-full flex flex-row justify-center items-center backdrop-blur-md`}
+        className={`absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center backdrop-blur-md`}
       >
         <div
           className={`relative w-[800px] h-[400px] rounded-[6px] overflow-hidden`}
@@ -347,6 +344,10 @@ export default function UploadPodcastView() {
             onZoomChange={setZoom}
           />
         </div>
+        <div className={`w-[150px] h-[40px] rounded-md bg-white/40 m-2 cursor-pointer`} onClick={() => {
+          showCroppedImage()
+          setShowCrop(false)
+        }}/>
       </div>
       :
       <></>
