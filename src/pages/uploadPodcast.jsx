@@ -292,7 +292,7 @@ export default function UploadPodcastView() {
   };
 
   const [inputImg, setInputImg] =
-    useState("https://img.huffingtonpost.com/asset/5ab4d4ac2000007d06eb2c56.jpeg?cache=sih0jwle4e&ops=1910_1000");
+    useState("https://repository-images.githubusercontent.com/438897789/72714beb-d2b9-46e0-ad82-b03ddc78083f");
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [rotation, setRotation] = useState(0);
   const [zoom, setZoom] = useState(1);
@@ -344,10 +344,13 @@ export default function UploadPodcastView() {
             onZoomChange={setZoom}
           />
         </div>
-        <div className={`w-[150px] h-[40px] rounded-md bg-white/40 m-2 cursor-pointer`} onClick={() => {
+        <div className={`min-w-[50px] min-h-[10px] rounded-[4px] bg-black/10 hover:bg-black/20 border-[1px] border-solid border-white/10 m-2 p-1 px-2 cursor-pointer flex flex-col justify-center items-center`} onClick={() => {
           showCroppedImage()
           setShowCrop(false)
-        }}/>
+        }}>
+        <p className={`flex flex-col justify-center items-center text-white/60`}>Crop Selection</p>
+        {/* <p className={`flex flex-col justify-center items-center`}></p> */}
+      </div>
       </div>
       :
       <></>
