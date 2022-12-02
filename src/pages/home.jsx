@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { appContext } from "../utils/initStateGen.js";
 import {
   Greeting,
@@ -7,6 +7,7 @@ import {
   RecentlyAdded,
   FeaturedCreators,
 } from "../component/featured";
+import axios from "axios";
 
 // var featuredVideoShows = [{
 // contentTx: null,
@@ -38,9 +39,29 @@ export default function Home({ recentlyAdded, featuredPodcasts }) {
     <div className="w-full h-[100px] rounded-3xl mt-2 animate-pulse bg-gray-300/30"></div>
   );
 
+  const [data, setData] = useState([]);
+  const getData = async () => {
+    try{
+      const { data } = await axios.get(`/read/5xDf6M5NRDDKGXAysr3ZRBfrW8vybtFocKP70JuuA3Y`);
+    }catch(e){
+      console.log(e)
+    }
+    setData(data);
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <div className="overflow-scroll w-full pb-10 mb-10">
       {!appState.loading ? <Greeting /> : <Loading />}
+      <div
+        className={`w-[30px] h-[30px] bg-white/80 cursor-pointer`}
+        onClick={() => {
+          console.log("// // // // Testing, testing.. // // // //");
+          console.log(data);
+        }}
+      />
       {!appState.loading ? (
         <div className="hidden md:block">
           <FeaturedEpisode episode={recentlyAdded[0]} episodeId={1} />
