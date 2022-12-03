@@ -7,7 +7,9 @@ import {
   RecentlyAdded,
   FeaturedCreators,
 } from "../component/featured";
-import { getAllData } from '../services/services'
+import { getAllData } from "../services/services";
+import { showPodcasts } from "../atoms/index.js";
+import { useRecoilState } from "recoil";
 
 // var featuredVideoShows = [{
 // contentTx: null,
@@ -35,29 +37,85 @@ import { getAllData } from '../services/services'
 
 export default function Home({ recentlyAdded, featuredPodcasts }) {
   const appState = useContext(appContext);
+  const [showPods_, setShowPods_] = useRecoilState(showPodcasts);
+  const [recentlyAdded_, setRecentlyAdded_] = useState(recentlyAdded);
   const Loading = () => (
     <div className="w-full h-[100px] rounded-3xl mt-2 animate-pulse bg-gray-300/30"></div>
   );
-  const [data_, setData_] = useState([])
+  const [data_, setData_] = useState({});
+  const [switch_, setSwitch_] = useState(false);
   useEffect(() => {
+    const abortContr = new AbortController()
     const getAllData_ = () => {
-      getAllData()
-        .then(data => {
-          console.log(data)
-          setData_(data)
-        });
+      getAllData({signal: abortContr.signal}).then((data) => {
+          setData_(data);
+          setSwitch_(true);
+          return () => {
+            abortContr.abort()
+          }
+      });
+    };
+    try {
+     getAllData_();
+    } catch (e) {
+      // console.log(e);
     }
-    getAllData_()
-  }, [])
+  }, []);
   return (
     <div className="overflow-scroll w-full pb-10 mb-10">
       {!appState.loading ? <Greeting /> : <Loading />}
-      <div className={`w-[30px] h-[30px] bg-white`} onClick={() => {
-        // console.log(data_)
-      }} />
+      {!appState.loading && (
+        <div
+          className={`w-full h-[25px] flex flex-row ml-[6px] relative bottom-5`}
+        >
+          <div
+            className={`h-full min-w-[30px] rounded-[20px] flex flex-row justify-center items-center mx-1 cursor-pointer ${
+              showPods_
+                ? "bg-white/70 hover:bg-white/80"
+                : "bg-white/50 hover:bg-white/80"
+            } transition-all duration-200`}
+            onClick={() => {
+              setShowPods_(true);
+              setRecentlyAdded_(
+                data_.podcasts.filter((obj) => obj.contentType === "audio/")
+              );
+              console.log(
+                data_.podcasts.filter((obj) => obj.contentType === "audio/")
+              );
+            }}
+          >
+            <p className={`m-2 text-black/80 font-medium text-[13px]`}>
+              Episodes
+            </p>
+          </div>
+
+          <div
+            className={`h-full min-w-[30px] rounded-[20px] flex flex-row justify-center items-center mx-1 cursor-pointer ${
+              !showPods_
+                ? "bg-white/70 hover:bg-white/80"
+                : "bg-white/50 hover:bg-white/80"
+            } transition-all duration-200`}
+            onClick={() => {
+              setShowPods_(false);
+              setRecentlyAdded_(
+                data_.podcasts.filter((obj) => obj.contentType === "video/")
+              );
+              console.log(
+                data_.podcasts.filter((obj) => obj.contentType === "video/")
+              );
+              // console.log(data_)
+            }}
+          >
+            <p className={`m-2 text-black/80 font-medium text-[13px]`}>
+              Videos
+            </p>
+          </div>
+        </div>
+      )}
+
       {!appState.loading ? (
         <div className="hidden md:block">
-          <FeaturedEpisode episode={recentlyAdded[0]} episodeId={1} />
+          <FeaturedEpisode episode={recentlyAdded_[0]} episodeId={1} />
         </div>
       ) : (
         <Loading />
@@ -77,7 +135,7 @@ export default function Home({ recentlyAdded, featuredPodcasts }) {
       <div className="my-9 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-x-12">
         <div className="xl:col-span-3 lg:col-span-2 md:col-span-1 mb-9">
           {!appState.loading ? (
-            <RecentlyAdded episodes={recentlyAdded} />
+            <RecentlyAdded episodes={recentlyAdded_} />
           ) : (
             <Loading />
           )}

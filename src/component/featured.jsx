@@ -40,19 +40,22 @@ export function Greeting() {
 
 export function FeaturedEpisode({episode, episodeId}) {
   const appState = useContext(appContext);
-  const {cover, title, description, podcastId} = episode;
+  const {cover, podcastName, description, pid} = episode;
   const { t } = useTranslation();
 
   let history = useHistory();
   let location = useLocation();
   const rgb = RGBobjectToString(replaceDarkColorsRGB(episode.rgb))
-  const url = `/podcast/${podcastId}/${episodeId}`;
+  const url = `/podcast/${pid}/${episode.eid}`;
   
   return (
     <div className="p-14 flex w-full border border-zinc-800 rounded-3xl">
-      <img className="w-40 cursor-pointer mr-8" src={cover} alt={title} onClick={() => history.push(url)} />
+      <img className="w-40 cursor-pointer mr-8" src={'https://arweave.net/'+cover} alt={podcastName} onClick={() => history.push(url)} />
       <div className="col-span-2 my-3 text-zinc-100 max-w-xs md:max-w-lg mr-2">
-        <div onClick={() => history.push(url)} className="font-medium cursor-pointer line-clamp-1">{title}</div>
+        <div onClick={() => {
+          // history.push(url)
+          console.log(episode.episodes)
+        }} className="font-medium cursor-pointer line-clamp-1">{podcastName}</div>
         <div className="text-sm line-clamp-5">{description}</div>
       </div>
       <div className="ml-auto">
@@ -60,7 +63,7 @@ export function FeaturedEpisode({episode, episodeId}) {
           <div 
             className="min-w-min btn btn-primary border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md"
             style={getButtonRGBs(rgb)}
-            onClick={() => appState.queue.playEpisode(episode, episodeId)}
+            onClick={() => appState.queue.playEpisode(episode.episodes, episode.episodes.eid)}
           >
             <FaPlay className="w-3 h-3" />
             <div className="ml-2">{t("home.playfeaturedepisode")}</div>
