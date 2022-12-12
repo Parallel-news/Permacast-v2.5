@@ -10,7 +10,17 @@ export const videoSelection = atom({
     default: ['', {}],
 });
 
-export const showPodcasts = atom({
-    key: 'showPodcasts',
+export const switchFocus = atom({
+    key: 'switchFocus',
     default: true,
+});
+
+export const primaryData = atom({
+    key: 'primaryData',
+    default: {},
+});
+
+export const secondaryData = atom({
+    key: 'secondaryData',
+    default: {},
 });

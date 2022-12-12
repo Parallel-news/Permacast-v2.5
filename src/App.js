@@ -18,6 +18,7 @@ import { fetchPodcastTitles, convertToEpisode, convertToPodcast, convertSearchIt
 import { appContext } from './utils/initStateGen.js';
 import { MESON_ENDPOINT } from './utils/arweave.js';
 import { RecoilRoot } from 'recoil';
+import VideoModal from './component/video_modal.jsx';
 
 export default function App() {
   const { t } = useTranslation();
@@ -326,7 +327,7 @@ export default function App() {
                   </div>
                 </div>
               </Background>            
-
+                  <VideoModal/>
             </div>
           </Router>
         </appContext.Provider>

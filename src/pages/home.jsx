@@ -8,7 +8,7 @@ import {
   FeaturedCreators,
 } from "../component/featured";
 import { getAllData } from "../services/services";
-import { showPodcasts } from "../atoms/index.js";
+import { primaryData, secondaryData, switchFocus } from "../atoms/index.js";
 import { useRecoilState } from "recoil";
 
 // var featuredVideoShows = [{
@@ -37,19 +37,38 @@ import { useRecoilState } from "recoil";
 
 export default function Home({ recentlyAdded, featuredPodcasts }) {
   const appState = useContext(appContext);
-  const [showPods_, setShowPods_] = useRecoilState(showPodcasts);
-  const [recentlyAdded_, setRecentlyAdded_] = useState(recentlyAdded);
+
+  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
+  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
+  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
+
+  const [recentlyAdded_, setRecentlyAdded_] = useState([]);
   const Loading = () => (
     <div className="w-full h-[100px] rounded-3xl mt-2 animate-pulse bg-gray-300/30"></div>
   );
-  const [data_, setData_] = useState({});
-  const [switch_, setSwitch_] = useState(false);
   useEffect(() => {
     const abortContr = new AbortController()
     const getAllData_ = () => {
       getAllData({signal: abortContr.signal}).then((data) => {
-          setData_(data);
-          setSwitch_(true);
+          setPrimaryData_(data);
+          setSecondaryData_(
+            data.podcasts.filter((obj) => {
+              if(switchFocus_){
+                return obj.contentType === 'audio/'
+              }else{
+                return obj.contentType === 'video/'
+              }
+            })[0]
+          )
+          setRecentlyAdded_(
+            data.podcasts.filter((obj) => {
+              if(switchFocus_){
+                return obj.contentType === 'audio/'
+              }else{
+                return obj.contentType === 'video/'
+              }
+            })
+          )
           return () => {
             abortContr.abort()
           }
@@ -61,6 +80,8 @@ export default function Home({ recentlyAdded, featuredPodcasts }) {
       // console.log(e);
     }
   }, []);
+
+  // console.log(featuredPodcasts)
   return (
     <div className="overflow-scroll w-full pb-10 mb-10">
       {!appState.loading ? <Greeting /> : <Loading />}
@@ -70,17 +91,14 @@ export default function Home({ recentlyAdded, featuredPodcasts }) {
         >
           <div
             className={`h-full min-w-[30px] rounded-[20px] flex flex-row justify-center items-center mx-1 cursor-pointer ${
-              showPods_
+              switchFocus_
                 ? "bg-white/70 hover:bg-white/80"
                 : "bg-white/50 hover:bg-white/80"
             } transition-all duration-200`}
             onClick={() => {
-              setShowPods_(true);
+              setSwitchFocus_(true);
               setRecentlyAdded_(
-                data_.podcasts.filter((obj) => obj.contentType === "audio/")
-              );
-              console.log(
-                data_.podcasts.filter((obj) => obj.contentType === "audio/")
+                primaryData_.podcasts.filter((obj) => obj.contentType === "audio/")
               );
             }}
           >
@@ -91,17 +109,14 @@ export default function Home({ recentlyAdded, featuredPodcasts }) {
 
           <div
             className={`h-full min-w-[30px] rounded-[20px] flex flex-row justify-center items-center mx-1 cursor-pointer ${
-              !showPods_
+              !switchFocus_
                 ? "bg-white/70 hover:bg-white/80"
                 : "bg-white/50 hover:bg-white/80"
             } transition-all duration-200`}
             onClick={() => {
-              setShowPods_(false);
+              setSwitchFocus_(false);
               setRecentlyAdded_(
-                data_.podcasts.filter((obj) => obj.contentType === "video/")
-              );
-              console.log(
-                data_.podcasts.filter((obj) => obj.contentType === "video/")
+                primaryData_.podcasts.filter((obj) => obj.contentType === "video/")
               );
               // console.log(data_)
             }}
@@ -115,7 +130,7 @@ export default function Home({ recentlyAdded, featuredPodcasts }) {
 
       {!appState.loading ? (
         <div className="hidden md:block">
-          <FeaturedEpisode episode={recentlyAdded_[0]} episodeId={1} />
+          <FeaturedEpisode />
         </div>
       ) : (
         <Loading />
@@ -128,7 +143,7 @@ export default function Home({ recentlyAdded, featuredPodcasts }) {
       ): <Loading />} */}
 
       {!appState.loading ? (
-        <FeaturedPodcastsMobile podcasts={featuredPodcasts} />
+        <FeaturedPodcastsMobile />
       ) : (
         <Loading />
       )}

@@ -43,7 +43,7 @@ import { isDarkMode } from "../utils/theme.js";
 import { API_MAP } from "../utils/arweave.js";
 
 import { useRecoilState } from "recoil";
-import { showPodcasts, videoSelection } from "../atoms";
+import { switchFocus, videoSelection } from "../atoms";
 import { useLocation, useHistory } from "react-router-dom";
 
 export default function Podcast(props) {
@@ -254,13 +254,13 @@ export default function Podcast(props) {
   const isOwner =
     thePodcast?.creatorAddress === address ||
     thePodcast?.superAdmins?.includes(address);
-  const [showPods_, setShowPods_] = useRecoilState(showPodcasts);
+  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
   return (
     <div className="flex flex-col items-center justify-center mb-20">
       <Element name="top" className="element"></Element>
       <div
         className={`w-full mb-6 bg-black rounded-[2px] transition-all ${
-          showPods_
+          switchFocus_
             ? "opacity-0 h-[0px] duration-200"
             : "opacity-100 h-[607.50px] duration-200"
         }`}
@@ -311,12 +311,12 @@ export default function Podcast(props) {
             >
             <div
               className={`h-full min-w-[30px] rounded-[20px] flex flex-row justify-center items-center mx-1 cursor-pointer ${
-                showPods_
+                switchFocus_
                   ? "bg-white/70 hover:bg-white/80"
                   : "bg-white/50 hover:bg-white/80"
               } transition-all duration-200`}
               onClick={() => {
-                setShowPods_(true);
+                setSwitchFocus_(true);
                 playerObj_.pause();
               }}
             >
@@ -328,12 +328,12 @@ export default function Podcast(props) {
 
             <div
               className={`h-full min-w-[30px] rounded-[20px] flex flex-row justify-center items-center mx-1 cursor-pointer ${
-                !showPods_
+                !switchFocus_
                   ? "bg-white/70 hover:bg-white/80"
                   : "bg-white/50 hover:bg-white/80"
               } transition-all duration-200`}
               onClick={() => {
-                setShowPods_(false);
+                setSwitchFocus_(false);
               }}
             >
               <p className={`m-2 text-black/80 font-medium text-[13px]`}>
@@ -342,7 +342,7 @@ export default function Podcast(props) {
             </div>
           </div>
         )}
-        {showPods_
+        {switchFocus_
           ? podcastEpisodes &&
             podcastEpisodes.map((e, i) => (
               <div

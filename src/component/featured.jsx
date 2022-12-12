@@ -14,7 +14,7 @@ import Track from './track';
 import { getButtonRGBs } from '../utils/ui';
 
 import { useRecoilState } from "recoil";
-import { videoSelection } from '../atoms';
+import { primaryData, secondaryData, switchFocus, videoSelection } from '../atoms';
 
 export function Greeting() {
   const appState = useContext(appContext);
@@ -38,40 +38,87 @@ export function Greeting() {
   )
 }
 
-export function FeaturedEpisode({episode, episodeId}) {
+export function FeaturedEpisode() {
   const appState = useContext(appContext);
-  const {cover, podcastName, description, pid} = episode;
+  // const {cover, podcastName, description, pid} = episode; --Episode breakdown
+  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
+  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData); // Global Podcasts Object
+  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData); // Selected Podcast Object
+  const [vs_, setVS_] = useRecoilState(videoSelection); // Selected Podcast Object
   const { t } = useTranslation();
 
   let history = useHistory();
   let location = useLocation();
-  const rgb = RGBobjectToString(replaceDarkColorsRGB(episode.rgb))
-  const url = `/podcast/${pid}/${episode.eid}`;
-  
+  // const rgb = RGBobjectToString(replaceDarkColorsRGB(episode.rgb)) --styling
+  // const url = `/podcast/${primaryData_.pid}/${secondaryData_.eid}`; // --url
+
+  useEffect(() => {
+    setSecondaryData_(
+      primaryData_.podcasts.filter((obj) => {
+        if (switchFocus_) {
+          return obj.contentType === "audio/";
+        } else {
+          return obj.contentType === "video/";
+        }
+      })[0]
+    );
+  }, [switchFocus_]);
   return (
     <div className="p-14 flex w-full border border-zinc-800 rounded-3xl">
-      <img className="w-40 cursor-pointer mr-8" src={'https://arweave.net/'+cover} alt={podcastName} onClick={() => history.push(url)} />
+      <img
+        className="w-40 cursor-pointer mr-8"
+        src={"https://arweave.net/" + secondaryData_.cover}
+        alt={secondaryData_.podcastName}
+        onClick={
+          () => {
+            history.push(
+              `/podcast/${secondaryData_.pid}/${secondaryData_.episodes[0].eid}`
+            )
+          }
+          
+        }
+      />
       <div className="col-span-2 my-3 text-zinc-100 max-w-xs md:max-w-lg mr-2">
-        <div onClick={() => {
-          // history.push(url)
-          console.log(episode.episodes)
-        }} className="font-medium cursor-pointer line-clamp-1">{podcastName}</div>
-        <div className="text-sm line-clamp-5">{description}</div>
+        <div
+          onClick={() => {
+            history.push(
+              `/podcast/${secondaryData_.pid}/${secondaryData_.episodes[0].eid}`
+            )
+          }}
+          className="font-medium cursor-pointer line-clamp-1"
+        >
+          {secondaryData_.podcastName}
+        </div>
+        <div className="text-sm line-clamp-5">{secondaryData_.description}</div>
       </div>
       <div className="ml-auto">
         <>
-          <div 
+          <div
             className="min-w-min btn btn-primary border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md"
-            style={getButtonRGBs(rgb)}
-            onClick={() => appState.queue.playEpisode(episode.episodes, episode.episodes.eid)}
+            // style={getButtonRGBs(rgb)}
+            onClick={() => {
+              if(switchFocus_){
+                appState.queue.playEpisode(secondaryData_.episodes[0], secondaryData_.episodes[0].eid)
+              }else{
+                setVS_(['https://arweave.net/'+secondaryData_.episodes[0].contentTx, {}])
+              }
+            }}
+            
           >
             <FaPlay className="w-3 h-3" />
             <div className="ml-2">{t("home.playfeaturedepisode")}</div>
           </div>
           <div
             className="min-w-min btn btn-primary border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md"
-            style={getButtonRGBs(rgb)}
-            onClick={() => history.push(url)}
+            // style={getButtonRGBs(rgb)}
+            onClick={() => {
+              history.push(
+                `/podcast/${secondaryData_.pid}/${secondaryData_.episodes[0].eid}`
+                // console.log(secondaryData_.episodes.filter((obj) => {
+                //   return obj.eid === secondaryData_.episodes[0].eid
+                // })[0]) // -- Direct access to Episode
+              )
+            }}
           >
             <FiEye className="h-5 w-5" />
             <div className="ml-2">{t("home.viewfeaturedepisode")}</div>
@@ -79,70 +126,109 @@ export function FeaturedEpisode({episode, episodeId}) {
         </>
       </div>
     </div>
-  )
+  );
 }
 
 
-export function FeaturedPodcast({podcast}) {
+export function FeaturedPodcast({ podcast }) {
   const appState = useContext(appContext);
   const history = useHistory();
-  const { rgb, episodesCount, cover, podcastName, title, description, firstTenEpisodes, podcastId } = podcast;
-  const textColor = isTooLight(rgb) ? 'black' : 'white';
+  const {
+    rgb,
+    episodesCount,
+    cover,
+    podcastName,
+    title,
+    description,
+    firstTenEpisodes,
+    podcastId,
+  } = podcast;
+  const textColor = isTooLight(rgb) ? "black" : "white";
   const { enqueuePodcast, play } = appState.queue;
   const { t } = useTranslation();
 
+  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
+  const [vs_, setVS_] = useRecoilState(videoSelection);
+  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData); // Global Podcasts Object
+  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData); // Selected Podcast Object
+
   return (
     <>
-      <div style={{backgroundColor: rgb, color: textColor}} className="mt-4 backdrop-blur-md rounded-3xl">
+      <div className="mt-4 backdrop-blur-md rounded-3xl bg-white/30 text-white/30">
         <div className="h-1/6 w-full px-5 pb-2 cursor-pointer">
-          <div onClick={() => history.push(`/podcast/${podcastId}`)}>
-            <div className="pt-5 pb-3 text-xs">{episodesCount} {t("home.episodes")}</div>
+          <div onClick={() => history.push(`/podcast/${secondaryData_.pid}`)}>
+            <div className="pt-5 pb-3 text-xs">
+              {secondaryData_.episodes.length}{" "}
+              {secondaryData_.episodes.length > 1 ? t("home.episodes") : "episode"}
+            </div>
             <div className="w-full mb-7 max-w-[180px] overflow-x-hidden mx-auto">
-              <img className="object-cover aspect-square h-[180px]" src={cover} alt={podcastName} />
+              <img
+                className="object-cover aspect-square h-[180px]"
+                src={"https://arweave.net/" + cover}
+                alt={podcastName}
+              />
             </div>
           </div>
           <div className="h-16 flex items-center">
-            <div className="z-10" onClick={() => {
-              Promise.all(firstTenEpisodes(true)).then((episodes) => {
-                enqueuePodcast(episodes)
-                play(episodes[0]);
-              });
-            }}>
-              <GlobalPlayButton size="20" innerColor={rgb} outerColor={textColor} />
+            <div
+              className="z-10"
+              onClick={() => {
+                // Promise.all(firstTenEpisodes(true)).then((episodes) => {
+                //   enqueuePodcast(episodes);
+                //   play(episodes[0]);
+                // });
+                if(switchFocus_){
+                  appState.queue.playEpisode(secondaryData_.episodes[0], secondaryData_.episodes[0].eid)
+                }else{
+                  setVS_(['https://arweave.net/'+secondaryData_.episodes[0].contentTx, {}])
+                }
+              }}
+            >
+              <GlobalPlayButton
+                size="20"
+                innerColor={"black"}
+                outerColor={textColor}
+              />
             </div>
-            <div className="ml-3" onClick={() => history.push(`/podcast/${podcastId}`)}>
-              <div className="text-lg line-clamp-1 cursor-pointer">{title}</div>
-              <div className="text-xs max-w-[95%] line-clamp-2">{description}</div>
+            <div
+              className="ml-3"
+              onClick={() => history.push(`/podcast/${podcastId}`)}
+            >
+              <div className="text-lg line-clamp-1 cursor-pointer">{secondaryData_.podcastName}</div>
+              <div className="text-xs max-w-[95%] line-clamp-2">
+                {description}
+              </div>
             </div>
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export function FeaturedPodcasts({podcasts}) {
-  return (
-    <>
-      {podcasts.map((podcast, index) => (
-        <React.Fragment key={index}>
-          <FeaturedPodcast podcast={podcast} />
-        </React.Fragment>
-      ))}
-    </>
-  )
-}
-
-export function FeaturedPodcastsMobile({podcasts}) {
+export function FeaturedPodcastsMobile() {
+  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
+  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
+  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
+  const podcasts = primaryData_.podcasts.filter((obj) => {
+    if(switchFocus_){
+      return obj.contentType === 'audio/'
+    }else{
+      return obj.contentType === 'video/'
+    }
+  })
   return (
     <div className="carousel">
       {podcasts.map((podcast, index) => (
-        <div className="carousel-item max-w-[280px] md:max-w-xs pr-4" key={index}>
+        <div
+          className="carousel-item max-w-[280px] md:max-w-xs pr-4"
+          key={index}
+        >
           <FeaturedPodcast podcast={podcast} />
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 export function FeaturedVideoShows({videoShows}) {
