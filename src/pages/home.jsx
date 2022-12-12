@@ -81,10 +81,10 @@ export default function Home({ recentlyAdded, featuredPodcasts }) {
     }
   }, []);
 
-  // console.log(featuredPodcasts)
+  // console.log(Object.keys(secondaryData_) > 0)
   return (
     <div className="overflow-scroll w-full pb-10 mb-10">
-      {!appState.loading ? <Greeting /> : <Loading />}
+      {Object.keys(secondaryData_).length > 0 ? <Greeting /> : <Loading />}
       {!appState.loading && (
         <div
           className={`w-full h-[25px] flex flex-row ml-[6px] relative bottom-5`}
@@ -128,34 +128,32 @@ export default function Home({ recentlyAdded, featuredPodcasts }) {
         </div>
       )}
 
-      {!appState.loading ? (
+      { Object.keys(secondaryData_).length > 0 ? (
         <div className="hidden md:block">
           <FeaturedEpisode />
         </div>
-      ) : (
-        <Loading />
-      )}
+      ) : <Loading />}
 
-      {/* {!appState.loading ? (
+      {/* {Object.keys(secondaryData_).length > 0 ? (
         <div className="hidden md:grid w-full mt-8 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-x-12">
           <FeaturedPodcasts podcasts={featuredPodcasts} />
         </div>
       ): <Loading />} */}
 
-      {!appState.loading ? (
+      {Object.keys(secondaryData_).length > 0 ? (
         <FeaturedPodcastsMobile />
       ) : (
         <Loading />
       )}
       <div className="my-9 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-x-12">
         <div className="xl:col-span-3 lg:col-span-2 md:col-span-1 mb-9">
-          {!appState.loading ? (
-            <RecentlyAdded episodes={recentlyAdded_} />
+          {Object.keys(secondaryData_).length > 0 ? (
+            <RecentlyAdded />
           ) : (
             <Loading />
           )}
         </div>
-        {!appState.loading ? (
+        {Object.keys(secondaryData_).length > 0 ? (
           <div className="w-full">
             <FeaturedCreators />
           </div>

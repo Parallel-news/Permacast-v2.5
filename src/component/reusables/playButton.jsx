@@ -2,6 +2,8 @@ import { useContext } from 'react';
 import { appContext } from '../../utils/initStateGen';
 import { getButtonRGBs } from '../../utils/ui';
 import { PlayIcon, PauseIcon } from '@heroicons/react/24/outline';
+import { useRecoilState } from 'recoil';
+import { primaryData, secondaryData, switchFocus, videoSelection } from '../../atoms';
 
 
 export default function PlayButton({episode, episodeNumber="1", color=""}) {
@@ -20,8 +22,21 @@ export default function PlayButton({episode, episodeNumber="1", color=""}) {
     setIsPaused(!isPaused)
   }
 
+  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
+  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
+  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
+  const [vs_, setVS_] = useRecoilState(videoSelection);
+
   return (
-    <div onClick={() => episodeIsCurrent ? playCurrentTrack() : playEpisode(episode, episodeNumber)}>
+    <div onClick={() => 
+      {if(switchFocus_){
+          appState.queue.playEpisode(episode, episode.eid)
+      }else{
+          setVS_(['https://arweave.net/'+episode.contentTx, {}])
+        }
+      }
+    // episodeIsCurrent ? playCurrentTrack() : playEpisode(episode, episodeNumber)
+    }>
       <div className="cursor-pointer rounded-[34px] p-3" style={getButtonRGBs(c)}>
         {episodeIsCurrent && !isPaused ? (
           <PauseIcon className="w-4 h-4 fill-current stroke-[3]" />

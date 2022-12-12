@@ -43,7 +43,12 @@ import { isDarkMode } from "../utils/theme.js";
 import { API_MAP } from "../utils/arweave.js";
 
 import { useRecoilState } from "recoil";
-import { switchFocus, videoSelection } from "../atoms";
+import {
+  switchFocus,
+  videoSelection,
+  primaryData,
+  secondaryData,
+} from "../atoms";
 import { useLocation, useHistory } from "react-router-dom";
 
 export default function Podcast(props) {
@@ -52,44 +57,14 @@ export default function Podcast(props) {
   const { address, setAddress } = appState.user;
   const [loading, setLoading] = useState(true);
 
+  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
+  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
+  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
+
   const [thePodcast, setThePodcast] = useState(null);
   const [podcastHtml, setPodcastHtml] = useState(null);
   const [podcastEpisodes, setPodcastEpisodes] = useState([]);
-  const [videoShows, setVideoShows] = useState([
-    {
-      title: "Pocast",
-      src: "https://vod-progressive.akamaized.net/exp=1669176206~acl=%2Fvimeo-prod-skyfire-std-us%2F01%2F2915%2F20%2F514576578%2F2384746383.mp4~hmac=f88fb2d86bc618c7e595e731f5580a752ff2719aac1a54f4ae815273230b6b8c/vimeo-prod-skyfire-std-us/01/2915/20/514576578/2384746383.mp4?download=1&filename=pexels-tea-oebel-6892724.mp4",
-      author: "@LwaziNF",
-      poster:
-        "https://images.pexels.com/photos/11884525/pexels-photo-11884525.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-      desc: "Proident sint elit quis deserunt laborum culpa in magna nisi in voluptate nostrud laborum excepteur. Commodo excepteur amet pariatur aliqua dolor. Velit commodo labore ut nulla.",
-    },
-    {
-      title: "Populous",
-      src: "https://vod-progressive.akamaized.net/exp=1669175708~acl=%2Fvimeo-prod-skyfire-std-us%2F01%2F409%2F15%2F377048936%2F1574403617.mp4~hmac=fff79a1d6b82cbbdf8b06ed574a3a28a7b16454487475985ec0671664f130f58/vimeo-prod-skyfire-std-us/01/409/15/377048936/1574403617.mp4?download=1&filename=video.mp4",
-      author: "@LwaziNF",
-      poster:
-        "https://images.pexels.com/photos/2826397/pexels-photo-2826397.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-      desc: "Dolore qui ea cupidatat elit sint labore. Occaecat irure magna esse cupidatat nisi anim sit eu anim qui aliqua quis. Labore officia aute eu velit ad adipisicing proident ad. Esse velit nostrud consequat sit proident sint culpa velit consequat aliqua occaecat exercitation laborum. Anim sunt cupidatat minim ullamco cupidatat non commodo occaecat qui ex. Pariatur esse aliquip exercitation aliqua commodo amet aute elit mollit.",
-    },
-    {
-      title: "Deep Dive",
-      src: "https://vod-progressive.akamaized.net/exp=1669175377~acl=%2Fvimeo-prod-skyfire-std-us%2F01%2F1007%2F21%2F530035541%2F2496334075.mp4~hmac=23ea0eba503c984cae328d4c5b63593ea6ac416c5cf618f7ccab97b6fb8b951b/vimeo-prod-skyfire-std-us/01/1007/21/530035541/2496334075.mp4?download=1&filename=pexels-kindel-media-7293890.mp4",
-      author: "@LwaziNF",
-      poster:
-        "https://images.pexels.com/photos/221457/pexels-photo-221457.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-      desc: "Aliquip elit pariatur labore dolor esse exercitation cupidatat nulla reprehenderit cillum magna dolor irure. Commodo eiusmod enim sunt ex. Sint in incididunt amet velit. Exercitation consequat nulla velit consectetur mollit qui non sunt duis in.",
-    },
-    {
-      title: "Drone Stuff",
-      src: "https://vod-progressive.akamaized.net/exp=1669175866~acl=%2Fvimeo-prod-skyfire-std-us%2F01%2F3457%2F15%2F392289251%2F1662078494.mp4~hmac=145c185a58ae88f41040d80cfeb3a5eb54c6f294aad9de9e9e443a4cf216f8f9/vimeo-prod-skyfire-std-us/01/3457/15/392289251/1662078494.mp4?download=1&filename=production+ID%3A3764259.mp4",
-      author: "@LwaziNF",
-      poster:
-        "https://images.pexels.com/photos/5480805/pexels-photo-5480805.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-      desc: "Do culpa ullamco laborum ea amet nisi eiusmod ad consequat eu elit. Et officia laborum duis ex minim id quis reprehenderit veniam. Mollit sit non et duis non velit sint enim laboris voluptate.",
-    },
-  ]);
-  const [currentVideo, setCurrentVideo] = useState(videoShows[0])
+  const [videoShows_, setVideoShows_] = useState([]);
   const [showEpisodeForm, setShowEpisodeForm] = useState(false);
   const { setCurrentPodcastColor, currentPodcastColor } = appState.theme;
 
@@ -223,28 +198,28 @@ export default function Podcast(props) {
   };
 
   useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
+    console.log(
+      primaryData_.podcasts.filter((obj) => {
+        return obj.pid === props.match.params.podcastId;
+      })[0].episodes
+    );
 
-      const podcastId = props.match.params.podcastId;
-      const podcasts = await getPodcasts();
-      const p = getPodcast(podcasts, podcastId);
-      const ep = await getPodcastEpisodes(podcastId);
-      const convertedPodcast = await convertToPodcast(p);
-      const convertedEpisodes = await Promise.all(
-        ep.map((e) => convertToEpisode(convertedPodcast, e, false))
-      );
-      setThePodcast(convertedPodcast);
-      setCurrentPodcastColor(convertedPodcast?.rgb);
-      setPodcastEpisodes(convertedEpisodes);
+    setSecondaryData_(
+      primaryData_.podcasts.filter((obj) => {
+        return obj.pid === props.match.params.podcastId;
+      })[0]
+    );
 
-      setLoading(false);
-    }
-    fetchData();
+    setVideoShows_(
+      primaryData_.podcasts.filter((obj) => {
+        return obj.pid === props.match.params.podcastId;
+      })[0].episodes
+    );
 
     let playerObj_ = document.getElementById("hidden-player");
     playerObj_.pause();
-    playerObj_.src = currentVideo.src;
+    playerObj_.src =
+      "https://arweave.net/" + secondaryData_.episodes[0].contentTx;
   }, []);
 
   let playerObj_ = document.getElementById("hidden-player");
@@ -254,10 +229,9 @@ export default function Podcast(props) {
   const isOwner =
     thePodcast?.creatorAddress === address ||
     thePodcast?.superAdmins?.includes(address);
-  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
+
   return (
     <div className="flex flex-col items-center justify-center mb-20">
-      <Element name="top" className="element"></Element>
       <div
         className={`w-full mb-6 bg-black rounded-[2px] transition-all ${
           switchFocus_
@@ -270,11 +244,11 @@ export default function Podcast(props) {
           class="video-js"
           controls
           preload="auto"
-          poster={currentVideo.poster}
+          poster={"https://arweave.net/" + secondaryData_.cover}
           data-setup="{}"
           className="rounded-[4px] w-full h-full"
         >
-          <source src={currentVideo.src} type="video/*"></source>
+          <source src={"#"} type="video/*"></source>
           <p class="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading
             to a web browser that
@@ -291,60 +265,15 @@ export default function Podcast(props) {
         loading={loading}
         currentPodcastColor={currentPodcastColor}
       />
-      <UploadVideo podcast={thePodcast} />
+      {/* <UploadVideo podcast={thePodcast} /> */}
       {/* <UploadEpisode podcast={thePodcast} /> */}
-      {loading && <h5 className="p-5">{t("loadingepisodes")}</h5>}
+      {/* {loading && <h5 className="p-5">{t("loadingepisodes")}</h5>} */}
 
       <div className="w-full">
-        {!loading && (
-          <div
-            className={`w-full h-[25px] flex flex-row ml-[6px] relative bottom-8`}
-          >
-            <Link
-            activeClass="active"
-            className="top"
-            to="top"
-            spy={true}
-            smooth={true}
-            offset={-999}
-            duration={500}
-            >
-            <div
-              className={`h-full min-w-[30px] rounded-[20px] flex flex-row justify-center items-center mx-1 cursor-pointer ${
-                switchFocus_
-                  ? "bg-white/70 hover:bg-white/80"
-                  : "bg-white/50 hover:bg-white/80"
-              } transition-all duration-200`}
-              onClick={() => {
-                setSwitchFocus_(true);
-                playerObj_.pause();
-              }}
-            >
-              <p className={`m-2 text-black/80 font-medium text-[13px]`}>
-                Episodes
-              </p>
-            </div>
-            </Link>
-
-            <div
-              className={`h-full min-w-[30px] rounded-[20px] flex flex-row justify-center items-center mx-1 cursor-pointer ${
-                !switchFocus_
-                  ? "bg-white/70 hover:bg-white/80"
-                  : "bg-white/50 hover:bg-white/80"
-              } transition-all duration-200`}
-              onClick={() => {
-                setSwitchFocus_(false);
-              }}
-            >
-              <p className={`m-2 text-black/80 font-medium text-[13px]`}>
-                Videos
-              </p>
-            </div>
-          </div>
-        )}
+        
         {switchFocus_
-          ? podcastEpisodes &&
-            podcastEpisodes.map((e, i) => (
+          ? videoShows_.length > 0 &&
+          videoShows_.map((e, i) => (
               <div
                 key={i}
                 className="mb-6 p-2.5 border rounded-xl border-zinc-600"
@@ -356,7 +285,7 @@ export default function Podcast(props) {
                 />
               </div>
             ))
-          : videoShows.map((e, i) => {
+          : videoShows_.map((e, i) => {
               return (
                 <div className={``}>
                   <div className="mb-6 p-2.5 border rounded-xl border-zinc-600">
@@ -364,16 +293,18 @@ export default function Podcast(props) {
                       <div className="flex items-center relative">
                         <img
                           className="h-14 w-14 rounded-lg cursor-pointer object-cover"
-                          src={e.poster}
-                          alt={"title"}
+                          src={"https://arweave.net/" + secondaryData_.cover}
+                          alt={e.episodeName}
                           onClick={() => {}}
                         />
                         <div className="ml-4 flex flex-col">
                           <div
                             className="cursor-pointer line-clamp-1 pr-2 text-sm"
-                            onClick={() => history.push(`/shows`)}
+                            onClick={() => {
+                              // history.push(`/`)
+                            }}
                           >
-                            {e.title}
+                            {e.episodeName}
                           </div>
                           <div className="flex items-center">
                             {true && (
@@ -392,7 +323,7 @@ export default function Podcast(props) {
                                       className="text-[8px] pr-1 ml-1 "
                                       onClick={() => {}}
                                     >
-                                      {e.author}
+                                      {secondaryData_.author}
                                     </p>
                                   </div>
                                 </div>
@@ -400,42 +331,32 @@ export default function Podcast(props) {
                             )}
 
                             <div className="mx-1.5 w-full line-clamp-1 text-xs">
-                              {e.desc}
+                              {e.description}
                             </div>
                           </div>
                         </div>
                       </div>
-                      {/* <Link
-                      activeClass="active"
-                      className="top"
-                        to="top"
-                        spy={true}
-                        smooth={true}
-                        offset={0}
-                        duration={500}
-                      > */}
-                        <div
-                          className="cursor-pointer rounded-[34px] p-3 bg-black/40"
-                          onClick={() => {
-                            // Minor video control..
-                            if (playerObj_.src === e.src) {
-                              if (isPlaying) {
-                                playerObj_.pause();
-                                setIsPlaying(false);
-                              } else {
-                                playerObj_.play();
-                                setIsPlaying(true);
-                              }
-                            } else {
-                              setCurrentVideo(e)
-                              playerObj_.src = e.src;
+                      <div
+                        className="cursor-pointer rounded-[34px] p-3 bg-black/40"
+                        onClick={() => {
+                          // Minor video control..
+                          if (playerObj_.src === 'https://arweave.net/'+e.contentTx) {
+                            if (isPlaying) {
                               playerObj_.pause();
+                              setIsPlaying(false);
+                            } else {
+                              playerObj_.play();
+                              setIsPlaying(true);
                             }
-                          }}
-                        >
-                          <PlayIcon className="w-4 h-4 fill-current" />
-                        </div>
-                      {/* </Link> */}
+                          } else {
+                            // setCurrentVideo(e)
+                            playerObj_.src = 'https://arweave.net/'+e.contentTx;
+                            playerObj_.pause();
+                          }
+                        }}
+                      >
+                        <PlayIcon className="w-4 h-4 fill-current" />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -487,24 +408,28 @@ const PodcastHeader = ({
   const appState = useContext(appContext);
   const { setIsOpen } = appState.globalModal;
 
+  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
+  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
+  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
+
   const loadRss = () => {
     window.open(API_MAP.rss + thePodcast.podcastId, "_blank");
   };
   return (
     <div className={``}>
-      {!loading && (
+      {Object.keys(secondaryData_).length > 0 && (
         <div className="pb-14 flex flex-col justify-center md:flex-row md:items-center w-full">
           <img
             className="w-40 cursor-pointer rounded-sm mx-auto md:mx-0 md:mr-8"
-            src={thePodcast?.cover}
-            alt={thePodcast.title}
+            src={'https://arweave.net/'+secondaryData_?.cover}
+            alt={secondaryData_.podcastName}
           />
           <div className="col-span-2 my-3 text-zinc-100 w-full md:w-4/6 md:mr-2">
             <div className="text-center md:text-left text-xl font-semibold tracking-wide select-text line-clamp-1 hover:line-clamp-none">
-              {thePodcast?.title}
+              {secondaryData_?.podcastName}
             </div>
             <div className="line-clamp-5 hover:line-clamp-none select-text">
-              {thePodcast?.description}
+              {secondaryData_?.description}
             </div>
           </div>
           <div className="mx-auto md:mx-0 md:ml-auto md:mr-9">
@@ -522,7 +447,7 @@ const PodcastHeader = ({
                   <TipButton />
                 </div>
               )}
-              {thePodcast && isOwner && (
+              {secondaryData_ && isOwner && (
                 <button
                   className="btn btn-outline btn-sm normal-case rounded-full border-0 flex cursor-pointer font-normal ml-4"
                   style={getButtonRGBs(currentPodcastColor)}

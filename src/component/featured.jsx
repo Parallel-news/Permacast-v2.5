@@ -231,50 +231,40 @@ export function FeaturedPodcastsMobile() {
   );
 }
 
-export function FeaturedVideoShows({videoShows}) {
-  const [vs_, setVS_] = useRecoilState(videoSelection);
-  return (
-    <div className="carousel">
-      {/* {videoShows.map((vs_, index) => (
-        <div className="carousel-item max-w-[280px] md:max-w-xs pr-4" key={index}>
-          <FeaturedVS podcast={vs_} />
-        </div>
-      ))} */}
-
-      <div className={`carousel-item min-w-[280px] md:min-w-xs pr-4`}>
-        
-      <>
-      <div style={{backgroundColor: 'blue', color: 'white'}} className="mt-4 h-[325px] w-[450px] backdrop-blur-md rounded-3xl cursor-pointer relative overflow-hidden" onClick={() => {
-            setVS_(['https://www.pexels.com/video/853921/download/?fps=25.0&h=720&w=1280', {cover: 'https://upload.wikimedia.org/wikipedia/commons/8/8f/Sintel_poster.jpg'}])
-          }}>
-              <img className="object-cover w-full" src={'https://upload.wikimedia.org/wikipedia/commons/8/8f/Sintel_poster.jpg'} alt={'Flamingo Blur'} />
-        {/* <div className="min-h-[60px] flex flex-col justify-center items-center w-full bg-black/40 backdrop-blur-md text-white absolute bottom-0 left-0">
-          
-        </div> */}
-      </div>
-    </>
-
-      </div>
-      
-    </div>
-  )
-}
-
-export function RecentlyAdded({episodes}) {
+export function RecentlyAdded() {
   const { t } = useTranslation();
+  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
+  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
+  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
+  const [episodes, setEpisodes] = useState([])
+  useEffect(() => {
+    const data_ = primaryData_.podcasts.filter((obj) => {
+      if(switchFocus_){
+        return obj.contentType === 'audio/'
+      }else{
+        return obj.contentType === 'video/'
+      }
+    })
+    data_.forEach((obj) => {
+      setEpisodes(episodes.concat(obj.episodes))
+    })
 
+  }, [])
   return (
     <div className="">
       <h2 className="text-zinc-400 mb-4">{t("home.recentlyadded")}</h2>
       <div className="grid grid-rows-3 gap-y-4 text-zinc-100">
         {episodes.map((episode, index) => (
-          <div key={index} className="border border-zinc-800 rounded-3xl p-3 w-full">
+          <div
+            key={index}
+            className="border border-zinc-800 rounded-3xl p-3 w-full"
+          >
             <Track episode={episode} includeDescription={true} />
           </div>
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 export function FeaturedCreators() {
