@@ -265,8 +265,8 @@ export default function Podcast(props) {
         loading={loading}
         currentPodcastColor={currentPodcastColor}
       />
-      {/* <UploadVideo podcast={thePodcast} /> */}
-      {/* <UploadEpisode podcast={thePodcast} /> */}
+      <UploadVideo podcast={thePodcast} />
+      <UploadEpisode podcast={thePodcast} />
       {/* {loading && <h5 className="p-5">{t("loadingepisodes")}</h5>} */}
 
       <div className="w-full">

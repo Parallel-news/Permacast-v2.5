@@ -87,9 +87,9 @@ export function FeaturedEpisode() {
           }}
           className="font-medium cursor-pointer line-clamp-1"
         >
-          {secondaryData_.podcastName}
+          {secondaryData_.episodes[0].episodeName}
         </div>
-        <div className="text-sm line-clamp-5">{secondaryData_.description}</div>
+        <div className="text-sm line-clamp-5">{secondaryData_.episodes[0].description}</div>
       </div>
       <div className="ml-auto">
         <>

@@ -25,7 +25,7 @@ export function RGBtoHSL (rgb) {
   let max = Math.max(r, g, b), min = Math.min(r, g, b);
   let h, s, l = (max + min) / 2;
 
-  if (max == min) {
+  if (max === min) {
     h = s = 0; // achromatic
   } else {
     let d = max - min;
@@ -45,7 +45,7 @@ export function RGBtoHSL (rgb) {
 export function HSLtoRGB (h, s, l) {
   let r, g, b;
 
-  if (s == 0) {
+  if (s === 0) {
     r = g = b = l; // achromatic
   } else {
     function hue2rgb(p, q, t) {
