@@ -24,3 +24,8 @@ export const secondaryData = atom({
     key: 'secondaryData',
     default: {},
 });
+
+export const ContentType = atom({
+    key: 'ContentType',
+    default: 'a',
+});

@@ -25,8 +25,8 @@ import { PhotoIcon } from "@heroicons/react/24/outline";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 import { UploadsList } from "../component/uploads_list";
-import { useSetRecoilState } from "recoil";
-import { uploadPercent } from "../atoms";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { ContentType, uploadPercent } from "../atoms";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../utils/croppedImage";
 
@@ -41,6 +41,7 @@ export default function UploadPodcastView() {
   const [cost, setCost] = useState(0);
   const isLoggedIn = appState.user.address;
   let finalShowObj = {};
+  const [contentType_, setContentType_] = useRecoilState(ContentType)
   const podcastCoverRef = useRef();
   const { t, i18n } = useTranslation();
   const currentLanguage = LANGUAGES.find(
@@ -227,37 +228,63 @@ export default function UploadPodcastView() {
   };
 
   const handleShowUpload = async (event) => {
-    event.preventDefault();
-    // extract attrs from form
-    const showObj = {};
-    const podcastName = event.target.podcastName.value;
-    const podcastDescription = event.target.podcastDescription.value;
-    const podcastCover = event.target.podcastCover.files[0];
-    const podcastAuthor = event.target.podcastAuthor.value;
-    const podcastEmail = event.target.podcastEmail.value;
-    const podcastCategory = event.target.podcastCategory.value;
-    const podcastExplicit = event.target.podcastExplicit.checked ? "yes" : "no";
-    const podcastLanguage = event.target.podcastLanguage.value;
-    const coverFileType = podcastCover.type;
-    // add attrs to input for SWC
-    showObj.name = podcastName;
-    showObj.desc = podcastDescription;
-    showObj.author = podcastAuthor;
-    showObj.email = podcastEmail;
-    showObj.category = podcastCategory;
-    showObj.isExplicit = podcastExplicit;
-    showObj.lang = podcastLanguage;
-    // upload cover, send all to Arweave
-    let cover = await processFile(podcastCover);
-    let showObjSize = JSON.stringify(showObj).length;
-    let bytes = cover.byteLength + showObjSize + coverFileType.length;
-    setIsUploading(true);
-    if ((await userHasEnoughAR(t, bytes, SHOW_UPLOAD_FEE)) === "all good") {
-      await uploadToArweave(cover, coverFileType, showObj);
-    } else {
-      console.log("upload failed");
-      setIsUploading(false);
-    }
+
+    const arconnectPubKey = await window.arweaveWallet.getActivePublicKey();  
+      if (!arconnectPubKey) throw new Error("ArConnect public key not found");
+
+      const data = new TextEncoder().encode(`my pubkey for DL ARK is: ${arconnectPubKey}`);
+      const signature = await window.arweaveWallet.signature(data, {
+        name: "RSA-PSS",
+        saltLength: 32,
+      });
+      // const signedBase = Buffer.from(signature).toString("base64");
+      // console.log("signedBase", signedBase);
+      // if (!signedBase) throw new Error("ArConnect signature not found");
+      // console.log(arconnectPubKey)
+      console.log(signature)
+    //   event.preventDefault();
+    // // extract attrs from form
+    // const showObj = {};
+    // const podcastName = event.target.podcastName.value;
+    // const podcastDescription = event.target.podcastDescription.value;
+    // const podcastCover = event.target.podcastCover.files[0];
+    // const podcastAuthor = event.target.podcastAuthor.value;
+    // const podcastEmail = event.target.podcastEmail.value;
+    // const podcastCategory = event.target.podcastCategory.value;
+    // const podcastExplicit = event.target.podcastExplicit.checked ? "yes" : "no";
+    // const podcastLanguage = event.target.podcastLanguage.value;
+    // const coverFileType = podcastCover.type;
+    // // add attrs to input for SWC
+
+    // showObj.function = "createPodcast";
+    // showObj.name = podcastName;
+    // showObj.desc = podcastDescription;
+    // showObj.author = podcastAuthor;
+    // showObj.lang = podcastLanguage;
+    // showObj.isExplicit = podcastExplicit;
+    // showObj.categories = podcastCategory;
+    // showObj.email = podcastEmail;
+    // showObj.contentType = contentType_; // v for video and a for audio
+    // showObj.cover = podcastCover; // must have "image/*" MIME type
+    // showObj.master_network = "EVM"; // currently constant
+    // showObj.network = "ethereum"; // currently constant
+    // showObj.token = "eth"; // currently constant
+    // showObj.label = "test"; // check N.B
+    // showObj.jwk_n = arconnectPubKey;
+    // showObj.txid = $PAYMENT_TXID; // check N.B
+    // showObj.sig = signature // check N.B
+
+    // // upload cover, send all to Arweave
+    // let cover = await processFile(podcastCover);
+    // let showObjSize = JSON.stringify(showObj).length;
+    // let bytes = cover.byteLength + showObjSize + coverFileType.length;
+    // setIsUploading(true);
+    // if ((await userHasEnoughAR(t, bytes, SHOW_UPLOAD_FEE)) === "all good") {
+    //   await uploadToArweave(cover, coverFileType, showObj);
+    // } else {
+    //   console.log("upload failed");
+    //   setIsUploading(false);
+    // }
   };
 
   const languageOptions = () => {
@@ -319,6 +346,8 @@ export default function UploadPodcastView() {
   }, [croppedAreaPixels, rotation]);
 
   const [showCrop, setShowCrop] = useState(false)
+
+  handleShowUpload()
 
   return (
     <div className="text-zinc-400 h-full">

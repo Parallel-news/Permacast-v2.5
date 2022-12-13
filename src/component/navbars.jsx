@@ -21,6 +21,8 @@ import { Searchbar } from "../pages/search";
 import { appContext } from "../utils/initStateGen";
 import LANGUAGES from "../utils/languages";
 import { UploadCount } from "./upload_count";
+import { useRecoilState } from "recoil";
+import { ContentType } from "../atoms";
 
 export function Sidenav() {
   const { t, i18n } = useTranslation();
@@ -32,6 +34,7 @@ export function Sidenav() {
   };
 
   const appState = useContext(appContext);
+  const [contentType_, setContentType_] = useRecoilState(ContentType)
   const [showUploadOptions,setUploadOptions] = useState(false)
   const switchView = (i) => {
     history.push("/" + i);
@@ -95,12 +98,14 @@ export function Sidenav() {
               <li>
                 <span onClick={() => {
                   switchView("uploadpodcast")
+                  setContentType_('a')
                 }}
                 >Audio</span>
               </li>
               <li>
                 <span onClick={() => {
-                  switchView("uploadvideoshow")
+                  switchView("uploadpodcast")
+                  setContentType_('v')
               }}
               >Video</span>
               </li>
