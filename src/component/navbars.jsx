@@ -22,7 +22,7 @@ import { appContext } from "../utils/initStateGen";
 import LANGUAGES from "../utils/languages";
 import { UploadCount } from "./upload_count";
 import { useRecoilState } from "recoil";
-import { ContentType } from "../atoms";
+import { ContentType, isFullscreen } from "../atoms";
 
 export function Sidenav() {
   const { t, i18n } = useTranslation();
@@ -41,6 +41,8 @@ export function Sidenav() {
   };
   const cond = (i) => location.pathname === i;
 
+  const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
+
   return (
     <div className="h-full pt-[42px]">
       <div className=" grid rows-5 gap-9 text-zinc-400">
@@ -49,7 +51,11 @@ export function Sidenav() {
         </button>
         <button
           className="w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200"
-          onClick={() => switchView("")}
+          onClick={() => 
+          {
+            setIsFullscreen_(false)
+            switchView("")
+          }}
           style={{ color: cond("/") ? "white" : "" }}
           disabled={cond("/") ? true : false}
         >
@@ -69,6 +75,7 @@ export function Sidenav() {
           <button
             tabIndex="0"
             className="w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200"
+            
           >
             <LanguageIcon />
           </button>
@@ -78,7 +85,11 @@ export function Sidenav() {
           >
             {LANGUAGES.map((l) => (
               <li key={l.code}>
-                <span onClick={() => changeLanguage(l.code)}>{l.name}</span>
+                <span 
+                onClick={() => {
+                  setIsFullscreen_(false)
+                  changeLanguage(l.code)
+                }}>{l.name}</span>
               </li>
             ))}
           </ul>
@@ -97,6 +108,7 @@ export function Sidenav() {
           >
               <li>
                 <span onClick={() => {
+                  setIsFullscreen_(false)
                   switchView("uploadpodcast")
                   setContentType_('a')
                 }}
@@ -104,6 +116,7 @@ export function Sidenav() {
               </li>
               <li>
                 <span onClick={() => {
+                  setIsFullscreen_(false)
                   switchView("uploadpodcast")
                   setContentType_('v')
               }}

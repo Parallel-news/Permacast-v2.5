@@ -15,6 +15,11 @@ export const switchFocus = atom({
     default: true,
 });
 
+export const isFullscreen = atom({
+    key: 'isFullscreen',
+    default: false,
+});
+
 export const primaryData = atom({
     key: 'primaryData',
     default: {},

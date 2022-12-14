@@ -17,8 +17,9 @@ import Home from './pages/home.jsx';
 import { fetchPodcastTitles, convertToEpisode, convertToPodcast, convertSearchItem, sortPodcasts, getPodcasts, getCreator } from './utils/podcast.js';
 import { appContext } from './utils/initStateGen.js';
 import { MESON_ENDPOINT } from './utils/arweave.js';
-import { RecoilRoot } from 'recoil';
+import { RecoilRoot, useRecoilState } from 'recoil';
 import VideoModal from './component/video_modal.jsx';
+import { isFullscreen } from './atoms/index.js';
 
 export default function App() {
   const { t } = useTranslation();
@@ -28,7 +29,7 @@ export default function App() {
   const [selection, setSelection] = useState(0);
 
   const videoRef = useRef();
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
   const [player, setPlayer] = useState();
   const [isPaused, setIsPaused] = useState();
   const [currentEpisode, setCurrentEpisode] = useState({ contentTx: 'null', pid: 'null', eid: 'null', number: '1' });
@@ -56,7 +57,7 @@ export default function App() {
 
     queue.addEventListener('click', () => setQueueVisible(visible => !visible));
     paused.addEventListener('click', () => setIsPaused(paused => !paused));
-    fullscreen.addEventListener('click', () => setIsFullscreen(isFullscreen => !isFullscreen));
+    fullscreen.addEventListener('click', () => setIsFullscreen_(isFullscreen_ => !isFullscreen_));
   }, [player]);
 
   const [creatorsLoading, setCreatorsLoading] = useState(true)
@@ -256,13 +257,13 @@ export default function App() {
   // re-write getAverageColor functions to use in-memory images (?)
 
   return (
-    <RecoilRoot>
+    <>
       <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
         <appContext.Provider value={appState}>
           <Router>
             <div className="flex h-screen">
               <div className="fixed z-[60] bottom-0 w-full">
-                <div className={`relative podcast-player rounded-t-xl backdrop-blur-sm ${isFullscreen ? "bg-zinc-900/60" : "bg-zinc-900"}`}>
+                <div className={`relative podcast-player rounded-t-xl backdrop-blur-sm ${isFullscreen_ ? "bg-zinc-900/60" : "bg-zinc-900"}`}>
                   {/* {!loading && currentEpisode ? <Player episode={currentEpisode} />: <div>Loading...</div>} */}
                 </div>
               </div>
@@ -277,7 +278,7 @@ export default function App() {
                   {!loading ? <EpisodeQueue /> : <div className="h-full w-full animate-pulse bg-gray-900/30"></div>}
                 </div>
               </div>
-              {isFullscreen && <Fullscreen episode={currentEpisode} number={currentEpisode?.number || 1} />}
+              {isFullscreen_ && <Fullscreen episode={currentEpisode} number={currentEpisode?.number || 1} />}
               <Background className="w-screen overflow-scroll">
                 <div className="ml-8 pr-8 pt-9">
                   <div className="mb-10">
@@ -332,6 +333,6 @@ export default function App() {
           </Router>
         </appContext.Provider>
       </div>
-    </RecoilRoot>
+    </>
   );
 }
