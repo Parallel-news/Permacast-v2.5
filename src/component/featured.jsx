@@ -237,8 +237,18 @@ export function RecentlyAdded() {
   const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
   const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
   const [episodes, setEpisodes] = useState([])
+  const createdAt_ = (a, b) => {
+    if(a.uploadedAt < b.uploadedAt){
+      return 1
+    }else if(a.uploadedAt > b.uploadedAt){
+      return -1
+    }else{
+      return 0
+    }
+  }
   useEffect(() => {
-    const data_ = primaryData_.podcasts.filter((obj) => {
+    const data_ = primaryData_.podcasts
+    .filter((obj) => {
       if(switchFocus_){
         return obj.contentType === 'audio/'
       }else{
@@ -248,13 +258,14 @@ export function RecentlyAdded() {
     data_.forEach((obj) => {
       setEpisodes(episodes.concat(obj.episodes))
     })
-
+    
   }, [])
   return (
     <div className="">
       <h2 className="text-zinc-400 mb-4">{t("home.recentlyadded")}</h2>
       <div className="grid grid-rows-3 gap-y-4 text-zinc-100">
-        {episodes.map((episode, index) => (
+        {episodes.sort(createdAt_)
+        .map((episode, index) => (
           <div
             key={index}
             className="border border-zinc-800 rounded-3xl p-3 w-full"
