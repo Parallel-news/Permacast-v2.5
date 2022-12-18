@@ -12,17 +12,16 @@ export async function getAllData() {
 }
 
 export default async function handler(req, res) {
-    console.log(req)
-    // try {
-    //     const data = await axios.post(`/api/transactions?token=${token}`, {
-    //         functionId: contractAddress,
-    //         inputs: [req],
-    //     }, {})
-    //     res.status(200).json(data.data)
-    // } catch (error) {
-    //     console.error(error)
-    //     return res.status(error.status || 500).end(error.message)
-    // }
+    try {
+        const data = await axios.post(`/api/transactions?token=${token}`, {
+            functionId: contractAddress,
+            inputs: [req],
+        }, {})
+        res.status(200).json(data.data)
+    } catch (error) {
+        console.error(error)
+        return res.status(error.status || 500).end(error.message)
+    }
 }
 
 

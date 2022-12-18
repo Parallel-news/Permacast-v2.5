@@ -266,6 +266,7 @@ export default function UploadPodcastView() {
     showObj.email = podcastEmail_;
     showObj.contentType = contentType_; // v for video and a for audio
     showObj.cover = podcastCover_; // must have "image/*" MIME type
+    showObj.cover = '5QzEMAZJvCQmCL2TJpLo789MTforaJBFKKnqBNWg0sA';
     showObj.master_network = "EVM"; // currently constant
     showObj.network = "ethereum"; // currently constant
     showObj.token = "eth"; // currently constant
@@ -418,9 +419,12 @@ export default function UploadPodcastView() {
       <h1 className="text-2xl tracking-wider text-white">
         {t("uploadshow.title")}
       </h1>
-      <div className="w-[100px] h-[30px] bg-white/50 rounded-md cursor-pointer" onClick={() => {
-        handleExm()
-      }} />
+      <div
+        className="w-[100px] h-[30px] bg-white/50 rounded-md cursor-pointer"
+        onClick={() => {
+          handleExm();
+        }}
+      />
       <div className="form-control">
         <form
           onSubmit={
@@ -545,7 +549,9 @@ export default function UploadPodcastView() {
                   type="checkbox"
                   className="checkbox checkbox-ghost bg-yellow mr-2"
                   onChange={(e) => {
-                    setPodcastExplicit_(e.target.value);
+                    e.target.value === "on"
+                      ? setPodcastExplicit_("yes")
+                      : setPodcastExplicit_("no");
                   }}
                 />
                 <span className="label-text cursor-pointer">
@@ -594,7 +600,6 @@ export default function UploadPodcastView() {
           </div>
         </form>
       </div>
-      
     </div>
   );
 }
