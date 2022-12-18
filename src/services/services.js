@@ -12,16 +12,18 @@ export async function getAllData() {
 }
 
 export default async function handler(req, res) {
-    try {
-        const data = await axios.post(`/api/transactions?token=${token}`, {
-            functionId: contractAddress,
-            inputs: [{
-                "input": JSON.stringify({ function: "reserve", evm_address: req.body.evm_address, ans: req.body.ans })
-            }],
-        }, {})
-        res.status(200).json(data.data)
-    } catch (error) {
-        console.error(error)
-        return res.status(error.status || 500).end(error.message)
-    }
+    console.log(req)
+    // try {
+    //     const data = await axios.post(`/api/transactions?token=${token}`, {
+    //         functionId: contractAddress,
+    //         inputs: [req],
+    //     }, {})
+    //     res.status(200).json(data.data)
+    // } catch (error) {
+    //     console.error(error)
+    //     return res.status(error.status || 500).end(error.message)
+    // }
 }
+
+
+

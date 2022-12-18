@@ -29,6 +29,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { ContentType, uploadPercent } from "../atoms";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../utils/croppedImage";
+import handler from "../services/services";
 
 const ardb = new ArDB(arweave);
 
@@ -41,7 +42,7 @@ export default function UploadPodcastView() {
   const [cost, setCost] = useState(0);
   const isLoggedIn = appState.user.address;
   let finalShowObj = {};
-  const [contentType_, setContentType_] = useRecoilState(ContentType)
+  const [contentType_, setContentType_] = useRecoilState(ContentType);
   const podcastCoverRef = useRef();
   const { t, i18n } = useTranslation();
   const currentLanguage = LANGUAGES.find(
@@ -51,6 +52,15 @@ export default function UploadPodcastView() {
   const categories = currentLanguage?.categories || [];
 
   const setPercent = useSetRecoilState(uploadPercent);
+
+  const [podcastDescription_, setPodcastDescription_] = useState(null);
+  const [podcastAuthor_, setPodcastAuthor_] = useState(null);
+  const [podcastEmail_, setPodcastEmail_] = useState(null);
+  const [podcastCategory_, setPodcastCategory_] = useState(null);
+  const [podcastName_, setPodcastName_] = useState("");
+  const [podcastCover_, setPodcastCover_] = useState(null);
+  const [podcastLanguage_, setPodcastLanguage_] = useState(null);
+  const [podcastExplicit_, setPodcastExplicit_] = useState(false);
 
   const uploadShow = async (show) => {
     Swal.fire({
@@ -218,8 +228,8 @@ export default function UploadPodcastView() {
           //   confirmButtonText: "Continue",
           //   customClass: "font-mono",
           // });
-          setInputImg(URL.createObjectURL(event.target.files[0]))
-          setShowCrop(true)
+          setInputImg(URL.createObjectURL(event.target.files[0]));
+          setShowCrop(true);
         } else {
           setImg(URL.createObjectURL(event.target.files[0]));
         }
@@ -227,64 +237,79 @@ export default function UploadPodcastView() {
     }
   };
 
-  const handleShowUpload = async (event) => {
+  const handleExm = async () => {
+    const arconnectPubKey = await window.arweaveWallet.getActivePublicKey();
+    if (!arconnectPubKey) throw new Error("ArConnect public key not found");
 
-    const arconnectPubKey = await window.arweaveWallet.getActivePublicKey();  
-      if (!arconnectPubKey) throw new Error("ArConnect public key not found");
+    const data = new TextEncoder().encode(
+      `my pubkey for DL ARK is: ${arconnectPubKey}`
+    );
+    const signature = await window.arweaveWallet.signature(data, {
+      name: "RSA-PSS",
+      saltLength: 32,
+    });
+    const signedBase = Buffer.from(signature).toString("base64");
+    console.log("signedBase", signedBase);
+    if (!signedBase) throw new Error("ArConnect signature not found");
+    console.log(arconnectPubKey);
 
-      const data = new TextEncoder().encode(`my pubkey for DL ARK is: ${arconnectPubKey}`);
-      const signature = await window.arweaveWallet.signature(data, {
-        name: "RSA-PSS",
-        saltLength: 32,
-      });
-      // const signedBase = Buffer.from(signature).toString("base64");
-      // console.log("signedBase", signedBase);
-      // if (!signedBase) throw new Error("ArConnect signature not found");
-      // console.log(arconnectPubKey)
-      console.log(signature)
-    //   event.preventDefault();
-    // // extract attrs from form
-    // const showObj = {};
-    // const podcastName = event.target.podcastName.value;
-    // const podcastDescription = event.target.podcastDescription.value;
-    // const podcastCover = event.target.podcastCover.files[0];
-    // const podcastAuthor = event.target.podcastAuthor.value;
-    // const podcastEmail = event.target.podcastEmail.value;
-    // const podcastCategory = event.target.podcastCategory.value;
-    // const podcastExplicit = event.target.podcastExplicit.checked ? "yes" : "no";
-    // const podcastLanguage = event.target.podcastLanguage.value;
-    // const coverFileType = podcastCover.type;
+    const showObj = {};
+
     // // add attrs to input for SWC
+    showObj.function = "createPodcast";
+    showObj.name = podcastName_;
+    showObj.desc = podcastDescription_;
+    showObj.author = podcastAuthor_;
+    showObj.lang = podcastLanguage_;
+    showObj.isExplicit = podcastExplicit_;
+    showObj.categories = podcastCategory_;
+    showObj.email = podcastEmail_;
+    showObj.contentType = contentType_; // v for video and a for audio
+    showObj.cover = podcastCover_; // must have "image/*" MIME type
+    showObj.master_network = "EVM"; // currently constant
+    showObj.network = "ethereum"; // currently constant
+    showObj.token = "eth"; // currently constant
+    showObj.label = "test"; // check N.B
+    showObj.jwk_n = arconnectPubKey;
+    showObj.txid =
+      "0x600e8af49ef97e9015d935dd2b0b00c4acca6f9bb518f80e96ed7b7f950903a9"; // check N.B
+    showObj.sig = signedBase; // check N.B
 
-    // showObj.function = "createPodcast";
-    // showObj.name = podcastName;
-    // showObj.desc = podcastDescription;
-    // showObj.author = podcastAuthor;
-    // showObj.lang = podcastLanguage;
-    // showObj.isExplicit = podcastExplicit;
-    // showObj.categories = podcastCategory;
-    // showObj.email = podcastEmail;
-    // showObj.contentType = contentType_; // v for video and a for audio
-    // showObj.cover = podcastCover; // must have "image/*" MIME type
-    // showObj.master_network = "EVM"; // currently constant
-    // showObj.network = "ethereum"; // currently constant
-    // showObj.token = "eth"; // currently constant
-    // showObj.label = "test"; // check N.B
-    // showObj.jwk_n = arconnectPubKey;
-    // showObj.txid = $PAYMENT_TXID; // check N.B
-    // showObj.sig = signature // check N.B
+    handler(showObj);
+  };
 
-    // // upload cover, send all to Arweave
-    // let cover = await processFile(podcastCover);
-    // let showObjSize = JSON.stringify(showObj).length;
-    // let bytes = cover.byteLength + showObjSize + coverFileType.length;
-    // setIsUploading(true);
-    // if ((await userHasEnoughAR(t, bytes, SHOW_UPLOAD_FEE)) === "all good") {
-    //   await uploadToArweave(cover, coverFileType, showObj);
-    // } else {
-    //   console.log("upload failed");
-    //   setIsUploading(false);
-    // }
+  const handleShowUpload = async (event) => {
+    event.preventDefault();
+    // extract attrs from form
+    const showObj = {};
+    const podcastName = event.target.podcastName.value;
+    const podcastDescription = event.target.podcastDescription.value;
+    const podcastCover = event.target.podcastCover.files[0];
+    const podcastAuthor = event.target.podcastAuthor.value;
+    const podcastEmail = event.target.podcastEmail.value;
+    const podcastCategory = event.target.podcastCategory.value;
+    const podcastExplicit = event.target.podcastExplicit.checked ? "yes" : "no";
+    const podcastLanguage = event.target.podcastLanguage.value;
+    const coverFileType = podcastCover.type;
+    // add attrs to input for SWC
+    showObj.name = podcastName;
+    showObj.desc = podcastDescription;
+    showObj.author = podcastAuthor;
+    showObj.email = podcastEmail;
+    showObj.category = podcastCategory;
+    showObj.isExplicit = podcastExplicit;
+    showObj.lang = podcastLanguage;
+    // upload cover, send all to Arweave
+    let cover = await processFile(podcastCover);
+    let showObjSize = JSON.stringify(showObj).length;
+    let bytes = cover.byteLength + showObjSize + coverFileType.length;
+    setIsUploading(true);
+    if ((await userHasEnoughAR(t, bytes, SHOW_UPLOAD_FEE)) === "all good") {
+      await uploadToArweave(cover, coverFileType, showObj);
+    } else {
+      console.log("upload failed");
+      setIsUploading(false);
+    }
   };
 
   const languageOptions = () => {
@@ -318,8 +343,9 @@ export default function UploadPodcastView() {
     isPodcastCoverSquared(e);
   };
 
-  const [inputImg, setInputImg] =
-    useState("https://repository-images.githubusercontent.com/438897789/72714beb-d2b9-46e0-ad82-b03ddc78083f");
+  const [inputImg, setInputImg] = useState(
+    "https://repository-images.githubusercontent.com/438897789/72714beb-d2b9-46e0-ad82-b03ddc78083f"
+  );
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [rotation, setRotation] = useState(0);
   const [zoom, setZoom] = useState(1);
@@ -339,56 +365,69 @@ export default function UploadPodcastView() {
       );
       console.log("donee", { croppedImage });
       setCroppedImage(croppedImage);
-      setImg(croppedImage)
+      setImg(croppedImage);
     } catch (e) {
       console.error(e);
     }
   }, [croppedAreaPixels, rotation]);
 
-  const [showCrop, setShowCrop] = useState(false)
+  const [showCrop, setShowCrop] = useState(false);
 
-  handleShowUpload()
+  // handleShowUpload();
 
   return (
     <div className="text-zinc-400 h-full">
       <UploadsList t={t} />
-      {
-        showCrop
-        ?
+      {showCrop ? (
         <div
-        className={`absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center backdrop-blur-md`}
-      >
-        <div
-          className={`relative w-[800px] h-[400px] rounded-[6px] overflow-hidden`}
+          className={`absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center backdrop-blur-md`}
         >
-          <Cropper
-            image={inputImg}
-            crop={crop}
-            rotation={rotation}
-            zoom={zoom}
-            aspect={1}
-            onCropChange={setCrop}
-            onRotationChange={setRotation}
-            onCropComplete={onCropComplete}
-            onZoomChange={setZoom}
-          />
+          <div
+            className={`relative w-[800px] h-[400px] rounded-[6px] overflow-hidden`}
+          >
+            <Cropper
+              image={inputImg}
+              crop={crop}
+              rotation={rotation}
+              zoom={zoom}
+              aspect={1}
+              onCropChange={setCrop}
+              onRotationChange={setRotation}
+              onCropComplete={onCropComplete}
+              onZoomChange={setZoom}
+            />
+          </div>
+          <div
+            className={`min-w-[50px] min-h-[10px] rounded-[4px] bg-black/10 hover:bg-black/20 border-[1px] border-solid border-white/10 m-2 p-1 px-2 cursor-pointer flex flex-col justify-center items-center`}
+            onClick={async () => {
+              showCroppedImage();
+              setShowCrop(false);
+            }}
+          >
+            <p
+              className={`flex flex-col justify-center items-center text-white/60`}
+            >
+              Crop Selection
+            </p>
+            {/* <p className={`flex flex-col justify-center items-center`}></p> */}
+          </div>
         </div>
-        <div className={`min-w-[50px] min-h-[10px] rounded-[4px] bg-black/10 hover:bg-black/20 border-[1px] border-solid border-white/10 m-2 p-1 px-2 cursor-pointer flex flex-col justify-center items-center`} onClick={() => {
-          showCroppedImage()
-          setShowCrop(false)
-        }}>
-        <p className={`flex flex-col justify-center items-center text-white/60`}>Crop Selection</p>
-        {/* <p className={`flex flex-col justify-center items-center`}></p> */}
-      </div>
-      </div>
-      :
-      <></>
-}
+      ) : (
+        <></>
+      )}
       <h1 className="text-2xl tracking-wider text-white">
         {t("uploadshow.title")}
       </h1>
+      <div className="w-[100px] h-[30px] bg-white/50 rounded-md cursor-pointer" onClick={() => {
+        handleExm()
+      }} />
       <div className="form-control">
-        <form onSubmit={handleShowUpload}>
+        <form
+          onSubmit={
+            () => {}
+            // handleShowUpload
+          }
+        >
           <input
             required
             type="file"
@@ -434,6 +473,9 @@ export default function UploadPodcastView() {
                     pattern=".{2,500}"
                     title="Between 2 and 500 characters"
                     type="text"
+                    onChange={(e) => {
+                      setPodcastName_(e.target.value);
+                    }}
                     name="podcastName"
                     required
                   />
@@ -446,6 +488,9 @@ export default function UploadPodcastView() {
                     title="Between 10 and 15000 characters"
                     name="podcastDescription"
                     required
+                    onChange={(e) => {
+                      setPodcastDescription_(e.target.value);
+                    }}
                   />
                 </div>
               </div>
@@ -454,6 +499,9 @@ export default function UploadPodcastView() {
                   className="input input-secondary w-1/2 py-3 px-5 bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
                   placeholder={t("uploadshow.author")}
                   name="podcastAuthor"
+                  onChange={(e) => {
+                    setPodcastAuthor_(e.target.value);
+                  }}
                 />
               </div>
               <div className="mb-10 ">
@@ -462,6 +510,9 @@ export default function UploadPodcastView() {
                   placeholder="Email..."
                   type={t("uploadshow.email")}
                   name="podcastEmail"
+                  onChange={(e) => {
+                    setPodcastEmail_(e.target.value);
+                  }}
                 />
               </div>
               <div className="mb-5">
@@ -469,6 +520,9 @@ export default function UploadPodcastView() {
                   className="select select-secondary w-1/2 py-3 px-5 font-light bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
                   id="podcastCategory"
                   name="category"
+                  onChange={(e) => {
+                    setPodcastCategory_(e.target.value);
+                  }}
                 >
                   {categoryOptions()}
                 </select>
@@ -478,6 +532,9 @@ export default function UploadPodcastView() {
                   className="select select-secondary w-1/2 py-3 px-5 font-light	bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
                   id="podcastLanguage"
                   name="language"
+                  onChange={(e) => {
+                    setPodcastLanguage_(e.target.value);
+                  }}
                 >
                   {languageOptions()}
                 </select>
@@ -487,6 +544,9 @@ export default function UploadPodcastView() {
                   id="podcastExplicit"
                   type="checkbox"
                   className="checkbox checkbox-ghost bg-yellow mr-2"
+                  onChange={(e) => {
+                    setPodcastExplicit_(e.target.value);
+                  }}
                 />
                 <span className="label-text cursor-pointer">
                   {t("uploadshow.explicit")}
@@ -514,7 +574,11 @@ export default function UploadPodcastView() {
                         {t("uploadshow.uploading")}
                       </button>
                     ) : (
-                      <button type="submit" className="btn btn-secondary">
+                      <button
+                        type="submit"
+                        className="btn btn-secondary"
+                        onClick={() => {}}
+                      >
                         {t("uploadshow.upload")}
                         <BsArrowRightShort className="w-7 h-7" />
                       </button>
@@ -530,6 +594,7 @@ export default function UploadPodcastView() {
           </div>
         </form>
       </div>
+      
     </div>
   );
 }
