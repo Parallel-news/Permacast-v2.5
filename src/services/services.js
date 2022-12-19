@@ -15,14 +15,19 @@ export default async function handler(req, res) {
     try {
         const data = await axios.post(`/api/transactions?token=${token}`, {
             functionId: contractAddress,
-            inputs: [req],
-        }, {})
-        res.status(200).json(data.data)
+            inputs: [{
+                'input': JSON.stringify({
+                    ...req.body
+                }),
+            }]
+        }).then((result) => {
+            console.log(result.data)
+        })
+        console.log(res)
+        // res.status(200).json(data.data)
+        // console.log(data.data)
     } catch (error) {
         console.error(error)
         return res.status(error.status || 500).end(error.message)
     }
 }
-
-
-
