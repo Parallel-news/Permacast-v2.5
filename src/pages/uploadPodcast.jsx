@@ -260,9 +260,9 @@ export default function UploadPodcastView() {
     showObj.name = podcastName_;
     showObj.desc = podcastDescription_;
     showObj.author = podcastAuthor_;
-    showObj.lang = podcastLanguage_;
+    showObj.lang = 'en' // podcastLanguage_;
     showObj.isExplicit = podcastExplicit_;
-    showObj.categories = podcastCategory_;
+    showObj.categories = 'True Crime' // podcastCategory_;
     showObj.email = podcastEmail_;
     showObj.contentType = contentType_; // v for video and a for audio
     showObj.cover = podcastCover_; // must have "image/*" MIME type

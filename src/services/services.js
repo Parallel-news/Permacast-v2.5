@@ -12,6 +12,7 @@ export async function getAllData() {
 }
 
 export default async function handler(req, res) {
+    console.log(JSON.stringify(req))
     try {
         const data = await axios.post(`/api/transactions?token=${token}`, {
             functionId: contractAddress,
