@@ -261,8 +261,8 @@ export default function Podcast(props) {
 
       <PodcastHeader
         thePodcast={thePodcast}
-        isOwner={true}
-        // isOwner={isOwner}
+        // isOwner={true}
+        isOwner={isOwner}
         loading={loading}
         currentPodcastColor={currentPodcastColor}
       />
