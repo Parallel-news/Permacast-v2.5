@@ -2,12 +2,18 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRecoilState } from "recoil";
 import { videoSelection } from "../atoms";
+import { useEffect } from "react";
 
 export default function VideoModal() {
   // Recoil atom, stores focus data..
   const [vs_, setVS_] = useRecoilState(videoSelection);
 
-  let playerObj = document.getElementById("my-player");
+  
+  useEffect(() => {
+    const playerObj = document.getElementById("my-player");
+    playerObj.src = vs_[0]
+  }, [vs_])
+  const playerObj = document.getElementById("my-player");
 
   return (
     <div
@@ -47,13 +53,13 @@ export default function VideoModal() {
             preload="auto"
             poster={vs_[1].cover}
             data-setup="{}"
-            className="rounded-[4px]"
+            className="rounded-[4px] w-[700px]"
           >
             <source
               src={
                 "https://mdn.github.io/learning-area/javascript/apis/video-audio/finished/video/sintel-short.webm"
               }
-              type="video/webm"
+              type="video/*"
             ></source>
             <p class="vjs-no-js">
               To view this video please enable JavaScript, and consider
