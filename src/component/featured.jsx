@@ -172,7 +172,7 @@ export function FeaturedPodcast({ podcast }) {
     <>
       <div className={`mt-4 rounded-3xl text-white/30 relative overflow-hidden`}>
           <img src={`https://arweave.net/${cover}`} className={`absolute top-0 right-0 h-full opacity-80 object-cover`}/>
-          <div className={`w-full h-full bg-black/20 backdrop-blur-md absolute top-0 right-0`}/>
+          <div className={`w-full h-full bg-black/20 backdrop-blur-lg absolute top-0 right-0`}/>
         <div className="h-1/6 w-full px-5 pb-2 cursor-pointer relative">
           <div
             onClick={() => {

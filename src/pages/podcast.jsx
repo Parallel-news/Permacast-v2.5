@@ -72,11 +72,9 @@ export default function Podcast(props) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const loadEpisodes = async (podcast, episodes) => {
-    console.log(podcast);
     const episodeList = [];
     for (let i in episodes) {
       let e = episodes[i];
-      // console.log("episode", e)
       if (e.eid !== "FqPtfefS8QNGWdPcUcrEZ0SXk_IYiOA52-Fu6hXcesw") {
         episodeList.push(
           <div
@@ -198,12 +196,6 @@ export default function Podcast(props) {
   };
 
   useEffect(() => {
-    console.log(
-      primaryData_.podcasts.filter((obj) => {
-        return obj.pid === props.match.params.podcastId;
-      })[0].episodes
-    );
-
     setSecondaryData_(
       primaryData_.podcasts.filter((obj) => {
         return obj.pid === props.match.params.podcastId;
@@ -271,10 +263,9 @@ export default function Podcast(props) {
       {/* {loading && <h5 className="p-5">{t("loadingepisodes")}</h5>} */}
 
       <div className="w-full">
-        
         {switchFocus_
           ? videoShows_.length > 0 &&
-          videoShows_.map((e, i) => (
+            videoShows_.map((e, i) => (
               <div
                 key={i}
                 className="mb-6 p-2.5 border rounded-xl border-zinc-600"
@@ -341,7 +332,10 @@ export default function Podcast(props) {
                         className="cursor-pointer rounded-[34px] p-3 bg-black/40"
                         onClick={() => {
                           // Minor video control..
-                          if (playerObj_.src === 'https://arweave.net/'+e.contentTx) {
+                          if (
+                            playerObj_.src ===
+                            "https://arweave.net/" + e.contentTx
+                          ) {
                             if (isPlaying) {
                               playerObj_.pause();
                               setIsPlaying(false);
@@ -351,7 +345,8 @@ export default function Podcast(props) {
                             }
                           } else {
                             // setCurrentVideo(e)
-                            playerObj_.src = 'https://arweave.net/'+e.contentTx;
+                            playerObj_.src =
+                              "https://arweave.net/" + e.contentTx;
                             playerObj_.pause();
                           }
                         }}
@@ -422,7 +417,7 @@ const PodcastHeader = ({
         <div className="pb-14 flex flex-col justify-center md:flex-row md:items-center w-full">
           <img
             className="w-40 cursor-pointer rounded-sm mx-auto md:mx-0 md:mr-8"
-            src={'https://arweave.net/'+secondaryData_?.cover}
+            src={"https://arweave.net/" + secondaryData_?.cover}
             alt={secondaryData_.podcastName}
           />
           <div className="col-span-2 my-3 text-zinc-100 w-full md:w-4/6 md:mr-2">

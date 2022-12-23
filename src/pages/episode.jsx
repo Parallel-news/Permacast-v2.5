@@ -41,34 +41,9 @@ export default function Episode(props) {
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
   const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
   const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
+  const [videoShows_, setVideoShows_] = useState([]);
 
-  console.log(
-    primaryData_.podcasts.filter((obj) => {
-      return obj.pid === podcastId;
-    })[0].cover
-  );
   useEffect(() => {
-    // setLoading(true);
-    // async function fetchData() {
-    // setEpisode(null);
-    // setNextEpisode(null);
-    // setRgb(null);
-    // const podcasts = await getPodcasts();
-    // const foundPodcast = podcasts?.find(p => p.pid === podcastId);
-    // if (!foundPodcast) return;
-    // const episodes = foundPodcast?.episodes //await getPodcastEpisodes(podcastId);
-    // const foundEpisode = episodes?.find((episode, index) => index === episodeNumber - 1);
-    // if (!foundEpisode) return;
-    // const foundNextEpisode = episodes?.find((episode, index) => index === episodeNumber);
-    // const convertedEpisode = foundEpisode && await convertToEpisode(foundPodcast, foundEpisode)
-    // const convertedNextEpisode = foundNextEpisode && await convertToEpisode(foundPodcast, foundNextEpisode)
-    // setEpisode(convertedEpisode);
-    // setNextEpisode(convertedNextEpisode);
-    // setRgb(getButtonRGBs(convertedEpisode?.rgb));
-    // setCurrentPodcastColor(convertedEpisode?.rgb)
-    // }
-    // fetchData()
-    // setLoading(false);
     setEpisode(
       primaryData_.podcasts
         .filter((obj) => {
@@ -78,12 +53,64 @@ export default function Episode(props) {
           return obj.eid === episodeNumber;
         })[0]
     );
-  }, [episodeNumber]);
+
+    setSecondaryData_(
+      primaryData_.podcasts.filter((obj) => {
+        return obj.pid === props.match.params.podcastId;
+      })[0]
+    );
+
+    // setVideoShows_(
+    //   primaryData_.podcasts.filter((obj) => {
+    //     return obj.pid === props.match.params.podcastId;
+    //   })[0].episodes
+    // );
+
+    const playerObj_ = document.getElementById("hidden-player");
+      // playerObj_.pause();
+      console.log(typeof playerObj_)
+      // playerObj_.src = 'https://arweave.net/6DGL3pxXomRkcgbuUAKqXCdtFSgUuiXYcB9vM8OeFZc'
+      console.log(playerObj_)
+  }, []);
+
+  const playerObj_ = document.getElementById("hidden-player");
+  // playerObj_.src = "https://arweave.net/" + secondaryData_.episodes.filter((obj) => {
+  //   return obj.eid === episodeNumber;
+  // })[0].contentTx
 
   return (
     <div>
       {episode ? (
         <div>
+          <div
+            className={`w-full mb-6 bg-black rounded-[2px] transition-all ${
+              switchFocus_
+                ? "opacity-0 h-[0px] duration-200"
+                : "opacity-100 h-[607.50px] duration-200"
+            }`}
+          >
+            <video
+              id="hidden-player"
+              class="video-js"
+              controls
+              preload="auto"
+              poster={"https://arweave.net/" + secondaryData_.cover}
+              data-setup="{}"
+              className="rounded-[4px] w-full h-full"
+            >
+              <source src={"https://arweave.net/6DGL3pxXomRkcgbuUAKqXCdtFSgUuiXYcB9vM8OeFZc"} type="video/*"></source>
+              <p class="vjs-no-js">
+                To view this video please enable JavaScript, and consider
+                upgrading to a web browser that
+                <a
+                  href="https://videojs.com/html5-video-support/"
+                  target="_blank"
+                >
+                  supports HTML5 video
+                </a>
+              </p>
+            </video>
+          </div>
           <div className="flex flex-col md:flex-row items-center">
             <img
               src={
@@ -107,13 +134,14 @@ export default function Episode(props) {
                     rgb: rgb?.color,
                   }}
                 >
-                  {t("episode.number")} {
-                    primaryData_.podcasts.filter((obj) => {
+                  {t("episode.number")}{" "}
+                  {primaryData_.podcasts
+                    .filter((obj) => {
                       return obj.pid === podcastId;
-                    })[0].episodes.findIndex((obj) => {
-                      return obj.eid === episodeNumber
-                    })+1
-                  }
+                    })[0]
+                    .episodes.findIndex((obj) => {
+                      return obj.eid === episodeNumber;
+                    }) + 1}
                 </div>
                 <div className={"text-sm text-gray-200"}>
                   {new Date(
@@ -176,20 +204,22 @@ export default function Episode(props) {
               <div className="p-2.5 border rounded-xl border-zinc-600">
                 <Track
                   episode={nextEpisode}
-                  episodeNumber={primaryData_.podcasts.filter((obj) => {
-                    return obj.pid === podcastId;
-                  })[0].episodes.findIndex((obj) => {
-                    return obj.eid === episodeNumber
-                  })+2}
+                  episodeNumber={
+                    primaryData_.podcasts
+                      .filter((obj) => {
+                        return obj.pid === podcastId;
+                      })[0]
+                      .episodes.findIndex((obj) => {
+                        return obj.eid === episodeNumber;
+                      }) + 2
+                  }
                 />
               </div>
             </div>
           )}
         </div>
       ) : (
-        <>
-          {/* TODO FIGURE THIS OUT */}
-        </>
+        <>{/* TODO FIGURE THIS OUT */}</>
       )}
     </div>
   );
