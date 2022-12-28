@@ -19,7 +19,7 @@ import { appContext } from './utils/initStateGen.js';
 import { MESON_ENDPOINT } from './utils/arweave.js';
 import { RecoilRoot, useRecoilState } from 'recoil';
 import VideoModal from './component/video_modal.jsx';
-import { isFullscreen } from './atoms/index.js';
+import { isFullscreen, primaryData, secondaryData } from './atoms/index.js';
 
 export default function App() {
   const { t } = useTranslation();
@@ -27,6 +27,9 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [appLoaded, setAppLoaded] = useState(false);
   const [selection, setSelection] = useState(0);
+
+  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData)
+  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData)
 
   const videoRef = useRef();
   const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
@@ -152,6 +155,7 @@ export default function App() {
       fetchData()
       setAppLoaded(true)
     }
+
   }, [])
 
   window.addEventListener('keydown', function (e) {
@@ -224,9 +228,14 @@ export default function App() {
       theme: 'dark',
       autoplay: true,
       audio: {
-        title: episode?.title || 'No track selected',
-        artist: episode?.creatorName || '',
-        cover: episode?.cover || 'https://arweave.net/LFG804jivA0mLagJdvbYEYx9VB_3Nivtz_dw4gN1PgY', // TODO: add a default cover
+        title: episode?.episodeName || 'Permacast not selected',
+        artist: primaryData_.podcasts === undefined ?
+          'Standby..' : primaryData_.podcasts.filter((obj_) => {
+            return obj_.episodes.filter((obj__) => {
+              return obj__.eid === episode.eid
+            })
+          })[0].author,
+        cover: episode?.cover || 'https://ih1.redbubble.net/image.2647292310.1736/st,small,845x845-pad,1000x1000,f8f8f8.jpg', // TODO: add a default cover
         color: episode?.color || 'text-[rgb(255,255,0)] bg-[rgb(255,255,0)]/20',
         src: `${MESON_ENDPOINT}/${episode?.contentTx}`,
       },
