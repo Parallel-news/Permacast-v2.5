@@ -235,7 +235,13 @@ export default function App() {
               return obj__.eid === episode.eid
             })
           })[0].author,
-        cover: episode?.cover || 'https://ih1.redbubble.net/image.2647292310.1736/st,small,845x845-pad,1000x1000,f8f8f8.jpg', // TODO: add a default cover
+        cover: episode?.cover || 
+        primaryData_.podcasts === undefined ?
+        'https://ih1.redbubble.net/image.2647292310.1736/st,small,845x845-pad,1000x1000,f8f8f8.jpg' : 'https://arweave.net/'+primaryData_.podcasts.filter((obj_) => {
+            return obj_.episodes.filter((obj__) => {
+              return obj__.eid === episode.eid
+            })
+          })[0].cover,
         color: episode?.color || 'text-[rgb(255,255,0)] bg-[rgb(255,255,0)]/20',
         src: `${MESON_ENDPOINT}/${episode?.contentTx}`,
       },
