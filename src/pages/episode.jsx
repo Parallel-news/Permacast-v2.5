@@ -66,14 +66,17 @@ export default function Episode(props) {
     //   })[0].episodes
     // );
 
-    const playerObj_ = document.getElementById("hidden-player");
-      // playerObj_.pause();
-      console.log(typeof playerObj_)
-      // playerObj_.src = 'https://arweave.net/6DGL3pxXomRkcgbuUAKqXCdtFSgUuiXYcB9vM8OeFZc'
-      console.log(playerObj_)
+    // playerObj_.pause();
+    // console.log(playerObj_)
   }, []);
-
   const playerObj_ = document.getElementById("hidden-player");
+  if(!(playerObj_ === null)){
+    playerObj_.src =
+    "https://arweave.net/" + episode.contentTx;
+  }
+  console.log(episode)
+    // console.log(playerObj_);
+
   // playerObj_.src = "https://arweave.net/" + secondaryData_.episodes.filter((obj) => {
   //   return obj.eid === episodeNumber;
   // })[0].contentTx
@@ -98,7 +101,12 @@ export default function Episode(props) {
               data-setup="{}"
               className="rounded-[4px] w-full h-full"
             >
-              <source src={"https://arweave.net/6DGL3pxXomRkcgbuUAKqXCdtFSgUuiXYcB9vM8OeFZc"} type="video/*"></source>
+              <source
+                src={
+                  "https://arweave.net/6DGL3pxXomRkcgbuUAKqXCdtFSgUuiXYcB9vM8OeFZc"
+                }
+                type="video/*"
+              ></source>
               <p class="vjs-no-js">
                 To view this video please enable JavaScript, and consider
                 upgrading to a web browser that
