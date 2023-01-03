@@ -39,7 +39,7 @@ export default function Home({ recentlyAdded, featuredPodcasts }) {
   const appState = useContext(appContext);
 
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
-  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
+  const [primaryData_, ] = useRecoilState(primaryData);
   const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
 
   const [recentlyAdded_, setRecentlyAdded_] = useState([]);
@@ -47,41 +47,39 @@ export default function Home({ recentlyAdded, featuredPodcasts }) {
     <div className="w-full h-[100px] rounded-3xl mt-2 animate-pulse bg-gray-300/30"></div>
   );
   useEffect(() => {
-    const abortContr = new AbortController()
+    console.log("home.jsx useEffect");
     const getAllData_ = () => {
-      getAllData({signal: abortContr.signal}).then((data) => {
-          setPrimaryData_(data);
-          setSecondaryData_(
-            data.podcasts.filter((obj) => {
-              if(switchFocus_){
-                return obj.contentType === 'audio/'
-              }else{
-                return obj.contentType === 'video/'
-              }
-            })[0]
-          )
-          setRecentlyAdded_(
-            data.podcasts.filter((obj) => {
-              if(switchFocus_){
-                return obj.contentType === 'audio/'
-              }else{
-                return obj.contentType === 'video/'
-              }
-            })
-          )
-          return () => {
-            abortContr.abort()
+      setSecondaryData_(
+        primaryData_.podcasts.filter((obj) => {
+          if(switchFocus_){
+            return obj.contentType === 'audio/'
+          }else{
+            return obj.contentType === 'video/'
           }
-      });
+        })[0]
+      );
+      setRecentlyAdded_(
+        primaryData_.podcasts.filter((obj) => {
+          if(switchFocus_){
+            return obj.contentType === 'audio/'
+          }else{
+            return obj.contentType === 'video/'
+          }
+        })
+      );
     };
-    try {
-     getAllData_();
-    } catch (e) {
-      // console.log(e);
-    }
-  }, []);
 
-  // console.log(Object.keys(secondaryData_) > 0)
+
+    if(primaryData_.podcasts) {
+      try {
+        getAllData_();
+       } catch (e) {
+         console.log(e);
+       }
+    }
+  
+  }, [primaryData_]);
+
   return (
     <div className="overflow-scroll w-full pb-10 mb-10">
       {Object.keys(secondaryData_).length > 0 ? <Greeting /> : <Loading />}

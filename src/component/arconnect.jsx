@@ -14,6 +14,7 @@ export default function ArConnect() {
   
   useEffect(() => {
     // add ArConnect event listeners
+    console.log("arconnect.jsx useEffect");
     window.addEventListener('arweaveWalletLoaded', walletLoadedEvent)
     window.addEventListener('walletSwitch', walletSwitchEvent)
     return () => {
@@ -69,6 +70,7 @@ export default function ArConnect() {
   // }
 
   useEffect(() => {
+    console.log("arconnect.jsx fetch useEffect");
     const fetchData = async () => {
       if (address) {
         try {
