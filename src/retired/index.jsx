@@ -38,6 +38,7 @@ export default function Index() {
   }
 
   useEffect(() => {
+    console.log("index.jsx useEffect");
     const fetchData = async () => {
       setLoading(true)
       const sorted = await sortPodcasts(filterTypes)
@@ -46,7 +47,7 @@ export default function Index() {
       setSortedPodcasts(sorted)
       setLoading(false)
     }
-    fetchData()
+    fetchData();
   }, [])
 
   const changeSorting = (n) => {

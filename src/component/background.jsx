@@ -17,6 +17,7 @@ export default function Background(props) {
   ]
 
   useEffect(() => {
+    console.log("background.jsx useEffect");
     if (useDefaultBackground.includes(location.pathname)) setCurrentPodcastColor(themeColor);  
   }, [location])
   // finish the animation for this transition later on

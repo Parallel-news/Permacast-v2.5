@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext, useCallback } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Shikwasa from './shikwasa-src/main.js';
 import { useTranslation } from 'react-i18next';
 import { HashRouter as Router, Route } from 'react-router-dom';
@@ -19,7 +19,8 @@ import { appContext } from './utils/initStateGen.js';
 import { MESON_ENDPOINT } from './utils/arweave.js';
 import { RecoilRoot, useRecoilState } from 'recoil';
 import VideoModal from './component/video_modal.jsx';
-import { isFullscreen, primaryData, secondaryData } from './atoms/index.js';
+import { isFullscreen, primaryData } from './atoms/index.js';
+import { getAllData } from "../src/services/services";
 
 export default function App() {
   const { t } = useTranslation();
@@ -29,7 +30,6 @@ export default function App() {
   const [selection, setSelection] = useState(0);
 
   const [primaryData_, setPrimaryData_] = useRecoilState(primaryData)
-  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData)
 
   const videoRef = useRef();
   const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
@@ -53,6 +53,15 @@ export default function App() {
 
   // for the queue button
   useEffect(() => {
+    console.log("Use effect player");
+    const abortContr = new AbortController();
+    try {
+      getAllData({signal: abortContr.signal}).then((data) => setPrimaryData_(data));
+    } catch(e) {
+      console.log("Error fetching read data from App.js");
+      console.log(e);
+    }
+      
     if (!player) return;
     const queue = player.ui.queueBtn;
     const paused = player.ui.playBtn;
@@ -61,6 +70,9 @@ export default function App() {
     queue.addEventListener('click', () => setQueueVisible(visible => !visible));
     paused.addEventListener('click', () => setIsPaused(paused => !paused));
     fullscreen.addEventListener('click', () => setIsFullscreen_(isFullscreen_ => !isFullscreen_));
+    return () => {
+      abortContr.abort()
+    }
   }, [player]);
 
   const [creatorsLoading, setCreatorsLoading] = useState(true)
@@ -126,37 +138,39 @@ export default function App() {
       let sorted = [];
       // if (Date.parse(localStorage.getItem("checkupDate")) <= new Date()) {
       // console.log('fetching new data')
-      const sortedPodcasts = await sortPodcasts(filterTypes)
-      sorted = sortedPodcasts[filterTypes[selection]]
+      const sortedPodcasts = await sortPodcasts(filterTypes);
+      sorted = sortedPodcasts[filterTypes[selection]];
       // localStorage.setItem("sortedPodcasts", JSON.stringify(sorted))
-      setAllPodcasts(sortedPodcasts)
-      const podcasts = sorted.splice(0, 9)
+      setAllPodcasts(sortedPodcasts);
+      const podcasts = sorted.splice(0, 9);
       // const recentPodcasts = sorted.splice(0, 9)
-      const convertedPodcasts = await Promise.all(podcasts.map(p => convertToPodcast(p)))
-      const convertedEpisodes = await Promise.all(podcasts.splice(0, 3).map(p => convertToEpisode(p, p.episodes[0])))
+      const convertedPodcasts = await Promise.all(podcasts.map(p => convertToPodcast(p)));
+      const convertedEpisodes = await Promise.all(podcasts.splice(0, 3).map(p => convertToEpisode(p, p.episodes[0])));
       // setCurrentEpisode(convertedEpisodes[0])
-      setRecentlyAdded(convertedEpisodes)
-      setFeaturedPodcasts(convertedPodcasts)
+      setRecentlyAdded(convertedEpisodes);
+      setFeaturedPodcasts(convertedPodcasts);
       // console.log(convertedPodcasts[0])
       // setFeaturedVideoShows(convertedVideoShows)
       // setSortedPodcasts(sorted)
       // setPodcasts(sorted[filterTypes[selection]])
-      setLoading(false)
+      setLoading(false);
 
-      setTitlesLoading(true)
-      cacheTitles()
-      setTitlesLoading(false)
+      setTitlesLoading(true);
+      cacheTitles();
+      setTitlesLoading(false);
 
-      setCreatorsLoading(true)
-      setCreators(await Promise.all(veryGoodWhitelistOfVeryGoodPeople.map(creatorAddress => getCreator(creatorAddress))))
+      setCreatorsLoading(true);
+      setCreators(await Promise.all(veryGoodWhitelistOfVeryGoodPeople.map(creatorAddress => getCreator(creatorAddress))));
       setCreatorsLoading(false);
+      console.log("Use effect fetching");
     }
     if (!appLoaded) {
-      fetchData()
-      setAppLoaded(true)
+      fetchData();
+      setAppLoaded(true);
+      console.log("Use effect appLoaded");
     }
-
-  }, [])
+    console.log("Use effect actioning");
+  }, [appLoaded]);
 
   window.addEventListener('keydown', function (e) {
     if (e.key == " " && e.target == document.body) {
@@ -342,7 +356,7 @@ export default function App() {
                   </div>
                 </div>
               </Background>            
-                  <VideoModal/>
+              <VideoModal/>
             </div>
           </Router>
         </appContext.Provider>

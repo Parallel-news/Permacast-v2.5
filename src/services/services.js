@@ -1,6 +1,6 @@
 
 import axios from "axios"
-import { token, contractAddress } from './exmvars'
+import { token, token2, token3, token4, contractAddress } from './exmvars'
 
 export async function getAllData() {
     try {
