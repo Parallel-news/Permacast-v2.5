@@ -30,6 +30,15 @@ import { ContentType, uploadPercent } from "../atoms";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../utils/croppedImage";
 import handler from "../services/services";
+import { validateStrLength } from "../utils/uploadValidation";
+import {
+  PODCAST_NAME_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_DESC_MIN_LEN,
+  PODCAST_DESC_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_AUTHOR_MAX_LEN,
+  PODCAST_LANG_MIN_LEN, PODCAST_LANG_MAX_LEN, PODCAST_CAT_MIN_LEN,
+  PODCAST_CAT_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_NAME_MAX_LEN,
+  EPISODE_DESC_MIN_LEN, EPISODE_DESC_MAX_LEN, IS_EXPLICIT_VALUES, 
+  PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN, CONTENT_TYPE_VALUES
+} from '../constants';
 
 const ardb = new ArDB(arweave);
 
@@ -195,7 +204,7 @@ export default function UploadPodcastView() {
                   });
                 showObj.cover = tx.id;
                 finalShowObj = showObj;
-                console.log(finalShowObj);
+                console.log("Showthis: ", finalShowObj);
                 uploadShow(finalShowObj);
                 setShow(false);
               } else {
@@ -242,16 +251,40 @@ export default function UploadPodcastView() {
     if (!arconnectPubKey) throw new Error("ArConnect public key not found");
 
     const data = new TextEncoder().encode(
-      `my pubkey for DL ARK is: ${arconnectPubKey}`
+      `my Arweave PK for Permacast is ${arconnectPubKey}`
     );
     const signature = await window.arweaveWallet.signature(data, {
       name: "RSA-PSS",
       saltLength: 32,
     });
     const signedBase = Buffer.from(signature).toString("base64");
-    console.log("signedBase", signedBase);
+    console.log("------------------------------------------");
+    console.log("signedBase ", signedBase);
     if (!signedBase) throw new Error("ArConnect signature not found");
-    console.log(arconnectPubKey);
+    console.log("Pub Key: ", arconnectPubKey);
+    
+    const defaultLang = "en";
+    const defaultCat = 'True Crime';
+    
+    try {
+      // Final Check for Input Limitations
+      if(
+        validateStrLength(podcastName_, PODCAST_NAME_MIN_LEN, PODCAST_NAME_MAX_LEN) && 
+        validateStrLength(podcastDescription_, PODCAST_DESC_MIN_LEN, PODCAST_DESC_MAX_LEN) &&
+        validateStrLength(podcastAuthor_, PODCAST_AUTHOR_MIN_LEN, PODCAST_AUTHOR_MAX_LEN) &&
+        validateStrLength(defaultLang, PODCAST_LANG_MIN_LEN, PODCAST_LANG_MAX_LEN) &&
+        validateStrLength(podcastCover_, PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN) &&
+        validateStrLength(defaultCat,  PODCAST_CAT_MIN_LEN, PODCAST_CAT_MAX_LEN) &&
+        IS_EXPLICIT_VALUES.includes(podcastExplicit_) &&
+        CONTENT_TYPE_VALUES.includes(contentType_)
+      ) {
+
+      }
+    } catch (e) {
+      console.log("String validation failed in the handleExm function");
+      console.log(e);
+      return false;
+    }
 
     const showObj = {};
 
@@ -259,23 +292,22 @@ export default function UploadPodcastView() {
     showObj.function = "createPodcast";
     showObj.name = podcastName_;
     showObj.desc = podcastDescription_;
-    showObj.author = podcastAuthor_;
-    showObj.lang = 'en' // podcastLanguage_;
-    showObj.isExplicit = podcastExplicit_;
+    showObj.author = podcastAuthor_; 
+    showObj.lang = defaultLang; // podcastLanguage_; "en" is the only accepted value & 2chars in length
+    showObj.isExplicit = "no"; //podcastExplicit_must be "yes" or "no"
     showObj.categories = 'True Crime' // podcastCategory_;
     showObj.email = podcastEmail_;
     showObj.contentType = contentType_; // v for video and a for audio
-    showObj.cover = podcastCover_; // must have "image/*" MIME type
-    showObj.cover = '5QzEMAZJvCQmCL2TJpLo789MTforaJBFKKnqBNWg0sA';
+    //showObj.cover = podcastCover_; // must have "image/*" MIME type
+    showObj.cover = '5QzEMAZJvCQmCL2TJpLo789MTforaJBFKKnqBNWg0sA'; //must be 43 chars in length
     showObj.master_network = "EVM"; // currently constant
     showObj.network = "ethereum"; // currently constant
-    showObj.token = "eth"; // currently constant
-    showObj.label = "test"; // check N.B
+    showObj.token = "ETH"; // currently constant - always capitalized
+    showObj.label = "testSeb69"; // check N.B
     showObj.jwk_n = arconnectPubKey;
     showObj.txid =
-      "0x600e8af49ef97e9015d935dd2b0b00c4acca6f9bb518f80e96ed7b7f950903a9"; // check N.B
+      "0x74661851ddd0a80a4802384382205e1abf12887d690e1d4efd334e161ba341af"; // only works once per successful upload, not 200
     showObj.sig = signedBase; // check N.B
-
     handler(showObj);
   };
 

@@ -1,6 +1,7 @@
 
 import axios from "axios"
-import { token, token2, token3, token4, contractAddress } from './exmvars'
+import { ConsoleLogger } from "redstone-smartweave";
+import { token, virginToken, contractAddress } from './exmvars'
 
 export async function getAllData() {
     try {
@@ -12,18 +13,22 @@ export async function getAllData() {
 }
 
 export default async function handler(req, res) {
-    console.log(JSON.stringify(req))
+    console.log("-------------------------------");
+    console.log("Stringified req.body Result");
+    console.log(JSON.stringify(req));
     try {
-        const data = await axios.post(`/api/transactions?token=${token}`, {
+        const data = await axios.post(`/api/transactions?token=${virginToken}`, {
             functionId: contractAddress,
             inputs: [{
-                'input': JSON.stringify({
-                    ...req.body
-                }),
+                'input': JSON.stringify(req),
             }]
         }).then((result) => {
-            console.log(result.data)
+            console.log("-------------------------------");
+            console.log("Result from EXM Post: ");
+            console.log(result.data);
         })
+        console.log("-------------------------------");
+        console.log('Result from Response: ');
         console.log(res)
         // res.status(200).json(data.data)
         // console.log(data.data)
