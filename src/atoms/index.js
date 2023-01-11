@@ -34,3 +34,28 @@ export const ContentType = atom({
     key: 'ContentType',
     default: 'a',
 });
+
+export const titles = atom({
+    key: "titles",
+    default: [],
+});
+
+export const allPodcasts = atom({
+    key: "allPodcasts",
+    default: [],
+});
+
+export const input = atom({
+    key: "input",
+    default: ""
+});
+
+export const selection = atom({
+    key: "selection",
+    default: 0
+});
+
+export const creators = atom({
+    key: "creators",
+    default: []
+});

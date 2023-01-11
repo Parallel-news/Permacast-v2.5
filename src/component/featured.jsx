@@ -14,16 +14,14 @@ import { Cooyub, PlayButton, GlobalPlayButton } from "./reusables/icons";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { FaPlay } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
-
 import Track from "./track";
-import { getButtonRGBs } from "../utils/ui";
-
 import { useRecoilState } from "recoil";
 import {
   primaryData,
   secondaryData,
   switchFocus,
   videoSelection,
+  creators
 } from "../atoms";
 
 export function Greeting() {
@@ -315,13 +313,35 @@ export function FeaturedCreators() {
   const { themeColor } = appState.theme;
   const bg = themeColor.replace("rgb", "rgba").replace(")", ", 0.1)");
 
-  const loading = appState.otherComponentsLoading.creators;
-  const creators = appState.creators;
+  const veryGoodWhitelistOfVeryGoodPeople = [
+    "kaYP9bJtpqON8Kyy3RbqnqdtDBDUsPTQTNUCvZtKiFI",
+    "vZY2XY1RD9HIfWi8ift-1_DnHLDadZMWrufSh-_rKF0",
+    "lIg5mdDMAAIj5Pn2BSYKI8SEo8hRIdh-Zrn_LSy_3Qg"
+  ]
+
+  const [creatorsLoading, setCreatorsLoading] = useState(false);
+  const [_creators, _setCreators] = useRecoilState(creators);
+
+  // Fetch Creators
+  useEffect(() => {
+    const creatorContr = new AbortController();
+
+    const fetchCreators = async () => {
+      setCreatorsLoading(true);
+      _setCreators(await Promise.all(veryGoodWhitelistOfVeryGoodPeople.map(
+                        creatorAddress => getCreator(creatorAddress, {signal: creatorContr.signal}))));
+      setCreatorsLoading(false);
+    }
+
+    fetchCreators();
+
+    return () => creatorContr.abort();
+  }, []);
 
   return (
     <div>
       <h2 className="text-zinc-400 mb-4">{t("home.featuredcreators")}</h2>
-      {loading ? (
+      {creatorsLoading ? (
         <>
           <div className="bg-gray-300/30 animate-pulse w-full h-20 mb-4 mt-4 rounded-full"></div>
           <div className="bg-gray-300/30 animate-pulse w-full h-20 mb-4 rounded-full"></div>
@@ -329,7 +349,7 @@ export function FeaturedCreators() {
         </>
       ) : (
         <>
-          {creators.map((creator, index) => (
+          {_creators.map((creator, index) => (
             <div key={index}>
               <div className="flex justify-between items-center p-4 mb-4 w-full border-zinc-800 border rounded-3xl">
                 <div className="flex items-center">
