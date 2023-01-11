@@ -23,6 +23,7 @@ import {
   videoSelection,
   creators
 } from "../atoms";
+import { createContract } from "smartweave";
 
 export function Greeting() {
   const appState = useContext(appContext);
@@ -325,17 +326,21 @@ export function FeaturedCreators() {
   // Fetch Creators
   useEffect(() => {
     const creatorContr = new AbortController();
+    const fetchContr = new AbortController();
 
     const fetchCreators = async () => {
       setCreatorsLoading(true);
       _setCreators(await Promise.all(veryGoodWhitelistOfVeryGoodPeople.map(
-                        creatorAddress => getCreator(creatorAddress))));
+                        creatorAddress => getCreator(creatorAddress, {signal: creatorContr.signal}))));
       setCreatorsLoading(false);
     }
 
-    fetchCreators({signal: creatorContr.signal});
+    fetchCreators({signal: fetchContr.signal});
 
-    return () => creatorContr.abort();
+    return () => {
+      creatorContr.abort();
+      fetchContr.abort();
+    }
   }, []);
 
   return (

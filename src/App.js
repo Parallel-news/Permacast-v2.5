@@ -28,7 +28,7 @@ export default function App() {
   const [loading, ] = useState(false);
   const [appLoaded, setAppLoaded] = useState(false);
 
-  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData)
+  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
 
   const videoRef = useRef();
   const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
