@@ -1,9 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { appContext } from '../utils/initStateGen';
 import Track from '../component/track';
 import { useTranslation } from 'react-i18next';
+import { titles, allPodcasts, selection } from '../atoms';
+import { useRecoilState } from 'recoil';
+import { cacheTitles } from '../utils/titles';
+import { sortPodcasts } from '../utils/podcast';
 
 export function Searchbar() {
   const appState = useContext(appContext);
@@ -34,30 +38,59 @@ export function Searchbar() {
 
 export default function Search() {
   const appState = useContext(appContext);
-  const { input, titles } = appState.search;
-  const { allPodcasts } = appState;
-  const loading = appState.otherComponentsLoading.titles;
+  const [titlesLoading, setTitlesLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [_titles, _setTitles] = useRecoilState(titles);
+  const [_allPodcasts, _setAllPodcasts] = useRecoilState(allPodcasts);
+  const [_selection, ] = useRecoilState(selection);
+  const { input  } = appState.search;
   const { t } = useTranslation();
 
-  const filteredPodcasts = titles.filter((p) => {
+  const filters = [
+    { type: "episodescount", desc: t("sorting.episodescount") },
+    { type: "podcastsactivity", desc: t("sorting.podcastsactivity") }
+  ];
+  const filterTypes = filters.map(f => f.type);
+
+  // Fetch Titles
+  useEffect(() => {
+    const titlesContr = new AbortController();
+
+    setTitlesLoading(true);
+    cacheTitles({signal: titlesContr.signal})
+    .then(tit => _setTitles(tit))
+    .catch(e => setError(error));
+    setTitlesLoading(false);
+
+    return () => titlesContr.abort();
+  }, []);
+
+  // Fetch Podcasts
+  useEffect(() => {
+    const podcastsContr = new AbortController();
+
+    sortPodcasts(filterTypes, {signal: podcastsContr.signal})
+    .then(sortedPodcasts => {
+      _setAllPodcasts(sortedPodcasts[filterTypes[_selection]]);
+    })
+    .catch(e => setError(e));
+
+    return () => podcastsContr.abort();
+  }, []);
+
+
+  const filteredPodcasts = _titles ? 
+  _titles.filter((p) => {
     if (input === '') return;
     if (p.type === "eid") return;
     else return p.title.toLowerCase().includes(input.toLowerCase());
   })
-  // console.log(filteredPodcasts);
-  // TODO: add podcastId to episodes
-  // const filteredEpisodes = titles.filter((p) => {
-  //   if (input === '') return;
-  //   if (p.type === "pid") return;
-  //   else {
-  //     const podcast = allPodcasts.podcastsactivity.find(p => p.episodes.find(e => e.eid === p.eid))
-  //     return p.title.toLowerCase().includes(input.toLowerCase());
-  //   }
-  // })
-
+  :
+  "";
+  
   return (
     <div className="text-white h-full pb-80">
-      {loading ? <div className="text-2xl text-white font-bold mb-6">{t("search.loading")}</div> : (
+      {titlesLoading ? <div className="text-2xl text-white font-bold mb-6">{t("search.loading")}</div> : (
         <div>
           {input.length !== 0 ?
             (
