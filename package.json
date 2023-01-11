@@ -3,7 +3,6 @@
   "version": "0.3.2",
   "private": true,
   "dependencies": {
-    "@execution-machine/sdk": "^0.1.6",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-regular-svg-icons": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
@@ -13,9 +12,6 @@
     "@tailwindcss/aspect-ratio": "^0.4.0",
     "@tailwindcss/line-clamp": "^0.4.0",
     "@tailwindcss/typography": "^0.5.1",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.5.0",
     "ardb": "^1.1.9",
     "arweave": "^1.10.22",
     "arweave-fees.js": "0.0.3",
@@ -66,10 +62,7 @@
   },
   "proxy": "https://api.exm.dev",
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "extends": ["react-app"]
   },
   "browserslist": {
     "production": [

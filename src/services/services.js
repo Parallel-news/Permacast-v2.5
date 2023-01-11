@@ -1,6 +1,5 @@
 
 import axios from "axios"
-import { ConsoleLogger } from "redstone-smartweave";
 import { token, virginToken, contractAddress } from './exmvars'
 
 export async function getAllData() {
