@@ -1,4 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
+import {
+  getDefaultWallets,
+  RainbowKitProvider,
+} from '@rainbow-me/rainbowkit';
+import { configureChains, createClient, WagmiConfig } from 'wagmi';
+import { mainnet } from 'wagmi/chains';
+import { publicProvider } from 'wagmi/providers/public';
 import Shikwasa from './shikwasa-src/main.js';
 import { useTranslation } from 'react-i18next';
 import { HashRouter as Router, Route } from 'react-router-dom';
@@ -20,10 +27,20 @@ import { useRecoilState } from 'recoil';
 import VideoModal from './component/video_modal.jsx';
 import { isFullscreen, primaryData } from './atoms/index.js';
 import { getAllData } from "../src/services/services";
+import '@rainbow-me/rainbowkit/styles.css';
+
 
 
 export default function App() {
   const { t } = useTranslation();
+  
+  const { chains, provider } = configureChains([mainnet], [publicProvider()]);
+  const { connectors } = getDefaultWallets({appName: 'Permacast', chains});
+  const wagmiClient = createClient({
+    autoConnect: true,
+    connectors,
+    provider
+  })
 
   const [loading, setLoading] = useState(false);
   const [appLoaded, setAppLoaded] = useState(false);
@@ -192,7 +209,8 @@ export default function App() {
   // re-write getAverageColor functions to use in-memory images (?)
 
   return (
-    <>
+  <WagmiConfig client={wagmiClient}>
+    <RainbowKitProvider chains={chains}>
       <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
         <appContext.Provider value={appState}>
           <Router>
@@ -268,6 +286,7 @@ export default function App() {
           </Router>
         </appContext.Provider>
       </div>
-    </>
+    </RainbowKitProvider>
+  </WagmiConfig>
   );
 }
