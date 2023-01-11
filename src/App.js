@@ -72,7 +72,6 @@ export default function App() {
 
   const [recentlyAdded, setRecentlyAdded] = useState([]);
   const [featuredPodcasts, setFeaturedPodcasts] = useState();
-  const [searchInput, setSearchInput] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   // Episode Loader
@@ -106,10 +105,6 @@ export default function App() {
       backdropColor: backdropColor,
       currentPodcastColor: currentPodcastColor,
       setCurrentPodcastColor: setCurrentPodcastColor,
-    },
-    search: {
-      input: searchInput,
-      setInput: setSearchInput,
     },
     user: {
       address: address,

@@ -1,20 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import { appContext } from '../utils/initStateGen';
 import Track from '../component/track';
 import { useTranslation } from 'react-i18next';
-import { titles, allPodcasts, selection } from '../atoms';
+import { titles, allPodcasts, selection, input } from '../atoms';
 import { useRecoilState } from 'recoil';
 import { cacheTitles } from '../utils/titles';
 import { sortPodcasts } from '../utils/podcast';
 
 export function Searchbar() {
-  const appState = useContext(appContext);
   const { t } = useTranslation();
   const history = useHistory();
   const location = useLocation();
-  const { input, setInput } = appState.search;
+  const [_input, _setInput] = useRecoilState(input); 
 
   return (
     <div>
@@ -23,9 +21,9 @@ export function Searchbar() {
           <MagnifyingGlassIcon className="h-5 w-5 text-zinc-600" />
         </div>
         <input
-          value={input}
+          value={_input}
           onChange={(e) => {
-            setInput(e.target.value);
+            _setInput(e.target.value);
             if (!location.pathname.includes("search")) history.push("/search");
           }}
           className="input input-secondary block pl-10 py-2.5 md:py-[14px] text-xs md:text-base w-full placeholder-zinc-600 focus:placeholder-white rounded-lg md:rounded-full bg-zinc-900 text-zinc-100 outline-none focus:ring-2 focus:ring-inset focus:ring-white"
@@ -37,13 +35,12 @@ export function Searchbar() {
 }
 
 export default function Search() {
-  const appState = useContext(appContext);
   const [titlesLoading, setTitlesLoading] = useState(false);
   const [error, setError] = useState("");
   const [_titles, _setTitles] = useRecoilState(titles);
-  const [_allPodcasts, _setAllPodcasts] = useRecoilState(allPodcasts);
+  const [ , _setAllPodcasts] = useRecoilState(allPodcasts);
   const [_selection, ] = useRecoilState(selection);
-  const { input  } = appState.search;
+  const [_input, ] = useRecoilState(input); 
   const { t } = useTranslation();
 
   const filters = [
@@ -83,7 +80,7 @@ export default function Search() {
   _titles.filter((p) => {
     if (input === '') return;
     if (p.type === "eid") return;
-    else return p.title.toLowerCase().includes(input.toLowerCase());
+    else return p.title.toLowerCase().includes(_input.toLowerCase());
   })
   :
   "";
@@ -92,7 +89,7 @@ export default function Search() {
     <div className="text-white h-full pb-80">
       {titlesLoading ? <div className="text-2xl text-white font-bold mb-6">{t("search.loading")}</div> : (
         <div>
-          {input.length !== 0 ?
+          {_input.length !== 0 ?
             (
               <>
                 <div className="text-2xl text-white font-bold mb-6">{t("search.podcasts")}</div>
