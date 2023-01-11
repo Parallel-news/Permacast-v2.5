@@ -19,7 +19,6 @@
     "ardb": "^1.1.9",
     "arweave": "^1.10.22",
     "arweave-fees.js": "0.0.3",
-    "arweave-js": "^1.0.0",
     "arweave-multihost": "^0.1.0",
     "autoprefixer": "^10.4.2",
     "axios": "^1.2.1",
