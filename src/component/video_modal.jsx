@@ -48,12 +48,11 @@ export default function VideoModal() {
         <div className="text-zinc-400 w-[700px] sm:w-full flex flex-col justify-center items-center rounded-[4px] relative overflow-hidden">
             <video
             id="my-player"
-            class="video-js"
+            className="video-js rounded-[4px] w-[700px]"
             controls
             preload="auto"
             poster={vs_[1].cover}
             data-setup="{}"
-            className="rounded-[4px] w-[700px]"
           >
             <source
               src={
@@ -61,12 +60,12 @@ export default function VideoModal() {
               }
               type="video/*"
             ></source>
-            <p class="vjs-no-js">
+            <p className="vjs-no-js">
               To view this video please enable JavaScript, and consider
               upgrading to a web browser that
               <a
                 href="https://videojs.com/html5-video-support/"
-                target="_blank"
+                target="_blank" rel="noreferrer"
               >
                 supports HTML5 video
               </a>

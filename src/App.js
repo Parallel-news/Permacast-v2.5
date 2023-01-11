@@ -25,7 +25,7 @@ import { getAllData } from "../src/services/services";
 export default function App() {
   const { t } = useTranslation();
 
-  const [loading, setLoading] = useState(false);
+  const [loading, ] = useState(false);
   const [appLoaded, setAppLoaded] = useState(false);
 
   const [primaryData_, setPrimaryData_] = useRecoilState(primaryData)
@@ -36,9 +36,9 @@ export default function App() {
   const [isPaused, setIsPaused] = useState();
   const [currentEpisode, setCurrentEpisode] = useState({ contentTx: 'null', pid: 'null', eid: 'null', number: '1' });
 
-  const [themeColor, setThemeColor] = useState('rgb(255, 255, 0)');
+  const [themeColor, ] = useState('rgb(255, 255, 0)');
   const [currentPodcastColor, setCurrentPodcastColor] = useState('rgb(255, 255, 0)');
-  const [backdropColor, setBackdropColor] = useState();
+  const [backdropColor, ] = useState();
 
   const [address, setAddress] = useState();
   const [ANSData, setANSData] = useState({ address_color: "", currentLabel: "", avatar: "" });

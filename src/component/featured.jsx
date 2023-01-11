@@ -329,11 +329,11 @@ export function FeaturedCreators() {
     const fetchCreators = async () => {
       setCreatorsLoading(true);
       _setCreators(await Promise.all(veryGoodWhitelistOfVeryGoodPeople.map(
-                        creatorAddress => getCreator(creatorAddress, {signal: creatorContr.signal}))));
+                        creatorAddress => getCreator(creatorAddress))));
       setCreatorsLoading(false);
     }
 
-    fetchCreators();
+    fetchCreators({signal: creatorContr.signal});
 
     return () => creatorContr.abort();
   }, []);
