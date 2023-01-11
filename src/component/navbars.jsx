@@ -3,6 +3,8 @@ import { useHistory, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
 import { Disclosure } from "@headlessui/react";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+
 import {
   HomeIcon,
   RectangleStackIcon,
@@ -154,8 +156,9 @@ export function NavBar() {
               <div className="w-full bg-zinc-800 h-12 rounded-full animate-pulse"></div>
             )}
           </div>
-          <div className="ml-8 w-72">
+          <div className="ml-8 w-72 flex flex-col">
             <ArConnect />
+            <ConnectButton />
           </div>
         </div>
       </div>
