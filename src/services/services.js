@@ -4,7 +4,7 @@ import { token, virginToken, contractAddress } from './exmvars'
 
 export async function getAllData() {
     try {
-        const response = await fetch('/read/5xDf6M5NRDDKGXAysr3ZRBfrW8vybtFocKP70JuuA3Y');
+        const response = await fetch('/exm/read/5xDf6M5NRDDKGXAysr3ZRBfrW8vybtFocKP70JuuA3Y');
         return await response.json();
     } catch (error) {
         console.error(error)
@@ -16,7 +16,7 @@ export default async function handler(req, res) {
     console.log("Stringified req.body Result");
     console.log(JSON.stringify(req));
     try {
-        const data = await axios.post(`/api/transactions?token=${virginToken}`, {
+        const data = await axios.post(`/exm/api/transactions?token=${virginToken}`, {
             functionId: contractAddress,
             inputs: [{
                 'input': JSON.stringify(req),

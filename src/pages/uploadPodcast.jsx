@@ -36,9 +36,8 @@ import {
   PODCAST_CAT_MAX_LEN, IS_EXPLICIT_VALUES, 
   PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN, CONTENT_TYPE_VALUES
 } from '../constants';
-//const WebBundlr = require("@bundlr-network/client").WebBundlr;
 //import { providers } from "ethers";
-//import { WebBundlr } from "@bundlr-network/client";
+//import { genAPI } from 'arseeding-js';
 
 const ardb = new ArDB(arweave);
 
@@ -245,11 +244,10 @@ export default function UploadPodcastView() {
       };
     }
   };
-/*
+
+  /*
   const handleCoverUpload = async () => {
-    await window.ethereum.enable();
-    const provider = new providers.Web3Provider(window.ethereum);
-    console.log("PROVIDER: ", provider);
+    const instance = await genAPI(window.ethereum);
   }
 */
   const handleExm = async () => {
@@ -460,8 +458,7 @@ export default function UploadPodcastView() {
       <div
         className="w-[100px] h-[30px] bg-white/50 rounded-md cursor-pointer"
         onClick={() => {
-          alert("test");
-          //handleExm();
+          handleExm();
         }}
       />
       <div className="form-control">

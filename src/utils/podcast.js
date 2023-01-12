@@ -143,6 +143,6 @@ export const findCreator = async (creatorAddress, podcasts) => {
 export const getCreator = async (address) => {
   const re = /([a-zA-Z0-9_-]{43})/;
   if (!address.match(re)) return;
-  const creator = await fetch(ANS_TESTNET_MAP.profile + address);
+  const creator = await fetch(`/ans/profile/${address}`);
   return creator.json();
 };
