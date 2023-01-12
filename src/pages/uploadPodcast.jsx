@@ -3,13 +3,11 @@ import ArDB from "ardb";
 import { appContext } from "../utils/initStateGen";
 import { BsArrowRightShort } from "react-icons/bs";
 import {
-  CONTRACT_SRC,
   FEE_MULTIPLIER,
   SHOW_UPLOAD_FEE,
   arweave,
   deployContract,
   queryTXsByAddress,
-  compoundTreasury,
   TREASURY_ADDRESS,
 } from "../utils/arweave";
 import LANGUAGES from "../utils/languages";
@@ -35,10 +33,12 @@ import {
   PODCAST_NAME_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_DESC_MIN_LEN,
   PODCAST_DESC_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_AUTHOR_MAX_LEN,
   PODCAST_LANG_MIN_LEN, PODCAST_LANG_MAX_LEN, PODCAST_CAT_MIN_LEN,
-  PODCAST_CAT_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_NAME_MAX_LEN,
-  EPISODE_DESC_MIN_LEN, EPISODE_DESC_MAX_LEN, IS_EXPLICIT_VALUES, 
+  PODCAST_CAT_MAX_LEN, IS_EXPLICIT_VALUES, 
   PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN, CONTENT_TYPE_VALUES
 } from '../constants';
+//const WebBundlr = require("@bundlr-network/client").WebBundlr;
+//import { providers } from "ethers";
+//import { WebBundlr } from "@bundlr-network/client";
 
 const ardb = new ArDB(arweave);
 
@@ -245,7 +245,13 @@ export default function UploadPodcastView() {
       };
     }
   };
-
+/*
+  const handleCoverUpload = async () => {
+    await window.ethereum.enable();
+    const provider = new providers.Web3Provider(window.ethereum);
+    console.log("PROVIDER: ", provider);
+  }
+*/
   const handleExm = async () => {
     const arconnectPubKey = await window.arweaveWallet.getActivePublicKey();
     if (!arconnectPubKey) throw new Error("ArConnect public key not found");
@@ -454,7 +460,8 @@ export default function UploadPodcastView() {
       <div
         className="w-[100px] h-[30px] bg-white/50 rounded-md cursor-pointer"
         onClick={() => {
-          handleExm();
+          alert("test");
+          //handleExm();
         }}
       />
       <div className="form-control">
