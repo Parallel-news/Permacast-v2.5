@@ -81,7 +81,7 @@ export default function Home({ recentlyAdded, featuredPodcasts }) {
   }, [primaryData_]);
 
   return (
-    <div className="overflow-scroll w-full pb-10 mb-10">
+    <div className="w-full pb-10 mb-10">
       {Object.keys(secondaryData_).length > 0 ? <Greeting /> : <Loading />}
       {!appState.loading && (
         <div
