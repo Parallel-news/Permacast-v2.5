@@ -211,7 +211,7 @@ export default function App() {
 
   return (
   <WagmiConfig client={wagmiClient}>
-    <RainbowKitProvider chains={chains} theme={darkTheme()}>
+    <RainbowKitProvider chains={chains} theme={darkTheme({accentColor: "rgb(24,24,27)"})}>
       <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
         <appContext.Provider value={appState}>
           <Router>
