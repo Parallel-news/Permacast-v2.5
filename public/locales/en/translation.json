@@ -55,6 +55,7 @@
 		"language": "Podcast language",
 		"category": "Category",
 		"explicit": "Contains explicit content",
+		"disabled": "Connect wallets to continue",
 		"upload": "Create",
 		"uploading": "Processing...",
 		"cancel": "Cancel",

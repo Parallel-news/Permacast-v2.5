@@ -23,6 +23,7 @@ import {
   TREASURY_ADDRESS,
   EPISODE_UPLOAD_FEE_PERCENTAGE
 } from '../utils/arweave.js';
+import { CheckAuthHook } from "../utils/ui";
 
 const ardb = new ArDB(arweave);
 
@@ -35,6 +36,7 @@ export default function UploadEpisode({ podcast }) {
   const [episodeUploading, setEpisodeUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(false)
   const [uploadPercentComplete, setUploadPercentComplete] = useState(0)
+  const [eth, ar] = CheckAuthHook();
 
   const listEpisodeOnVerto = async (episodeId) => {
     const vertoContractId = VERTO_CONTRACT;
@@ -280,10 +282,11 @@ export default function UploadEpisode({ podcast }) {
                 {!episodeUploading ?
                   <button
                     className="btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8"
+                    disabled={!(eth && ar)}
                     type="submit"
                   >
                     <ArrowUpTrayIcon className="h-5 w-5 mr-2" />
-                    {t("uploadepisode.upload")}
+                    {!(eth && ar) ? t("uploadepisode.upload"): t("uploadshow.disabled")}
                   </button>
                   :
                   <button

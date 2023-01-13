@@ -1,4 +1,4 @@
-import { React, useState, useRef, useContext, useCallback } from "react";
+import { React, useState, useRef, useContext, useCallback, useEffect } from "react";
 import ArDB from "ardb";
 import { appContext } from "../utils/initStateGen";
 import { BsArrowRightShort } from "react-icons/bs";
@@ -40,6 +40,8 @@ import {
   PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN, CONTENT_TYPE_VALUES
 } from '../constants';
 
+import { CheckAuthHook } from "../utils/ui";
+
 const ardb = new ArDB(arweave);
 
 export default function UploadPodcastView() {
@@ -49,7 +51,8 @@ export default function UploadPodcastView() {
   const [img, setImg] = useState();
   const [isUploading, setIsUploading] = useState(false);
   const [cost, setCost] = useState(0);
-  const isLoggedIn = appState.user.address;
+  const [eth, ar] = CheckAuthHook();
+
   let finalShowObj = {};
   const [contentType_, setContentType_] = useRecoilState(ContentType);
   const podcastCoverRef = useRef();
@@ -597,7 +600,6 @@ export default function UploadPodcastView() {
                     {(SHOW_UPLOAD_FEE + cost).toFixed(3)} AR
                   </span>
                 </div>
-                {isLoggedIn ? (
                   <>
                     {isUploading ? (
                       <button
@@ -614,19 +616,15 @@ export default function UploadPodcastView() {
                     ) : (
                       <button
                         type="submit"
-                        className="btn btn-secondary"
+                        className="btn btn-secondary" 
+                        disabled={!(eth && ar)}
                         onClick={() => {}}
                       >
-                        {t("uploadshow.upload")}
+                        {(eth && ar) ? t("uploadshow.upload"): t("uploadshow.disabled")}
                         <BsArrowRightShort className="w-7 h-7" />
                       </button>
                     )}
                   </>
-                ) : (
-                  <div className="w-60">
-                    <ArConnect />
-                  </div>
-                )}
               </div>
             </div>
           </div>
