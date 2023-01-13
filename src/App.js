@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import {
   getDefaultWallets,
   RainbowKitProvider,
+  darkTheme
 } from '@rainbow-me/rainbowkit';
 import { configureChains, createClient, WagmiConfig } from 'wagmi';
 import { mainnet } from 'wagmi/chains';
@@ -210,7 +211,7 @@ export default function App() {
 
   return (
   <WagmiConfig client={wagmiClient}>
-    <RainbowKitProvider chains={chains}>
+    <RainbowKitProvider chains={chains} theme={darkTheme()}>
       <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
         <appContext.Provider value={appState}>
           <Router>

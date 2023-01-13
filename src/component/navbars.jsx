@@ -156,9 +156,16 @@ export function NavBar() {
               <div className="w-full bg-zinc-800 h-12 rounded-full animate-pulse"></div>
             )}
           </div>
-          <div className="ml-8 w-72 flex flex-col">
-            <ArConnect />
-            <ConnectButton />
+          <div className="ml-8 w-72 flex flex-col bg-zinc-900 dropdown rounded-full">
+            <label tabIndex={0} className="btn-default ">Wallets</label>
+            <ul tabIndex={0} className="w-full dropdown-content menu p-2 rounded-box mt-12 bg-zinc-800 overflow-hidden">
+              <li className="mt-2">
+                <ConnectButton showBalance={true} />
+              </li>
+              <li className="mt-2">
+                <ArConnect />
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -268,9 +275,10 @@ export function NavBarMobile() {
                     </div>
                   </Disclosure.Button>
 
-                  <Disclosure.Button as="a" className="block py-2 rounded-md">
+                  <Disclosure.Button as="div" className="block py-2 rounded-md">
                     <ArConnect />
                   </Disclosure.Button>
+                  <ConnectButton showBalance={true} />
                 </div>
               </Disclosure.Panel>
             </>
