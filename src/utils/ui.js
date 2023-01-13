@@ -1,5 +1,14 @@
 import Shikwasa from '../shikwasa-src/main.js';
 import { MESON_ENDPOINT } from './arweave.js';
+import { useAccount } from 'wagmi';
+import { useAns } from 'ans-for-all';
+
+export function CheckAuthHook() {
+  const { address } = useAccount();
+  const arweave = useAns();
+
+  return [address, arweave?.address];
+}
 
 export function RGBobjectToString(rgb) {
   return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
