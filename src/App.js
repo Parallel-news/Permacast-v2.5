@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { AnsProvider } from 'ans-for-all';
 import {
   getDefaultWallets,
   RainbowKitProvider,
+  darkTheme
 } from '@rainbow-me/rainbowkit';
 import { configureChains, createClient, WagmiConfig } from 'wagmi';
-import { mainnet } from 'wagmi/chains';
+import { mainnet, goerli } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import Shikwasa from './shikwasa-src/main.js';
 import { useTranslation } from 'react-i18next';
@@ -202,8 +204,9 @@ export default function App() {
   // re-write getAverageColor functions to use in-memory images (?)
 
   return (
+  <AnsProvider>
   <WagmiConfig client={wagmiClient}>
-    <RainbowKitProvider chains={chains}>
+    <RainbowKitProvider chains={chains} theme={darkTheme({accentColor: "rgb(24,24,27)"})}>
       <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
         <appContext.Provider value={appState}>
           <Router>
@@ -281,5 +284,6 @@ export default function App() {
       </div>
     </RainbowKitProvider>
   </WagmiConfig>
+  </AnsProvider>
   );
 }

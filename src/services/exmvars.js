@@ -1,4 +1,6 @@
 export const contractAddress='5xDf6M5NRDDKGXAysr3ZRBfrW8vybtFocKP70JuuA3Y';
+export const latestDevContractAddress="mhEC6peAWHWQX9sD7MtG6crDqOGDQwhUUfP0r0vCTOQ";
+export const latestDevContractToken=process.env.devEXMToken;
 export const token = '54577de866f37ac99d3f0e4442173fb6cf4d937f6f5b86d95866772940bedccae0c614976ae5d9cfadbbda5eb5cc';
 export const token2 = 'f019549aeae159d23482eaf452bd8e47fca8e83e9f02c155634caea9d794dac7ccfa1487ca33cc354ca168d0f2a1';
 export const token3 = '0ec6ddb3be28e8b78d31b3ac9f4be6f3fe571ba1262372bb46322e60a2cc9bed18e495e76e490742e972b7606de0';
