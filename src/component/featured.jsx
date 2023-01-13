@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, memo } from "react";
 import { appContext } from "../utils/initStateGen.js";
 import { useTranslation } from "react-i18next";
 
@@ -309,7 +309,7 @@ export function RecentlyAdded() {
   );
 }
 
-export function FeaturedCreators() {
+export const FeaturedCreators = memo(() => {
   const appState = useContext(appContext);
   const history = useHistory();
   const { t } = useTranslation();
@@ -322,22 +322,23 @@ export function FeaturedCreators() {
     "lIg5mdDMAAIj5Pn2BSYKI8SEo8hRIdh-Zrn_LSy_3Qg"
   ]
 
+  const [ dataLoaded, setDataLoaded ] = useState(false);
   const [creatorsLoading, setCreatorsLoading] = useState(false);
   const [_creators, _setCreators] = useRecoilState(creators);
 
   // Fetch Creators
   useEffect(() => {
     const creatorContr = new AbortController();
-
     const fetchCreators = async () => {
       setCreatorsLoading(true);
       _setCreators(await Promise.all(veryGoodWhitelistOfVeryGoodPeople.map(
                         creatorAddress => getCreator(creatorAddress, {signal: creatorContr.signal}))));
       setCreatorsLoading(false);
     }
-
-    fetchCreators();
-
+    if(!dataLoaded) {
+      fetchCreators();
+      setDataLoaded(true);
+    }
     return () => {
       creatorContr.abort();
     }
@@ -400,4 +401,4 @@ export function FeaturedCreators() {
       )}
     </div>
   );
-}
+})

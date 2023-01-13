@@ -237,7 +237,7 @@ export default function App() {
                     <Route
                       exact
                       path="/"
-                      component={({ match }) => <Home recentlyAdded={recentlyAdded} featuredPodcasts={featuredPodcasts} />}
+                      component={({ match }) => <Home recentlyAdded={recentlyAdded}/>}
                     />
                     <Route
                       exact
