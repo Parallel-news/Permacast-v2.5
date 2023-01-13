@@ -3,8 +3,13 @@
 @tailwind utilities;
 
 @layer components {
+
+  .btn-base-color {
+    @apply text-zinc-300 hover:text-white cursor-pointer !rounded-full bg-zinc-900 hover:bg-zinc-600;
+  }
+
   .btn-default {
-    @apply text-zinc-300 hover:text-white cursor-pointer btn btn-secondary rounded-full bg-zinc-900 hover:bg-zinc-600;
+    @apply btn btn-secondary btn-base-color;
   }
 }
 
