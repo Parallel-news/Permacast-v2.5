@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+
+  .btn-base-color {
+    @apply text-zinc-300 hover:text-white cursor-pointer !rounded-full bg-zinc-900 hover:bg-zinc-600;
+  }
+
+  .btn-default {
+    @apply btn btn-secondary btn-base-color;
+  }
+}
+
 .HideScollBar::-webkit-scrollbar {
   display: none;
 }

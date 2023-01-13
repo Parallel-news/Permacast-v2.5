@@ -1,4 +1,4 @@
-import { React, useState, useRef, useContext, useCallback } from "react";
+import { React, useState, useRef, useContext, useCallback, useEffect } from "react";
 import ArDB from "ardb";
 import { appContext } from "../utils/initStateGen";
 import { BsArrowRightShort } from "react-icons/bs";
@@ -40,6 +40,9 @@ import {
   PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN, CONTENT_TYPE_VALUES
 } from '../constants';
 
+import { CheckAuthHook } from "../utils/ui";
+import useEthTransactionHook from "../utils/ethereum";
+
 const ardb = new ArDB(arweave);
 
 export default function UploadPodcastView() {
@@ -49,7 +52,8 @@ export default function UploadPodcastView() {
   const [img, setImg] = useState();
   const [isUploading, setIsUploading] = useState(false);
   const [cost, setCost] = useState(0);
-  const isLoggedIn = appState.user.address;
+  const [eth, ar] = CheckAuthHook();
+  const [data, isLoading, isSuccess, sendTransaction, error] = useEthTransactionHook("reedseal.eth", "0.0001");
   let finalShowObj = {};
   const [contentType_, setContentType_] = useRecoilState(ContentType);
   const podcastCoverRef = useRef();
@@ -246,23 +250,26 @@ export default function UploadPodcastView() {
     }
   };
 
+
+  // for the sake of clarity, putting these two along each other
+  const payEthAndUpload = async () => {
+    console.log(await window.arweaveWallet.getPermissions())
+    // wagmi will handle upload and the rest of stuff
+    sendTransaction()
+  }
+
+  // isSuccess property of the wagmi transaction
+  useEffect(() => {
+    if (isSuccess) handleExm()
+  }, [isSuccess])
+
   const handleExm = async () => {
-    const arconnectPubKey = await window.arweaveWallet.getActivePublicKey();
+    if (!data) throw new Error("Tx failed")
+    const userSignature = localStorage.getItem("userSignature");
+    const arconnectPubKey = localStorage.getItem("userPubKey")
+    if (!userSignature) throw new Error("ArConnect signature not found");
     if (!arconnectPubKey) throw new Error("ArConnect public key not found");
 
-    const data = new TextEncoder().encode(
-      `my Arweave PK for Permacast is ${arconnectPubKey}`
-    );
-    const signature = await window.arweaveWallet.signature(data, {
-      name: "RSA-PSS",
-      saltLength: 32,
-    });
-    const signedBase = Buffer.from(signature).toString("base64");
-    console.log("------------------------------------------");
-    console.log("signedBase ", signedBase);
-    if (!signedBase) throw new Error("ArConnect signature not found");
-    console.log("Pub Key: ", arconnectPubKey);
-    
     const defaultLang = "en";
     const defaultCat = 'True Crime';
     
@@ -299,15 +306,15 @@ export default function UploadPodcastView() {
     showObj.email = podcastEmail_;
     showObj.contentType = contentType_; // v for video and a for audio
     //showObj.cover = podcastCover_; // must have "image/*" MIME type
+    showObj.minifiedCover = '5QzEMAZJvCQmCL2TJpLo789MTforaJBFKKnqBNWg0sA'; //must be 43 chars in length
     showObj.cover = '5QzEMAZJvCQmCL2TJpLo789MTforaJBFKKnqBNWg0sA'; //must be 43 chars in length
     showObj.master_network = "EVM"; // currently constant
     showObj.network = "ethereum"; // currently constant
     showObj.token = "ETH"; // currently constant - always capitalized
     showObj.label = "testSeb69"; // check N.B
     showObj.jwk_n = arconnectPubKey;
-    showObj.txid =
-      "0x74661851ddd0a80a4802384382205e1abf12887d690e1d4efd334e161ba341af"; // only works once per successful upload, not 200
-    showObj.sig = signedBase; // check N.B
+    showObj.txid = data?.hash;
+    showObj.sig = userSignature; // check N.B
     handler(showObj);
   };
 
@@ -454,9 +461,13 @@ export default function UploadPodcastView() {
       <div
         className="w-[100px] h-[30px] bg-white/50 rounded-md cursor-pointer"
         onClick={() => {
-          handleExm();
+          payEthAndUpload();
         }}
       />
+      {isLoading && <div>ETH TX sent</div>}
+      {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
+      {error && <div>Error: {error}</div>}
+
       <div className="form-control">
         <form
           onSubmit={
@@ -597,7 +608,6 @@ export default function UploadPodcastView() {
                     {(SHOW_UPLOAD_FEE + cost).toFixed(3)} AR
                   </span>
                 </div>
-                {isLoggedIn ? (
                   <>
                     {isUploading ? (
                       <button
@@ -614,19 +624,15 @@ export default function UploadPodcastView() {
                     ) : (
                       <button
                         type="submit"
-                        className="btn btn-secondary"
+                        className="btn btn-secondary" 
+                        disabled={!(eth && ar)}
                         onClick={() => {}}
                       >
-                        {t("uploadshow.upload")}
+                        {(eth && ar) ? t("uploadshow.upload"): t("uploadshow.disabled")}
                         <BsArrowRightShort className="w-7 h-7" />
                       </button>
                     )}
                   </>
-                ) : (
-                  <div className="w-60">
-                    <ArConnect />
-                  </div>
-                )}
               </div>
             </div>
           </div>
