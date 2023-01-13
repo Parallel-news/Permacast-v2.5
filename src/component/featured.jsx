@@ -326,8 +326,7 @@ export function FeaturedCreators() {
   // Fetch Creators
   useEffect(() => {
     const creatorContr = new AbortController();
-    const fetchContr = new AbortController();
-
+    
     const fetchCreators = async () => {
       setCreatorsLoading(true);
       _setCreators(await Promise.all(veryGoodWhitelistOfVeryGoodPeople.map(
@@ -335,11 +334,10 @@ export function FeaturedCreators() {
       setCreatorsLoading(false);
     }
 
-    fetchCreators({signal: fetchContr.signal});
+    fetchCreators();
 
     return () => {
       creatorContr.abort();
-      fetchContr.abort();
     }
   }, []);
 

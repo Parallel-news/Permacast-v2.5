@@ -77,7 +77,7 @@ export default function Header() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`https://ans-testnet.herokuapp.com/profile/${address}`)
+        const response = await fetch(`/ans/profile/${address}`)
         const ans = await response.json()
         const {address_color, currentLabel, avatar = ""} = ans;
         console.log({address_color, currentLabel, avatar})

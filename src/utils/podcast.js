@@ -140,9 +140,9 @@ export const findCreator = async (creatorAddress, podcasts) => {
   return creatorPodcasts;
 };
 
-export const getCreator = async (address) => {
+export const getCreator = async (address, signalObj) => {
   const re = /([a-zA-Z0-9_-]{43})/;
   if (!address.match(re)) return;
-  const creator = await fetch(`/ans/profile/${address}`);
+  const creator = await fetch(`/ans/profile/${address}`, signalObj);
   return creator.json();
 };
