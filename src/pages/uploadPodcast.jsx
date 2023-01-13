@@ -53,7 +53,7 @@ export default function UploadPodcastView() {
   const [isUploading, setIsUploading] = useState(false);
   const [cost, setCost] = useState(0);
   const [eth, ar] = CheckAuthHook();
-  const [data, isLoading, isSuccess, sendTransaction, error] = useEthTransactionHook("reedseal.eth", "0.0001");
+  const [data, isLoading, isSuccess, sendTransaction, error] = useEthTransactionHook();
   let finalShowObj = {};
   const [contentType_, setContentType_] = useRecoilState(ContentType);
   const podcastCoverRef = useRef();
@@ -306,7 +306,8 @@ export default function UploadPodcastView() {
     showObj.email = podcastEmail_;
     showObj.contentType = contentType_; // v for video and a for audio
     //showObj.cover = podcastCover_; // must have "image/*" MIME type
-    showObj.minifiedCover = '5QzEMAZJvCQmCL2TJpLo789MTforaJBFKKnqBNWg0sA'; //must be 43 chars in length
+    // max size: 64kbs
+    showObj.minifiedCover = 'Rtjwzke-8cCLd0DOKGKCx5zNjmoVr51yy_Se1s73YH4'; //must be 43 chars in length
     showObj.cover = '5QzEMAZJvCQmCL2TJpLo789MTforaJBFKKnqBNWg0sA'; //must be 43 chars in length
     showObj.master_network = "EVM"; // currently constant
     showObj.network = "ethereum"; // currently constant
@@ -466,7 +467,7 @@ export default function UploadPodcastView() {
       />
       {isLoading && <div>ETH TX sent</div>}
       {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
-      {error && <div>Error: {error}</div>}
+      {error && <div>Error: {JSON.stringify(error)}</div>}
 
       <div className="form-control">
         <form
