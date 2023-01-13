@@ -24,6 +24,8 @@ import {
   creators
 } from "../atoms";
 import { createContract } from "smartweave";
+import { connectorsForWallets } from "@rainbow-me/rainbowkit";
+import { ConsoleLogger } from "redstone-smartweave";
 
 export function Greeting() {
   const appState = useContext(appContext);
@@ -326,7 +328,7 @@ export function FeaturedCreators() {
   // Fetch Creators
   useEffect(() => {
     const creatorContr = new AbortController();
-    
+
     const fetchCreators = async () => {
       setCreatorsLoading(true);
       _setCreators(await Promise.all(veryGoodWhitelistOfVeryGoodPeople.map(
