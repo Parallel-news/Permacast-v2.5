@@ -4,6 +4,7 @@
 		"home": "Home",
 		"help": "Get help",
 		"new": "What's new",
+		"wallets": "Wallets",
 		"swal": {
 			"title": "New in permacast V3 ✨",
 			"html": "<li>iTunes/Spotify compatible RSS imports via the upcoming permacast CLI</li><li>Gas cost reduction</li><li>Auto-protection from duplicated uploads</li><li><a href='https://github.com/Parallel-news/permacast/issues/46'>Read full changelog</a></li>"

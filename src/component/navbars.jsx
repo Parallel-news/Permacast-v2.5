@@ -141,6 +141,7 @@ export function Sidenav() {
 
 export function NavBar() {
   const appState = useContext(appContext);
+  const { t, i18n } = useTranslation();
 
   return (
     <>
@@ -157,7 +158,7 @@ export function NavBar() {
             )}
           </div>
           <div className="ml-8 w-72 flex flex-col bg-zinc-900 dropdown rounded-full">
-            <label tabIndex={0} className="btn-default ">Wallets</label>
+            <label tabIndex={0} className="btn-default ">{t("wallets")}</label>
             <ul tabIndex={0} className="w-full dropdown-content menu p-2 rounded-box mt-12 bg-zinc-800 overflow-hidden">
               <li className="mt-2">
                 <ConnectButton showBalance={true} />

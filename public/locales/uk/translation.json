@@ -4,6 +4,7 @@
 		"home": "Головна",
 		"help": "Отримати допомогу",
 		"new": "Що нового",
+		"wallets": "Гаманці",
 		"swal": {
 			"title": "Нове у Permacast V3 ✨",
 			"html": "<li>iTunes/Spotify сумісні RSS імпортуються через майбутній permacast CLI</li><li>Зниження вартості комісії за газ</li><li>Автоматичний захист від завантаження дублікатів</li><li><a href='https://github.com/Parallel-news/permacast/issues/46'>Прочитай повний список змін</a></li>"
