@@ -15,7 +15,7 @@ module.exports = function (app) {
   );
   app.use(
     createProxyMiddleware('/ans', {
-      target: 'https://ans-testnet.herokuapp.com/', // API endpoint 2
+      target: 'https://ans-stats.decent.land/', // API endpoint 2 https://ans-testnet.herokuapp.com/
       changeOrigin: true,
       pathRewrite: {
         "^/ans": "",

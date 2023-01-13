@@ -29,8 +29,6 @@ import { isFullscreen, primaryData } from './atoms/index.js';
 import { getAllData } from "../src/services/services";
 import '@rainbow-me/rainbowkit/styles.css';
 
-
-
 export default function App() {
   const { t } = useTranslation();
   
