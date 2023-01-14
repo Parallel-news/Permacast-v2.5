@@ -79,3 +79,8 @@ export const isPaused = atom({
     key: "isPaused",
     default: ""
 });
+
+export const queueVisible = atom({
+    key: "queueVisible",
+    default: false
+})

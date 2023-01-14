@@ -27,7 +27,7 @@ import { appContext } from './utils/initStateGen.js';
 import { MESON_ENDPOINT } from './utils/arweave.js';
 import { useRecoilState } from 'recoil';
 import VideoModal from './component/video_modal.jsx';
-import { isFullscreen, primaryData, queue, currentEpisode, isPaused } from './atoms/index.js';
+import { isFullscreen, primaryData, queue, currentEpisode, isPaused, queueVisible } from './atoms/index.js';
 import { getAllData } from "../src/services/services";
 import '@rainbow-me/rainbowkit/styles.css';
 
@@ -46,24 +46,20 @@ export default function App() {
   const [appLoaded, setAppLoaded] = useState(false);
 
   const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
-
   const videoRef = useRef();
   const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
-  const [player, setPlayer] = useState();
-  //const [isPaused, setIsPaused] = useState();
   const [_isPaused, _setIsPaused] = useRecoilState(isPaused);
-  console.log("_isPaused: ", _isPaused);
   const [_currentEpisode, _setCurrentEpisode] = useRecoilState(currentEpisode);
+  const [_queue, _setQueue] = useRecoilState(queue);
+  const [_queueVisible, _setQueueVisible] = useRecoilState(queueVisible);
 
   const [themeColor, ] = useState('rgb(255, 255, 0)');
   const [currentPodcastColor, setCurrentPodcastColor] = useState('rgb(255, 255, 0)');
   const [backdropColor, ] = useState();
-
   const [address, setAddress] = useState();
   const [ANSData, setANSData] = useState({ address_color: "", currentLabel: "", avatar: "" });
   const [walletConnected, setWalletConnected] = useState(false);
-  const [_queue, _setQueue] = useRecoilState(queue);
-  const [queueVisible, setQueueVisible] = useState(false);
+  const [player, setPlayer] = useState();
 
   // for the queue button
   useEffect(() => {
@@ -81,7 +77,7 @@ export default function App() {
     const paused = player.ui.playBtn;
     const fullscreen = player.ui.fullscreenBtn;
 
-    queue.addEventListener('click', () => setQueueVisible(visible => !visible));
+    queue.addEventListener('click', () => _setQueueVisible(visible => !visible));
     paused.addEventListener('click', () => _setIsPaused(paused => !paused));
     fullscreen.addEventListener('click', () => setIsFullscreen_(isFullscreen_ => !isFullscreen_));
     return () => {
@@ -142,7 +138,7 @@ export default function App() {
         _setQueue([episode])
         playEpisode(episode, number)
       },
-      visibility: queueVisible,
+      visibility: _queueVisible,
     },
     queueHistory: {
       // This can be used for playback history tracking
@@ -224,7 +220,7 @@ export default function App() {
               </div>
 
               <div className="z-50">
-                <div className="absolute z-50 bottom-0 right-0" style={{ display: queueVisible ? 'block' : 'none' }}>
+                <div className="absolute z-50 bottom-0 right-0" style={{ display: _queueVisible ? 'block' : 'none' }}>
                   {!loading ? <EpisodeQueue /> : <div className="h-full w-full animate-pulse bg-gray-900/30"></div>}
                 </div>
               </div>
