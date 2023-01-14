@@ -27,7 +27,7 @@ import { appContext } from './utils/initStateGen.js';
 import { MESON_ENDPOINT } from './utils/arweave.js';
 import { useRecoilState } from 'recoil';
 import VideoModal from './component/video_modal.jsx';
-import { isFullscreen, primaryData, queue, currentEpisode } from './atoms/index.js';
+import { isFullscreen, primaryData, queue, currentEpisode, isPaused } from './atoms/index.js';
 import { getAllData } from "../src/services/services";
 import '@rainbow-me/rainbowkit/styles.css';
 
@@ -50,8 +50,9 @@ export default function App() {
   const videoRef = useRef();
   const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
   const [player, setPlayer] = useState();
-  const [isPaused, setIsPaused] = useState();
-  //const [currentEpisode, setCurrentEpisode] = useState({ contentTx: 'null', pid: 'null', eid: 'null', number: '1' });
+  //const [isPaused, setIsPaused] = useState();
+  const [_isPaused, _setIsPaused] = useRecoilState(isPaused);
+  console.log("_isPaused: ", _isPaused);
   const [_currentEpisode, _setCurrentEpisode] = useRecoilState(currentEpisode);
 
   const [themeColor, ] = useState('rgb(255, 255, 0)');
@@ -81,7 +82,7 @@ export default function App() {
     const fullscreen = player.ui.fullscreenBtn;
 
     queue.addEventListener('click', () => setQueueVisible(visible => !visible));
-    paused.addEventListener('click', () => setIsPaused(paused => !paused));
+    paused.addEventListener('click', () => _setIsPaused(paused => !paused));
     fullscreen.addEventListener('click', () => setIsFullscreen_(isFullscreen_ => !isFullscreen_));
     return () => {
       abortContr.abort()
@@ -89,7 +90,6 @@ export default function App() {
   }, [player]);
 
   const [recentlyAdded, setRecentlyAdded] = useState([]);
-  const [featuredPodcasts, setFeaturedPodcasts] = useState();
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   // Episode Loader
@@ -149,14 +149,14 @@ export default function App() {
     },
     player: player,
     playback: {
-      isPaused: isPaused,
-      setIsPaused: setIsPaused,
+      isPaused: _isPaused,
+      setIsPaused: _setIsPaused,
     },
     videoRef: videoRef,
   }
 
   const playEpisode = (episode, number = 1) => {
-    const player = new Shikwasa({
+    const shikwasaPlayer = new Shikwasa({
       container: () => document.querySelector('.podcast-player'),
       themeColor: 'yellow',
       theme: 'dark',
@@ -181,9 +181,9 @@ export default function App() {
     })
 
     if (episode) {
-      setPlayer(player)
+      setPlayer(shikwasaPlayer)
       _setCurrentEpisode({ ...episode, number: number }) // add it to local storage for later
-      player.play()
+      shikwasaPlayer.play()
       window.scrollTo(0, document.body.scrollHeight)
     }
   };

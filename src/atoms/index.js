@@ -69,3 +69,13 @@ export const currentEpisode = atom({
     key: "currentEpisode",
     default: { contentTx: 'null', pid: 'null', eid: 'null', number: '1' }
 });
+
+export const player = atom({
+    key: "player",
+    default: {}
+});
+
+export const isPaused = atom({
+    key: "isPaused",
+    default: ""
+});
