@@ -27,7 +27,7 @@ import { appContext } from './utils/initStateGen.js';
 import { MESON_ENDPOINT } from './utils/arweave.js';
 import { useRecoilState } from 'recoil';
 import VideoModal from './component/video_modal.jsx';
-import { isFullscreen, primaryData } from './atoms/index.js';
+import { isFullscreen, primaryData, queue, currentEpisode } from './atoms/index.js';
 import { getAllData } from "../src/services/services";
 import '@rainbow-me/rainbowkit/styles.css';
 
@@ -51,7 +51,8 @@ export default function App() {
   const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
   const [player, setPlayer] = useState();
   const [isPaused, setIsPaused] = useState();
-  const [currentEpisode, setCurrentEpisode] = useState({ contentTx: 'null', pid: 'null', eid: 'null', number: '1' });
+  //const [currentEpisode, setCurrentEpisode] = useState({ contentTx: 'null', pid: 'null', eid: 'null', number: '1' });
+  const [_currentEpisode, _setCurrentEpisode] = useRecoilState(currentEpisode);
 
   const [themeColor, ] = useState('rgb(255, 255, 0)');
   const [currentPodcastColor, setCurrentPodcastColor] = useState('rgb(255, 255, 0)');
@@ -60,7 +61,7 @@ export default function App() {
   const [address, setAddress] = useState();
   const [ANSData, setANSData] = useState({ address_color: "", currentLabel: "", avatar: "" });
   const [walletConnected, setWalletConnected] = useState(false);
-  const [queue, setQueue] = useState([]);
+  const [_queue, _setQueue] = useRecoilState(queue);
   const [queueVisible, setQueueVisible] = useState(false);
 
   // for the queue button
@@ -132,13 +133,13 @@ export default function App() {
       setWalletConnected: setWalletConnected,
     },
     queue: {
-      currentEpisode: currentEpisode, // move this down to playback
-      get: () => queue,
-      enqueueEpisode: (episode) => setQueue([episode]),
-      enqueuePodcast: (episodes) => setQueue(episodes),
+      currentEpisode: _currentEpisode, // move this down to playback
+      get: () => _queue,
+      enqueueEpisode: (episode) => _setQueue([episode]),
+      enqueuePodcast: (episodes) => _setQueue(episodes),
       play: (episode) => playEpisode(episode),
       playEpisode: (episode, number) => {
-        setQueue([episode])
+        _setQueue([episode])
         playEpisode(episode, number)
       },
       visibility: queueVisible,
@@ -181,7 +182,7 @@ export default function App() {
 
     if (episode) {
       setPlayer(player)
-      setCurrentEpisode({ ...episode, number: number }) // add it to local storage for later
+      _setCurrentEpisode({ ...episode, number: number }) // add it to local storage for later
       player.play()
       window.scrollTo(0, document.body.scrollHeight)
     }
@@ -227,7 +228,7 @@ export default function App() {
                   {!loading ? <EpisodeQueue /> : <div className="h-full w-full animate-pulse bg-gray-900/30"></div>}
                 </div>
               </div>
-              {isFullscreen_ && <Fullscreen episode={currentEpisode} number={currentEpisode?.number || 1} />}
+              {isFullscreen_ && <Fullscreen episode={_currentEpisode} number={_currentEpisode?.number || 1} />}
               <Background className="w-screen overflow-scroll">
                 <div className="ml-8 pr-8 pt-9">
                   <div className="mb-10">

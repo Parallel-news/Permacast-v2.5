@@ -106,7 +106,7 @@ export function FeaturedEpisode() {
       <div className="ml-auto">
         <>
           <div
-            className="min-w-min btn btn-primary border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md"
+            className="min-w-min btn btn-primary border-0 mt-5 rounded-full flex items-center cursor-pointer"
             // style={getButtonRGBs(rgb)}
             onClick={() => {
               if (switchFocus_) {

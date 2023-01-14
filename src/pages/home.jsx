@@ -44,6 +44,7 @@ const Home = memo(({recentlyAdded}) => {
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
   const [primaryData_, ] = useRecoilState(primaryData);
   const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
+  const [loadedData, setLoadedData] = useState(false);
 
   const [recentlyAdded_, setRecentlyAdded_] = useState([]);
   const Loading = () => (
@@ -73,15 +74,16 @@ const Home = memo(({recentlyAdded}) => {
     };
 
 
-    if(primaryData_.podcasts) {
+    if(primaryData_.podcasts && !loadedData) {
       try {
         getAllData_();
+        setLoadedData(true);
        } catch (e) {
          console.log(e);
        }
     }
   
-  }, [primaryData_]);
+  }, [primaryData_, loadedData]);
 
   return (
     <div className="w-full pb-10 mb-10">

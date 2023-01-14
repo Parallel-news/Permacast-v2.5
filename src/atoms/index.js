@@ -59,3 +59,13 @@ export const creators = atom({
     key: "creators",
     default: []
 });
+
+export const queue = atom({
+    key: "queue",
+    default: []
+});
+
+export const currentEpisode = atom({
+    key: "currentEpisode",
+    default: { contentTx: 'null', pid: 'null', eid: 'null', number: '1' }
+});
