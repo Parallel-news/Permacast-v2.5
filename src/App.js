@@ -83,12 +83,12 @@ export default function App() {
     return () => {
       abortContr.abort()
     }
-  }, [player]);
+  }, []);
 
   const [recentlyAdded, setRecentlyAdded] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  // Episode Loader
+  // Episode  Loader
   useEffect(() => {
     // TODO: generalize
     if (!localStorage.getItem("checkupDate")) localStorage.setItem("checkupDate", new Date());
@@ -152,6 +152,7 @@ export default function App() {
   }
 
   const playEpisode = (episode, number = 1) => {
+    console.log("PLAYEPISODE BEING CALLED");
     const shikwasaPlayer = new Shikwasa({
       container: () => document.querySelector('.podcast-player'),
       themeColor: 'yellow',
