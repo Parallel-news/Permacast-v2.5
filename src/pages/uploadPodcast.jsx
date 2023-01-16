@@ -3,13 +3,11 @@ import ArDB from "ardb";
 import { appContext } from "../utils/initStateGen";
 import { BsArrowRightShort } from "react-icons/bs";
 import {
-  CONTRACT_SRC,
   FEE_MULTIPLIER,
   SHOW_UPLOAD_FEE,
   arweave,
   deployContract,
   queryTXsByAddress,
-  compoundTreasury,
   TREASURY_ADDRESS,
 } from "../utils/arweave";
 import LANGUAGES from "../utils/languages";
@@ -35,10 +33,11 @@ import {
   PODCAST_NAME_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_DESC_MIN_LEN,
   PODCAST_DESC_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_AUTHOR_MAX_LEN,
   PODCAST_LANG_MIN_LEN, PODCAST_LANG_MAX_LEN, PODCAST_CAT_MIN_LEN,
-  PODCAST_CAT_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_NAME_MAX_LEN,
-  EPISODE_DESC_MIN_LEN, EPISODE_DESC_MAX_LEN, IS_EXPLICIT_VALUES, 
+  PODCAST_CAT_MAX_LEN, IS_EXPLICIT_VALUES, 
   PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN, CONTENT_TYPE_VALUES
 } from '../constants';
+//import { providers } from "ethers";
+//import { genAPI } from 'arseeding-js';
 
 import { CheckAuthHook } from "../utils/ui";
 import useEthTransactionHook from "../utils/ethereum";

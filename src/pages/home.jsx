@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, memo } from "react";
 import { appContext } from "../utils/initStateGen.js";
 import {
   Greeting,
@@ -7,7 +7,6 @@ import {
   RecentlyAdded,
   FeaturedCreators,
 } from "../component/featured";
-import handler, { getAllData } from "../services/services";
 import { primaryData, secondaryData, switchFocus } from "../atoms/index.js";
 import { useRecoilState } from "recoil";
 
@@ -35,12 +34,17 @@ import { useRecoilState } from "recoil";
 // visible: true
 // }]
 
-export default function Home({ recentlyAdded, featuredPodcasts }) {
+const areEqual = (prevProps, nextProps) => {
+  return prevProps.recentlyAdded === nextProps.recentlyAdded;
+};
+
+const Home = memo(({recentlyAdded}) => {
   const appState = useContext(appContext);
 
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
   const [primaryData_, ] = useRecoilState(primaryData);
   const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
+  const [loadedData, setLoadedData] = useState(false);
 
   const [recentlyAdded_, setRecentlyAdded_] = useState([]);
   const Loading = () => (
@@ -53,7 +57,7 @@ export default function Home({ recentlyAdded, featuredPodcasts }) {
         primaryData_.podcasts.filter((obj) => {
           if(switchFocus_){
             return obj.contentType === 'audio/'
-          }else{
+          } else {
             return obj.contentType === 'video/'
           }
         })[0]
@@ -70,18 +74,19 @@ export default function Home({ recentlyAdded, featuredPodcasts }) {
     };
 
 
-    if(primaryData_.podcasts) {
+    if(primaryData_.podcasts && !loadedData) {
       try {
         getAllData_();
+        setLoadedData(true);
        } catch (e) {
          console.log(e);
        }
     }
   
-  }, [primaryData_]);
+  }, [primaryData_, loadedData]);
 
   return (
-    <div className="overflow-scroll w-full pb-10 mb-10">
+    <div className="w-full pb-10 mb-10">
       {Object.keys(secondaryData_).length > 0 ? <Greeting /> : <Loading />}
       {!appState.loading && (
         <div
@@ -162,4 +167,5 @@ export default function Home({ recentlyAdded, featuredPodcasts }) {
       </div>
     </div>
   );
-}
+}, areEqual);
+export default Home;

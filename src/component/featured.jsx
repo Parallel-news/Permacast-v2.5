@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, memo } from "react";
 import { appContext } from "../utils/initStateGen.js";
 import { useTranslation } from "react-i18next";
 
@@ -23,6 +23,9 @@ import {
   videoSelection,
   creators
 } from "../atoms";
+import { createContract } from "smartweave";
+import { connectorsForWallets } from "@rainbow-me/rainbowkit";
+import { ConsoleLogger } from "redstone-smartweave";
 
 export function Greeting() {
   const appState = useContext(appContext);
@@ -103,7 +106,7 @@ export function FeaturedEpisode() {
       <div className="ml-auto">
         <>
           <div
-            className="min-w-min btn btn-primary border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md"
+            className="min-w-min border-0 mt-5 rounded-full flex items-center cursor-pointer transition-transform duration-200 ease-in-out transform hover:scale-90 text-black font-semibold bg-[#FFFF00] h-12 p-4"
             // style={getButtonRGBs(rgb)}
             onClick={() => {
               if (switchFocus_) {
@@ -120,10 +123,10 @@ export function FeaturedEpisode() {
             }}
           >
             <FaPlay className="w-3 h-3" />
-            <div className="ml-2">{t("home.playfeaturedepisode")}</div>
+            <div className="ml-1">{t("home.playfeaturedepisode")}</div>
           </div>
           <div
-            className="min-w-min btn btn-primary border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md"
+            className="min-w-min border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md transition-transform duration-200 ease-in-out transform hover:scale-90 text-black bg-[#FFFF00] h-12 p-4"
             // style={getButtonRGBs(rgb)}
             onClick={() => {
               history.push(
@@ -135,7 +138,7 @@ export function FeaturedEpisode() {
             }}
           >
             <FiEye className="h-5 w-5" />
-            <div className="ml-2">{t("home.viewfeaturedepisode")}</div>
+            <div className="ml-1">{t("home.viewfeaturedepisode")}</div>
           </div>
         </>
       </div>
@@ -306,7 +309,7 @@ export function RecentlyAdded() {
   );
 }
 
-export function FeaturedCreators() {
+export const FeaturedCreators = memo(() => {
   const appState = useContext(appContext);
   const history = useHistory();
   const { t } = useTranslation();
@@ -319,23 +322,26 @@ export function FeaturedCreators() {
     "lIg5mdDMAAIj5Pn2BSYKI8SEo8hRIdh-Zrn_LSy_3Qg"
   ]
 
+  const [ dataLoaded, setDataLoaded ] = useState(false);
   const [creatorsLoading, setCreatorsLoading] = useState(false);
   const [_creators, _setCreators] = useRecoilState(creators);
 
   // Fetch Creators
   useEffect(() => {
     const creatorContr = new AbortController();
-
     const fetchCreators = async () => {
       setCreatorsLoading(true);
       _setCreators(await Promise.all(veryGoodWhitelistOfVeryGoodPeople.map(
                         creatorAddress => getCreator(creatorAddress, {signal: creatorContr.signal}))));
       setCreatorsLoading(false);
     }
-
-    fetchCreators();
-
-    return () => creatorContr.abort();
+    if(!dataLoaded) {
+      fetchCreators();
+      setDataLoaded(true);
+    }
+    return () => {
+      creatorContr.abort();
+    }
   }, []);
 
   return (
@@ -395,4 +401,4 @@ export function FeaturedCreators() {
       )}
     </div>
   );
-}
+})

@@ -27,11 +27,9 @@ import { appContext } from './utils/initStateGen.js';
 import { MESON_ENDPOINT } from './utils/arweave.js';
 import { useRecoilState } from 'recoil';
 import VideoModal from './component/video_modal.jsx';
-import { isFullscreen, primaryData } from './atoms/index.js';
+import { isFullscreen, primaryData, queue, currentEpisode, isPaused, queueVisible } from './atoms/index.js';
 import { getAllData } from "../src/services/services";
 import '@rainbow-me/rainbowkit/styles.css';
-
-
 
 export default function App() {
   const { t } = useTranslation();
@@ -44,26 +42,24 @@ export default function App() {
     provider
   })
 
-  const [loading, setLoading] = useState(false);
+  const [loading, ] = useState(false);
   const [appLoaded, setAppLoaded] = useState(false);
 
-  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData)
-
+  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
   const videoRef = useRef();
   const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
-  const [player, setPlayer] = useState();
-  const [isPaused, setIsPaused] = useState();
-  const [currentEpisode, setCurrentEpisode] = useState({ contentTx: 'null', pid: 'null', eid: 'null', number: '1' });
+  const [_isPaused, _setIsPaused] = useRecoilState(isPaused);
+  const [_currentEpisode, _setCurrentEpisode] = useRecoilState(currentEpisode);
+  const [_queue, _setQueue] = useRecoilState(queue);
+  const [_queueVisible, _setQueueVisible] = useRecoilState(queueVisible);
 
-  const [themeColor, setThemeColor] = useState('rgb(255, 255, 0)');
+  const [themeColor, ] = useState('rgb(255, 255, 0)');
   const [currentPodcastColor, setCurrentPodcastColor] = useState('rgb(255, 255, 0)');
-  const [backdropColor, setBackdropColor] = useState();
-
+  const [backdropColor, ] = useState();
   const [address, setAddress] = useState();
   const [ANSData, setANSData] = useState({ address_color: "", currentLabel: "", avatar: "" });
   const [walletConnected, setWalletConnected] = useState(false);
-  const [queue, setQueue] = useState([]);
-  const [queueVisible, setQueueVisible] = useState(false);
+  const [player, setPlayer] = useState();
 
   // for the queue button
   useEffect(() => {
@@ -81,20 +77,18 @@ export default function App() {
     const paused = player.ui.playBtn;
     const fullscreen = player.ui.fullscreenBtn;
 
-    queue.addEventListener('click', () => setQueueVisible(visible => !visible));
-    paused.addEventListener('click', () => setIsPaused(paused => !paused));
+    queue.addEventListener('click', () => _setQueueVisible(visible => !visible));
+    paused.addEventListener('click', () => _setIsPaused(paused => !paused));
     fullscreen.addEventListener('click', () => setIsFullscreen_(isFullscreen_ => !isFullscreen_));
     return () => {
       abortContr.abort()
     }
-  }, [player]);
+  }, []);
 
   const [recentlyAdded, setRecentlyAdded] = useState([]);
-  const [featuredPodcasts, setFeaturedPodcasts] = useState();
-  const [searchInput, setSearchInput] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  // Episode Loader
+  // Episode  Loader
   useEffect(() => {
     // TODO: generalize
     if (!localStorage.getItem("checkupDate")) localStorage.setItem("checkupDate", new Date());
@@ -126,10 +120,6 @@ export default function App() {
       currentPodcastColor: currentPodcastColor,
       setCurrentPodcastColor: setCurrentPodcastColor,
     },
-    search: {
-      input: searchInput,
-      setInput: setSearchInput,
-    },
     user: {
       address: address,
       setAddress: setAddress,
@@ -139,30 +129,31 @@ export default function App() {
       setWalletConnected: setWalletConnected,
     },
     queue: {
-      currentEpisode: currentEpisode, // move this down to playback
-      get: () => queue,
-      enqueueEpisode: (episode) => setQueue([episode]),
-      enqueuePodcast: (episodes) => setQueue(episodes),
+      currentEpisode: _currentEpisode, // move this down to playback
+      get: () => _queue,
+      enqueueEpisode: (episode) => _setQueue([episode]),
+      enqueuePodcast: (episodes) => _setQueue(episodes),
       play: (episode) => playEpisode(episode),
       playEpisode: (episode, number) => {
-        setQueue([episode])
+        _setQueue([episode])
         playEpisode(episode, number)
       },
-      visibility: queueVisible,
+      visibility: _queueVisible,
     },
     queueHistory: {
       // This can be used for playback history tracking
     },
     player: player,
     playback: {
-      isPaused: isPaused,
-      setIsPaused: setIsPaused,
+      isPaused: _isPaused,
+      setIsPaused: _setIsPaused,
     },
     videoRef: videoRef,
   }
 
   const playEpisode = (episode, number = 1) => {
-    const player = new Shikwasa({
+    console.log("PLAYEPISODE BEING CALLED");
+    const shikwasaPlayer = new Shikwasa({
       container: () => document.querySelector('.podcast-player'),
       themeColor: 'yellow',
       theme: 'dark',
@@ -187,9 +178,9 @@ export default function App() {
     })
 
     if (episode) {
-      setPlayer(player)
-      setCurrentEpisode({ ...episode, number: number }) // add it to local storage for later
-      player.play()
+      setPlayer(shikwasaPlayer)
+      _setCurrentEpisode({ ...episode, number: number }) // add it to local storage for later
+      shikwasaPlayer.play()
       window.scrollTo(0, document.body.scrollHeight)
     }
   };
@@ -230,11 +221,11 @@ export default function App() {
               </div>
 
               <div className="z-50">
-                <div className="absolute z-50 bottom-0 right-0" style={{ display: queueVisible ? 'block' : 'none' }}>
+                <div className="absolute z-50 bottom-0 right-0" style={{ display: _queueVisible ? 'block' : 'none' }}>
                   {!loading ? <EpisodeQueue /> : <div className="h-full w-full animate-pulse bg-gray-900/30"></div>}
                 </div>
               </div>
-              {isFullscreen_ && <Fullscreen episode={currentEpisode} number={currentEpisode?.number || 1} />}
+              {isFullscreen_ && <Fullscreen episode={_currentEpisode} number={_currentEpisode?.number || 1} />}
               <Background className="w-screen overflow-scroll">
                 <div className="ml-8 pr-8 pt-9">
                   <div className="mb-10">
@@ -244,7 +235,7 @@ export default function App() {
                     <Route
                       exact
                       path="/"
-                      component={({ match }) => <Home recentlyAdded={recentlyAdded} featuredPodcasts={featuredPodcasts} />}
+                      component={({ match }) => <Home recentlyAdded={recentlyAdded}/>}
                     />
                     <Route
                       exact
