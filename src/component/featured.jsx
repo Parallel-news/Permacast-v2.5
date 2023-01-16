@@ -1,13 +1,17 @@
 import React, { useState, useContext, useEffect, memo } from "react";
 import { appContext } from "../utils/initStateGen.js";
 import { useTranslation } from "react-i18next";
+
 import { useLocation, useHistory } from "react-router-dom";
 import {
+  replaceDarkColorsRGB,
   isTooLight,
   trimANSLabel,
+  RGBobjectToString,
 } from "../utils/ui";
 import { getCreator } from "../utils/podcast.js";
-import { Cooyub, GlobalPlayButton } from "./reusables/icons";
+import { Cooyub, PlayButton, GlobalPlayButton } from "./reusables/icons";
+import { EyeIcon } from "@heroicons/react/24/outline";
 import { FaPlay } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
 import Track from "./track";
@@ -19,6 +23,9 @@ import {
   videoSelection,
   creators
 } from "../atoms";
+import { createContract } from "smartweave";
+import { connectorsForWallets } from "@rainbow-me/rainbowkit";
+import { ConsoleLogger } from "redstone-smartweave";
 
 export function Greeting() {
   const appState = useContext(appContext);
@@ -47,14 +54,16 @@ export function Greeting() {
 export function FeaturedEpisode() {
   const appState = useContext(appContext);
   // const {cover, podcastName, description, pid} = episode; --Episode breakdown
-  const [switchFocus_, ] = useRecoilState(switchFocus);
-  const [primaryData_, ] = useRecoilState(primaryData); // Global Podcasts Object
+  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
+  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData); // Global Podcasts Object
   const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData); // Selected Podcast Object
   const [vs_, setVS_] = useRecoilState(videoSelection); // Selected Podcast Object
   const { t } = useTranslation();
 
   let history = useHistory();
   let location = useLocation();
+  // const rgb = RGBobjectToString(replaceDarkColorsRGB(episode.rgb)) --styling
+  // const url = `/podcast/${primaryData_.pid}/${secondaryData_.eid}`; // --url
 
   useEffect(() => {
     setSecondaryData_(
@@ -66,9 +75,7 @@ export function FeaturedEpisode() {
         }
       })[0]
     );
-
   }, [switchFocus_]);
-
   return (
     <div className="p-14 flex w-full border border-zinc-800 rounded-3xl">
       <img
@@ -99,7 +106,7 @@ export function FeaturedEpisode() {
       <div className="ml-auto">
         <>
           <div
-            className="min-w-min border-0 mt-5 rounded-full flex items-center cursor-pointer bg-[#FFFF00] h-12 p-4 text-black font-semibold transition-transform duration-200 ease-in-out transform hover:scale-90"
+            className="min-w-min border-0 mt-5 rounded-full flex items-center cursor-pointer transition-transform duration-200 ease-in-out transform hover:scale-90 text-black font-semibold bg-[#FFFF00] h-12 p-4"
             // style={getButtonRGBs(rgb)}
             onClick={() => {
               if (switchFocus_) {
@@ -116,10 +123,10 @@ export function FeaturedEpisode() {
             }}
           >
             <FaPlay className="w-3 h-3" />
-            <div className="ml-2">{t("home.playfeaturedepisode")}</div>
+            <div className="ml-1">{t("home.playfeaturedepisode")}</div>
           </div>
           <div
-            className="min-w-min border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md bg-[#FFFF00] h-12 p-4 text-black transition-transform duration-200 ease-in-out transform hover:scale-90"
+            className="min-w-min border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md transition-transform duration-200 ease-in-out transform hover:scale-90 text-black bg-[#FFFF00] h-12 p-4"
             // style={getButtonRGBs(rgb)}
             onClick={() => {
               history.push(
