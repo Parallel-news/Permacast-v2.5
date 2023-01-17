@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useLocation, useHistory } from "react-router-dom";
+// import { useLocation, useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -7,7 +7,6 @@ import {
   ArrowUpOnSquareIcon,
 } from "@heroicons/react/24/outline";
 
-import { MESON_ENDPOINT } from "../utils/arweave";
 import { getButtonRGBs, isTooLight } from "../utils/ui";
 import {
   getPodcasts,
@@ -25,8 +24,8 @@ import { useRecoilState } from "recoil";
 export default function Episode(props) {
   const { podcastId, episodeNumber } = props.match.params;
   const { t } = useTranslation();
-  const history = useHistory();
-  const location = useLocation();
+  // const history = useHistory();
+  // const location = useLocation();
 
   const appState = useContext(appContext);
 
@@ -128,7 +127,7 @@ export default function Episode(props) {
                 })[0].cover
               }
               className="w-40 h-40 cursor-pointer"
-              onClick={() => history.push(`/podcast/${podcastId}`)}
+              // onClick={() => history.push(`/podcast/${podcastId}`)}
             />
             <div className="mt-8 md:mt-0 md:ml-8 flex flex-col">
               <div className="text-center md:text-left text-3xl font-medium text-gray-200 select-text">
@@ -166,7 +165,7 @@ export default function Episode(props) {
                 </div>
                 <div className="flex flex-row items-center gap-x-2">
                   <a
-                    href={`${MESON_ENDPOINT}/${episode.contentTx}`}
+                    href={`https://arweave.net/${episode.contentTx}`}
                     className="flex items-center rounded-full btn btn-sm normal-case text-sm font-medium border-0"
                     style={{
                       backgroundColor: rgb?.backgroundColor,
@@ -188,7 +187,7 @@ export default function Episode(props) {
                       setTimeout(() => {
                         if (!copied) setCopied(false);
                       }, 2000);
-                      navigator.clipboard.writeText(window.location.href);
+                      // navigator.clipboard.writeText(window.location.href);
                     }}
                   >
                     <ArrowUpOnSquareIcon className="w-4 h-4 mr-2" />

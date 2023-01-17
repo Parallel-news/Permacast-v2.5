@@ -7,7 +7,7 @@ import { PlusIcon, HeartIcon } from "@heroicons/react/24/solid";
 import { PlayIcon, PauseIcon } from "@heroicons/react/24/outline";
 import Track from "../component/track.jsx";
 import TipButton from "../component/reusables/tip.jsx";
-import UploadEpisode from "./uploadEpisode.jsx";
+import UploadEpisode from "../component/uploadEpisode.jsx";
 import UploadVideo from "./uploadVideo.jsx";
 import {
   Link,
@@ -18,16 +18,6 @@ import {
   scrollSpy,
   scroller,
 } from "react-scroll";
-import {
-  arweave,
-  smartweave,
-  NEWS_CONTRACT,
-  MESON_ENDPOINT,
-} from "../utils/arweave.js";
-// import * as SmartWeaveSdk from 'redstone-smartweave';
-// import { contract } from 'redstone-smartweave';
-// import { Dialog, Transition } from '@headlessui/react'
-// import { Fragment } from 'react'
 import {
   convertToPodcast,
   convertToEpisode,
@@ -40,7 +30,6 @@ import { Cooyub } from "../component/reusables/icons";
 import { getButtonRGBs } from "../utils/ui.js";
 import { appContext } from "../utils/initStateGen.js";
 import { isDarkMode } from "../utils/theme.js";
-import { API_MAP } from "../utils/arweave.js";
 
 import { useRecoilState } from "recoil";
 import {
@@ -49,7 +38,7 @@ import {
   primaryData,
   secondaryData,
 } from "../atoms";
-import { useLocation, useHistory } from "react-router-dom";
+// import { useLocation, useHistory } from "react-router-dom";
 
 export default function Podcast(props) {
   const { t } = useTranslation();
@@ -106,7 +95,7 @@ export default function Podcast(props) {
                   </svg>
                 </button>
                 <a
-                  href={`${MESON_ENDPOINT}/${e.contentTx}`}
+                  href={`https://arweave.net/${e.contentTx}`}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -187,8 +176,8 @@ export default function Podcast(props) {
       audio: {
         title: e.episodeName,
         artist: podcast.podcastName,
-        cover: `${MESON_ENDPOINT}/${podcast?.cover}`,
-        src: `${MESON_ENDPOINT}/${e.contentTx}`,
+        cover: `https://arweave.net/${podcast?.cover}`,
+        src: `https://arweave.net/${e.contentTx}`,
       },
       download: true,
     });
@@ -215,8 +204,8 @@ export default function Podcast(props) {
   }, []);
 
   let playerObj_ = document.getElementById("hidden-player");
-  const history = useHistory();
-  const location = useLocation();
+  // const history = useHistory();
+  // const location = useLocation();
 
   const isOwner =
     thePodcast?.creatorAddress === address ||

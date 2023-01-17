@@ -1,4 +1,6 @@
 import React, { useContext, useEffect, useState, memo } from "react";
+import { useRecoilState } from "recoil";
+
 import { appContext } from "../utils/initStateGen.js";
 import {
   Greeting,
@@ -8,7 +10,6 @@ import {
   FeaturedCreators,
 } from "../component/featured";
 import { primaryData, secondaryData, switchFocus } from "../atoms/index.js";
-import { useRecoilState } from "recoil";
 
 // var featuredVideoShows = [{
 // contentTx: null,
@@ -34,11 +35,12 @@ import { useRecoilState } from "recoil";
 // visible: true
 // }]
 
-const areEqual = (prevProps, nextProps) => {
-  return prevProps.recentlyAdded === nextProps.recentlyAdded;
-};
 
-const Home = memo(({recentlyAdded}) => {
+export default function Home() {
+
+  const areEqual = (prevProps, nextProps) => {
+    return prevProps.recentlyAdded === nextProps.recentlyAdded;
+  };
   const appState = useContext(appContext);
 
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
@@ -50,6 +52,7 @@ const Home = memo(({recentlyAdded}) => {
   const Loading = () => (
     <div className="w-full h-[100px] rounded-3xl mt-2 animate-pulse bg-gray-300/30"></div>
   );
+
   useEffect(() => {
     console.log("home.jsx useEffect");
     const getAllData_ = () => {
@@ -87,7 +90,7 @@ const Home = memo(({recentlyAdded}) => {
 
   return (
     <div className="w-full pb-10 mb-10">
-      {Object.keys(secondaryData_).length > 0 ? <Greeting /> : <Loading />}
+      {/* {Object.keys(secondaryData_).length > 0 ? <Greeting /> : <Loading />} */}
       {!appState.loading && (
         <div
           className={`w-full h-[25px] flex flex-row ml-[6px] relative bottom-5`}
@@ -167,5 +170,4 @@ const Home = memo(({recentlyAdded}) => {
       </div>
     </div>
   );
-}, areEqual);
-export default Home;
+};

@@ -1,16 +1,9 @@
 import { React, useState, useRef, useContext, useCallback, useEffect } from "react";
-import ArDB from "ardb";
+
 import { appContext } from "../utils/initStateGen";
 import { BsArrowRightShort } from "react-icons/bs";
-import {
-  FEE_MULTIPLIER,
-  SHOW_UPLOAD_FEE,
-  arweave,
-  deployContract,
-  queryTXsByAddress,
-  TREASURY_ADDRESS,
-} from "../utils/arweave";
 import LANGUAGES from "../utils/languages";
+
 import {
   processFile,
   userHasEnoughAR,
@@ -41,8 +34,6 @@ import {
 import { CheckAuthHook } from "../utils/ui";
 import useEthTransactionHook from "../utils/ethereum";
 
-const ardb = new ArDB(arweave);
-
 export default function UploadPodcastView() {
   const appState = useContext(appContext);
   // remove state from here
@@ -72,156 +63,6 @@ export default function UploadPodcastView() {
   const [podcastCover_, setPodcastCover_] = useState(null);
   const [podcastLanguage_, setPodcastLanguage_] = useState(null);
   const [podcastExplicit_, setPodcastExplicit_] = useState(false);
-
-  const uploadShow = async (show) => {
-    Swal.fire({
-      title: t("uploadshow.swal.uploading.title"),
-      timer: 2000,
-      customClass: "font-mono",
-    });
-    let contractId;
-
-    let addr = await fetchWalletAddress();
-    console.log("ADDRESSS");
-    console.log(addr);
-    const tx = await queryTXsByAddress(addr);
-
-    console.log(tx);
-    if (tx.length !== 0) {
-      contractId = tx[0].id;
-    }
-    if (!contractId) {
-      console.log("not contractId - deploying new contract");
-      contractId = await deployContract(addr);
-    }
-    let input = {
-      function: "createPodcast",
-      name: show.name,
-      contentType: "a",
-      cover: show.cover,
-      lang: show.lang,
-      isExplicit: show.isExplicit,
-      author: show.author,
-      categories: show.category,
-      email: show.email,
-    };
-
-    console.log(input);
-    console.log("CONTRACT ID:");
-    console.log(contractId);
-
-    let tags = {
-      Contract: contractId,
-      "App-Name": "SmartWeaveAction",
-      "App-Version": "0.3.0",
-      "Content-Type": "text/plain",
-      Input: JSON.stringify(input),
-    };
-
-    const interaction = await arweave.createTransaction({ data: show.desc });
-
-    for (const key in tags) {
-      interaction.addTag(key, tags[key]);
-    }
-
-    interaction.reward = (+interaction.reward * FEE_MULTIPLIER).toString();
-    await arweave.transactions.sign(interaction);
-    await arweave.transactions.post(interaction);
-    if (interaction.id) {
-      Swal.fire({
-        title: t("uploadshow.swal.showadded.title"),
-        text: t("uploadshow.swal.showadded.text"),
-        icon: "success",
-        customClass: "font-mono",
-      });
-      console.log("INTERACTION.ID");
-      console.log(interaction.id);
-    } else {
-      alert("An error occured.");
-    }
-  };
-
-  const uploadToArweave = async (data, fileType, showObj) => {
-    console.log("made it here, data is");
-    console.log(data);
-    arweave.createTransaction({ data: data }).then((tx) => {
-      tx.addTag("Content-Type", fileType);
-      tx.reward = (+tx.reward * FEE_MULTIPLIER).toString();
-      console.log("created");
-      arweave.transactions.sign(tx).then(() => {
-        console.log("signed");
-        // arweave.transactions.post(tx).then((response) => {
-        //   console.log(response)
-        //   if (response.statusText === "OK") {
-        //     // compoundTreasury(SHOW_UPLOAD_FEE) // TODO TEST
-        //     arweave.createTransaction({target: TREASURY_ADDRESS, quantity: arweave.ar.arToWinston('' + SHOW_UPLOAD_FEE)}).then((tx) => {
-        //       arweave.transactions.sign(tx).then(() => {
-        //         arweave.transactions.post(tx).then((response) => {
-        //           console.log(response)
-        //           setIsUploading(false)
-        //         })
-        //       })
-        //     })
-        //     showObj.cover = tx.id
-        //     finalShowObj = showObj;
-        //     console.log(finalShowObj)
-        //     uploadShow(finalShowObj)
-        //     setShow(false)
-        //   } else {
-        //     Swal.fire({
-        //       title: t("uploadshow.swal.uploadfailed.title"),
-        //       text: t("uploadshow.swal.uploadfailed.text"),
-        //       icon: 'danger',
-        //       customClass: "font-mono",
-        //     })
-        //   }
-        // });
-        arweave.transactions
-          .getUploader(tx)
-          .then((uploader) => {
-            while (!uploader.isComplete) {
-              uploader.uploadChunk().then(() => {
-                setPercent(uploader.pctComplete);
-                console.log(uploader.pctComplete); //pass uploader.pctComplete to a UI element to show progress
-              });
-            }
-          })
-          .finally(() => {
-            arweave.transactions.getStatus(tx).then((res) => {
-              console.log(res);
-              if (res.status === 200) {
-                // compoundTreasury(SHOW_UPLOAD_FEE) // TODO TEST
-                arweave
-                  .createTransaction({
-                    target: TREASURY_ADDRESS,
-                    quantity: arweave.ar.arToWinston("" + SHOW_UPLOAD_FEE),
-                  })
-                  .then((tx) => {
-                    arweave.transactions.sign(tx).then(() => {
-                      arweave.transactions.post(tx).then((response) => {
-                        console.log(response);
-                        setIsUploading(false);
-                      });
-                    });
-                  });
-                showObj.cover = tx.id;
-                finalShowObj = showObj;
-                console.log("Showthis: ", finalShowObj);
-                uploadShow(finalShowObj);
-                setShow(false);
-              } else {
-                Swal.fire({
-                  title: t("uploadshow.swal.uploadfailed.title"),
-                  text: t("uploadshow.swal.uploadfailed.text"),
-                  icon: "danger",
-                  customClass: "font-mono",
-                });
-              }
-            });
-          });
-      });
-    });
-  };
 
   const isPodcastCoverSquared = (event) => {
     if (event.target.files.length !== 0) {
@@ -604,7 +445,7 @@ export default function UploadPodcastView() {
                 <div className="bg-zinc-800 rounded-lg px-4 py-[9px] mr-4">
                   {t("uploadshow.feetext")}
                   <span className="text-lg font-bold underline">
-                    {(SHOW_UPLOAD_FEE + cost).toFixed(3)} AR
+                    {1} USDC
                   </span>
                 </div>
                   <>

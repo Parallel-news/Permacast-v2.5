@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useHistory, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
 import { Disclosure } from "@headlessui/react";
@@ -28,8 +27,8 @@ import { ContentType, isFullscreen } from "../atoms";
 
 export function Sidenav() {
   const { t, i18n } = useTranslation();
-  let history = useHistory();
-  let location = useLocation();
+  // let history = useHistory();
+  // let location = useLocation();
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -38,10 +37,10 @@ export function Sidenav() {
   const appState = useContext(appContext);
   const [contentType_, setContentType_] = useRecoilState(ContentType)
   const [showUploadOptions,setUploadOptions] = useState(false)
-  const switchView = (i) => {
-    history.push("/" + i);
-  };
-  const cond = (i) => location.pathname === i;
+  // const  = (i) => {
+  //   history.push("/" + i);
+  // };
+  // const  = (i) => location.pathname === i;
 
   const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
 
@@ -56,19 +55,19 @@ export function Sidenav() {
           onClick={() => 
           {
             setIsFullscreen_(false)
-            switchView("")
+            ("")
           }}
-          style={{ color: cond("/") ? "white" : "" }}
-          disabled={cond("/") ? true : false}
+          style={{ color: ("/") ? "white" : "" }}
+          disabled={("/") ? true : false}
         >
           <HomeIcon />
         </button>
         <div className="tooltip" data-tip="Coming soon!">
           <button
             className="w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200"
-            onClick={() => switchView("following")}
-            style={{ color: cond("/following") ? "white" : "" }}
-            disabled={cond("/following") ? true : true}
+            onClick={() => ("following")}
+            style={{ color: ("/following") ? "white" : "" }}
+            disabled={("/following") ? true : true}
           >
             <RectangleStackIcon />
           </button>
@@ -111,7 +110,7 @@ export function Sidenav() {
               <li>
                 <span onClick={() => {
                   setIsFullscreen_(false)
-                  switchView("uploadpodcast")
+                  ("uploadpodcast")
                   setContentType_('a')
                 }}
                 >Audio</span>
@@ -119,7 +118,7 @@ export function Sidenav() {
               <li>
                 <span onClick={() => {
                   setIsFullscreen_(false)
-                  switchView("uploadpodcast")
+                  ("uploadpodcast")
                   setContentType_('v')
               }}
               >Video</span>
@@ -177,9 +176,9 @@ export function NavBar() {
 export function NavBarMobile() {
   const appState = useContext(appContext);
   const { t, i18n } = useTranslation();
-  const switchView = (i) => history.push("/" + i);
-  let history = useHistory();
-  let location = useLocation();
+  // const  = (i) => history.push("/" + i);
+  // let history = useHistory();
+  // let location = useLocation();
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -248,7 +247,7 @@ export function NavBarMobile() {
                     as="div"
                     className="block px-3 py-2 rounded-md"
                   >
-                    <div onClick={() => switchView("")}>{t("navbar.home")}</div>
+                    <div onClick={() => ""}>{t("navbar.home")}</div>
                   </Disclosure.Button>
                   <Disclosure.Button
                     as="a"
@@ -271,7 +270,7 @@ export function NavBarMobile() {
                     as="a"
                     className="block px-3 py-2 rounded-md cursor-pointer"
                   >
-                    <div onClick={() => switchView("uploadpodcast")}>
+                    <div onClick={() => ("uploadpodcast")}>
                       {t("uploadshow.addpodcast")}
                     </div>
                   </Disclosure.Button>

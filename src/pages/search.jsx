@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+// import { useHistory, useLocation } from 'react-router-dom';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import Track from '../component/track';
 import { useTranslation } from 'react-i18next';
@@ -10,8 +10,8 @@ import { sortPodcasts } from '../utils/podcast';
 
 export function Searchbar() {
   const { t } = useTranslation();
-  const history = useHistory();
-  const location = useLocation();
+  // const history = useHistory();
+  // const location = useLocation();
   const [_input, _setInput] = useRecoilState(input); 
 
   return (
@@ -24,7 +24,7 @@ export function Searchbar() {
           value={_input}
           onChange={(e) => {
             _setInput(e.target.value);
-            if (!location.pathname.includes("search")) history.push("/search");
+            // if (!location.pathname.includes("search")) history.push("/search");
           }}
           className="input input-secondary block pl-10 py-2.5 md:py-[14px] text-xs md:text-base w-full placeholder-zinc-600 focus:placeholder-white rounded-lg md:rounded-full bg-zinc-900 text-zinc-100 outline-none focus:ring-2 focus:ring-inset focus:ring-white"
           placeholder={t("search.placeholder")}

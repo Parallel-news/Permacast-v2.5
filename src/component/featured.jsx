@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect, memo } from "react";
 import { appContext } from "../utils/initStateGen.js";
 import { useTranslation } from "react-i18next";
 
-import { useLocation, useHistory } from "react-router-dom";
+// import { useLocation, useHistory } from "react-router-dom";
 import {
   replaceDarkColorsRGB,
   isTooLight,
@@ -60,8 +60,8 @@ export function FeaturedEpisode() {
   const [vs_, setVS_] = useRecoilState(videoSelection); // Selected Podcast Object
   const { t } = useTranslation();
 
-  let history = useHistory();
-  let location = useLocation();
+  // let history = useHistory();
+  // let location = useLocation();
   // const rgb = RGBobjectToString(replaceDarkColorsRGB(episode.rgb)) --styling
   // const url = `/podcast/${primaryData_.pid}/${secondaryData_.eid}`; // --url
 
@@ -82,19 +82,19 @@ export function FeaturedEpisode() {
         className="w-40 cursor-pointer mr-8"
         src={"https://arweave.net/" + secondaryData_.cover}
         alt={secondaryData_.podcastName}
-        onClick={() => {
-          history.push(
-            `/podcast/${secondaryData_.pid}/${secondaryData_.episodes[0].eid}`
-          );
-        }}
+        // onClick={() => {
+        //   history.push(
+        //     `/podcast/${secondaryData_.pid}/${secondaryData_.episodes[0].eid}`
+        //   );
+        // }}
       />
       <div className="col-span-2 my-3 text-zinc-100 max-w-xs md:max-w-lg mr-2">
         <div
-          onClick={() => {
-            history.push(
-              `/podcast/${secondaryData_.pid}/${secondaryData_.episodes[0].eid}`
-            );
-          }}
+          // onClick={() => {
+          //   history.push(
+          //     `/podcast/${secondaryData_.pid}/${secondaryData_.episodes[0].eid}`
+          //   );
+          // }}
           className="font-medium cursor-pointer line-clamp-1"
         >
           {secondaryData_.episodes[0].episodeName}
@@ -129,12 +129,12 @@ export function FeaturedEpisode() {
             className="min-w-min border-0 mt-5 rounded-full flex items-center cursor-pointer backdrop-blur-md transition-transform duration-200 ease-in-out transform hover:scale-90 text-black bg-[#FFFF00] h-12 p-4"
             // style={getButtonRGBs(rgb)}
             onClick={() => {
-              history.push(
-                `/podcast/${secondaryData_.pid}/${secondaryData_.episodes[0].eid}`
-                // console.log(secondaryData_.episodes.filter((obj) => {
-                //   return obj.eid === secondaryData_.episodes[0].eid
-                // })[0]) // -- Direct access to Episode
-              );
+              // history.push(
+              //   `/podcast/${secondaryData_.pid}/${secondaryData_.episodes[0].eid}`
+              //   // console.log(secondaryData_.episodes.filter((obj) => {
+              //   //   return obj.eid === secondaryData_.episodes[0].eid
+              //   // })[0]) // -- Direct access to Episode
+              // );
             }}
           >
             <FiEye className="h-5 w-5" />
@@ -148,7 +148,7 @@ export function FeaturedEpisode() {
 
 export function FeaturedPodcast({ podcast }) {
   const appState = useContext(appContext);
-  const history = useHistory();
+  // const history = useHistory();
   const {
     rgb,
     episodesCount,
@@ -176,9 +176,9 @@ export function FeaturedPodcast({ podcast }) {
           <div className={`w-full h-full bg-black/20 backdrop-blur-lg absolute top-0 right-0`}/>
         <div className="h-1/6 w-full px-5 pb-2 cursor-pointer relative">
           <div
-            onClick={() => {
-              history.push(`/podcast/${secondaryData_.pid}`)
-            }}
+            // onClick={() => {
+            //   history.push(`/podcast/${secondaryData_.pid}`)
+            // }}
           >
             <div className="pt-5 pb-3 text-xs">
               {secondaryData_.episodes.length}{" "}
@@ -224,7 +224,7 @@ export function FeaturedPodcast({ podcast }) {
             </div>
             <div
               className="ml-3"
-              onClick={() => history.push(`/podcast/${podcastId}`)}
+              // onClick={() => history.push(`/podcast/${podcastId}`)}
             >
               <div className="text-lg line-clamp-1 cursor-pointer">
                 {secondaryData_.podcastName}
@@ -311,7 +311,7 @@ export function RecentlyAdded() {
 
 export const FeaturedCreators = memo(() => {
   const appState = useContext(appContext);
-  const history = useHistory();
+  // const history = useHistory();
   const { t } = useTranslation();
   const { themeColor } = appState.theme;
   const bg = themeColor.replace("rgb", "rgba").replace(")", ", 0.1)");
@@ -389,7 +389,7 @@ export const FeaturedCreators = memo(() => {
                   <p
                     className="px-3 py-2 rounded-full text-[10px] ml-5 cursor-pointer"
                     style={{ backgroundColor: bg, color: themeColor }}
-                    onClick={() => history.push("/creator/" + creator?.user)}
+                    // onClick={() => history.push("/creator/" + creator?.user)}
                   >
                     {t("view")}
                   </p>

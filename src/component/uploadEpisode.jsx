@@ -6,23 +6,11 @@ import { useTranslation } from 'react-i18next';
 import { FiFile } from 'react-icons/fi';
 import { appContext } from '../utils/initStateGen';
 import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
-import Modal from '../component/reusables/modal';
+import Modal from './reusables/modal';
 import {
   processFile,
-  userHasEnoughAR,
-  fetchWalletAddress,
-  calculateStorageFee
 } from '../utils/shorthands.js';
-import { 
-  arweave,
-  smartweave,
-  NFT_SRC,
-  CONTRACT_SRC,
-  FEE_MULTIPLIER,
-  VERTO_CONTRACT,
-  TREASURY_ADDRESS,
-  EPISODE_UPLOAD_FEE_PERCENTAGE
-} from '../utils/arweave.js';
+
 import { CheckAuthHook } from "../utils/ui";
 
 const ardb = new ArDB(arweave);

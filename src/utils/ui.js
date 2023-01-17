@@ -1,5 +1,4 @@
 import Shikwasa from '../shikwasa-src/main.js';
-import { MESON_ENDPOINT } from './arweave.js';
 import { useAccount } from 'wagmi';
 import { useAns } from 'ans-for-all';
 

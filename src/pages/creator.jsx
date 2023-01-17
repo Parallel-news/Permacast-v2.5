@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useTranslation } from 'react-i18next'
-import { ANS_TESTNET_MAP } from '../utils/arweave';
 import { getCreator, getPodcasts, convertToPodcast } from '../utils/podcast';
 import TipButton from '../component/reusables/tip';
 import Track from '../component/track';
