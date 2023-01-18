@@ -225,7 +225,7 @@ export default function UploadPodcast() {
     IS_EXPLICIT_VALUES.includes(podcastExplicit_) ? "" : setPodMiscMsg("Invalid Explicit Value");
     CONTENT_TYPE_VALUES.includes(contentType_) ? "" : setPodMiscMsg("Invalid Content Type");
 
-    //if any of messages occupied, do not submit and leave an error message
+    //if any of messages occupied, do not submit and leave an error message f
     if(podNameMsg.length > 0 || podDescMsg.length > 0 || podAuthMsg.length > 0 || podEmailMsg > 0) {
       setPodSubmitMsg("Please fill form correctly");
     } else {
