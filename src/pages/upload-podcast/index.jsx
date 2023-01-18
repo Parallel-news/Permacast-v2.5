@@ -62,21 +62,13 @@ export default function UploadPodcast() {
       const podcastCoverImage = new Image();
       podcastCoverImage.src = window.URL.createObjectURL(event.target.files[0]);
       podcastCoverImage.onload = () => {
-        calculateStorageFee(event.target.files[0].size).then((fee) => {
-          setCost(fee);
-        });
         if (podcastCoverImage.width !== podcastCoverImage.height) {
-          // podcastCoverRef.current.value = "";
-          // Swal.fire({
-          //   text: t("uploadshow.swal.reset.text"),
-          //   icon: "warning",
-          //   confirmButtonText: "Continue",
-          //   customClass: "font-mono",
-          // });
           setInputImg(URL.createObjectURL(event.target.files[0]));
           setShowCrop(true);
+          console.log("inputImg: ", inputImg);
         } else {
           setImg(URL.createObjectURL(event.target.files[0]));
+          console.log("inputImg: ", inputImg);
         }
       };
     }
