@@ -135,27 +135,11 @@ export const showPlayer = (podcast, episode) => {
     audio: {
       title: episode.episodeName,
       artist: podcast.podcastName,
-      cover: `${MESON_ENDPOINT}/${podcast.cover}`,
-      src: `${MESON_ENDPOINT}/${episode.contentTx}`,
+      cover: `https://arweave.net/${podcast.cover}`,
+      src: `https://arweave.net/${episode.contentTx}`,
     },
     download: true
   })
   player.play()
   window.scrollTo(0, document.body.scrollHeight)
 }
-
-export const MOCK_CREATORS = [
-  {
-    fullname: 'Marton Lederer',
-    anshandle: 'martonlederer',
-    avatar: 'https://avatars.githubusercontent.com/u/30638105?v=4',
-  }, {
-    fullname: 'Marton Lederer',
-    anshandle: 'martonlederer',
-    avatar: 'https://avatars.githubusercontent.com/u/30638105?v=4',
-  }, {
-    fullname: 'Marton Lederer',
-    anshandle: 'martonlederer',
-    avatar: 'https://avatars.githubusercontent.com/u/30638105?v=4',
-  }
-]
