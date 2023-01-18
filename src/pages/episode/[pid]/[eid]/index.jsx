@@ -7,13 +7,13 @@ import {
   ArrowUpOnSquareIcon,
 } from "@heroicons/react/24/outline";
 
-import { getButtonRGBs, isTooLight } from "../utils/ui";
-import { appContext } from "../utils/initStateGen.js";
+import { getButtonRGBs, isTooLight } from "../../utils/ui";
+import { appContext } from "../../utils/initStateGen.js";
 
-import TipButton from "../component/reusables/tip";
-import PlayButton from "../component/reusables/playButton";
-import Track from "../component/track";
-import { primaryData, secondaryData, switchFocus } from "../atoms";
+import TipButton from "../../component/reusables/tip";
+import PlayButton from "../../component/reusables/playButton";
+import Track from "../../component/track";
+import { primaryData, secondaryData, switchFocus } from "../../atoms";
 import { useRecoilState } from "recoil";
 
 export default function Episode(props) {

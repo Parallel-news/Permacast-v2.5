@@ -1,31 +1,31 @@
 import { React, useState, useRef, useContext, useCallback, useEffect } from "react";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
-import { appContext } from "../utils/initStateGen";
+import { appContext } from "../../utils/initStateGen";
 import { BsArrowRightShort } from "react-icons/bs";
-import LANGUAGES from "../utils/languages";
+import LANGUAGES from "../../utils/languages";
 
 import { PhotoIcon } from "@heroicons/react/24/outline";
 
 import { useTranslation } from "next-i18next";
-import { UploadsList } from "../component/uploads_list";
+import { UploadsList } from "../../component/uploads_list";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { ContentType, uploadPercent } from "../atoms";
+import { ContentType, uploadPercent } from "../../atoms";
 import Cropper from "react-easy-crop";
-import getCroppedImg from "../utils/croppedImage";
-import handler from "../services/services";
-import { validateStrLength } from "../utils/uploadValidation";
+import getCroppedImg from "../../utils/croppedImage";
+import handler from "../../services/services";
+import { validateStrLength } from "../../utils/uploadValidation";
 import {
   PODCAST_NAME_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_DESC_MIN_LEN,
   PODCAST_DESC_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_AUTHOR_MAX_LEN,
   PODCAST_LANG_MIN_LEN, PODCAST_LANG_MAX_LEN, PODCAST_CAT_MIN_LEN,
   PODCAST_CAT_MAX_LEN, IS_EXPLICIT_VALUES, 
   PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN, CONTENT_TYPE_VALUES
-} from '../constants';
+} from '../../constants';
 //import { providers } from "ethers";
 
-import { CheckAuthHook } from "../utils/ui";
-import useEthTransactionHook from "../utils/ethereum";
+import { CheckAuthHook } from "../../utils/ui";
+import useEthTransactionHook from "../../utils/ethereum";
 
 export default function UploadPodcast() {
   const appState = useContext(appContext);

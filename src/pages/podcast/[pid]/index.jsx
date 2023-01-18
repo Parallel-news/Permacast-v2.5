@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import Shikwasa from "../../shikwasa-src/main.js";
+import Shikwasa from "../../../shikwasa-src/main.js";
 import { useTranslation } from "next-i18next";
 import { FaRss, FaRegGem } from "react-icons/fa";
 import { PlusIcon, HeartIcon } from "@heroicons/react/24/solid";
 import { PlayIcon, PauseIcon } from "@heroicons/react/24/outline";
-import Track from "../../component/track.jsx";
-import TipButton from "../../component/reusables/tip.jsx";
-import UploadEpisode from "../../component/uploadEpisode.jsx";
-import UploadVideo from "../../component/uploadVideo.jsx";
+import Track from "../../../component/track.jsx";
+import TipButton from "../../../component/reusables/tip.jsx";
+import UploadEpisode from "../../../component/uploadEpisode.jsx";
+import UploadVideo from "../../../component/uploadVideo.jsx";
 import {
   Link,
   DirectLink,
@@ -24,12 +24,12 @@ import {
   getPodcasts,
   getPodcastEpisodes,
   getPodcast,
-} from "../../utils/podcast.js";
-import { Cooyub } from "../../component/reusables/icons";
+} from "../../../utils/podcast.js";
+import { Cooyub } from "../../../component/reusables/icons";
 
-import { getButtonRGBs } from "../../utils/ui.js";
-import { appContext } from "../../utils/initStateGen.js";
-import { isDarkMode } from "../../utils/theme.js";
+import { getButtonRGBs } from "../../../utils/ui.js";
+import { appContext } from "../../../utils/initStateGen.js";
+import { isDarkMode } from "../../../utils/theme.js";
 
 import { useRecoilState } from "recoil";
 import {
@@ -37,7 +37,7 @@ import {
   videoSelection,
   primaryData,
   secondaryData,
-} from "../../atoms";
+} from "../../../atoms";
 
 export default function Podcast(props) {
   const { t } = useTranslation();

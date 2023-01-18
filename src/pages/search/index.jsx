@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import Track from '../component/track';
+import Track from '../../component/track';
 import { useTranslation } from 'next-i18next';
-import { titles, allPodcasts, selection, input } from '../atoms';
+import { titles, allPodcasts, selection, input } from '../../atoms';
 import { useRecoilState } from 'recoil';
 
 export default function Search() {

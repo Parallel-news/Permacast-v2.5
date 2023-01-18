@@ -26,7 +26,7 @@ import '@rainbow-me/rainbowkit/styles.css';
 import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import '../tailwind.css';
-import '../App.css';
+import '../styles/index.css';
 // import '../styles/globals.css'
 // import '../styles/daisyUI.css'
 // import { AnimatePresence } from "framer-motion";
