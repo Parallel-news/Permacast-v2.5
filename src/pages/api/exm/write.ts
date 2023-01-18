@@ -7,7 +7,7 @@ const DEV_TOKEN = process.env.EXM_DEV_API_TOKEN
 
 export default async function handler(req, res) {
   try {
-    const data = await axios.post(`https://api.exm.dev/api/transactions?token=${token}`, {
+    const data = await axios.post(`https://api.exm.dev/api/transactions?token=${TOKEN}`, {
       functionId: CONTRACT,
       inputs: [{
         "input": JSON.stringify({function: "reserve", ...req.body})
