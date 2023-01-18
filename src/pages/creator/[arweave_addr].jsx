@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
 import { getCreator, getPodcasts, convertToPodcast } from '../utils/podcast';
 import TipButton from '../component/reusables/tip';
 import Track from '../component/track';
-import { appContext } from '../utils/initStateGen.js';
-// import { getCreator } from '../utils/creator';
 
-export default function Creator (creatorAddress) {
+export default function Creator({creatorAddress}) {
   const { t } = useTranslation();
-  const address = creatorAddress.match.params.creatorAddress 
-  const appState = useContext(appContext);
+  const address = creatorAddress;
 
   const [loading, setLoading] = useState(true);
   const [creator, setCreator] = useState(); // ANS user goes here
@@ -21,13 +19,13 @@ export default function Creator (creatorAddress) {
   useEffect(() => {
     setLoading(true)
     async function fetchData() {
-      const creator = await getCreator(address);
-      setCreator(creator);
-      const unsortedPodcasts = await getPodcasts();
-      const creatorPodcasts = unsortedPodcasts.filter(podcast => podcast.owner.toLowerCase() === address.toLowerCase());
-      const convertedPodcasts = await Promise.all(creatorPodcasts.splice(0,6).map(podcast => convertToPodcast(podcast)));
-      setPodcasts(convertedPodcasts);
-      setLoading(false);
+      // const creator = await getCreator(address);
+      // setCreator(creator);
+      // const unsortedPodcasts = await getPodcasts();
+      // const creatorPodcasts = unsortedPodcasts.filter(podcast => podcast.owner.toLowerCase() === address.toLowerCase());
+      // const convertedPodcasts = await Promise.all(creatorPodcasts.splice(0,6).map(podcast => convertToPodcast(podcast)));
+      // setPodcasts(convertedPodcasts);
+      // setLoading(false);
     };
     fetchData();
   }, [])
@@ -72,21 +70,27 @@ export default function Creator (creatorAddress) {
   )
 }
 
-// // // // // // Auxiliary Functions
 
-// Podcast List module 👇👇👇
-const EpisodeModule = ({podcasts}) => {
-  const { t } = useTranslation();
-  return (
-    <>
-    {podcasts.map((podcast, index) => (
-      <div key={index} className="mb-6 p-2.5 border rounded-xl border-zinc-600">
-        <Track episode={podcast} />
-      </div>
-    ))}
-    {podcasts.length === 0 && (
-      <div className="text-xl text-center font-bold text-white mb-8">{t("creator.nopodcasts")}</div>
-    )}
-    </>
-  )
+
+Creator.getInitialProps = async ({ query }) => {
+  // try {
+  //   if (!query.user) return
+  //   const res = await axios.get(`http://ans-stats.decent.land/profile/${query.user}`);
+  //   const userInfo = res.data;
+  //   return { pathFullInfo: userInfo };
+  // } catch (error) {
+  //   console.log("attempting to use domain routing...");
+  //   return { pathFullInfo: false };
+  // };
+};
+
+// import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, [
+        'common',
+      ])),
+    },
+  }
 }

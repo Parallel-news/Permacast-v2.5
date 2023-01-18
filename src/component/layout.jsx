@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useRouter } from 'next/router'
 import { useRecoilState } from 'recoil';
 
 import Shikwasa from '../shikwasa-src/main.js';
@@ -16,7 +17,7 @@ import { appContext } from '../utils/initStateGen.js';
 import { isFullscreen, primaryData, queue, currentEpisode, isPaused, queueVisible } from '../atoms/index.js';
 
 export default function Layout(props) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common')
 
   const [loading, ] = useState(false);
   const [appLoaded, setAppLoaded] = useState(false);
@@ -112,7 +113,6 @@ export default function Layout(props) {
         _setQueue([episode])
         playEpisode(episode, number)
       },
-      visibility: _queueVisible,
     },
     queueHistory: {
       // This can be used for playback history tracking

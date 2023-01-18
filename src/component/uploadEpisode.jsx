@@ -10,6 +10,8 @@ import {
 
 import { CheckAuthHook } from "../utils/ui";
 
+// THIS IS A MODAL
+// DON'T BE FOOLED
 
 export default function UploadEpisode({ podcast }) {
   const { t } = useTranslation()

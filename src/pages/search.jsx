@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import Track from '../component/track';
 import { useTranslation } from 'next-i18next';
 import { titles, allPodcasts, selection, input } from '../atoms';
 import { useRecoilState } from 'recoil';
-import { cacheTitles } from '../utils/titles';
+// import { cacheTitles } from '../utils/titles';
 import { sortPodcasts } from '../utils/podcast';
 
 export function Searchbar() {
@@ -42,36 +43,36 @@ export default function Search() {
   const [_input, ] = useRecoilState(input); 
   const { t } = useTranslation();
 
-  const filters = [
-    { type: "episodescount", desc: t("sorting.episodescount") },
-    { type: "podcastsactivity", desc: t("sorting.podcastsactivity") }
-  ];
-  const filterTypes = filters.map(f => f.type);
+  // const filters = [
+  //   { type: "episodescount", desc: t("sorting.episodescount") },
+  //   { type: "podcastsactivity", desc: t("sorting.podcastsactivity") }
+  // ];
+  // const filterTypes = filters.map(f => f.type);
 
   // Fetch Titles
   useEffect(() => {
-    const titlesContr = new AbortController();
+    // const titlesContr = new AbortController();
 
-    setTitlesLoading(true);
-    cacheTitles({signal: titlesContr.signal})
-    .then(tit => _setTitles(tit))
-    .catch(e => setError(error));
-    setTitlesLoading(false);
+    // setTitlesLoading(true);
+    // cacheTitles({signal: titlesContr.signal})
+    // .then(tit => _setTitles(tit))
+    // .catch(e => setError(error));
+    // setTitlesLoading(false);
 
     return () => titlesContr.abort();
   }, []);
 
   // Fetch Podcasts
   useEffect(() => {
-    const podcastsContr = new AbortController();
+    // const podcastsContr = new AbortController();
 
-    sortPodcasts(filterTypes, {signal: podcastsContr.signal})
-    .then(sortedPodcasts => {
-      _setAllPodcasts(sortedPodcasts[filterTypes[_selection]]);
-    })
-    .catch(e => setError(e));
+    // sortPodcasts(filterTypes, {signal: podcastsContr.signal})
+    // .then(sortedPodcasts => {
+    //   _setAllPodcasts(sortedPodcasts[filterTypes[_selection]]);
+    // })
+    // .catch(e => setError(e));
 
-    return () => podcastsContr.abort();
+    // return () => podcastsContr.abort();
   }, []);
 
 
@@ -128,4 +129,15 @@ export default function Search() {
       )}
     </div>
   )
+}
+
+// import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, [
+        'common',
+      ])),
+    },
+  }
 }

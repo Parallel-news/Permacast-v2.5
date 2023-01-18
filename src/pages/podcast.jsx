@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Shikwasa from "../shikwasa-src/main.js";
 import { useTranslation } from "next-i18next";
 import { FaRss, FaRegGem } from "react-icons/fa";
@@ -44,6 +45,7 @@ export default function Podcast(props) {
   const { address, setAddress } = appState.user;
   const [loading, setLoading] = useState(true);
 
+  const [playerObj_, setPlayerObj_] = useState();
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
   const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
   const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
@@ -61,7 +63,7 @@ export default function Podcast(props) {
   const loadEpisodes = async (podcast, episodes) => {
     const episodeList = [];
     for (let i in episodes) {
-      let e = episodes[i];
+      let e = episodes?.[i];
       if (e.eid !== "FqPtfefS8QNGWdPcUcrEZ0SXk_IYiOA52-Fu6hXcesw") {
         episodeList.push(
           <div
@@ -184,26 +186,26 @@ export default function Podcast(props) {
 
   useEffect(() => {
     setSecondaryData_(
-      primaryData_.podcasts.filter((obj) => {
+      primaryData_?.podcasts?.filter((obj) => {
         return obj.pid === props.match.params.podcastId;
-      })[0]
+      })?.[0]
     );
 
     setVideoShows_(
-      primaryData_.podcasts.filter((obj) => {
+      primaryData_?.podcasts?.filter((obj) => {
         return obj.pid === props.match.params.podcastId;
-      })[0].episodes
+      })?.[0]?.episodes
     );
 
     let playerObj_ = document.getElementById("hidden-player");
     playerObj_.pause();
     playerObj_.src =
-      "https://arweave.net/" + secondaryData_.episodes[0].contentTx;
+      "https://arweave.net/" + secondaryData_?.episodes?.[0].contentTx;
   }, []);
-  
-  let playerObj_ = document.getElementById("hidden-player");
-  // const history = useHistory();
-  // const location = useLocation();
+
+  useEffect(() => {
+    setPlayerObj_(document.getElementById("hidden-player"));
+  }, [])
 
   const isOwner =
     thePodcast?.creatorAddress === address ||
@@ -220,15 +222,14 @@ export default function Podcast(props) {
       >
         <video
           id="hidden-player"
-          class="video-js"
           controls
           preload="auto"
-          poster={"https://arweave.net/" + secondaryData_.cover}
+          poster={"https://arweave.net/" + secondaryData_?.cover}
           data-setup="{}"
-          className="rounded-[4px] w-full h-full"
+          className="video-js rounded-[4px] w-full h-full"
         >
           <source src={"#"} type="video/*"></source>
-          <p class="vjs-no-js">
+          <p className="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading
             to a web browser that
             <a href="https://videojs.com/html5-video-support/" target="_blank">
@@ -251,8 +252,8 @@ export default function Podcast(props) {
 
       <div className="w-full">
         {switchFocus_
-          ? videoShows_.length > 0 &&
-            videoShows_.map((e, i) => (
+          ? videoShows_?.length > 0 &&
+            videoShows_?.map((e, i) => (
               <div
                 key={i}
                 className="mb-6 p-2.5 border rounded-xl border-zinc-600"
@@ -264,7 +265,7 @@ export default function Podcast(props) {
                 />
               </div>
             ))
-          : videoShows_.map((e, i) => {
+          : videoShows_?.map((e, i) => {
               return (
                 <div className={``}>
                   <div className="mb-6 p-2.5 border rounded-xl border-zinc-600">
@@ -345,7 +346,7 @@ export default function Podcast(props) {
                 </div>
               );
             })}
-        {!loading && podcastEpisodes.length === 0 && (
+        {!loading && podcastEpisodes?.length === 0 && (
           <h5 className="py-5">{t("noepisodes")}</h5>
         )}
       </div>
@@ -353,6 +354,17 @@ export default function Podcast(props) {
       <div className="podcast-player sticky bottom-0 w-screen" />
     </div>
   );
+}
+
+// import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, [
+        'common',
+      ])),
+    },
+  }
 }
 
 // export function PodcastView({podcast}) {
@@ -400,7 +412,7 @@ const PodcastHeader = ({
   };
   return (
     <div className={``}>
-      {Object.keys(secondaryData_).length > 0 && (
+      {secondaryData_ && Object.keys(secondaryData_).length > 0 && (
         <div className="pb-14 flex flex-col justify-center md:flex-row md:items-center w-full">
           <img
             className="w-40 cursor-pointer rounded-sm mx-auto md:mx-0 md:mr-8"

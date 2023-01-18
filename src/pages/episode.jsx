@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from "next-i18next";
 
 import {
@@ -7,11 +8,6 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { getButtonRGBs, isTooLight } from "../utils/ui";
-import {
-  getPodcasts,
-  getPodcastEpisodes,
-  convertToEpisode,
-} from "../utils/podcast";
 import { appContext } from "../utils/initStateGen.js";
 
 import TipButton from "../component/reusables/tip";
@@ -21,10 +17,8 @@ import { primaryData, secondaryData, switchFocus } from "../atoms";
 import { useRecoilState } from "recoil";
 
 export default function Episode(props) {
-  const { podcastId, episodeNumber } = props.match.params;
+  const { podcastId, episodeNumber } = [2,3]
   const { t } = useTranslation();
-  // const history = useHistory();
-  // const location = useLocation();
 
   const appState = useContext(appContext);
 
@@ -44,16 +38,16 @@ export default function Episode(props) {
   useEffect(() => {
     setEpisode(
       primaryData_.podcasts
-        .filter((obj) => {
+        ?.filter((obj) => {
           return obj.pid === podcastId;
         })[0]
-        .episodes.filter((obj) => {
+        ?.episodes.filter((obj) => {
           return obj.eid === episodeNumber;
         })[0]
     );
 
     setSecondaryData_(
-      primaryData_.podcasts.filter((obj) => {
+      primaryData_?.podcasts?.filter((obj) => {
         return obj.pid === props.match.params.podcastId;
       })[0]
     );
@@ -63,16 +57,16 @@ export default function Episode(props) {
     //     return obj.pid === props.match.params.podcastId;
     //   })[0].episodes
     // );
-
+    const playerObj_ = document.getElementById("hidden-player");
+    if(!(playerObj_ === null)){
+      playerObj_.src =
+      "https://arweave.net/" + episode?.contentTx;
+    }
+    // console.log(episode)
+  
     // playerObj_.pause();
     // console.log(playerObj_)
   }, []);
-  const playerObj_ = document.getElementById("hidden-player");
-  if(!(playerObj_ === null)){
-    playerObj_.src =
-    "https://arweave.net/" + episode.contentTx;
-  }
-  console.log(episode)
     // console.log(playerObj_);
 
   // playerObj_.src = "https://arweave.net/" + secondaryData_.episodes.filter((obj) => {
@@ -231,9 +225,13 @@ export default function Episode(props) {
   );
 }
 
-// // // // // // Auxiliary Functions
-
-// _ module 👇👇👇
-const _ = () => {
-  return {};
-};
+// import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, [
+        'common',
+      ])),
+    },
+  }
+}

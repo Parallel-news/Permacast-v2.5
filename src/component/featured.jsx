@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect, memo } from "react";
 import { appContext } from "../utils/initStateGen.js";
 import { useTranslation } from "next-i18next";
+import { useAns } from 'ans-for-all';
 
 import {
   replaceDarkColorsRGB,
@@ -24,19 +25,17 @@ import {
 } from "../atoms";
 
 export function Greeting() {
-  const appState = useContext(appContext);
-  const user = appState.user;
   const { t } = useTranslation();
-
-  const label = user.ANSData?.currentLabel;
-  // what about randomizing greetings?
-
+  const {
+    ansData,
+  } = useAns();
+  
   return (
     <div>
       <h1 className="text-zinc-100 text-xl">
-        {label ? (
+        {ansData?.currentLabel ? (
           <>
-            {t("home.hi")} {trimANSLabel(label)}!
+            {t("home.hi")} {trimANSLabel(ansData?.currentLabel)}!
           </>
         ) : (
           <>{t("home.welcome")}</>

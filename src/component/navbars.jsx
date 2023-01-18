@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { useRouter } from 'next/router'
 import { useTranslation } from "next-i18next";
 import { Disclosure } from "@headlessui/react";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
@@ -24,13 +25,14 @@ import { useRecoilState } from "recoil";
 import { ContentType, isFullscreen } from "../atoms";
 
 export function Sidenav() {
-  const { t, i18n } = useTranslation();
-  // let history = useHistory();
-  // let location = useLocation();
+  const { t, i18n } = useTranslation('common');
+  const router = useRouter()
 
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-  };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const changeLanguage = (newLocale) => {
+    const { pathname, asPath, query } = router
+    router.push({ pathname, query }, asPath, { locale: newLocale })
+  }
 
   const appState = useContext(appContext);
   const [contentType_, setContentType_] = useRecoilState(ContentType)

@@ -1,6 +1,6 @@
-// import ArDB from "ardb";
 import { useState, useContext } from "react";
 import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { FiFile } from "react-icons/fi";
 import { appContext } from "../utils/initStateGen";
 import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";
@@ -8,8 +8,6 @@ import Modal from "../component/reusables/modal";
 import {
   processFile,
 } from "../utils/shorthands.js";
-
-// const ardb = new ArDB(arweave);
 
 export default function UploadVideo() {
   const { t } = useTranslation();
@@ -158,4 +156,16 @@ export default function UploadVideo() {
       </div>
     </Modal>
   );
+}
+
+
+// import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, [
+        'common',
+      ])),
+    },
+  }
 }

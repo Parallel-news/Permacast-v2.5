@@ -1,16 +1,10 @@
 import { React, useState, useRef, useContext, useCallback, useEffect } from "react";
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import { appContext } from "../utils/initStateGen";
 import { BsArrowRightShort } from "react-icons/bs";
 import LANGUAGES from "../utils/languages";
 
-import {
-  processFile,
-  userHasEnoughAR,
-  fetchWalletAddress,
-  calculateStorageFee,
-} from "../utils/shorthands";
-import ArConnect from "../component/arconnect";
 import { PhotoIcon } from "@heroicons/react/24/outline";
 
 import { useTranslation } from "next-i18next";
@@ -33,7 +27,7 @@ import {
 import { CheckAuthHook } from "../utils/ui";
 import useEthTransactionHook from "../utils/ethereum";
 
-export default function UploadPodcastView() {
+export default function UploadPodcast() {
   const appState = useContext(appContext);
   // remove state from here
   const [show, setShow] = useState(false);
@@ -155,40 +149,6 @@ export default function UploadPodcastView() {
     showObj.txid = data?.hash;
     showObj.sig = userSignature; // check N.B
     handler(showObj);
-  };
-
-  const handleShowUpload = async (event) => {
-    event.preventDefault();
-    // extract attrs from form
-    const showObj = {};
-    const podcastName = event.target.podcastName.value;
-    const podcastDescription = event.target.podcastDescription.value;
-    const podcastCover = event.target.podcastCover.files[0];
-    const podcastAuthor = event.target.podcastAuthor.value;
-    const podcastEmail = event.target.podcastEmail.value;
-    const podcastCategory = event.target.podcastCategory.value;
-    const podcastExplicit = event.target.podcastExplicit.checked ? "yes" : "no";
-    const podcastLanguage = event.target.podcastLanguage.value;
-    const coverFileType = podcastCover.type;
-    // add attrs to input for SWC
-    showObj.name = podcastName;
-    showObj.desc = podcastDescription;
-    showObj.author = podcastAuthor;
-    showObj.email = podcastEmail;
-    showObj.category = podcastCategory;
-    showObj.isExplicit = podcastExplicit;
-    showObj.lang = podcastLanguage;
-    // upload cover, send all to Arweave
-    let cover = await processFile(podcastCover);
-    let showObjSize = JSON.stringify(showObj).length;
-    let bytes = cover.byteLength + showObjSize + coverFileType.length;
-    setIsUploading(true);
-    if ((await userHasEnoughAR(t, bytes, SHOW_UPLOAD_FEE)) === "all good") {
-      await uploadToArweave(cover, coverFileType, showObj);
-    } else {
-      console.log("upload failed");
-      setIsUploading(false);
-    }
   };
 
   const languageOptions = () => {
@@ -479,4 +439,15 @@ export default function UploadPodcastView() {
       </div>
     </div>
   );
+}
+
+// import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, [
+        'common',
+      ])),
+    },
+  }
 }
