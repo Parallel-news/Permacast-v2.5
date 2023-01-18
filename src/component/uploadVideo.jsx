@@ -4,7 +4,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { FiFile } from "react-icons/fi";
 import { appContext } from "../utils/initStateGen";
 import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";
-import Modal from "../component/reusables/modal";
+import Modal from "./reusables/modal";
 import {
   processFile,
 } from "../utils/shorthands.js";

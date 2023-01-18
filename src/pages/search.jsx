@@ -5,34 +5,6 @@ import Track from '../component/track';
 import { useTranslation } from 'next-i18next';
 import { titles, allPodcasts, selection, input } from '../atoms';
 import { useRecoilState } from 'recoil';
-// import { cacheTitles } from '../utils/titles';
-import { sortPodcasts } from '../utils/podcast';
-
-export function Searchbar() {
-  const { t } = useTranslation();
-  // const history = useHistory();
-  // const location = useLocation();
-  const [_input, _setInput] = useRecoilState(input); 
-
-  return (
-    <div>
-      <form className="relative">
-        <div className="flex absolute inset-y-0 left-0 items-center pl-3 pr-10 pointer-events-none">
-          <MagnifyingGlassIcon className="h-5 w-5 text-zinc-600" />
-        </div>
-        <input
-          value={_input}
-          onChange={(e) => {
-            _setInput(e.target.value);
-            // if (!location.pathname.includes("search")) history.push("/search");
-          }}
-          className="input input-secondary block pl-10 py-2.5 md:py-[14px] text-xs md:text-base w-full placeholder-zinc-600 focus:placeholder-white rounded-lg md:rounded-full bg-zinc-900 text-zinc-100 outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-          placeholder={t("search.placeholder")}
-        />
-      </form>
-    </div>
-  )
-}
 
 export default function Search() {
   const [titlesLoading, setTitlesLoading] = useState(false);

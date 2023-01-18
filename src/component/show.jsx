@@ -5,11 +5,11 @@ import {
   ArrowDownTrayIcon,
   ArrowUpOnSquareIcon,
 } from "@heroicons/react/24/outline";
-import TipButton from "../component/reusables/tip";
+import TipButton from "./reusables/tip";
 import { PlayIcon } from "@heroicons/react/24/outline";
 import { useRecoilState } from "recoil";
 import { videoSelection } from "../atoms";
-import { Cooyub } from "../component/reusables/icons";
+import { Cooyub } from "./reusables/icons";
 import { useEffect } from "react";
 
 export default function Episode() {
