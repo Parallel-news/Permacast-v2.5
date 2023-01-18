@@ -10,6 +10,7 @@ import {
 
 import { CheckAuthHook } from "../utils/ui";
 
+
 // THIS IS A MODAL
 // DON'T BE FOOLED
 
@@ -42,11 +43,12 @@ export default function UploadEpisode({ podcast }) {
 
   const onFileUpload = async(file) => {
     if (file) {
-      setEpisodeFileName(file?.name)
-      const uploadPrice = await calculateStorageFee(file?.byteLength);
-      const serviceFee = uploadPrice / EPISODE_UPLOAD_FEE_PERCENTAGE;
-      const totalFee = uploadPrice + serviceFee
-      setEpisodeUploadFee(totalFee)
+      setEpisodeFileName(file?.name);
+      console.log(episodeFileName);
+      //const uploadPrice = await calculateStorageFee(file?.byteLength);
+      //const serviceFee = uploadPrice / EPISODE_UPLOAD_FEE_PERCENTAGE;
+      //const totalFee = uploadPrice + serviceFee
+      //setEpisodeUploadFee(totalFee)
     }
   }
 

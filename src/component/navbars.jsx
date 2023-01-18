@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import Link from "next/link";
 import { useRouter } from 'next/router'
 import { useTranslation } from "next-i18next";
 import { Disclosure } from "@headlessui/react";
@@ -32,17 +33,19 @@ export function Sidenav() {
   const changeLanguage = (newLocale) => {
     const { pathname, asPath, query } = router
     router.push({ pathname, query }, asPath, { locale: newLocale })
-  }
+  };
 
   const appState = useContext(appContext);
-  const [contentType_, setContentType_] = useRecoilState(ContentType)
-  const [showUploadOptions,setUploadOptions] = useState(false)
+  const [contentType_, setContentType_] = useRecoilState(ContentType);
+  const [showUploadOptions,setUploadOptions] = useState(false);
+  const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
+
   // const  = (i) => {
   //   history.push("/" + i);
   // };
   // const  = (i) => location.pathname === i;
-
-  const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
+  const isHome = router.pathname === "/";
+  const uploadPodcast = router.pathname === "upload-podcast"
 
   return (
     <div className="h-full pt-[42px]">
@@ -50,18 +53,18 @@ export function Sidenav() {
         <button className="w-9 h-9 mb-10 btn btn-ghost btn-sm btn-square hover:text-zinc-200">
           <Cooyub svgStyle="w-9 h-9" rectStyle="w-9 h-9" fill="#ffff00" />
         </button>
-        <button
-          className="w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200"
-          onClick={() => 
-          {
-            setIsFullscreen_(false)
-            ("")
-          }}
-          style={{ color: ("/") ? "white" : "" }}
-          disabled={("/") ? true : false}
-        >
-          <HomeIcon />
-        </button>
+        <Link href={isHome ? "#": "/"}>
+          <button
+            className="w-9 h-9 btn btn-sm btn-square hover:text-zinc-200"
+            disabled={isHome}
+            onClick={() => {
+              setIsFullscreen_(false)
+            }}
+            style={{ color: isHome ? "white" : "" }}
+          >
+            <HomeIcon />
+          </button>
+        </Link>
         <div className="tooltip" data-tip="Coming soon!">
           <button
             className="w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200"
@@ -101,29 +104,8 @@ export function Sidenav() {
             className="w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200"
           >
             <PlusIcon />
-          <UploadCount />
+            <UploadCount />
           </button>
-          <ul
-            tabIndex="0"
-            className="dropdown-content menu p-2 shadow bg-zinc-900 rounded-box w-32"
-          >
-              <li>
-                <span onClick={() => {
-                  setIsFullscreen_(false)
-                  ("uploadpodcast")
-                  setContentType_('a')
-                }}
-                >Audio</span>
-              </li>
-              <li>
-                <span onClick={() => {
-                  setIsFullscreen_(false)
-                  ("uploadpodcast")
-                  setContentType_('v')
-              }}
-              >Video</span>
-              </li>
-          </ul>
         </div>
         <a
           target="_blank"

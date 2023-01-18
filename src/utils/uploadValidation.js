@@ -6,7 +6,7 @@
  * @returns 
  */
 export const validateStrLength = (str, min, max) => {
-    if(min < str.trim().length && str.trim().length > max) {
+    if(min < str.trim().length && str.trim().length < max) {
         return true;
     } else {
         return false;

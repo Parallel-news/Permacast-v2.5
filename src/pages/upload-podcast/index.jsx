@@ -1,12 +1,9 @@
 import { React, useState, useRef, useContext, useCallback, useEffect } from "react";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-
 import { appContext } from "../../utils/initStateGen";
 import { BsArrowRightShort } from "react-icons/bs";
 import LANGUAGES from "../../utils/languages";
-
 import { PhotoIcon } from "@heroicons/react/24/outline";
-
 import { useTranslation } from "next-i18next";
 import { UploadsList } from "../../component/uploads_list";
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -20,12 +17,13 @@ import {
   PODCAST_DESC_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_AUTHOR_MAX_LEN,
   PODCAST_LANG_MIN_LEN, PODCAST_LANG_MAX_LEN, PODCAST_CAT_MIN_LEN,
   PODCAST_CAT_MAX_LEN, IS_EXPLICIT_VALUES, 
-  PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN, CONTENT_TYPE_VALUES
+  PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN, CONTENT_TYPE_VALUES,
+  PODCAST_NAME_VAL_MSG, PODCAST_DESC_VAL_MSG, PODCAST_AUTH_VAL_MSG,
+  PODCAST_EMAIL_VAL_MSG
 } from '../../constants';
-//import { providers } from "ethers";
-
 import { CheckAuthHook } from "../../utils/ui";
 import useEthTransactionHook from "../../utils/ethereum";
+import { ValMsg, isValidEmail } from "../../component/reusables/formTools";
 
 export default function UploadPodcast() {
   const appState = useContext(appContext);
@@ -33,11 +31,10 @@ export default function UploadPodcast() {
   const [show, setShow] = useState(false);
   const [img, setImg] = useState();
   const [isUploading, setIsUploading] = useState(false);
-  const [cost, setCost] = useState(0);
   const [eth, ar] = CheckAuthHook();
-  const [data, isLoading, isSuccess, sendTransaction, error] = useEthTransactionHook();
+  const [data, isLoading, isSuccess, error] = useEthTransactionHook();
   let finalShowObj = {};
-  const [contentType_, setContentType_] = useRecoilState(ContentType);
+  const [contentType_, ] = useRecoilState(ContentType);
   const podcastCoverRef = useRef();
   const { t, i18n } = useTranslation();
   const currentLanguage = LANGUAGES.find(
@@ -48,31 +45,28 @@ export default function UploadPodcast() {
 
   const setPercent = useSetRecoilState(uploadPercent);
 
-  const [podcastDescription_, setPodcastDescription_] = useState(null);
-  const [podcastAuthor_, setPodcastAuthor_] = useState(null);
-  const [podcastEmail_, setPodcastEmail_] = useState(null);
-  const [podcastCategory_, setPodcastCategory_] = useState(null);
+  const [podcastDescription_, setPodcastDescription_] = useState("");
+  const [podcastAuthor_, setPodcastAuthor_] = useState("");
+  const [podcastEmail_, setPodcastEmail_] = useState("");
+  const [podcastCategory_, setPodcastCategory_] = useState("");
   const [podcastName_, setPodcastName_] = useState("");
-  const [podcastCover_, setPodcastCover_] = useState(null);
-  const [podcastLanguage_, setPodcastLanguage_] = useState(null);
+  const [podcastCover_, setPodcastCover_] = useState("fdsnafdofidiodafjdijf9ef9r0f4-f4k4f04kfjf8e");
+  const [podcastLanguage_, setPodcastLanguage_] = useState('en');
   const [podcastExplicit_, setPodcastExplicit_] = useState(false);
 
+  // for the sake of clarity, putting these two along each other
+  const payEthAndUpload = async () => {
+    //console.log(await window.arweaveWallet.getPermissions())
+    // wagmi will handle upload and the rest of stuff
+    //sendTransaction()
+    validateForm();
+  }
   const isPodcastCoverSquared = (event) => {
     if (event.target.files.length !== 0) {
       const podcastCoverImage = new Image();
       podcastCoverImage.src = window.URL.createObjectURL(event.target.files[0]);
       podcastCoverImage.onload = () => {
-        calculateStorageFee(event.target.files[0].size).then((fee) => {
-          setCost(fee);
-        });
         if (podcastCoverImage.width !== podcastCoverImage.height) {
-          // podcastCoverRef.current.value = "";
-          // Swal.fire({
-          //   text: t("uploadshow.swal.reset.text"),
-          //   icon: "warning",
-          //   confirmButtonText: "Continue",
-          //   customClass: "font-mono",
-          // });
           setInputImg(URL.createObjectURL(event.target.files[0]));
           setShowCrop(true);
         } else {
@@ -81,14 +75,6 @@ export default function UploadPodcast() {
       };
     }
   };
-
-
-  // for the sake of clarity, putting these two along each other
-  const payEthAndUpload = async () => {
-    console.log(await window.arweaveWallet.getPermissions())
-    // wagmi will handle upload and the rest of stuff
-    sendTransaction()
-  }
 
   // isSuccess property of the wagmi transaction
   useEffect(() => {
@@ -104,26 +90,6 @@ export default function UploadPodcast() {
 
     const defaultLang = "en";
     const defaultCat = 'True Crime';
-    
-    try {
-      // Final Check for Input Limitations
-      if(
-        validateStrLength(podcastName_, PODCAST_NAME_MIN_LEN, PODCAST_NAME_MAX_LEN) && 
-        validateStrLength(podcastDescription_, PODCAST_DESC_MIN_LEN, PODCAST_DESC_MAX_LEN) &&
-        validateStrLength(podcastAuthor_, PODCAST_AUTHOR_MIN_LEN, PODCAST_AUTHOR_MAX_LEN) &&
-        validateStrLength(defaultLang, PODCAST_LANG_MIN_LEN, PODCAST_LANG_MAX_LEN) &&
-        validateStrLength(podcastCover_, PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN) &&
-        validateStrLength(defaultCat,  PODCAST_CAT_MIN_LEN, PODCAST_CAT_MAX_LEN) &&
-        IS_EXPLICIT_VALUES.includes(podcastExplicit_) &&
-        CONTENT_TYPE_VALUES.includes(contentType_)
-      ) {
-
-      }
-    } catch (e) {
-      console.log("String validation failed in the handleExm function");
-      console.log(e);
-      return false;
-    }
 
     const showObj = {};
 
@@ -190,6 +156,91 @@ export default function UploadPodcast() {
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [croppedImage, setCroppedImage] = useState(null);
+
+  // Validations
+  const [podNameMsg, setPodNameMsg] = useState("");
+  const [podDescMsg, setPodDescMsg] = useState("");
+  const [podAuthMsg, setPodAuthMsg] = useState("");
+  const [podEmailMsg, setPodEmailMsg] = useState("");
+  const [podMiscMsg, setPodMiscMsg] = useState("");
+  const [podSubmitMsg, setPodSubmitMsg] = useState("");
+
+  /**
+   * Determines whether validation message should be placed within input field
+   * @param {string|number - input from form} input 
+   * @param {string - form type} type 
+   * @returns Validation message || ""
+   */
+  const handleValMsg =(input, type) => {
+    switch(type) {
+      case 'podName':
+        if((input > PODCAST_NAME_MAX_LEN || input < PODCAST_NAME_MIN_LEN)) {
+          return PODCAST_NAME_VAL_MSG;
+        } else {
+          return "";
+        }
+      case 'podDesc': 
+        if((input > PODCAST_DESC_MAX_LEN || input < PODCAST_DESC_MIN_LEN)) {
+          return PODCAST_DESC_VAL_MSG;
+        } else {
+          return "";
+        }
+      case 'podAuthor':
+        if((input > PODCAST_AUTHOR_MAX_LEN || input < PODCAST_AUTHOR_MIN_LEN)) {
+          return PODCAST_AUTH_VAL_MSG;
+        } else {
+          return "";
+        }
+      case 'podEmail':
+        if(isValidEmail(input)) {
+          return "";
+        } else {
+          return PODCAST_EMAIL_VAL_MSG;
+        }
+    }
+  }
+  /**
+   * Checks all form inputs in case UI is skipped for malicious intents
+   * @returns Form inputs || Submission error
+   */
+  const validateForm = () => {
+    console.log(
+      podcastName_,
+      podcastDescription_,
+      podcastAuthor_,
+      podcastEmail_,
+      podcastCategory_,
+      podcastCover_,
+      podcastLanguage_,
+      podcastExplicit_
+    );
+
+    validateStrLength(podcastName_, PODCAST_NAME_MIN_LEN, PODCAST_NAME_MAX_LEN) ? "" : setPodNameMsg(PODCAST_NAME_VAL_MSG);
+    validateStrLength(podcastDescription_, PODCAST_DESC_MIN_LEN, PODCAST_DESC_MAX_LEN) ? "" : setPodDescMsg(PODCAST_DESC_VAL_MSG);
+    validateStrLength(podcastAuthor_, PODCAST_AUTHOR_MIN_LEN, PODCAST_AUTHOR_MAX_LEN) ? "" : setPodAuthMsg(PODCAST_AUTH_VAL_MSG);
+    validateStrLength(podcastLanguage_, PODCAST_LANG_MIN_LEN, PODCAST_LANG_MAX_LEN) ? "" : setPodMiscMsg("Invalid language");
+    validateStrLength(podcastCover_, PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN) ? "" : setPodMiscMsg("Invalid Cover");
+    validateStrLength(podcastCategory_,  PODCAST_CAT_MIN_LEN, PODCAST_CAT_MAX_LEN) ? "" : setPodMiscMsg("Invalid Category");
+    isValidEmail(podcastEmail_) ? "" : setPodEmailMsg(PODCAST_EMAIL_VAL_MSG);
+    IS_EXPLICIT_VALUES.includes(podcastExplicit_) ? "" : setPodMiscMsg("Invalid Explicit Value");
+    CONTENT_TYPE_VALUES.includes(contentType_) ? "" : setPodMiscMsg("Invalid Content Type");
+
+    //if any of messages occupied, do not submit and leave an error message f
+    if(podNameMsg.length > 0 || podDescMsg.length > 0 || podAuthMsg.length > 0 || podEmailMsg > 0) {
+      setPodSubmitMsg("Please fill form correctly");
+    } else {
+      return [
+        podcastName_,
+        podcastDescription_,
+        podcastAuthor_,
+        podcastEmail_,
+        podcastCategory_,
+        podcastCover_,
+        podcastLanguage_,
+        podcastExplicit_
+      ]
+    }
+  }
 
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
@@ -311,7 +362,7 @@ export default function UploadPodcast() {
               )}
             </label>
             <div className="ml-0 md:ml-10 mt-10 md:mt-0 fields w-5/6">
-              <div className="h-48 mb-10">
+              <div className="h-50 mb-10">
                 <div className="mb-5">
                   <input
                     className="input input-secondary w-full bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
@@ -320,13 +371,18 @@ export default function UploadPodcast() {
                     title="Between 2 and 500 characters"
                     type="text"
                     onChange={(e) => {
+                      setPodNameMsg(handleValMsg(e.target.value.length, "podName"));
                       setPodcastName_(e.target.value);
                     }}
                     name="podcastName"
                     required
                   />
+                  <ValMsg 
+                    valMsg={podNameMsg}
+                    className="pl-2" 
+                  />
                 </div>
-                <div>
+                <div className="mb-5">
                   <textarea
                     className="input input-secondary resize-none py-3 px-5 w-full h-[124px] bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
                     placeholder={t("uploadshow.description")}
@@ -335,8 +391,13 @@ export default function UploadPodcast() {
                     name="podcastDescription"
                     required
                     onChange={(e) => {
+                      setPodDescMsg(handleValMsg(e.target.value.length, "podDesc"));
                       setPodcastDescription_(e.target.value);
                     }}
+                  />
+                  <ValMsg 
+                    valMsg={podDescMsg}
+                    className="pl-2"
                   />
                 </div>
               </div>
@@ -346,20 +407,30 @@ export default function UploadPodcast() {
                   placeholder={t("uploadshow.author")}
                   name="podcastAuthor"
                   onChange={(e) => {
+                    setPodAuthMsg(handleValMsg(e.target.value.length, "podAuthor"));
                     setPodcastAuthor_(e.target.value);
                   }}
                 />
+                <ValMsg 
+                  valMsg={podAuthMsg}
+                  className="pl-2"
+                 />
               </div>
               <div className="mb-10 ">
                 <input
                   className="input input-secondary w-1/2 py-3 px-5 bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                  placeholder="Email..."
-                  type={t("uploadshow.email")}
+                  placeholder={t("uploadshow.email")}
+                  type='email'
                   name="podcastEmail"
                   onChange={(e) => {
+                    setPodEmailMsg(handleValMsg(e.target.value, "podEmail"));
                     setPodcastEmail_(e.target.value);
                   }}
                 />
+                <ValMsg 
+                  valMsg={podEmailMsg}
+                  className="pl-2"
+                 />
               </div>
               <div className="mb-5">
                 <select
@@ -375,7 +446,7 @@ export default function UploadPodcast() {
               </div>
               <div className="mb-5">
                 <select
-                  className="select select-secondary w-1/2 py-3 px-5 font-light	bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                  className="select select-secondary w-1/2 py-2 px-5 font-light	bg-zinc-900 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
                   id="podcastLanguage"
                   name="language"
                   onChange={(e) => {
@@ -432,6 +503,10 @@ export default function UploadPodcast() {
                       </button>
                     )}
                   </>
+                  <ValMsg 
+                    valMsg={podSubmitMsg}
+                    className="pl-2"
+                  />
               </div>
             </div>
           </div>
