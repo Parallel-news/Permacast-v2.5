@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useAns } from 'ans-for-all';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 export default function ArConnect() {
   const { t } = useTranslation()

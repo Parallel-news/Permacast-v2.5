@@ -1,5 +1,8 @@
 import React, { useContext, useEffect, useState, memo } from "react";
+
 import { useRecoilState } from "recoil";
+
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import { appContext } from "../utils/initStateGen.js";
 import {
@@ -171,3 +174,13 @@ export default function Home() {
     </div>
   );
 };
+
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, [
+        'common',
+      ])),
+    },
+  }
+}

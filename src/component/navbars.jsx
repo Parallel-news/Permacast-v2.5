@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { Disclosure } from "@headlessui/react";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
@@ -14,7 +14,6 @@ import {
   VideoCameraIcon,
   MicrophoneIcon
 } from "@heroicons/react/24/outline";
-import YellowRec from "../yellow-rec.svg";
 import { Cooyub } from "./reusables/icons";
 import ArConnect from "./arconnect";
 import { Searchbar } from "../pages/search";
@@ -202,11 +201,9 @@ export function NavBarMobile() {
               <div className="navbar flex items-center">
                 <div className="flex-1" href="/">
                   <div className="flex w-full items-center ">
-                    <img
-                      className="block h-5 w-auto mr-2"
-                      src={YellowRec}
-                      alt="permacast"
-                    />
+                    <div
+                      className="block h-5 w-5 mr-2 text-[rgb(255,255,0)]"
+                    ></div>
                     <div className="w-full mx-2">
                       <Searchbar />
                     </div>

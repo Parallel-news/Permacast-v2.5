@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { HeartIcon } from '@heroicons/react/24/solid';
 import { appContext } from '../../utils/initStateGen.js';
 import { getButtonRGBs } from '../../utils/ui';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 export default function TipButton({tipColor=false}) {
   const appState = useContext(appContext);

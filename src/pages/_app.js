@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 import Script from 'next/script';
-import Layout from '../component/layout';
+import { appWithTranslation } from 'next-i18next';
+
 import { RecoilRoot } from 'recoil';
 import { AnsProvider } from 'ans-for-all';
 
@@ -12,14 +13,14 @@ import {
   darkTheme,
 } from '@rainbow-me/rainbowkit';
 import {
-  chain,
   configureChains,
   createClient,
   WagmiConfig,
 } from 'wagmi';
 import { mainnet } from 'wagmi';
-
 import { publicProvider } from 'wagmi/providers/public';
+
+import Layout from '../component/layout';
 
 import '@rainbow-me/rainbowkit/styles.css';
 import '../shikwasa-src/css/base.css';
@@ -95,4 +96,4 @@ function App({ Component, pageProps }) {
   )
 }
 
-export default App;
+export default appWithTranslation(App);

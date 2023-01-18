@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 import { appContext } from "../utils/initStateGen.js";
 import { primaryData, secondaryData, switchFocus } from "../atoms/index.js";

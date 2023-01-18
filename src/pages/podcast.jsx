@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Shikwasa from "../shikwasa-src/main.js";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { FaRss, FaRegGem } from "react-icons/fa";
 import { PlusIcon, HeartIcon } from "@heroicons/react/24/solid";
 import { PlayIcon, PauseIcon } from "@heroicons/react/24/outline";

@@ -13,7 +13,7 @@ import {
 import ArConnect from "../component/arconnect";
 import { PhotoIcon } from "@heroicons/react/24/outline";
 
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { UploadsList } from "../component/uploads_list";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { ContentType, uploadPercent } from "../atoms";

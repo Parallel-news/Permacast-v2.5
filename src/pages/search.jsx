@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import Track from '../component/track';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { titles, allPodcasts, selection, input } from '../atoms';
 import { useRecoilState } from 'recoil';
 import { cacheTitles } from '../utils/titles';

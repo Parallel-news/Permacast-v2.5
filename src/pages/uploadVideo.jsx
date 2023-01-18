@@ -1,6 +1,6 @@
 // import ArDB from "ardb";
 import { useState, useContext } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { FiFile } from "react-icons/fi";
 import { appContext } from "../utils/initStateGen";
 import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";

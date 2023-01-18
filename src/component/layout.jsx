@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useRecoilState } from 'recoil';
 
 import Shikwasa from '../shikwasa-src/main.js';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { Sidenav, NavBar } from './navbars.jsx';
 import Background from './background.jsx';

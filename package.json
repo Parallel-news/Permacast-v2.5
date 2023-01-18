@@ -1,8 +1,14 @@
 {
   "name": "permacast",
-  "author": "parallel-news",
   "version": "1.0.0",
+  "author": "parallel-news",
+  "license": "MIT",
   "private": false,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
   "dependencies": {
     "@bundlr-network/client": "^0.9.11",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
@@ -40,14 +46,10 @@
   },
   "devDependencies": {
     "@types/react": "^18.0.26",
+    "autoprefixer": "^10.4.2",
     "react-error-overlay": "6.0.9",
-    "video.js": "^7.20.3",
     "tailwindcss": "^3.1.8",
-    "autoprefixer": "^10.4.2"
-  },
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "typescript": "4.9.4",
+    "video.js": "^7.20.3"
   }
 }
