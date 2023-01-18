@@ -3257,10 +3257,20 @@ csv@^6.0.5:
     csv-stringify "^6.2.3"
     stream-transform "^3.2.1"
 
-daisyui@^2.15.2, daisyui@^2.17.0:
+daisyui@^2.15.2:
   version "2.46.1"
   resolved "https://registry.npmjs.org/daisyui/-/daisyui-2.46.1.tgz"
   integrity sha512-i59+nLuzzPAVOhNhot3KLtt6stfYeCIPXs9uiLcpXjykpqxHfBA3W6hQWOUWPMwfqhyQd0WKub3sydtPGjzLtA==
+  dependencies:
+    color "^4.2"
+    css-selector-tokenizer "^0.8.0"
+    postcss-js "^4.0.0"
+    tailwindcss "^3"
+
+daisyui@^2.47.0:
+  version "2.47.0"
+  resolved "https://registry.yarnpkg.com/daisyui/-/daisyui-2.47.0.tgz#f3a8dad0838fc5cbd125910694fa2de0d34441bd"
+  integrity sha512-svZpXKldtHjXTEdj/lu2n7b+EQJSatqvmVB59k4dhCDOYUhUZ3jtGuPrgOJlPysHhDjxjCRWWug/fgV5e8tc/w==
   dependencies:
     color "^4.2"
     css-selector-tokenizer "^0.8.0"
@@ -5552,7 +5562,7 @@ sweetalert2@^11.4.17:
   resolved "https://registry.npmjs.org/sweetalert2/-/sweetalert2-11.6.16.tgz"
   integrity sha512-T2FO8LptErsjE4r0WMfiSk4YbeUvPadNaUZ/cADMEOnws000znrf8zFX9S5e/spvzJDyRI5En73WQyDZhGypxQ==
 
-tailwindcss@^3, tailwindcss@^3.1.8:
+tailwindcss@^3, tailwindcss@^3.2.4:
   version "3.2.4"
   resolved "https://registry.npmjs.org/tailwindcss/-/tailwindcss-3.2.4.tgz"
   integrity sha512-AhwtHCKMtR71JgeYDaswmZXhPcW9iuI9Sp2LvZPo9upDZ7231ZJ7eA9RaURbhpXGVlrjX4cFNlB4ieTetEb7hQ==
