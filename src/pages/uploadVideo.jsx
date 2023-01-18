@@ -1,5 +1,4 @@
 // import ArDB from "ardb";
-import Swal from "sweetalert2";
 import { useState, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { FiFile } from "react-icons/fi";

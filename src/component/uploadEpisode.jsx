@@ -1,6 +1,3 @@
-
-import ArDB from 'ardb';
-import Swal from 'sweetalert2';
 import { useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiFile } from 'react-icons/fi';
@@ -13,7 +10,6 @@ import {
 
 import { CheckAuthHook } from "../utils/ui";
 
-const ardb = new ArDB(arweave);
 
 export default function UploadEpisode({ podcast }) {
   const { t } = useTranslation()
@@ -27,179 +23,19 @@ export default function UploadEpisode({ podcast }) {
   const [eth, ar] = CheckAuthHook();
 
   const listEpisodeOnVerto = async (episodeId) => {
-    const vertoContractId = VERTO_CONTRACT;
-    const input = {
-      "function": "list",
-      "id": episodeId,
-      "type": "art"
-    };
-    const contract = smartweave.contract(vertoContractId).connect('use_wallet');
-    await contract.writeInteraction(input);
   }
 
   const uploadEpisodeToArweave = async (data, fileType, epObj, event, serviceFee) => {
-    const wallet = await fetchWalletAddress() // window.arweaveWallet.getActiveAddress();
-    console.log(wallet);
-    if (!wallet) {
-      return null;
-    } else {
-      const tx = await arweave.createTransaction({ data: data });
-      const initState = `{"issuer": "${wallet}","owner": "${wallet}","name": "${epObj.name}","ticker": "PANFT","description": "Permacast Episode from ${epObj.name}","thumbnail": "${podcast.cover}","balances": {"${wallet}": 1}}`;
-      tx.addTag("Content-Type", fileType);
-      tx.addTag("App-Name", "SmartWeaveContract");
-      tx.addTag("App-Version", "0.3.0");
-      tx.addTag("Contract-Src", NFT_SRC);
-      tx.addTag("Init-State", initState);
-      tx.addTag("Permacast-Version", "amber");
-      // Verto aNFT listing
-      tx.addTag("Exchange", "Verto");
-      tx.addTag("Action", "marketplace/create");
-      tx.addTag("Thumbnail", podcast.cover);
-     
-      tx.reward = (+tx.reward * FEE_MULTIPLIER).toString();
-      
-      await arweave.transactions.sign(tx);
-      console.log("signed tx", tx);
-      const uploader = await arweave.transactions.getUploader(tx);
 
-      while (!uploader.isComplete) {
-        await uploader.uploadChunk();
-
-        setUploadProgress(true)
-        setUploadPercentComplete(uploader.pctComplete)
-      }
-      if (uploader.txPosted) {
-        const newTx = await arweave.createTransaction({target:TREASURY_ADDRESS, quantity: arweave.ar.arToWinston('' + serviceFee)})
-        console.log(newTx)
-        await arweave.transactions.sign(newTx)
-        console.log(newTx)
-        await arweave.transactions.post(newTx)
-        console.log(newTx.response)
-        epObj.content = tx.id;
-
-        console.log('txPosted:')
-        console.log(epObj)
-        uploadShow(epObj);
-        event.target.reset();
-        setIsOpen(false)
-        Swal.fire({
-          title: t("uploadepisode.swal.uploadcomplete.title"),
-          text: t("uploadepisode.swal.uploadcomplete.text"),
-          icon: "success",
-          customClass: "font-mono",
-        });
-        setEpisodeUploadFee(null);
-      } else {
-        Swal.fire(
-          {
-            title: t("uploadepisode.swal.uploadfailed.title"),
-            text: t("uploadepisode.swal.uploadfailed.text"),
-            icon: "error",
-            customClass: "font-mono",
-          }
-        );
-      }
-    }
   };
-
   const handleEpisodeUpload = async (event) => {
-    setEpisodeUploading(true)
-    Swal.fire({
-      title: t("uploadepisode.swal.upload.title"),
-      text: t("uploadepisode.swal.upload.text"),
-      customClass: "font-mono",
-    })
-    let epObj = {}
-    event.preventDefault();
-
-    epObj.name = event.target.episodeName.value
-    epObj.desc = event.target.episodeShowNotes.value
-    epObj.index = podcast.index
-    epObj.verto = event.target.verto.checked
-    let episodeFile = event.target.episodeMedia.files[0]
-    let fileType = episodeFile.type
-    console.log(fileType)
-    processFile(episodeFile).then((file) => {
-      let epObjSize = JSON.stringify(epObj).length;
-      let bytes = file.byteLength + epObjSize + fileType.length;
-      calculateStorageFee(bytes).then((cost) => {
-        const serviceFee = cost / EPISODE_UPLOAD_FEE_PERCENTAGE;
-        userHasEnoughAR(t, bytes, serviceFee).then((result) => {
-          if (result === "all good") {
-            console.log('Fee cost: ' + (serviceFee))
-            uploadEpisodeToArweave(file, fileType, epObj, event, serviceFee)
-          } else console.log('upload failed');
-        })
-      })
-    })
-    setEpisodeUploading(false)
   }
 
 
   const getSwcId = async () => {
-    await window.arweaveWallet.connect(["ACCESS_ADDRESS", "SIGN_TRANSACTION"])
-    let addr = await window.arweaveWallet.getActiveAddress() //await getAddrRetry() 
-    if (!addr) {
-      await window.arweaveWallet.connect(["ACCESS_ADDRESS"]);
-      addr = await window.arweaveWallet.getActiveAddress()
-    }
-    const tx = await ardb.search('transactions')
-      .from(addr)
-      .tag('App-Name', 'SmartWeaveContract')
-      .tag('Permacast-Version', 'amber')
-      .tag('Contract-Src', CONTRACT_SRC)
-      .find()
-
-    if (!tx || tx.length === 0) {
-      Swal.fire(
-        {
-          title: 'Insuffucient balance or Arweave gateways are unstable. Please try again later',
-          customClass: "font-mono",
-        }
-      );
-    } else {
-      console.log("tx", tx)
-      return tx[0].id
-    }
   }
 
   const uploadShow = async (show) => {
-    const theContractId = await getSwcId()
-    console.log("theContractId", theContractId)
-    console.log("show", show)
-    let input = {
-      'function': 'addEpisode',
-      'pid': podcast.pid,
-      'name': show.name,
-      'desc': true,
-      'content': show.content
-    }
-
-    console.log(input)
-    const contract = podcast?.newChildOf ? podcast.newChildOf : podcast.childOf;
-    console.log("CONTRACT CHILDOF")
-    console.log(contract)
-    let tags = { "Contract": contract, "App-Name": "SmartWeaveAction", "App-Version": "0.3.0", "Content-Type": "text/plain", "Input": JSON.stringify(input), "Permacast-Version": "amber" }
-    // let contract = smartweave.contract(theContractId).connect("use_wallet");
-    // let txId = await contract.writeInteraction(input, tags);
-    const interaction = await arweave.createTransaction({data: show.desc});
-
-    for (let key in tags) {
-      interaction.addTag(key, tags[key]);
-    }
-    
-    interaction.reward = (+interaction.reward * FEE_MULTIPLIER).toString();
-
-    await arweave.transactions.sign(interaction);
-    await arweave.transactions.post(interaction);
-    console.log('addEpisode txid:');
-    console.log(interaction.id)
-    if (show.verto) {
-      console.log('pushing to Verto')
-      await listEpisodeOnVerto(interaction.id)
-    } else {
-      console.log('skipping Verto')
-    }
   }
 
   const onFileUpload = async(file) => {

@@ -13,7 +13,6 @@ import {
 import ArConnect from "../component/arconnect";
 import { PhotoIcon } from "@heroicons/react/24/outline";
 
-import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 import { UploadsList } from "../component/uploads_list";
 import { useRecoilState, useSetRecoilState } from "recoil";

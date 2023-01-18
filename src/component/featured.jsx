@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect, memo } from "react";
 import { appContext } from "../utils/initStateGen.js";
 import { useTranslation } from "react-i18next";
 
-// import { useLocation, useHistory } from "react-router-dom";
 import {
   replaceDarkColorsRGB,
   isTooLight,
@@ -23,9 +22,6 @@ import {
   videoSelection,
   creators
 } from "../atoms";
-import { createContract } from "smartweave";
-import { connectorsForWallets } from "@rainbow-me/rainbowkit";
-import { ConsoleLogger } from "redstone-smartweave";
 
 export function Greeting() {
   const appState = useContext(appContext);

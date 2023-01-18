@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-// import { useHistory, useLocation } from 'react-router-dom';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import Track from '../component/track';
 import { useTranslation } from 'react-i18next';

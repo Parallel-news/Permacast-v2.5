@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useTranslation } from "react-i18next";
-import Swal from "sweetalert2";
 import { Disclosure } from "@headlessui/react";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 

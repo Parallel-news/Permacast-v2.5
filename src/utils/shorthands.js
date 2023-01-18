@@ -1,16 +1,5 @@
-import Swal from 'sweetalert2'
-
-export const swal = (t, status="success", txt="", extraText="") => {
-  Swal.fire({
-    title: t(`${txt}.title`),
-    text: t(`${txt}.text`) + `${extraText}`,
-    icon: status,
-    customClass: "font-mono",
-  })
-}
-
-
 const readFileAsync = (file) => {
+  //! This only works on UI side, re-write for server side
   return new Promise((resolve, reject) => {
     let reader = new FileReader();
 

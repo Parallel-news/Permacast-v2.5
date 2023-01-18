@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import Swal from 'sweetalert2';
 import { HeartIcon } from '@heroicons/react/24/solid';
 import { appContext } from '../../utils/initStateGen.js';
 import { getButtonRGBs } from '../../utils/ui';
@@ -21,12 +20,6 @@ export default function TipButton({tipColor=false}) {
 }
 
 export function tipPrompt (t) {
-  Swal.fire({
-    title: t("podcasthtml.swal.title"),
-    text: t("podcasthtml.swal.text"),
-    customClass: "font-mono",
-  })
-  return false
 
   // const addr = await window.arweaveWallet.getActiveAddress();
 

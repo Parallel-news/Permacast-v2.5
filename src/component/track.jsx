@@ -1,5 +1,4 @@
 import { useEffect, useContext, useCallback } from "react";
-import { useHistory, useLocation } from "react-router-dom";
 import { Cooyub } from "./reusables/icons";
 import { appContext } from "../utils/initStateGen";
 import { getButtonRGBs } from "../utils/ui";
@@ -16,7 +15,6 @@ export default function Track({
   color = "",
 }) {
   const appState = useContext(appContext);
-  const history = useHistory();
   const {
     contentTx,
     episodeName,
@@ -68,12 +66,12 @@ export default function Track({
           className="w-14 h-14 rounded-lg cursor-pointer"
           src={"https://arweave.net/" + secondaryData_.cover}
           alt={episode.episodeName}
-          onClick={() => history.push(url)}
+          // onClick={() => history.push(url)}
         />
         <div className="ml-4 flex flex-col">
           <div
             className="cursor-pointer line-clamp-1 pr-2 text-sm"
-            onClick={() => history.push(url)}
+            // onClick={() => history.push(url)}
           >
             {episode.episodeName}
           </div>
@@ -94,7 +92,7 @@ export default function Track({
                   />
                   <p
                     className="text-[8px] pr-1 ml-1 "
-                    onClick={() => history.push("/creator/" + creatorAddress)}
+                    // onClick={() => history.push("/creator/" + creatorAddress)}
                   >
                     @
                     {

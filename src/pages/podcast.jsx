@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import Swal from "sweetalert2";
 import Shikwasa from "../shikwasa-src/main.js";
 import { useTranslation } from "react-i18next";
 import { FaRss, FaRegGem } from "react-icons/fa";
@@ -38,7 +37,6 @@ import {
   primaryData,
   secondaryData,
 } from "../atoms";
-// import { useLocation, useHistory } from "react-router-dom";
 
 export default function Podcast(props) {
   const { t } = useTranslation();
@@ -202,7 +200,7 @@ export default function Podcast(props) {
     playerObj_.src =
       "https://arweave.net/" + secondaryData_.episodes[0].contentTx;
   }, []);
-
+  
   let playerObj_ = document.getElementById("hidden-player");
   // const history = useHistory();
   // const location = useLocation();

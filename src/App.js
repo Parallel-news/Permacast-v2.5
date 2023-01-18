@@ -10,7 +10,6 @@
 // import { publicProvider } from 'wagmi/providers/public';
 // import Shikwasa from './shikwasa-src/main.js';
 // import { useTranslation } from 'react-i18next';
-// import { HashRouter as Router, Route } from 'react-router-dom';
 // import { Sidenav, NavBar } from './component/navbars.jsx';
 // import Background from './component/background.jsx';
 // import Search from "./pages/search.jsx";

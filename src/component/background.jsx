@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useContext } from "react";
-// import { useLocation } from "react-router-dom";
 import { appContext } from "../utils/initStateGen";
 
 export default function Background(props) {

@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { useLocation, useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import { appContext } from "../utils/initStateGen.js";
@@ -7,8 +6,6 @@ import { primaryData, secondaryData, switchFocus } from "../atoms/index.js";
 import { useRecoilState } from "recoil";
 
 export default function Fullscreen({ episode, number }) {
-  const appState = useContext(appContext);
-  const history = useHistory();
   const { t } = useTranslation();
 
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
