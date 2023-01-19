@@ -15,7 +15,8 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
   const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
 
   // TODO re-write this later on
-  const color = (pathname.includes("podcast") && pathname.toLowerCase() !== '/uploadpodcast')
+  const color = (pathname.includes("podcast") && pathname.toLowerCase() !== '/uploadpodcast');
+  // ? backgroundColor_?.replace('rgb', 'rgba')?.replace(')', ', 0.4)') : backgroundColor_?.replace('rgb', 'rgba').replace(')', ', 0.2)');
   const check = () => pathname === "/";
 
   const useDefaultBackground = [
@@ -26,7 +27,6 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
   useEffect(() => {
     // console.log("background.tsx useEffect");
     if (useDefaultBackground.includes(pathname)) setBackgroundColor_('');
-    console.log(pathname)
   }, [pathname])
 
   // finish the animation for this transition later on

@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState, memo } from "react";
-
 import { useRecoilState } from "recoil";
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -69,7 +68,7 @@ export default function Home() {
 
   return (
     <div className="w-full pb-10 mb-10">
-      {/* {Object.keys(secondaryData_).length > 0 ? <Greeting /> : <Loading />} */}
+      <Greeting />
       {!loadedData && (
         <div
           className={`w-full h-[25px] flex flex-row ml-[6px] relative bottom-5`}
