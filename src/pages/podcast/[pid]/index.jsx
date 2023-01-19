@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRecoilState } from 'recoil';
 import Shikwasa from "../../../shikwasa-src/main.js";
 import { useTranslation } from "next-i18next";
 import { FaRss, FaRegGem } from "react-icons/fa";
-import { PlusIcon, HeartIcon } from "@heroicons/react/24/solid";
-import { PlayIcon, PauseIcon } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/24/solid";
+import { PlayIcon } from "@heroicons/react/24/outline";
 import Track from "../../../component/track.jsx";
 import TipButton from "../../../component/reusables/tip.jsx";
 import UploadEpisode from "../../../component/uploadEpisode.jsx";
@@ -27,7 +28,7 @@ import {
 } from "../../../utils/podcast.js";
 import { Cooyub } from "../../../component/reusables/icons";
 
-import { getButtonRGBs } from "../../../utils/ui.js";
+import { CheckAuthHook, getButtonRGBs } from "../../../utils/ui.js";
 import { appContext } from "../../../utils/initStateGen.js";
 import { isDarkMode } from "../../../utils/theme.js";
 
@@ -37,12 +38,13 @@ import {
   videoSelection,
   primaryData,
   secondaryData,
+  globalModalOpen
 } from "../../../atoms";
 
 export default function Podcast(props) {
   const { t } = useTranslation();
   const appState = useContext(appContext);
-  const { address, setAddress } = appState.user;
+
   const [loading, setLoading] = useState(true);
 
   const [playerObj_, setPlayerObj_] = useState();
@@ -57,8 +59,9 @@ export default function Podcast(props) {
   const [showEpisodeForm, setShowEpisodeForm] = useState(false);
   const { setCurrentPodcastColor, currentPodcastColor } = appState.theme;
 
-  const { isOpen, setIsOpen } = appState.globalModal;
+  const [isOpen, setIsOpen] = useRecoilState(globalModalOpen);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [_, userArAddress] = CheckAuthHook();
 
   const loadEpisodes = async (podcast, episodes) => {
     const episodeList = [];
@@ -131,8 +134,8 @@ export default function Podcast(props) {
 
   const checkEpisodeForm = async (podObj) => {
     if (
-      address === podObj.creatorAddress ||
-      podObj.superAdmins.includes(address)
+      userArAddress === podObj.creatorAddress ||
+      podObj.superAdmins.includes(userArAddress)
     ) {
       setShowEpisodeForm(true);
       window.scrollTo(0, 0);
@@ -208,8 +211,8 @@ export default function Podcast(props) {
   }, [])
 
   const isOwner =
-    thePodcast?.creatorAddress === address ||
-    thePodcast?.superAdmins?.includes(address);
+    thePodcast?.creatorAddress === userArAddress ||
+    thePodcast?.superAdmins?.includes(userArAddress);
 
   return (
     <div className="flex flex-col items-center justify-center mb-20">
@@ -400,8 +403,7 @@ const PodcastHeader = ({
   currentPodcastColor,
 }) => {
   const { t } = useTranslation();
-  const appState = useContext(appContext);
-  const { setIsOpen } = appState.globalModal;
+  const [isOpen, setIsOpen] = useRecoilState(globalModalOpen);
 
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
   const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);

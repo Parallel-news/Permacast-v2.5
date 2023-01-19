@@ -12,7 +12,7 @@ import {
 export default function UploadVideo() {
   const { t } = useTranslation();
   const appState = useContext(appContext);
-  const { isOpen, setIsOpen } = appState.globalModal;
+  // const { isOpen, setIsOpen } = appState.globalModal;
   const [videoFileName, setVideoFileName] = useState(null);
   const [videoUploadFee, setVideoUploadFee] = useState(0);
   const [videoUploading, setVideoUploading] = useState(false);
@@ -35,7 +35,7 @@ export default function UploadVideo() {
           </div>
           <div
             className="absolute text-2xl right-10 top-[-6px] w-10 h-10 rounded-lg border-2 border-transparent hover:border-gray-100 cursor-pointer"
-            onClick={() => setIsOpen(false)}
+            // onClick={() => setIsOpen(false)}
           >
             ×
           </div>

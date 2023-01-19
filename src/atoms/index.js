@@ -75,6 +75,11 @@ export const player = atom({
     default: {}
 });
 
+export const queueHistory = atom({
+    key: "queueHistory",
+    default: []
+})
+
 export const isPaused = atom({
     key: "isPaused",
     default: ""
@@ -84,3 +89,9 @@ export const queueVisible = atom({
     key: "queueVisible",
     default: false
 })
+
+export const globalModalOpen = atom({
+    key: "globalModalOpen",
+    default: false
+});
+

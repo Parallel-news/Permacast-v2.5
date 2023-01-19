@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 import { useRecoilState } from 'recoil';
 
 import Shikwasa from '../shikwasa-src/main.js';
@@ -41,7 +41,6 @@ export default function Layout(props) {
   // for the queue button
   useEffect(() => {
     console.log("Use effect player");
-    const abortContr = new AbortController();
     try {
       // getAllData({signal: abortContr.signal}).then((data) => setPrimaryData_(data));
     } catch(e) {
@@ -83,12 +82,6 @@ export default function Layout(props) {
   const appState = {
     t: t,
     loading: loading,
-    appLoaded: appLoaded,
-    setAppLoaded: setAppLoaded,
-    globalModal: {
-      isOpen: modalIsOpen,
-      setIsOpen: setModalIsOpen,
-    },
     theme: {
       themeColor: themeColor,
       backdropColor: backdropColor,

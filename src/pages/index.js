@@ -14,37 +14,13 @@ import {
 } from "../component/featured";
 import { primaryData, secondaryData, switchFocus } from "../atoms/index.js";
 
-// var featuredVideoShows = [{
-// contentTx: null,
-// contentUrl: null,
-// cover: "https://pz-prepnb.meson.network/06tCA0ZK6NwYktkPS0Y1mO8cRdoKTIDNanJhdYl0DBc",
-// createdAt: 1652871579,
-// creatorANS: "darwin.ar",
-// creatorAddress: "vZY2XY1RD9HIfWi8ift-1_DnHLDadZMWrufSh-_rKF0",
-// creatorEmail: "",
-// creatorName: "Darwin",
-// description: "Terra Public Radio and TerraSpaces was created to provide a free platform and service to help educate the public. TerraSpaces is an auditory time capsule of the early days of a world changing ecosystem.",
-// episodesCount: 452,
-// explicit: "no",
-// firstTenEpisodes: function firstTenEpisodes(),​
-// getEpisodes: function getEpisodes(start, end),
-// language: "en",
-// mediaType: null,
-// objectType: "podcast",
-// podcastId: "IKsjaUBJiKNDtLPIOyobkUM6iPtTKAK2bMDBu30KdmE",
-// rgb: "rgb(179,198,225)",
-// superAdmins: Array [ "vZY2XY1RD9HIfWi8ift-1_DnHLDadZMWrufSh-_rKF0", "kaYP9bJtpqON8Kyy3RbqnqdtDBDUsPTQTNUCvZtKiFI" ],
-// title: "TerraSpaces.org",
-// visible: true
-// }]
-
+import { useRouter } from "next/router";
 
 export default function Home() {
 
   const areEqual = (prevProps, nextProps) => {
     return prevProps.recentlyAdded === nextProps.recentlyAdded;
   };
-  const appState = useContext(appContext);
 
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
   const [primaryData_, ] = useRecoilState(primaryData);
@@ -94,7 +70,7 @@ export default function Home() {
   return (
     <div className="w-full pb-10 mb-10">
       {/* {Object.keys(secondaryData_).length > 0 ? <Greeting /> : <Loading />} */}
-      {!appState.loading && (
+      {!loadedData && (
         <div
           className={`w-full h-[25px] flex flex-row ml-[6px] relative bottom-5`}
         >
