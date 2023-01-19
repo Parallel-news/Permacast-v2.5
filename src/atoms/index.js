@@ -106,3 +106,8 @@ export const backgroundColor = atom ({
     key: "backgroundColor",
     default: 'rgb(0, 0, 0)'
 })
+
+export const podcastColor = atom ({
+    key: "podcastColor",
+    default: 'rgb(0, 0, 0)'
+})
