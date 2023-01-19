@@ -24,8 +24,10 @@ import {
 import { CheckAuthHook } from "../../utils/ui";
 import useEthTransactionHook from "../../utils/ethereum";
 import { ValMsg, isValidEmail } from "../../component/reusables/formTools";
-//import { WebBundlr } from "@bundlr-network/client";
-//import { providers } from "ethers";
+import { WebBundlr } from "@bundlr-network/client";
+import { providers } from "ethers";
+import { yellowRec } from '../../assets/yellow-rec.svg'; 
+import BigNumber from "bignumber.js";
 
 export default function UploadPodcast() {
 
@@ -64,10 +66,18 @@ export default function UploadPodcast() {
     //sendTransaction()
     await window.ethereum.enable();
     const provider = new providers.Web3Provider(window.ethereum);
-    const bundlr = new WebBundlr("https://node2.bundlr.network", "matic", provider);
+    const bundlr = new WebBundlr("https://node2.bundlr.network", "ethereum", provider);
     await bundlr.ready();
     console.log(bundlr);
-    validateForm();
+    /*
+    const fundAmountParsed = new BigNumber(0.001).multipliedBy(
+      bundlr.currencyConfig.base[1],
+    );
+    await bundlr.fund(Number(fundAmountParsed));
+    */
+    const curBalance = await bundlr.getBalance("0xf1018f794E5A281889e74A873Af0d5C3373e55AD");
+    console.log(bundlr.utils.unitConverter(curBalance).toFixed(7, 2).toString());
+    //validateForm();
   }
   const isPodcastCoverSquared = (event) => {
     if (event.target.files.length !== 0) {
