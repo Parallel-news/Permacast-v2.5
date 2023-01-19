@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 import Shikwasa from '../shikwasa-src/main.js';
 import { useTranslation } from 'next-i18next';
 
-import { Sidenav, NavBar } from './navbars.jsx';
+import { Sidenav, NavBar } from './navbars';
 import Background from './background.jsx';
 
 import EpisodeQueue from './episode_queue.jsx';
