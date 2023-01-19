@@ -114,11 +114,11 @@ export default function Home() {
         </div>
       )}
 
-      { Object.keys(secondaryData_).length > 0 ? (
+      {/* { Object.keys(secondaryData_).length > 0 ? (
         <div className="hidden md:block">
           <FeaturedEpisode />
         </div>
-      ) : <Loading />}
+      ) : <Loading />} */}
 
       {/* {Object.keys(secondaryData_).length > 0 ? (
         <div className="hidden md:grid w-full mt-8 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-x-12">
@@ -126,26 +126,26 @@ export default function Home() {
         </div>
       ): <Loading />} */}
 
-      {Object.keys(secondaryData_).length > 0 ? (
+      {/* {Object.keys(secondaryData_).length > 0 ? (
         <FeaturedPodcastsMobile />
       ) : (
         <Loading />
-      )}
+      )} */}
       <div className="my-9 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-x-12">
         <div className="xl:col-span-3 lg:col-span-2 md:col-span-1 mb-9">
-          {Object.keys(secondaryData_).length > 0 ? (
+          {/* {Object.keys(secondaryData_).length > 0 ? (
             <RecentlyAdded />
           ) : (
             <Loading />
-          )}
+          )} */}
         </div>
-        {Object.keys(secondaryData_).length > 0 ? (
+        {/* {Object.keys(secondaryData_).length > 0 ? (
           <div className="w-full">
             <FeaturedCreators />
           </div>
         ) : (
           <Loading />
-        )}
+        )} */}
       </div>
     </div>
   );

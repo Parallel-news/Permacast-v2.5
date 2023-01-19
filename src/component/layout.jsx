@@ -6,7 +6,7 @@ import Shikwasa from '../shikwasa-src/main.js';
 import { useTranslation } from 'next-i18next';
 
 import { Sidenav, NavBar } from './navbars';
-import Background from './background.jsx';
+import Background from './background';
 
 import EpisodeQueue from './episode_queue.jsx';
 import Fullscreen from './fullscreen.jsx';
@@ -14,7 +14,7 @@ import VideoModal from './video_modal.jsx';
 
 import { appContext } from '../utils/initStateGen.js';
 // import { getAllData } from "../src/services/services";
-import { isFullscreen, primaryData, queue, currentEpisode, isPaused, queueVisible } from '../atoms/index.js';
+import { isFullscreen, primaryData, queue, currentEpisode, isPaused, queueVisible, themeColor } from '../atoms/index.js';
 
 export default function Layout(props) {
   const { t } = useTranslation('common')
@@ -30,7 +30,7 @@ export default function Layout(props) {
   const [_queue, _setQueue] = useRecoilState(queue);
   const [_queueVisible, _setQueueVisible] = useRecoilState(queueVisible);
 
-  const [themeColor, ] = useState('rgb(255, 255, 0)');
+  const [themeColor_, ] = useRecoilState(themeColor);
   const [currentPodcastColor, setCurrentPodcastColor] = useState('rgb(255, 255, 0)');
   const [backdropColor, ] = useState();
   const [address, setAddress] = useState();
@@ -80,22 +80,7 @@ export default function Layout(props) {
 
 
   const appState = {
-    t: t,
     loading: loading,
-    theme: {
-      themeColor: themeColor,
-      backdropColor: backdropColor,
-      currentPodcastColor: currentPodcastColor,
-      setCurrentPodcastColor: setCurrentPodcastColor,
-    },
-    user: {
-      address: address,
-      setAddress: setAddress,
-      ANSData: ANSData,
-      setANSData: setANSData,
-      walletConnected: walletConnected,
-      setWalletConnected: setWalletConnected,
-    },
     queue: {
       currentEpisode: _currentEpisode, // move this down to playback
       get: () => _queue,
@@ -106,9 +91,6 @@ export default function Layout(props) {
         _setQueue([episode])
         playEpisode(episode, number)
       },
-    },
-    queueHistory: {
-      // This can be used for playback history tracking
     },
     player: player,
     playback: {

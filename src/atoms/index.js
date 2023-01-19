@@ -95,3 +95,14 @@ export const globalModalOpen = atom({
     default: false
 });
 
+
+// *** THEMING ***
+export const themeColor = atom ({
+    key: "themeColor",
+    default: 'rgb(255, 255, 0)'
+})
+
+export const backgroundColor = atom ({
+    key: "backgroundColor",
+    default: 'rgb(0, 0, 0)'
+})

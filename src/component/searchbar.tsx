@@ -22,7 +22,7 @@ export function Searchbar() {
           value={_input}
           onChange={(e) => {
             _setInput(e.target.value);
-            if (!pathname.includes("search")) router.push({ pathname: '/search', query: {name: _input} }, undefined, { shallow: true })
+            if (!pathname.includes("search")) router.push({ pathname: '/search', query: {} }, asPath, { shallow: true })
           }}
           className="input input-secondary block pl-10 py-2.5 md:py-[14px] text-xs md:text-base w-full placeholder-zinc-600 focus:placeholder-white rounded-lg md:rounded-full bg-zinc-900 text-zinc-100 outline-none focus:ring-2 focus:ring-inset focus:ring-white"
           placeholder={t("search.placeholder")}

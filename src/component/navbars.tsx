@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from 'next/router'
 import { useTranslation } from "next-i18next";
@@ -18,31 +18,25 @@ import {
 import { Cooyub } from "./reusables/icons";
 import ArConnect from "./arconnect";
 import { Searchbar } from "./searchbar";
-import { appContext } from "../utils/initStateGen";
 import LANGUAGES from "../utils/languages";
 import { UploadCount } from "./upload_count";
 import { useRecoilState } from "recoil";
 import { ContentType, isFullscreen } from "../atoms";
 
 export function Sidenav() {
-  const { t, i18n } = useTranslation('common');
-  const router = useRouter()
+  const { t } = useTranslation('common');
+  const router = useRouter();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const changeLanguage = (newLocale: string) => {
-    const { pathname, asPath, query } = router
+    const { pathname, asPath, query } = router;
     router.push({ pathname, query }, asPath, { locale: newLocale })
   };
 
-  const appState = useContext(appContext);
   const [contentType_, setContentType_] = useRecoilState(ContentType);
   const [showUploadOptions,setUploadOptions] = useState(false);
   const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
 
-  // const  = (i) => {
-  //   history.push("/" + i);
-  // };
-  // const  = (i) => location.pathname === i;
   const isHome = router.pathname === "/";
   const isUploadPodcast = router.pathname === "upload-podcast";
   const isFeed = router.pathname === "feed";
@@ -122,7 +116,6 @@ export function Sidenav() {
 }
 
 export function NavBar() {
-  const appState = useContext(appContext);
   const { t } = useTranslation();
 
   return (
@@ -133,11 +126,7 @@ export function NavBar() {
       <div className="hidden md:block">
         <div className="flex">
           <div className="w-4/5">
-            {!appState.loading ? (
-              <Searchbar />
-            ) : (
-              <div className="w-full bg-zinc-800 h-12 rounded-full animate-pulse"></div>
-            )}
+            <Searchbar />
           </div>
           <div className="ml-8 w-72 flex flex-col bg-zinc-900 dropdown rounded-full">
             <label tabIndex={0} className="btn-default ">{t("navbar.wallets")}</label>
@@ -157,14 +146,13 @@ export function NavBar() {
 }
 
 export function NavBarMobile() {
-  const appState = useContext(appContext);
   const { t, i18n } = useTranslation();
   // const  = (i) => history.push("/" + i);
   // let history = useHistory();
   // let location = useLocation();
 
   const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
+    // i18n.changeLanguage(lng);
   };
 
   return (

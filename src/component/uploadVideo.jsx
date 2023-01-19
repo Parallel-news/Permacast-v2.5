@@ -1,18 +1,18 @@
 import { useState, useContext } from "react";
 import { useTranslation } from "next-i18next";
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { FiFile } from "react-icons/fi";
-import { appContext } from "../utils/initStateGen";
+import { useRecoilState } from "recoil";
 import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 import Modal from "./reusables/modal";
 import {
   processFile,
 } from "../utils/shorthands.js";
+import { globalModalOpen } from "../atoms";
 
 export default function UploadVideo() {
   const { t } = useTranslation();
-  const appState = useContext(appContext);
-  // const { isOpen, setIsOpen } = appState.globalModal;
+
+  const [isOpen, setIsOpen] = useRecoilState(globalModalOpen);
   const [videoFileName, setVideoFileName] = useState(null);
   const [videoUploadFee, setVideoUploadFee] = useState(0);
   const [videoUploading, setVideoUploading] = useState(false);
@@ -35,7 +35,7 @@ export default function UploadVideo() {
           </div>
           <div
             className="absolute text-2xl right-10 top-[-6px] w-10 h-10 rounded-lg border-2 border-transparent hover:border-gray-100 cursor-pointer"
-            // onClick={() => setIsOpen(false)}
+            onClick={() => setIsOpen(false)}
           >
             ×
           </div>
@@ -156,16 +156,4 @@ export default function UploadVideo() {
       </div>
     </Modal>
   );
-}
-
-
-// import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-export async function getStaticProps({ locale }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, [
-        'common',
-      ])),
-    },
-  }
 }
