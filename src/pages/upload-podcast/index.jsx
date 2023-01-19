@@ -24,8 +24,11 @@ import {
 import { CheckAuthHook } from "../../utils/ui";
 import useEthTransactionHook from "../../utils/ethereum";
 import { ValMsg, isValidEmail } from "../../component/reusables/formTools";
+//import { WebBundlr } from "@bundlr-network/client";
+//import { providers } from "ethers";
 
 export default function UploadPodcast() {
+
   const appState = useContext(appContext);
   // remove state from here
   const [show, setShow] = useState(false);
@@ -59,6 +62,11 @@ export default function UploadPodcast() {
     //console.log(await window.arweaveWallet.getPermissions())
     // wagmi will handle upload and the rest of stuff
     //sendTransaction()
+    await window.ethereum.enable();
+    const provider = new providers.Web3Provider(window.ethereum);
+    const bundlr = new WebBundlr("https://node2.bundlr.network", "matic", provider);
+    await bundlr.ready();
+    console.log(bundlr);
     validateForm();
   }
   const isPodcastCoverSquared = (event) => {
@@ -80,6 +88,7 @@ export default function UploadPodcast() {
   useEffect(() => {
     if (isSuccess) handleExm()
   }, [isSuccess])
+
 
   const handleExm = async () => {
     if (!data) throw new Error("Tx failed")
@@ -144,7 +153,10 @@ export default function UploadPodcast() {
     return optionsArr;
   };
 
-  const handleChangeImage = (e) => {
+  const handleChangeImage = async (e) => {
+    console.log(e.target.files[0]);
+    const file = await reduceImageSize(e.target.files[0]);
+    console.log("REDUCED FILE: ", file);
     isPodcastCoverSquared(e);
   };
 

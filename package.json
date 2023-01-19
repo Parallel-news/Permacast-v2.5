@@ -24,6 +24,7 @@
     "ans-for-all": "decentldotland/ans-for-all",
     "autoprefixer": "^10.4.2",
     "axios": "^1.2.1",
+    "child-process": "^1.0.2",
     "daisyui": "^2.47.0",
     "ethers": "^5.7.2",
     "fast-average-color": "^7.1.0",
@@ -42,6 +43,7 @@
     "react-router": "^5.2.0",
     "react-scroll": "^1.8.8",
     "recoil": "^0.7.6",
+    "sharp": "^0.31.3",
     "wagmi": "^0.10.10"
   },
   "devDependencies": {
