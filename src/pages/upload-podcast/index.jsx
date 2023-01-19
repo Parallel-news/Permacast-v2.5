@@ -5,7 +5,7 @@ import { BsArrowRightShort } from "react-icons/bs";
 import LANGUAGES from "../../utils/languages";
 import { PhotoIcon } from "@heroicons/react/24/outline";
 import { useTranslation } from "next-i18next";
-import { UploadsList } from "../../component/uploads_list";
+import { UploadsList } from "../../component/uploadsList";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { ContentType, uploadPercent } from "../../atoms";
 import Cropper from "react-easy-crop";

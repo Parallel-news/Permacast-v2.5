@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import Shikwasa from "../../../shikwasa-src/main.js";
+import { useRecoilState } from 'recoil';
+import Shikwasa from "../../shikwasa-src/main.js";
 import { useTranslation } from "next-i18next";
-import { FaRss, FaRegGem } from "react-icons/fa";
-import { PlusIcon, HeartIcon } from "@heroicons/react/24/solid";
-import { PlayIcon, PauseIcon } from "@heroicons/react/24/outline";
-import Track from "../../../component/track.jsx";
-import TipButton from "../../../component/reusables/tip.jsx";
-import UploadEpisode from "../../../component/uploadEpisode.jsx";
-import UploadVideo from "../../../component/uploadVideo.jsx";
+import { PlayIcon } from "@heroicons/react/24/outline";
+import Track from "../../component/track.jsx";
+import TipButton from "../../component/reusables/tip";
+import UploadEpisode from "../../component/uploadEpisode";
+import UploadVideo from "../../component/uploadVideo";
+import PodcastHeader from '../../component/podcastHeader';
+
 import {
   Link,
   DirectLink,
@@ -18,47 +19,41 @@ import {
   scrollSpy,
   scroller,
 } from "react-scroll";
-import {
-  convertToPodcast,
-  convertToEpisode,
-  getPodcasts,
-  getPodcastEpisodes,
-  getPodcast,
-} from "../../../utils/podcast.js";
-import { Cooyub } from "../../../component/reusables/icons";
 
-import { getButtonRGBs } from "../../../utils/ui.js";
-import { appContext } from "../../../utils/initStateGen.js";
-import { isDarkMode } from "../../../utils/theme.js";
+import { Cooyub } from "../../component/reusables/icons";
 
-import { useRecoilState } from "recoil";
+import { CheckAuthHook, getButtonRGBs } from "../../utils/ui.js";
+import { appContext } from "../../utils/initStateGen.js";
+import { isDarkMode } from "../../utils/theme.js";
+
 import {
   switchFocus,
   videoSelection,
   primaryData,
   secondaryData,
-} from "../../../atoms";
+  globalModalOpen,
+  backgroundColor
+} from "../../atoms";
 
-export default function Podcast(props) {
+const Podcast = (props) => {
   const { t } = useTranslation();
-  const appState = useContext(appContext);
-  const { address, setAddress } = appState.user;
-  const [loading, setLoading] = useState(true);
 
-  const [playerObj_, setPlayerObj_] = useState();
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
   const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
   const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
+  const [setCurrentPodcastColor, currentPodcastColor] = useRecoilState(backgroundColor);
+  const [isOpen, setIsOpen] = useRecoilState(globalModalOpen);
 
+  const [loading, setLoading] = useState(true);
+  const [playerObj_, setPlayerObj_] = useState();
   const [thePodcast, setThePodcast] = useState(null);
   const [podcastHtml, setPodcastHtml] = useState(null);
   const [podcastEpisodes, setPodcastEpisodes] = useState([]);
   const [videoShows_, setVideoShows_] = useState([]);
   const [showEpisodeForm, setShowEpisodeForm] = useState(false);
-  const { setCurrentPodcastColor, currentPodcastColor } = appState.theme;
-
-  const { isOpen, setIsOpen } = appState.globalModal;
   const [isPlaying, setIsPlaying] = useState(false);
+
+  const [_, userArAddress] = CheckAuthHook();
 
   const loadEpisodes = async (podcast, episodes) => {
     const episodeList = [];
@@ -131,8 +126,8 @@ export default function Podcast(props) {
 
   const checkEpisodeForm = async (podObj) => {
     if (
-      address === podObj.creatorAddress ||
-      podObj.superAdmins.includes(address)
+      userArAddress === podObj.creatorAddress ||
+      podObj.superAdmins.includes(userArAddress)
     ) {
       setShowEpisodeForm(true);
       window.scrollTo(0, 0);
@@ -208,8 +203,8 @@ export default function Podcast(props) {
   }, [])
 
   const isOwner =
-    thePodcast?.creatorAddress === address ||
-    thePodcast?.superAdmins?.includes(address);
+    thePodcast?.creatorAddress === userArAddress ||
+    thePodcast?.superAdmins?.includes(userArAddress);
 
   return (
     <div className="flex flex-col items-center justify-center mb-20">
@@ -367,95 +362,29 @@ export async function getStaticProps({ locale }) {
   }
 }
 
-// export function PodcastView({podcast}) {
-//   const appState = useContext(appContext);
-//   const {title, description} = podcast;
 
-//   return (
-//     <div className="h-full">
-//       <div className="p-14 flex w-full border border-zinc-800 rounded-3xl">
-//         <div className="col-span-2 my-3 text-zinc-100 max-w-xs md:max-w-lg mr-2">
-//           <div className="font-medium cursor-pointer line-clamp-1"></div>
-//           <div className="text-sm line-clamp-5"></div>
-//         </div>
-//       </div>
-//       <div>
-//         {podcast.episodes?.map((e, i) => (
-//           <div className="mt-4">
-//             <Track episode={e} key={i} />
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   )
-// }
+// User.getInitialProps = async ({ query }: { query: { user: string; } }) => {
+//   try {
+//     if (!query.user) return
+//     const res = await axios.get(`http://ans-stats.decent.land/profile/${query.user}`);
+//     const userInfo = res.data;
+//     return { pathFullInfo: userInfo };
+//   } catch (error) {
+//     console.log("attempting to use domain routing...");
+//     return { pathFullInfo: false };
+//   };
+// };
+// pages/blog/[slug].js
+export async function getStaticPaths() {
+  return {
+    paths: [
+      // String variant:
+      '/podcast/1',
+      // Object variant:
+      // { params: { slug: 'second-post' } },
+    ],
+    fallback: true,
+  }
+}
 
-// // // // // // Auxiliary Functions
-
-// Podcast Header element 👇👇👇
-const PodcastHeader = ({
-  thePodcast,
-  isOwner,
-  loading,
-  currentPodcastColor,
-}) => {
-  const { t } = useTranslation();
-  const appState = useContext(appContext);
-  const { setIsOpen } = appState.globalModal;
-
-  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
-  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
-  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
-
-  const loadRss = () => {
-    window.open(API_MAP.rss + thePodcast.podcastId, "_blank");
-  };
-  return (
-    <div className={``}>
-      {secondaryData_ && Object.keys(secondaryData_).length > 0 && (
-        <div className="pb-14 flex flex-col justify-center md:flex-row md:items-center w-full">
-          <img
-            className="w-40 cursor-pointer rounded-sm mx-auto md:mx-0 md:mr-8"
-            src={"https://arweave.net/" + secondaryData_?.cover}
-            alt={secondaryData_.podcastName}
-          />
-          <div className="col-span-2 my-3 text-zinc-100 w-full md:w-4/6 md:mr-2">
-            <div className="text-center md:text-left text-xl font-semibold tracking-wide select-text line-clamp-1 hover:line-clamp-none">
-              {secondaryData_?.podcastName}
-            </div>
-            <div className="line-clamp-5 hover:line-clamp-none select-text">
-              {secondaryData_?.description}
-            </div>
-          </div>
-          <div className="mx-auto md:mx-0 md:ml-auto md:mr-9">
-            <div className="flex items-center justify-between">
-              <button
-                className="btn btn-primary btn-sm normal-case rounded-full border-0"
-                style={getButtonRGBs(currentPodcastColor)}
-                onClick={() => loadRss()}
-              >
-                <FaRss className="mr-2 w-3 h-3" />
-                <span className="font-normal">RSS</span>
-              </button>
-              {!isOwner && (
-                <div className="ml-4">
-                  <TipButton />
-                </div>
-              )}
-              {secondaryData_ && isOwner && (
-                <button
-                  className="btn btn-outline btn-sm normal-case rounded-full border-0 flex cursor-pointer font-normal ml-4"
-                  style={getButtonRGBs(currentPodcastColor)}
-                  onClick={() => setIsOpen(true)}
-                >
-                  <PlusIcon className="mr-2 w-4 h-4" />{" "}
-                  {t("podcast.newepisode")}
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
+export default Podcast

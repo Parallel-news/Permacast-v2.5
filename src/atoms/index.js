@@ -75,6 +75,11 @@ export const player = atom({
     default: {}
 });
 
+export const queueHistory = atom({
+    key: "queueHistory",
+    default: []
+})
+
 export const isPaused = atom({
     key: "isPaused",
     default: ""
@@ -83,4 +88,21 @@ export const isPaused = atom({
 export const queueVisible = atom({
     key: "queueVisible",
     default: false
+})
+
+export const globalModalOpen = atom({
+    key: "globalModalOpen",
+    default: false
+});
+
+
+// *** THEMING ***
+export const themeColor = atom ({
+    key: "themeColor",
+    default: 'rgb(255, 255, 0)'
+})
+
+export const backgroundColor = atom ({
+    key: "backgroundColor",
+    default: 'rgb(0, 0, 0)'
 })
