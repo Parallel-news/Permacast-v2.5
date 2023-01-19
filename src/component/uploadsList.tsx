@@ -6,7 +6,7 @@ import { uploadPercent } from '../atoms';
 
 export const UploadsList = () => {
 
-  const t = useTranslation();
+  const { t } = useTranslation();
   const percent = useRecoilValue(uploadPercent);
 
   const color = percent >= 75 ? " bg-green-900" : percent >= 50 ? " bg-teal-900" : " bg-blue-900";
