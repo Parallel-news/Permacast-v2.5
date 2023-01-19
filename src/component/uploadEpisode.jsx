@@ -1,4 +1,5 @@
 import { useState, useContext } from 'react';
+import { useRecoilState } from 'recoil';
 import { useTranslation } from 'next-i18next';
 import { FiFile } from 'react-icons/fi';
 import { appContext } from '../utils/initStateGen';
@@ -9,6 +10,7 @@ import {
 } from '../utils/shorthands.js';
 
 import { CheckAuthHook } from "../utils/ui";
+import { globalModalOpen } from '../atoms';
 
 
 // THIS IS A MODAL
@@ -16,8 +18,7 @@ import { CheckAuthHook } from "../utils/ui";
 
 export default function UploadEpisode({ podcast }) {
   const { t } = useTranslation()
-  const appState = useContext(appContext);
-  const {isOpen, setIsOpen} = appState.globalModal;
+  const [isOpen, setIsOpen] = useRecoilState(globalModalOpen);
   const [episodeFileName, setEpisodeFileName] = useState(null);
   const [episodeUploadFee, setEpisodeUploadFee] = useState(0)
   const [episodeUploading, setEpisodeUploading] = useState(false)

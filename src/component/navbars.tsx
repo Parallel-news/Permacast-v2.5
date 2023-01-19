@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from 'next/router'
 import { useTranslation } from "next-i18next";
 import { Disclosure } from "@headlessui/react";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { SIDENAV_BUTTON } from '../styles/constants';
 
 import {
   HomeIcon,
@@ -13,105 +14,99 @@ import {
   QuestionMarkCircleIcon,
   Bars3Icon,
   XMarkIcon,
-  VideoCameraIcon,
-  MicrophoneIcon
 } from "@heroicons/react/24/outline";
 import { Cooyub } from "./reusables/icons";
 import ArConnect from "./arconnect";
 import { Searchbar } from "./searchbar";
-import { appContext } from "../utils/initStateGen";
 import LANGUAGES from "../utils/languages";
 import { UploadCount } from "./upload_count";
 import { useRecoilState } from "recoil";
 import { ContentType, isFullscreen } from "../atoms";
 
 export function Sidenav() {
-  const { t, i18n } = useTranslation('common');
-  const router = useRouter()
+  const { t } = useTranslation('common');
+  const router = useRouter();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const changeLanguage = (newLocale) => {
-    const { pathname, asPath, query } = router
+  const changeLanguage = (newLocale: string) => {
+    const { pathname, asPath, query } = router;
     router.push({ pathname, query }, asPath, { locale: newLocale })
   };
 
-  const appState = useContext(appContext);
   const [contentType_, setContentType_] = useRecoilState(ContentType);
   const [showUploadOptions,setUploadOptions] = useState(false);
   const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
 
-  // const  = (i) => {
-  //   history.push("/" + i);
-  // };
-  // const  = (i) => location.pathname === i;
   const isHome = router.pathname === "/";
-  const uploadPodcast = router.pathname === "upload-podcast"
+  const isUploadPodcast = router.pathname === "upload-podcast";
+  const isFeed = router.pathname === "feed";
+
+  interface NavButton {
+    url:      string;
+    condition: boolean;
+    icon:      JSX.Element;
+  }
+
+  const NavButton = ({url, condition, icon}: NavButton) => {
+    return (
+      <Link href={url} style={{pointerEvents: condition ? 'none': 'auto'}}>
+        <button
+          className={SIDENAV_BUTTON}
+          disabled={condition}
+          onClick={() => {
+            setIsFullscreen_(false)
+          }}
+          style={{ color: condition ? "white" : "" }}
+        >
+          {icon}
+        </button>
+      </Link>
+    )
+  }
 
   return (
     <div className="h-full pt-[42px]">
-      <div className=" grid rows-5 gap-9 text-zinc-400">
-        <button className="w-9 h-9 mb-10 btn btn-ghost btn-sm btn-square hover:text-zinc-200">
+      <div className="grid rows-5 gap-9 text-zinc-400">
+        <button className={SIDENAV_BUTTON}>
           <Cooyub svgStyle="w-9 h-9" rectStyle="w-9 h-9" fill="#ffff00" />
         </button>
-        <Link href={isHome ? "#": "/"}>
-          <button
-            className="w-9 h-9 btn btn-sm btn-square hover:text-zinc-200"
-            disabled={isHome}
-            onClick={() => {
-              setIsFullscreen_(false)
-            }}
-            style={{ color: isHome ? "white" : "" }}
-          >
-            <HomeIcon />
-          </button>
-        </Link>
-        <div className="tooltip" data-tip="Coming soon!">
-          <button
-            className="w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200"
-            onClick={() => ("following")}
-            style={{ color: ("/following") ? "white" : "" }}
-            disabled={("/following") ? true : true}
-          >
-            <RectangleStackIcon />
-          </button>
+
+        <NavButton url="/" condition={isHome} icon={<HomeIcon />} />
+
+        <div className="tooltip text-zinc-600" data-tip="Coming soon!">
+          <RectangleStackIcon />
         </div>
+
         <div className="dropdown dropdown-hover mb-[-6px]">
           <button
-            tabIndex="0"
-            className="w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200"
-            
+            tabIndex={0}
+            className={SIDENAV_BUTTON + " w-9 hover:text-zinc-200"}
           >
             <LanguageIcon />
           </button>
           <ul
-            tabIndex="0"
-            className="dropdown-content menu p-2 shadow bg-zinc-900 rounded-box w-32"
+            tabIndex={0}
+            className="dropdown-content menu p-2 shadow bg-zinc-900 rounded-box w-36"
           >
             {LANGUAGES.map((l) => (
               <li key={l.code}>
                 <span 
-                onClick={() => {
-                  setIsFullscreen_(false)
-                  changeLanguage(l.code)
-                }}>{l.name}</span>
+                  onClick={() => {
+                    setIsFullscreen_(false)
+                    changeLanguage(l.code)
+                  }}
+                >{l.name}</span>
               </li>
             ))}
           </ul>
         </div>
-        <div className="dropdown dropdown-hover mb-[-6px]">
-          <button
-            tabIndex="0"
-            className="w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200"
-          >
-            <PlusIcon />
-            <UploadCount />
-          </button>
-        </div>
+        <NavButton url={'/upload-podcast'} condition={isUploadPodcast} icon={<PlusIcon />} />
+        {/* <UploadCount /> */}
         <a
           target="_blank"
           rel="noreferrer"
           href="https://t.me/permacast"
-          className="w-9 h-9 btn btn-ghost btn-sm btn-square hover:text-zinc-200"
+          className={SIDENAV_BUTTON}
         >
           <QuestionMarkCircleIcon />
         </a>
@@ -121,8 +116,7 @@ export function Sidenav() {
 }
 
 export function NavBar() {
-  const appState = useContext(appContext);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -132,14 +126,10 @@ export function NavBar() {
       <div className="hidden md:block">
         <div className="flex">
           <div className="w-4/5">
-            {!appState.loading ? (
-              <Searchbar />
-            ) : (
-              <div className="w-full bg-zinc-800 h-12 rounded-full animate-pulse"></div>
-            )}
+            <Searchbar />
           </div>
           <div className="ml-8 w-72 flex flex-col bg-zinc-900 dropdown rounded-full">
-            <label tabIndex={0} className="btn-default ">{t("wallets")}</label>
+            <label tabIndex={0} className="btn-default ">{t("navbar.wallets")}</label>
             <ul tabIndex={0} className="w-full dropdown-content menu p-2 rounded-box mt-12 bg-zinc-800 overflow-hidden">
               <li className="mt-2">
                 <ConnectButton showBalance={true} />
@@ -156,25 +146,14 @@ export function NavBar() {
 }
 
 export function NavBarMobile() {
-  const appState = useContext(appContext);
   const { t, i18n } = useTranslation();
   // const  = (i) => history.push("/" + i);
   // let history = useHistory();
   // let location = useLocation();
 
   const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
+    // i18n.changeLanguage(lng);
   };
-
-  const loadWhatsNew = () =>
-    Swal.fire({
-      title: t("navbar.swal.title"),
-      html: t("navbar.swal.html"),
-      customClass: {
-        title: "font-mono",
-        htmlContainer: "list text-left text-md font-mono",
-      },
-    });
 
   return (
     <div className="text-white">
@@ -183,7 +162,7 @@ export function NavBarMobile() {
           {({ open }) => (
             <>
               <div className="navbar flex items-center">
-                <div className="flex-1" href="/">
+                <div className="flex-1">
                   <div className="flex w-full items-center ">
                     <div
                       className="block h-5 w-5 mr-2 text-[rgb(255,255,0)]"
@@ -207,11 +186,11 @@ export function NavBarMobile() {
               <Disclosure.Panel>
                 <div className="px-2 pt-2 pb-3 space-y-1 border border-zinc-800 rounded-lg">
                   <div className="dropdown dropdown-hover block px-3 py-2 rounded-md">
-                    <label tabIndex="0">
+                    <label tabIndex={0}>
                       <LanguageIcon className="h-5 w-5" aria-hidden="true" />
                     </label>
                     <ul
-                      tabIndex="0"
+                      tabIndex={0}
                       className="dropdown-content menu p-2 shadow bg-zinc-900 rounded-box w-32"
                     >
                       {LANGUAGES.map((l) => (
@@ -242,7 +221,7 @@ export function NavBarMobile() {
                     as="a"
                     className="block px-3 py-2 rounded-md cursor-pointer"
                   >
-                    <span onClick={() => loadWhatsNew()}>
+                    <span onClick={() => console.log('')}>
                       {t("navbar.new")}
                     </span>
                   </Disclosure.Button>

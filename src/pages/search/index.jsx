@@ -31,7 +31,7 @@ export default function Search() {
     // .catch(e => setError(error));
     // setTitlesLoading(false);
 
-    return () => titlesContr.abort();
+    // return () => titlesContr.abort();
   }, []);
 
   // Fetch Podcasts
