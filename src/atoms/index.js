@@ -67,6 +67,11 @@ export const input = atom({
     default: ""
 });
 
+export const ContentType = atom({
+    key: "ContentType",
+    default: "audio/"
+})
+
 export const selection = atom({
     key: "selection",
     default: 0

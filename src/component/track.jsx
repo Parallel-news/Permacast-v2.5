@@ -61,7 +61,7 @@ export default function Track({
       <div className="flex items-center">
         <img
           className="w-14 h-14 rounded-lg cursor-pointer"
-          src={"https://arweave.net/" + secondaryData_.cover}
+          src={"https://arweave.net/" + "secondaryData_.cover"}
           alt={episode.episodeName}
           // onClick={() => history.push(url)}
         />
