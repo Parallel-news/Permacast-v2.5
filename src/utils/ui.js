@@ -13,7 +13,7 @@ export function CheckAuthHook() {
 
 export const dimColor = (color, dimness) => {
   if (color?.includes('rgba')) return color
-  return color?.replace('rgb', 'rgba')?.replace(')', `, ${dimness})`)
+  return color?.replace('rgb', 'rgba')?.replace(')', `,${dimness})`)
 }
 
 export function RGBobjectToString(rgb) {

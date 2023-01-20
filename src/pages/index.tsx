@@ -10,10 +10,9 @@ import {
   FeaturedEpisode,
   FeaturedPodcastsMobile,
   RecentlyAdded,
-  FeaturedCreators,
 } from "../component/featured";
 import FeaturedPodcast from '../component/home/featuredPodcast';
-
+import FeaturedCreators from '../component/home/featuredCreators';
 import Loading from '../component/reusables/loading';
 import {
   podcasts,
@@ -41,6 +40,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     console.log("index.tsx useEffect");
     const fetchData = async () => {
+      setLoading(true)
       const exmState: EXMDevState = (await axios.get('/api/exm/dev-read')).data
       const { podcasts } = exmState;
       const episodes: Episode[] = podcasts.map((podcast: PodcastDev) => podcast.episodes).flat()
@@ -48,7 +48,6 @@ const Home: NextPage = () => {
       setLatestEpisodes_(episodes.sort((episodeA, episodeB) => episodeB.uploadedAt - episodeA.uploadedAt))
       setPodcasts_(podcasts)
       
-      console.log(episodes)
       // setSecondaryData_(
       //   primaryData_.podcasts.filter((obj) => {
       //     if(switchFocus_){
@@ -67,6 +66,7 @@ const Home: NextPage = () => {
       //     }
       //   })
       // );
+      setLoading(false)
     };
 
     fetchData()
@@ -143,19 +143,19 @@ const Home: NextPage = () => {
       )} */}
       <div className="my-9 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-x-12">
         <div className="xl:col-span-3 lg:col-span-2 md:col-span-1 mb-9">
-          {/* {Object.keys(secondaryData_).length > 0 ? (
+          {!loading ? (
             <RecentlyAdded />
           ) : (
             <Loading />
-          )} */}
+          )}
         </div>
-        {/* {Object.keys(secondaryData_).length > 0 ? (
+        {!loading ? (
           <div className="w-full">
             <FeaturedCreators />
           </div>
         ) : (
           <Loading />
-        )} */}
+        )}
       </div>
     </div>
   );

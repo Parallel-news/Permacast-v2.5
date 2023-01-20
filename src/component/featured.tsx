@@ -18,7 +18,8 @@ import {
   switchFocus,
   videoSelection,
   creators,
-  currentThemeColor
+  currentThemeColor,
+  latestEpisodes
 } from "../atoms";
 import { PodcastDev } from "../interfaces/index";
 
@@ -138,99 +139,6 @@ export function FeaturedEpisode() {
   );
 }
 
-interface FeaturedPodcast {
-  podcast: PodcastDev;
-};
-
-export const FeaturedPodcast: FC<FeaturedPodcast> = ({ podcast }) => {
-  
-  const {
-    cover,
-    podcastName,
-    label,
-    description,
-  } = podcast;
-
-  
-  const textColor = 'white' // isTooLight(rgb) ? "black" : "white";
-
-  const { t } = useTranslation();
-
-  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
-  const [vs_, setVS_] = useRecoilState(videoSelection);
-  const [colorData_, setColorData_] = useState([]); // Selected Podcast Object
-
-  return (
-    <>
-      <div className={`mt-4 rounded-3xl text-white/30 relative overflow-hidden`}>
-          <img src={`https://arweave.net/${cover}`} className={`absolute top-0 right-0 h-full opacity-80 object-cover`}/>
-          <div className={`w-full h-full bg-black/20 backdrop-blur-lg absolute top-0 right-0`}/>
-        <div className="h-1/6 w-full px-5 pb-2 cursor-pointer relative">
-          <div
-            // onClick={() => {
-            //   history.push(`/podcast/${secondaryData_.pid}`)
-            // }}
-          >
-            {/* <div className="pt-5 pb-3 text-xs">
-              {secondaryData_.episodes.length}{" "}
-              {secondaryData_.episodes.length > 1
-                ? t("home.episodes")
-                : "episode"}
-            </div> */}
-            <div className="w-full mb-7 max-w-[180px] overflow-x-hidden mx-auto">
-              <img
-                className="object-cover aspect-square h-[180px]"
-                src={"https://arweave.net/" + cover}
-                alt={podcastName}
-              />
-            </div>
-          </div>
-          <div className="h-16 flex items-center">
-            <div
-              className="z-10"
-              onClick={() => {
-                // Promise.all(firstTenEpisodes(true)).then((episodes) => {
-                //   enqueuePodcast(episodes);
-                //   play(episodes[0]);
-                // });
-                if (switchFocus_) {
-                  // appState.queue.playEpisode(
-                  //   secondaryData_.episodes[0],
-                  //   secondaryData_.episodes[0].eid
-                  // );
-                } else {
-                  // setVS_([
-                  //   "https://arweave.net/" +
-                  //     secondaryData_.episodes[0].contentTx,
-                  //   {},
-                  // ]);
-                }
-              }}
-            >
-              <GlobalPlayButton
-                size="20"
-                innerColor={"black"}
-                outerColor={textColor}
-              />
-            </div>
-            <div
-              className="ml-3"
-              // onClick={() => history.push(`/podcast/${podcastId}`)}
-            >
-              <div className="text-lg line-clamp-1 cursor-pointer">
-                {/* {secondaryData_.podcastName} */}
-              </div>
-              <div className="text-xs max-w-[95%] line-clamp-2">
-                {description}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-
 export function FeaturedPodcastsMobile() {
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
 
@@ -257,6 +165,7 @@ export function FeaturedPodcastsMobile() {
 
 export function RecentlyAdded() {
   const { t } = useTranslation();
+  const [latestEpisodes_, setLatestEpisodes_] = useRecoilState(latestEpisodes);
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
 
   const [episodes, setEpisodes] = useState([]);
@@ -303,7 +212,7 @@ export const FeaturedCreators = memo(() => {
   const { t } = useTranslation();
   const [currentThemeColor_, setCurrentThemeColor_] = useRecoilState(currentThemeColor)
 
-  const veryGoodWhitelistOfVeryGoodPeople = [
+  const wl = [
     "kaYP9bJtpqON8Kyy3RbqnqdtDBDUsPTQTNUCvZtKiFI",
     "vZY2XY1RD9HIfWi8ift-1_DnHLDadZMWrufSh-_rKF0",
     "lIg5mdDMAAIj5Pn2BSYKI8SEo8hRIdh-Zrn_LSy_3Qg"
@@ -315,13 +224,14 @@ export const FeaturedCreators = memo(() => {
 
   // Fetch Creators
   useEffect(() => {
-    // const fetchCreators = async () => {
-    //   setCreatorsLoading(true);
-    //   _setCreators(await Promise.all(veryGoodWhitelistOfVeryGoodPeople.map(
-    //                     creatorAddress => getCreator(creatorAddress, {signal: creatorContr.signal}))));
-    //   setCreatorsLoading(false);
-    // }
+    const fetchCreators = async () => {
+      setCreatorsLoading(true);
+      // const creators = await Promise.all(wl.map(() => axios.get("")));
+      // _setCreators()
+      setCreatorsLoading(false);
+    }
 
+    fetchCreators()
   }, []);
 
   return (

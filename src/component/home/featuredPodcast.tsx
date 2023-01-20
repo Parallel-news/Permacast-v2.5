@@ -11,7 +11,7 @@ import {
   dimColor,
 } from "../../utils/ui";
 
-import { Cooyub, PlayButton, GlobalPlayButton } from "../reusables/icons";
+import { Cooyub, PlayButton } from "../reusables/icons";
 
 import {
   switchFocus,
@@ -30,8 +30,10 @@ const FeaturedPodcast: FC<FeaturedPodcastInterface> = ({ podcast }) => {
   
   const {
     cover,
+    pid,
     minifiedCover,
     podcastName,
+    episodes,
     label,
     description,
   } = podcast;
@@ -58,13 +60,13 @@ const FeaturedPodcast: FC<FeaturedPodcastInterface> = ({ podcast }) => {
 
   return (
     <>
-      <div className={`mt-4 rounded-3xl text-white/30 relative overflow-hidden`} style={{backgroundColor: dominantColor, color: dominantColor}}>
-        <div className={`w-full h-full backdrop-blur-lg absolute top-0 right-0`} style={{backgroundColor: dominantColor, color: dominantColor}} />
+      <div className={`mt-4 rounded-3xl text-white/30 relative overflow-hidden`} style={{backgroundColor: dominantColor}}>
+        <div className={`w-full h-full absolute top-0 right-0`} />
         <div className="h-1/6 w-full px-5 pb-2 cursor-pointer relative">
-          <Link href={`/podcast/${podcast.pid}`}>
+          <Link href={`/podcast/${pid}`}>
             <div className="pt-5 pb-3 text-xs">
-              {podcast.episodes.length}{" "}
-              {podcast.episodes.length === 1
+              {episodes.length}{" "}
+              {episodes.length === 1
                 ? t("home.episode")
                 : t("home.episodes")}
             </div>
@@ -78,7 +80,8 @@ const FeaturedPodcast: FC<FeaturedPodcastInterface> = ({ podcast }) => {
           </Link>
           <div className="h-16 flex items-center">
             <div
-              className="z-10"
+              style={{backgroundColor: dominantColor}}
+              className="z-10 rounded-full w-10 h-10 flex justify-center items-center shrink-0"
               onClick={() => {
                 // Promise.all(firstTenEpisodes(true)).then((episodes) => {
                 //   enqueuePodcast(episodes);
@@ -98,23 +101,16 @@ const FeaturedPodcast: FC<FeaturedPodcastInterface> = ({ podcast }) => {
                 }
               }}
             >
-              <GlobalPlayButton
-                size="20"
-                innerColor={"black"}
-                outerColor={"white"} //textColor
-              />
+              <PlayButton svgStyle={"white"} fill={"white"} outline={"white"} />
             </div>
-            <div
-              className="ml-3"
-              // onClick={() => history.push(`/podcast/${podcastId}`)}
-            >
+            <Link className="ml-3 w-full" href={`/podcast/${pid}`}>
               <div className="text-lg line-clamp-1 cursor-pointer">
-                {/* {secondaryData_.podcastName} */}
+                {podcastName}
               </div>
-              <div className="text-xs max-w-[95%] line-clamp-2">
+              <div className="text-xs max-w-[85%] line-clamp-3 break-all">
                 {description}
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       </div>

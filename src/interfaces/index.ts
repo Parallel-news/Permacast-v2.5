@@ -71,3 +71,30 @@ export interface Episode {
   uploadedAt:  number;
   isVisible:   boolean;
 }
+
+export interface Ans {
+  user:           string;
+  currentLabel:   string;
+  ownedLabels:    OwnedLabel[];
+  nickname:       string;
+  address_color:  string;
+  bio:            string;
+  avatar:         string;
+  links:          Links;
+  subdomains:     any;
+  freeSubdomains: number;
+}
+
+export interface Links {
+  github:    string;
+  twitter:   string;
+  customUrl: string;
+  instagram: string;
+}
+
+export interface OwnedLabel {
+  label:            string;
+  scarcity:         string;
+  acquisationBlock: number;
+  mintedFor:        number;
+}
