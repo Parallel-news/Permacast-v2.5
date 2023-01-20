@@ -1,7 +1,8 @@
 import { useEffect, ReactNode } from "react";
 import { useRouter } from "next/router";
 import { useRecoilState } from "recoil";
-import { backgroundColor, themeColor } from '../atoms/index';
+import { backgroundColor, podcastColor, themeColor } from '../atoms/index';
+import { dimColor } from "../utils/ui";
 
 interface BackgroundInterface {
   children: ReactNode;
@@ -9,34 +10,32 @@ interface BackgroundInterface {
 
 const Background: React.FC<BackgroundInterface> = ({ children }) => {
 
-  const router = useRouter()
+  const router = useRouter();
   const { pathname, asPath, query } = router;
   const [themeColor_, _] = useRecoilState(themeColor);
   const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
-
-  // TODO re-write this later on
-  const color = (pathname.includes("podcast") && pathname.toLowerCase() !== '/uploadpodcast');
-  // ? backgroundColor_?.replace('rgb', 'rgba')?.replace(')', ', 0.4)') : backgroundColor_?.replace('rgb', 'rgba').replace(')', ', 0.2)');
-  const check = () => pathname === "/";
+  const [podcastColor_, setPodcastColor_] = useRecoilState(podcastColor)
 
   const useDefaultBackground = [
-    "/uploadpodcast",
+    "/",
     "/search",
+    "/upload-podcast",
   ]
 
   useEffect(() => {
     // console.log("background.tsx useEffect");
-    if (useDefaultBackground.includes(pathname)) setBackgroundColor_('');
+    if (useDefaultBackground.includes(pathname)) setBackgroundColor_(dimColor(themeColor_, 0.2));
+    else setBackgroundColor_(dimColor(podcastColor_, 0.4))
   }, [pathname])
 
   // finish the animation for this transition later on
-  const transition = {transition: 'opacity 2.5s ease', backgroundImage: `linear-gradient(${color}, black)`};
+  const styles = {transition: 'opacity 2.5s ease', backgroundImage: `linear-gradient(${backgroundColor_}, black)`};
 
   return (
-    <div className="w-screen overflow-scroll" style={true ? transition : {}}>
+    <div className="w-screen overflow-scroll" style={true ? styles : {}}>
       {children}
     </div>
   )
 }
 
-export default Background
+export default Background;

@@ -9,6 +9,13 @@ export function CheckAuthHook() {
   return [address, arweave?.address];
 }
 
+// const dim = (color: string, dimness: number) => color?.replace('rgb', 'rgba')?.replace(')', `, ${dimness})`)
+
+export const dimColor = (color, dimness) => {
+  if (color?.includes('rgba')) return color
+  return color?.replace('rgb', 'rgba')?.replace(')', `,${dimness})`)
+}
+
 export function RGBobjectToString(rgb) {
   return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
 }

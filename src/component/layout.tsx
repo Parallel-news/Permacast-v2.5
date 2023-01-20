@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { FC, ReactNode, useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { useRecoilState } from 'recoil';
 
@@ -8,21 +8,24 @@ import { useTranslation } from 'next-i18next';
 import { Sidenav, NavBar } from './navbars';
 import Background from './background';
 
-import EpisodeQueue from './episode_queue.jsx';
-import Fullscreen from './fullscreen.jsx';
-import VideoModal from './video_modal.jsx';
+import EpisodeQueue from './episodeQueue';
+import Fullscreen from './fullscreen';
+import VideoModal from './video_modal';
 
 import { appContext } from '../utils/initStateGen.js';
 // import { getAllData } from "../src/services/services";
-import { isFullscreen, primaryData, queue, currentEpisode, isPaused, queueVisible, themeColor } from '../atoms/index.js';
+import { isFullscreen, queue, currentEpisode, isPaused, queueVisible, themeColor } from '../atoms/index.js';
 
-export default function Layout(props) {
+interface LayoutInterface {
+  children: ReactNode;
+}
+
+const Layout: FC<LayoutInterface> = ({ children }) => {
   const { t } = useTranslation('common')
 
   const [loading, ] = useState(false);
   const [appLoaded, setAppLoaded] = useState(false);
 
-  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
   const videoRef = useRef();
   const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
   const [_isPaused, _setIsPaused] = useRecoilState(isPaused);
@@ -49,13 +52,13 @@ export default function Layout(props) {
     }
       
     if (!player) return;
-    const queue = player.ui.queueBtn;
-    const paused = player.ui.playBtn;
-    const fullscreen = player.ui.fullscreenBtn;
+    // const queue = player.ui.queueBtn;
+    // const paused = player.ui.playBtn;
+    // const fullscreen = player.ui.fullscreenBtn;
 
-    queue.addEventListener('click', () => _setQueueVisible(visible => !visible));
-    paused.addEventListener('click', () => _setIsPaused(paused => !paused));
-    fullscreen.addEventListener('click', () => setIsFullscreen_(isFullscreen_ => !isFullscreen_));
+    // queue.addEventListener('click', () => _setQueueVisible(visible => !visible));
+    // paused.addEventListener('click', () => _setIsPaused(paused => !paused));
+    // fullscreen.addEventListener('click', () => setIsFullscreen_(isFullscreen_ => !isFullscreen_));
   }, []);
 
   const [recentlyAdded, setRecentlyAdded] = useState([]);
@@ -70,8 +73,8 @@ export default function Layout(props) {
     });
   
     // TODO: generalize
-    if (!localStorage.getItem("checkupDate")) localStorage.setItem("checkupDate", new Date());
-    playEpisode(null);
+    // if (!localStorage.getItem("checkupDate")) localStorage.setItem("checkupDate", new Date());
+    // playEpisode(null);
     if (!appLoaded) {
       setAppLoaded(true);
     }
@@ -86,10 +89,10 @@ export default function Layout(props) {
       get: () => _queue,
       enqueueEpisode: (episode) => _setQueue([episode]),
       enqueuePodcast: (episodes) => _setQueue(episodes),
-      play: (episode) => playEpisode(episode),
+      // play: (episode) => playEpisode(episode),
       playEpisode: (episode, number) => {
         _setQueue([episode])
-        playEpisode(episode, number)
+        // playEpisode(episode, number)
       },
     },
     player: player,
@@ -100,39 +103,39 @@ export default function Layout(props) {
     videoRef: videoRef,
   }
 
-  const playEpisode = (episode, number = 1) => {
-    console.log("PLAYEPISODE BEING CALLED");
-    const shikwasaPlayer = new Shikwasa({
-      container: () => document.querySelector('.podcast-player'),
-      themeColor: 'yellow',
-      theme: 'dark',
-      autoplay: true,
-      audio: {
-        title: episode?.episodeName || 'Permacast not selected',
-        artist: primaryData_.podcasts === undefined ?
-          'Standby..' : primaryData_.podcasts.filter((obj_) => {
-            return obj_.episodes.filter((obj__) => {
-              return obj__.eid === episode.eid
-            })
-          })[0].author,
-        cover: primaryData_.podcasts === undefined ?
-        'https://ih1.redbubble.net/image.2647292310.1736/st,small,845x845-pad,1000x1000,f8f8f8.jpg' : 'https://arweave.net/'+primaryData_.podcasts.filter((obj_) => {
-            return obj_.episodes.filter((obj__) => {
-              return obj__.eid === episode.eid
-            })
-          })[0].cover,
-        color: episode?.color || 'text-[rgb(255,255,0)] bg-[rgb(255,255,0)]/20',
-        src: `https://arweave.net/${episode?.contentTx}`,
-      },
-    })
+  // const playEpisode = (episode, number = 1) => {
+  //   console.log("PLAYEPISODE BEING CALLED");
+  //   const shikwasaPlayer = new Shikwasa({
+  //     container: () => document.querySelector('.podcast-player'),
+  //     themeColor: 'yellow',
+  //     theme: 'dark',
+  //     autoplay: true,
+  //     audio: {
+  //       title: episode?.episodeName || 'Permacast not selected',
+  //       artist: primaryData_.podcasts === undefined ?
+  //         'Standby..' : primaryData_.podcasts.filter((obj_) => {
+  //           return obj_.episodes.filter((obj__) => {
+  //             return obj__.eid === episode.eid
+  //           })
+  //         })[0].author,
+  //       cover: primaryData_.podcasts === undefined ?
+  //       'https://ih1.redbubble.net/image.2647292310.1736/st,small,845x845-pad,1000x1000,f8f8f8.jpg' : 'https://arweave.net/'+primaryData_.podcasts.filter((obj_) => {
+  //           return obj_.episodes.filter((obj__) => {
+  //             return obj__.eid === episode.eid
+  //           })
+  //         })[0].cover,
+  //       color: episode?.color || 'text-[rgb(255,255,0)] bg-[rgb(255,255,0)]/20',
+  //       src: `https://arweave.net/${episode?.contentTx}`,
+  //     },
+  //   })
 
-    if (episode) {
-      setPlayer(shikwasaPlayer)
-      _setCurrentEpisode({ ...episode, number: number }) // add it to local storage for later
-      shikwasaPlayer.play()
-      // window.scrollTo(0, document.body.scrollHeight)
-    }
-  };
+  //   if (episode) {
+  //     setPlayer(shikwasaPlayer)
+  //     _setCurrentEpisode({ ...episode, number: number }) // add it to local storage for later
+  //     shikwasaPlayer.play()
+  //     // window.scrollTo(0, document.body.scrollHeight)
+  //   }
+  // };
 
   return (
     <appContext.Provider value={appState}>
@@ -154,14 +157,14 @@ export default function Layout(props) {
               {!loading ? <EpisodeQueue /> : <div className="h-full w-full animate-pulse bg-gray-900/30"></div>}
             </div>
           </div>
-          {isFullscreen_ && <Fullscreen episode={_currentEpisode} number={_currentEpisode?.number || 1} />}
-          <Background className="w-screen overflow-scroll">
+          {isFullscreen_ && <Fullscreen episode={_currentEpisode} id={Number(_currentEpisode?.number) || 1} />}
+          <Background>
             <div className="ml-8 pr-8 pt-9">
               <div className="mb-10">
                 <NavBar />
               </div>
               <div className="w-full overflow-hidden">
-                {props.children}
+                {children}
               </div>
             </div>
           </Background>
@@ -172,3 +175,5 @@ export default function Layout(props) {
     </appContext.Provider >
   )
 }
+
+export default Layout;
