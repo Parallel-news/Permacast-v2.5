@@ -19,8 +19,8 @@ import {
 } from 'wagmi';
 import { mainnet } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
-
 import Layout from '../component/layout';
+
 
 import '@rainbow-me/rainbowkit/styles.css';
 import '../shikwasa-src/css/base.css';

@@ -20,20 +20,37 @@ export const isFullscreen = atom({
     default: false,
 });
 
-export const primaryData = atom({
-    key: 'primaryData',
+
+
+// *** DATA-FETCHING ***
+export const podcasts = atom({
+    key: "podcasts",
+    default: [],
+});
+
+export const featuredEpisode = atom({
+    key: "featuredEpisode",
     default: {},
 });
 
-export const secondaryData = atom({
-    key: 'secondaryData',
-    default: {},
+export const featuredCreators = atom({
+    key: "featuredCreators",
+    default: [],
 });
 
-export const ContentType = atom({
-    key: 'ContentType',
-    default: 'a',
+export const featuredPodcasts = atom({
+    key: "featuredPodcasts",
+    default: [],
 });
+
+export const latestEpisodes = atom({
+    key: "latestEpisodes",
+    default: [],
+});
+
+// *** ------------- ***
+
+
 
 export const titles = atom({
     key: "titles",
@@ -49,6 +66,11 @@ export const input = atom({
     key: "input",
     default: ""
 });
+
+export const ContentType = atom({
+    key: "ContentType",
+    default: "a"
+})
 
 export const selection = atom({
     key: "selection",
@@ -96,13 +118,27 @@ export const globalModalOpen = atom({
 });
 
 
+
 // *** THEMING ***
+
 export const themeColor = atom ({
     key: "themeColor",
     default: 'rgb(255, 255, 0)'
+})
+
+export const currentThemeColor = atom ({
+    key: "currentThemeColor",
+    default: ''
 })
 
 export const backgroundColor = atom ({
     key: "backgroundColor",
     default: 'rgb(0, 0, 0)'
 })
+
+export const podcastColor = atom ({
+    key: "podcastColor",
+    default: 'rgb(0, 0, 0)'
+})
+
+// *** ------- ***

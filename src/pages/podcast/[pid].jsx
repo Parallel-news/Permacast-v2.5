@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil';
 import Shikwasa from "../../shikwasa-src/main.js";
 import { useTranslation } from "next-i18next";
 import { PlayIcon } from "@heroicons/react/24/outline";
-import Track from "../../component/track.jsx";
+import Track from "../../component/track";
 import TipButton from "../../component/reusables/tip";
 import UploadEpisode from "../../component/uploadEpisode";
 import UploadVideo from "../../component/uploadVideo";
@@ -23,14 +23,11 @@ import {
 import { Cooyub } from "../../component/reusables/icons";
 
 import { CheckAuthHook, getButtonRGBs } from "../../utils/ui.js";
-import { appContext } from "../../utils/initStateGen.js";
 import { isDarkMode } from "../../utils/theme.js";
 
 import {
   switchFocus,
   videoSelection,
-  primaryData,
-  secondaryData,
   globalModalOpen,
   backgroundColor
 } from "../../atoms";
@@ -39,8 +36,6 @@ const Podcast = (props) => {
   const { t } = useTranslation();
 
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
-  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
-  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
   const [setCurrentPodcastColor, currentPodcastColor] = useRecoilState(backgroundColor);
   const [isOpen, setIsOpen] = useRecoilState(globalModalOpen);
 
@@ -180,22 +175,22 @@ const Podcast = (props) => {
   };
 
   useEffect(() => {
-    setSecondaryData_(
-      primaryData_?.podcasts?.filter((obj) => {
-        return obj.pid === props.match.params.podcastId;
-      })?.[0]
-    );
+    // setSecondaryData_(
+    //   primaryData_?.podcasts?.filter((obj) => {
+    //     return obj.pid === props.match.params.podcastId;
+    //   })?.[0]
+    // );
 
-    setVideoShows_(
-      primaryData_?.podcasts?.filter((obj) => {
-        return obj.pid === props.match.params.podcastId;
-      })?.[0]?.episodes
-    );
+    // setVideoShows_(
+    //   primaryData_?.podcasts?.filter((obj) => {
+    //     return obj.pid === props.match.params.podcastId;
+    //   })?.[0]?.episodes
+    // );
 
     let playerObj_ = document.getElementById("hidden-player");
     playerObj_.pause();
-    playerObj_.src =
-      "https://arweave.net/" + secondaryData_?.episodes?.[0].contentTx;
+    // playerObj_.src =
+      // "https://arweave.net/" + secondaryData_?.episodes?.[0].contentTx;
   }, []);
 
   useEffect(() => {
@@ -219,7 +214,7 @@ const Podcast = (props) => {
           id="hidden-player"
           controls
           preload="auto"
-          poster={"https://arweave.net/" + secondaryData_?.cover}
+          poster={"https://arweave.net/" + "secondaryData_?.cover"}
           data-setup="{}"
           className="video-js rounded-[4px] w-full h-full"
         >
@@ -268,7 +263,7 @@ const Podcast = (props) => {
                       <div className="flex items-center relative">
                         <img
                           className="h-14 w-14 rounded-lg cursor-pointer object-cover"
-                          src={"https://arweave.net/" + secondaryData_.cover}
+                          src={"https://arweave.net/" + "secondaryData_.cover"}
                           alt={e.episodeName}
                           onClick={() => {}}
                         />
@@ -298,7 +293,7 @@ const Podcast = (props) => {
                                       className="text-[8px] pr-1 ml-1 "
                                       onClick={() => {}}
                                     >
-                                      {secondaryData_.author}
+                                      {/* {secondaryData_.author} */}
                                     </p>
                                   </div>
                                 </div>
@@ -374,6 +369,7 @@ export async function getStaticProps({ locale }) {
 //     return { pathFullInfo: false };
 //   };
 // };
+
 // pages/blog/[slug].js
 export async function getStaticPaths() {
   return {

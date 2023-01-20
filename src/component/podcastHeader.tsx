@@ -1,6 +1,6 @@
 import { PlayIcon } from "@heroicons/react/24/outline";
 import { FC } from 'react'
-import Track from "./track.jsx";
+import Track from "./track";
 import { useTranslation } from "next-i18next";
 import TipButton from "./reusables/tip";
 import { FaRss, FaRegGem } from "react-icons/fa";
@@ -10,7 +10,7 @@ import UploadVideo from "./uploadVideo";
 import { CheckAuthHook, getButtonRGBs } from "../utils/ui.js";
 import { useRecoilState } from "recoil";
 
-import { globalModalOpen, switchFocus, primaryData, secondaryData } from "../atoms";
+import { globalModalOpen, switchFocus } from "../atoms";
 
 interface PodcastHeaderInterface {
   thePodcast:          any;
@@ -29,17 +29,16 @@ const PodcastHeader:FC<PodcastHeaderInterface> = ({
   const [isOpen, setIsOpen] = useRecoilState(globalModalOpen);
 
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
-  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
-  const [secondaryData_, setSecondaryData_] = useRecoilState<any>(secondaryData);
 
   const loadRss = () => {
     window.open("rss" + "thePodcast.podcastId", "_blank");
   };
   return (
     <div className={``}>
-      {secondaryData_ && Object.keys(secondaryData_).length > 0 && (
+      {/* {secondaryData_ && Object.keys(secondaryData_).length > 0 && ( */}
+      {true && (
         <div className="pb-14 flex flex-col justify-center md:flex-row md:items-center w-full">
-          <img
+          {/* <img
             className="w-40 cursor-pointer rounded-sm mx-auto md:mx-0 md:mr-8"
             src={"https://arweave.net/" + secondaryData_?.cover}
             alt={secondaryData_.podcastName}
@@ -51,7 +50,7 @@ const PodcastHeader:FC<PodcastHeaderInterface> = ({
             <div className="line-clamp-5 hover:line-clamp-none select-text">
               {secondaryData_?.description}
             </div>
-          </div>
+          </div> */}
           <div className="mx-auto md:mx-0 md:ml-auto md:mr-9">
             <div className="flex items-center justify-between">
               <button
@@ -67,7 +66,7 @@ const PodcastHeader:FC<PodcastHeaderInterface> = ({
                   <TipButton />
                 </div>
               )}
-              {secondaryData_ && isOwner && (
+              {/* {secondaryData_ && isOwner && (
                 <button
                   className="btn btn-outline btn-sm normal-case rounded-full border-0 flex cursor-pointer font-normal ml-4"
                   style={getButtonRGBs(currentPodcastColor)}
@@ -76,7 +75,7 @@ const PodcastHeader:FC<PodcastHeaderInterface> = ({
                   <PlusIcon className="mr-2 w-4 h-4" />{" "}
                   {t("podcast.newepisode")}
                 </button>
-              )}
+              )} */}
             </div>
           </div>
         </div>
