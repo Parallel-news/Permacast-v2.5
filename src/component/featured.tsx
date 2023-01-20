@@ -17,11 +17,10 @@ import { FiEye } from "react-icons/fi";
 import Track from "./track";
 import { useRecoilState } from "recoil";
 import {
-  primaryData,
-  secondaryData,
   switchFocus,
   videoSelection,
-  creators
+  creators,
+  currentThemeColor
 } from "../atoms";
 
 export function Greeting() {
@@ -50,8 +49,6 @@ export function FeaturedEpisode() {
   const appState = useContext(appContext);
   // const {cover, podcastName, description, pid} = episode; --Episode breakdown
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
-  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData); // Global Podcasts Object
-  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData); // Selected Podcast Object
   const [vs_, setVS_] = useRecoilState(videoSelection); // Selected Podcast Object
   const { t } = useTranslation();
 
@@ -61,19 +58,20 @@ export function FeaturedEpisode() {
   // const url = `/podcast/${primaryData_.pid}/${secondaryData_.eid}`; // --url
 
   useEffect(() => {
-    setSecondaryData_(
-      primaryData_.podcasts.filter((obj) => {
-        if (switchFocus_) {
-          return obj.contentType === "audio/";
-        } else {
-          return obj.contentType === "video/";
-        }
-      })[0]
-    );
+    // setSecondaryData_(
+    //   primaryData_.podcasts.filter((obj) => {
+    //     if (switchFocus_) {
+    //       return obj.contentType === "audio/";
+    //     } else {
+    //       return obj.contentType === "video/";
+    //     }
+    //   })[0]
+    // );
   }, [switchFocus_]);
+
   return (
     <div className="p-14 flex w-full border border-zinc-800 rounded-3xl">
-      <img
+      {/* <img
         className="w-40 cursor-pointer mr-8"
         src={"https://arweave.net/" + secondaryData_.cover}
         alt={secondaryData_.podcastName}
@@ -82,7 +80,7 @@ export function FeaturedEpisode() {
         //     `/podcast/${secondaryData_.pid}/${secondaryData_.episodes[0].eid}`
         //   );
         // }}
-      />
+      /> */}
       <div className="col-span-2 my-3 text-zinc-100 max-w-xs md:max-w-lg mr-2">
         <div
           // onClick={() => {
@@ -92,10 +90,10 @@ export function FeaturedEpisode() {
           // }}
           className="font-medium cursor-pointer line-clamp-1"
         >
-          {secondaryData_.episodes[0].episodeName}
+          {/* {secondaryData_.episodes[0].episodeName} */}
         </div>
         <div className="text-sm line-clamp-5">
-          {secondaryData_.episodes[0].description}
+          {/* {secondaryData_.episodes[0].description} */}
         </div>
       </div>
       <div className="ml-auto">
@@ -104,17 +102,17 @@ export function FeaturedEpisode() {
             className="min-w-min border-0 mt-5 rounded-full flex items-center cursor-pointer transition-transform duration-200 ease-in-out transform hover:scale-90 text-black font-semibold bg-[#FFFF00] h-12 p-4"
             // style={getButtonRGBs(rgb)}
             onClick={() => {
-              if (switchFocus_) {
-                appState.queue.playEpisode(
-                  secondaryData_.episodes[0],
-                  secondaryData_.episodes[0].eid
-                );
-              } else {
-                setVS_([
-                  "https://arweave.net/" + secondaryData_.episodes[0].contentTx,
-                  {},
-                ]);
-              }
+              // if (switchFocus_) {
+              //   appState.queue.playEpisode(
+              //     secondaryData_.episodes[0],
+              //     secondaryData_.episodes[0].eid
+              //   );
+              // } else {
+              //   setVS_([
+              //     "https://arweave.net/" + secondaryData_.episodes[0].contentTx,
+              //     {},
+              //   ]);
+              // }
             }}
           >
             <FaPlay className="w-3 h-3" />
@@ -160,8 +158,6 @@ export function FeaturedPodcast({ podcast }) {
 
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
   const [vs_, setVS_] = useRecoilState(videoSelection);
-  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData); // Global Podcasts Object
-  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData); // Selected Podcast Object
   const [colorData_, setColorData_] = useState([]); // Selected Podcast Object
 
   return (
@@ -175,12 +171,12 @@ export function FeaturedPodcast({ podcast }) {
             //   history.push(`/podcast/${secondaryData_.pid}`)
             // }}
           >
-            <div className="pt-5 pb-3 text-xs">
+            {/* <div className="pt-5 pb-3 text-xs">
               {secondaryData_.episodes.length}{" "}
               {secondaryData_.episodes.length > 1
                 ? t("home.episodes")
                 : "episode"}
-            </div>
+            </div> */}
             <div className="w-full mb-7 max-w-[180px] overflow-x-hidden mx-auto">
               <img
                 className="object-cover aspect-square h-[180px]"
@@ -198,16 +194,16 @@ export function FeaturedPodcast({ podcast }) {
                 //   play(episodes[0]);
                 // });
                 if (switchFocus_) {
-                  appState.queue.playEpisode(
-                    secondaryData_.episodes[0],
-                    secondaryData_.episodes[0].eid
-                  );
+                  // appState.queue.playEpisode(
+                  //   secondaryData_.episodes[0],
+                  //   secondaryData_.episodes[0].eid
+                  // );
                 } else {
-                  setVS_([
-                    "https://arweave.net/" +
-                      secondaryData_.episodes[0].contentTx,
-                    {},
-                  ]);
+                  // setVS_([
+                  //   "https://arweave.net/" +
+                  //     secondaryData_.episodes[0].contentTx,
+                  //   {},
+                  // ]);
                 }
               }}
             >
@@ -222,7 +218,7 @@ export function FeaturedPodcast({ podcast }) {
               // onClick={() => history.push(`/podcast/${podcastId}`)}
             >
               <div className="text-lg line-clamp-1 cursor-pointer">
-                {secondaryData_.podcastName}
+                {/* {secondaryData_.podcastName} */}
               </div>
               <div className="text-xs max-w-[95%] line-clamp-2">
                 {description}
@@ -237,25 +233,24 @@ export function FeaturedPodcast({ podcast }) {
 
 export function FeaturedPodcastsMobile() {
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
-  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
-  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
-  const podcasts = primaryData_.podcasts.filter((obj) => {
-    if (switchFocus_) {
-      return obj.contentType === "audio/";
-    } else {
-      return obj.contentType === "video/";
-    }
-  });
+
+  // const podcasts = primaryData_.podcasts.filter((obj) => {
+  //   if (switchFocus_) {
+  //     return obj.contentType === "audio/";
+  //   } else {
+  //     return obj.contentType === "video/";
+  //   }
+  // });
   return (
     <div className="carousel">
-      {podcasts.map((podcast, index) => (
+      {/* {podcasts.map((podcast, index) => (
         <div
           className="carousel-item max-w-[280px] md:max-w-xs pr-4"
           key={index}
         >
           <FeaturedPodcast podcast={podcast} />
         </div>
-      ))}
+      ))} */}
     </div>
   );
 }
@@ -263,8 +258,7 @@ export function FeaturedPodcastsMobile() {
 export function RecentlyAdded() {
   const { t } = useTranslation();
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
-  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
-  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
+
   const [episodes, setEpisodes] = useState([]);
   const createdAt_ = (a, b) => {
     if (a.uploadedAt < b.uploadedAt) {
@@ -276,16 +270,16 @@ export function RecentlyAdded() {
     }
   };
   useEffect(() => {
-    const data_ = primaryData_.podcasts.filter((obj) => {
-      if (switchFocus_) {
-        return obj.contentType === "audio/";
-      } else {
-        return obj.contentType === "video/";
-      }
-    });
-    data_.forEach((obj) => {
-      setEpisodes(episodes.concat(obj.episodes));
-    });
+    // const data_ = primaryData_.podcasts.filter((obj) => {
+    //   if (switchFocus_) {
+    //     return obj.contentType === "audio/";
+    //   } else {
+    //     return obj.contentType === "video/";
+    //   }
+    // });
+    // data_.forEach((obj) => {
+    //   setEpisodes(episodes.concat(obj.episodes));
+    // });
   }, []);
   return (
     <div className="">
@@ -308,8 +302,7 @@ export const FeaturedCreators = memo(() => {
   const appState = useContext(appContext);
   // const history = useHistory();
   const { t } = useTranslation();
-  const { themeColor } = appState.theme;
-  const bg = themeColor.replace("rgb", "rgba").replace(")", ", 0.1)");
+  const [currentThemeColor_, setCurrentThemeColor_] = useRecoilState(currentThemeColor)
 
   const veryGoodWhitelistOfVeryGoodPeople = [
     "kaYP9bJtpqON8Kyy3RbqnqdtDBDUsPTQTNUCvZtKiFI",
@@ -323,20 +316,13 @@ export const FeaturedCreators = memo(() => {
 
   // Fetch Creators
   useEffect(() => {
-    const creatorContr = new AbortController();
-    const fetchCreators = async () => {
-      setCreatorsLoading(true);
-      _setCreators(await Promise.all(veryGoodWhitelistOfVeryGoodPeople.map(
-                        creatorAddress => getCreator(creatorAddress, {signal: creatorContr.signal}))));
-      setCreatorsLoading(false);
-    }
-    if(!dataLoaded) {
-      fetchCreators();
-      setDataLoaded(true);
-    }
-    return () => {
-      creatorContr.abort();
-    }
+    // const fetchCreators = async () => {
+    //   setCreatorsLoading(true);
+    //   _setCreators(await Promise.all(veryGoodWhitelistOfVeryGoodPeople.map(
+    //                     creatorAddress => getCreator(creatorAddress, {signal: creatorContr.signal}))));
+    //   setCreatorsLoading(false);
+    // }
+
   }, []);
 
   return (
@@ -383,7 +369,7 @@ export const FeaturedCreators = memo(() => {
                 <div className=" ">
                   <p
                     className="px-3 py-2 rounded-full text-[10px] ml-5 cursor-pointer"
-                    style={{ backgroundColor: bg, color: themeColor }}
+                    style={{ backgroundColor: currentThemeColor_, color: currentThemeColor_ }}
                     // onClick={() => history.push("/creator/" + creator?.user)}
                   >
                     {t("view")}

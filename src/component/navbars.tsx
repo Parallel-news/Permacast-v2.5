@@ -21,7 +21,7 @@ import { Searchbar } from "./searchbar";
 import LANGUAGES from "../utils/languages";
 import { UploadCount } from "./upload_count";
 import { useRecoilState } from "recoil";
-import { ContentType, isFullscreen } from "../atoms";
+import { isFullscreen } from "../atoms";
 
 export function Sidenav() {
   const { t } = useTranslation('common');
@@ -33,7 +33,6 @@ export function Sidenav() {
     router.push({ pathname, query }, asPath, { locale: newLocale })
   };
 
-  const [contentType_, setContentType_] = useRecoilState(ContentType);
   const [showUploadOptions,setUploadOptions] = useState(false);
   const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
 

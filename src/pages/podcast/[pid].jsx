@@ -23,14 +23,11 @@ import {
 import { Cooyub } from "../../component/reusables/icons";
 
 import { CheckAuthHook, getButtonRGBs } from "../../utils/ui.js";
-import { appContext } from "../../utils/initStateGen.js";
 import { isDarkMode } from "../../utils/theme.js";
 
 import {
   switchFocus,
   videoSelection,
-  primaryData,
-  secondaryData,
   globalModalOpen,
   backgroundColor
 } from "../../atoms";
@@ -39,8 +36,6 @@ const Podcast = (props) => {
   const { t } = useTranslation();
 
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
-  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
-  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
   const [setCurrentPodcastColor, currentPodcastColor] = useRecoilState(backgroundColor);
   const [isOpen, setIsOpen] = useRecoilState(globalModalOpen);
 
@@ -180,17 +175,17 @@ const Podcast = (props) => {
   };
 
   useEffect(() => {
-    setSecondaryData_(
-      primaryData_?.podcasts?.filter((obj) => {
-        return obj.pid === props.match.params.podcastId;
-      })?.[0]
-    );
+    // setSecondaryData_(
+    //   primaryData_?.podcasts?.filter((obj) => {
+    //     return obj.pid === props.match.params.podcastId;
+    //   })?.[0]
+    // );
 
-    setVideoShows_(
-      primaryData_?.podcasts?.filter((obj) => {
-        return obj.pid === props.match.params.podcastId;
-      })?.[0]?.episodes
-    );
+    // setVideoShows_(
+    //   primaryData_?.podcasts?.filter((obj) => {
+    //     return obj.pid === props.match.params.podcastId;
+    //   })?.[0]?.episodes
+    // );
 
     let playerObj_ = document.getElementById("hidden-player");
     playerObj_.pause();
@@ -374,6 +369,7 @@ export async function getStaticProps({ locale }) {
 //     return { pathFullInfo: false };
 //   };
 // };
+
 // pages/blog/[slug].js
 export async function getStaticPaths() {
   return {
