@@ -1,8 +1,8 @@
-import { useEffect, useContext, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import { Cooyub } from "./reusables/icons";
 import { appContext } from "../utils/initStateGen";
 import { getButtonRGBs } from "../utils/ui";
-import PlayButton from "./reusables/playButton";
+// import PlayButton from "./reusables/playButton";
 import { PlayIcon, PauseIcon } from "@heroicons/react/24/outline";
 import { primaryData, secondaryData, switchFocus } from "../atoms";
 import { useRecoilState } from "recoil";
@@ -14,7 +14,6 @@ export default function Track({
   includePlayButton = true,
   color = "",
 }) {
-  const appState = useContext(appContext);
   const {
     contentTx,
     episodeName,
@@ -24,34 +23,32 @@ export default function Track({
     objectType,
     creatorAddress,
   } = episode;
-  const { currentEpisode, playEpisode } = appState.queue;
-  const { isPaused, setIsPaused } = appState.playback;
+  // const { currentEpisode, playEpisode } = appState.queue;
+  // const { isPaused, setIsPaused } = appState.playback;
 
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
-  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
-  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
 
-  const { player } = appState;
-  const c = color ? color : episode?.rgb;
-  // const id = objectType === 'episode' ? episodeId : podcastId;
-  const url = `/podcast/${secondaryData_.pid}` + `/${episode.eid}`;
+  // const { player } = appState;
+  // const c = color ? color : episode?.rgb;
+  // // const id = objectType === 'episode' ? episodeId : podcastId;
+  // const url = `/podcast/${secondaryData_.pid}` + `/${episode.eid}`;
 
-  function getHex(string) {
-    let newstr = string + "";
-    newstr = string
-      .split("")
-      .reduce(
-        (hex, c) => (hex += c.charCodeAt(0).toString(16).padStart(4, "0")),
-        ""
-      );
-    if (newstr.length > 6) {
-      newstr = newstr.slice(0, 6);
-    }
-    if (newstr.length < 6) {
-      newstr = string + "0".repeat(6 - string.length);
-    }
-    return newstr;
-  }
+  // function getHex(string) {
+  //   let newstr = string + "";
+  //   newstr = string
+  //     .split("")
+  //     .reduce(
+  //       (hex, c) => (hex += c.charCodeAt(0).toString(16).padStart(4, "0")),
+  //       ""
+  //     );
+  //   if (newstr.length > 6) {
+  //     newstr = newstr.slice(0, 6);
+  //   }
+  //   if (newstr.length < 6) {
+  //     newstr = string + "0".repeat(6 - string.length);
+  //   }
+  //   return newstr;
+  // }
 
   const playCurrentTrack = () => {
     if (!player) return;

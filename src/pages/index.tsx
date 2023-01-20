@@ -2,7 +2,7 @@ import axios from 'axios';
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useContext, useEffect, useState, memo } from "react";
+import { Fragment, useEffect, useState, } from "react";
 import { useRecoilState } from "recoil";
 
 import {
@@ -12,21 +12,43 @@ import {
   RecentlyAdded,
   FeaturedCreators,
 } from "../component/featured";
-import { switchFocus } from "../atoms/index.js";
+import FeaturedPodcast from '../component/home/featuredPodcast';
+
+import Loading from '../component/reusables/loading';
+import {
+  podcasts,
+  featuredCreators,
+  featuredEpisode,
+  featuredPodcasts,
+  latestEpisodes,
+  switchFocus,
+ } from "../atoms/index.js";
+
+import { Episode, EXMDevState, PodcastDev } from '../interfaces';
 
 
 const Home: NextPage = () => {
-
-  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
   const [loading, setLoading] = useState(false);
 
-  const [recentlyAdded_, setRecentlyAdded_] = useState([]);
+  const [podcasts_, setPodcasts_] = useRecoilState(podcasts);
+  const [featuredEpisode_, setFeaturedEpisode_] = useRecoilState(featuredEpisode);
+  const [latestEpisodes_, setLatestEpisodes_] = useRecoilState(latestEpisodes);
+  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
+  // const [recentlyAdded]
 
+
+  
   useEffect(() => {
     console.log("index.tsx useEffect");
-    const getAllData_ = async () => {
-      const result = await axios.get('/api/exm/dev-read')
+    const fetchData = async () => {
+      const exmState: EXMDevState = (await axios.get('/api/exm/dev-read')).data
+      const { podcasts } = exmState;
+      const episodes: Episode[] = podcasts.map((podcast: PodcastDev) => podcast.episodes).flat()
       
+      setLatestEpisodes_(episodes.sort((episodeA, episodeB) => episodeB.uploadedAt - episodeA.uploadedAt))
+      setPodcasts_(podcasts)
+      
+      console.log(episodes)
       // setSecondaryData_(
       //   primaryData_.podcasts.filter((obj) => {
       //     if(switchFocus_){
@@ -47,6 +69,7 @@ const Home: NextPage = () => {
       // );
     };
 
+    fetchData()
 
   }, []);
 
@@ -97,17 +120,21 @@ const Home: NextPage = () => {
         </div>
       )}
 
-      {/* { Object.keys(secondaryData_).length > 0 ? (
+      {/* {latestEpisodes_.length > 0 ? (
         <div className="hidden md:block">
           <FeaturedEpisode />
         </div>
       ) : <Loading />} */}
 
-      {/* {Object.keys(secondaryData_).length > 0 ? (
-        <div className="hidden md:grid w-full mt-8 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-x-12">
-          <FeaturedPodcasts podcasts={featuredPodcasts} />
+      {podcasts_.length > 0 ? (
+        <div className="md:grid w-full mt-8 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-x-12">
+          {podcasts_.map((podcast: PodcastDev, index: number) => 
+            <Fragment key={index}>
+              <FeaturedPodcast podcast={podcast} />
+            </Fragment>
+          )}
         </div>
-      ): <Loading />} */}
+      ): <Loading />}
 
       {/* {Object.keys(secondaryData_).length > 0 ? (
         <FeaturedPodcastsMobile />

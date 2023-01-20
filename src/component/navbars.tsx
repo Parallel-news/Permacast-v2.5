@@ -55,7 +55,7 @@ export function Sidenav() {
           onClick={() => {
             setIsFullscreen_(false)
           }}
-          style={{ color: condition ? "white" : "" }}
+          // style={{ color: "" }}
         >
           {icon}
         </button>

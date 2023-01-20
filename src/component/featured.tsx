@@ -1,15 +1,13 @@
-import React, { useState, useContext, useEffect, memo } from "react";
-import { appContext } from "../utils/initStateGen.js";
+import React, { useState, useContext, useEffect, memo, FC } from "react";
 import { useTranslation } from "next-i18next";
 import { useAns } from 'ans-for-all';
-
 import {
   replaceDarkColorsRGB,
   isTooLight,
   trimANSLabel,
   RGBobjectToString,
 } from "../utils/ui";
-import { getCreator } from "../utils/podcast.js";
+import { getCreator } from "../utils/podcast";
 import { Cooyub, PlayButton, GlobalPlayButton } from "./reusables/icons";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { FaPlay } from "react-icons/fa";
@@ -22,6 +20,7 @@ import {
   creators,
   currentThemeColor
 } from "../atoms";
+import { PodcastDev } from "../interfaces/index";
 
 export function Greeting() {
   const { t } = useTranslation();
@@ -46,7 +45,7 @@ export function Greeting() {
 }
 
 export function FeaturedEpisode() {
-  const appState = useContext(appContext);
+
   // const {cover, podcastName, description, pid} = episode; --Episode breakdown
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
   const [vs_, setVS_] = useRecoilState(videoSelection); // Selected Podcast Object
@@ -139,21 +138,22 @@ export function FeaturedEpisode() {
   );
 }
 
-export function FeaturedPodcast({ podcast }) {
-  const appState = useContext(appContext);
-  // const history = useHistory();
+interface FeaturedPodcast {
+  podcast: PodcastDev;
+};
+
+export const FeaturedPodcast: FC<FeaturedPodcast> = ({ podcast }) => {
+  
   const {
-    rgb,
-    episodesCount,
     cover,
     podcastName,
-    title,
+    label,
     description,
-    firstTenEpisodes,
-    podcastId,
   } = podcast;
-  const textColor = isTooLight(rgb) ? "black" : "white";
-  const { enqueuePodcast, play } = appState.queue;
+
+  
+  const textColor = 'white' // isTooLight(rgb) ? "black" : "white";
+
   const { t } = useTranslation();
 
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
@@ -299,7 +299,6 @@ export function RecentlyAdded() {
 }
 
 export const FeaturedCreators = memo(() => {
-  const appState = useContext(appContext);
   // const history = useHistory();
   const { t } = useTranslation();
   const [currentThemeColor_, setCurrentThemeColor_] = useRecoilState(currentThemeColor)

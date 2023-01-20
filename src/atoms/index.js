@@ -23,6 +23,10 @@ export const isFullscreen = atom({
 
 
 // *** DATA-FETCHING ***
+export const podcasts = atom({
+    key: "podcasts",
+    default: [],
+});
 
 export const featuredEpisode = atom({
     key: "featuredEpisode",

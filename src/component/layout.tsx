@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next';
 import { Sidenav, NavBar } from './navbars';
 import Background from './background';
 
-import EpisodeQueue from './episode_queue';
+import EpisodeQueue from './episodeQueue';
 import Fullscreen from './fullscreen';
 import VideoModal from './video_modal';
 

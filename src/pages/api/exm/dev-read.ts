@@ -1,10 +1,10 @@
 import axios from "axios"
 import { NextApiRequest, NextApiResponse } from "next"
-
+import { EXMDevState } from "../../../interfaces"
 const CONTRACT = process.env.EXM_CONTRACT_ADDRESS
 const DEV_CONTRACT = process.env.EXM_DEV_CONTRACT_ADDRESS
 
-interface ResponseData {
+interface ResponseData extends EXMDevState {
   
 }
 

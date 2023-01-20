@@ -1,6 +1,3 @@
-import { useContext } from "react";
-import { appContext } from "../../utils/initStateGen";
-
 export function Cooyub({svgStyle, rectStyle, fill}) {
   return (
     <svg className={svgStyle} style={{borderRadius: '4px'}}>
@@ -18,20 +15,20 @@ export function PlayButton ({svgStyle, fill, outline, size="20"}) {
 }
 
 // make sure to pass RGB values as strings
-export function GlobalPlayButton ({size="20", innerColor=null, outerColor=null}) {
-  const appState = useContext(appContext);
-  const {themeColor} = appState.theme;
-  let cl;
-  let bg;
-  if (innerColor) cl = innerColor;
-  else cl = themeColor;
-  if (outerColor) bg = outerColor;
-  else bg = cl.replace('rgb', 'rgba').replace(')', ', 0.1)');
-  const paddingSize = size * 0.5;
+export const GlobalPlayButton = ({size="20", innerColor=null, outerColor=null}) => {
+  // const appState = useContext(appContext);
+  // const {themeColor} = appState.theme;
+  // let cl;
+  // let bg;
+  // if (innerColor) cl = innerColor;
+  // else cl = themeColor;
+  // if (outerColor) bg = outerColor;
+  // else bg = cl.replace('rgb', 'rgba').replace(')', ', 0.1)');
+  // const paddingSize = size * 0.5;
 
   return (
-    <div className="cursor-pointer rounded-[34px]" style={{backgroundColor: bg, padding: paddingSize + "px"}}>
-      <PlayButton svgStyle={cl} fill={cl} outline={cl} size={size} />
+    <div className="cursor-pointer rounded-[34px]" > {/*style={{backgroundColor: bg, padding: paddingSize + "px"}} */}
+      {/* <PlayButton svgStyle={cl} fill={cl} outline={cl} size={size} /> */}
     </div>
   )
 }

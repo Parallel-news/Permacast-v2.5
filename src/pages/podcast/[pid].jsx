@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil';
 import Shikwasa from "../../shikwasa-src/main.js";
 import { useTranslation } from "next-i18next";
 import { PlayIcon } from "@heroicons/react/24/outline";
-import Track from "../../component/track.jsx";
+import Track from "../../component/track";
 import TipButton from "../../component/reusables/tip";
 import UploadEpisode from "../../component/uploadEpisode";
 import UploadVideo from "../../component/uploadVideo";
@@ -189,8 +189,8 @@ const Podcast = (props) => {
 
     let playerObj_ = document.getElementById("hidden-player");
     playerObj_.pause();
-    playerObj_.src =
-      "https://arweave.net/" + secondaryData_?.episodes?.[0].contentTx;
+    // playerObj_.src =
+      // "https://arweave.net/" + secondaryData_?.episodes?.[0].contentTx;
   }, []);
 
   useEffect(() => {
@@ -214,7 +214,7 @@ const Podcast = (props) => {
           id="hidden-player"
           controls
           preload="auto"
-          poster={"https://arweave.net/" + secondaryData_?.cover}
+          poster={"https://arweave.net/" + "secondaryData_?.cover"}
           data-setup="{}"
           className="video-js rounded-[4px] w-full h-full"
         >
@@ -263,7 +263,7 @@ const Podcast = (props) => {
                       <div className="flex items-center relative">
                         <img
                           className="h-14 w-14 rounded-lg cursor-pointer object-cover"
-                          src={"https://arweave.net/" + secondaryData_.cover}
+                          src={"https://arweave.net/" + "secondaryData_.cover"}
                           alt={e.episodeName}
                           onClick={() => {}}
                         />
@@ -293,7 +293,7 @@ const Podcast = (props) => {
                                       className="text-[8px] pr-1 ml-1 "
                                       onClick={() => {}}
                                     >
-                                      {secondaryData_.author}
+                                      {/* {secondaryData_.author} */}
                                     </p>
                                   </div>
                                 </div>
