@@ -24,13 +24,15 @@ import {
 import { CheckAuthHook } from "../../utils/ui";
 import useEthTransactionHook from "../../utils/ethereum";
 import { ValMsg, isValidEmail } from "../../component/reusables/formTools";
-import { WebBundlr } from "@bundlr-network/client";
 import { providers } from "ethers";
 import { yellowRec } from '../../assets/yellow-rec.svg'; 
 import BigNumber from "bignumber.js";
+import { genAPI } from 'arseeding-js';
+import Everpay from 'everpay';
+
 
 export default function UploadPodcast() {
-
+const everpay = new Everpay();
   const appState = useContext(appContext);
   // remove state from here
   const [show, setShow] = useState(false);
@@ -64,11 +66,13 @@ export default function UploadPodcast() {
     //console.log(await window.arweaveWallet.getPermissions())
     // wagmi will handle upload and the rest of stuff
     //sendTransaction()
-    await window.ethereum.enable();
-    const provider = new providers.Web3Provider(window.ethereum);
-    const bundlr = new WebBundlr("https://node2.bundlr.network", "ethereum", provider);
-    await bundlr.ready();
-    console.log(bundlr);
+    const instance = await genAPI(window.ethereum);
+    console.log(instance);
+    //await window.ethereum.enable();
+    //const provider = new providers.Web3Provider(window.ethereum);
+    //const bundlr = new WebBundlr("https://node2.bundlr.network", "ethereum", provider);
+    //await bundlr.ready();
+    //console.log(bundlr);
     /*
     const fundAmountParsed = new BigNumber(0.001).multipliedBy(
       bundlr.currencyConfig.base[1],
