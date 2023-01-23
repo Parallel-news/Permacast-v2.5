@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@bundlr-network/client": "^0.9.11",
+    "@ethersproject/bignumber": "^5.7.0",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-regular-svg-icons": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
@@ -22,11 +23,16 @@
     "@tailwindcss/line-clamp": "^0.4.0",
     "@tailwindcss/typography": "^0.5.1",
     "ans-for-all": "decentldotland/ans-for-all",
+    "arseeding-js": "^0.0.23",
     "autoprefixer": "^10.4.2",
     "axios": "^1.2.1",
+    "bignumber.js": "^9.1.1",
+    "child-process": "^1.0.2",
     "daisyui": "^2.47.0",
     "ethers": "^5.7.2",
+    "everpay": "^0.6.0",
     "fast-average-color": "^9.3.0",
+    "fs": "^0.0.1-security",
     "fuse.js": "^6.6.2",
     "i18next": "^22.4.9",
     "i18next-browser-languagedetector": "^6.1.3",
@@ -42,6 +48,7 @@
     "react-router": "^5.2.0",
     "react-scroll": "^1.8.8",
     "recoil": "^0.7.6",
+    "sharp": "^0.31.3",
     "wagmi": "^0.10.10"
   },
   "devDependencies": {

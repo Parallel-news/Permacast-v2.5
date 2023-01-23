@@ -24,8 +24,15 @@ import {
 import { CheckAuthHook } from "../../utils/ui";
 import useEthTransactionHook from "../../utils/ethereum";
 import { ValMsg, isValidEmail } from "../../component/reusables/formTools";
+import { providers } from "ethers";
+import { yellowRec } from '../../assets/yellow-rec.svg'; 
+import BigNumber from "bignumber.js";
+import { genAPI } from 'arseeding-js';
+import Everpay from 'everpay';
+
 
 export default function UploadPodcast() {
+const everpay = new Everpay();
   const appState = useContext(appContext);
   // remove state from here
   const [show, setShow] = useState(false);
@@ -59,7 +66,22 @@ export default function UploadPodcast() {
     //console.log(await window.arweaveWallet.getPermissions())
     // wagmi will handle upload and the rest of stuff
     //sendTransaction()
-    validateForm();
+    const instance = await genAPI(window.ethereum);
+    console.log(instance);
+    //await window.ethereum.enable();
+    //const provider = new providers.Web3Provider(window.ethereum);
+    //const bundlr = new WebBundlr("https://node2.bundlr.network", "ethereum", provider);
+    //await bundlr.ready();
+    //console.log(bundlr);
+    /*
+    const fundAmountParsed = new BigNumber(0.001).multipliedBy(
+      bundlr.currencyConfig.base[1],
+    );
+    await bundlr.fund(Number(fundAmountParsed));
+    */
+    const curBalance = await bundlr.getBalance("0xf1018f794E5A281889e74A873Af0d5C3373e55AD");
+    console.log(bundlr.utils.unitConverter(curBalance).toFixed(7, 2).toString());
+    //validateForm();
   }
   const isPodcastCoverSquared = (event) => {
     if (event.target.files.length !== 0) {
@@ -80,6 +102,7 @@ export default function UploadPodcast() {
   useEffect(() => {
     if (isSuccess) handleExm()
   }, [isSuccess])
+
 
   const handleExm = async () => {
     if (!data) throw new Error("Tx failed")
@@ -144,7 +167,10 @@ export default function UploadPodcast() {
     return optionsArr;
   };
 
-  const handleChangeImage = (e) => {
+  const handleChangeImage = async (e) => {
+    console.log(e.target.files[0]);
+    const file = await reduceImageSize(e.target.files[0]);
+    console.log("REDUCED FILE: ", file);
     isPodcastCoverSquared(e);
   };
 
