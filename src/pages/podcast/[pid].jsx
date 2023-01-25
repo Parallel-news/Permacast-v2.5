@@ -10,16 +10,6 @@ import UploadEpisode from "../../component/uploadEpisode";
 import UploadVideo from "../../component/uploadVideo";
 import PodcastHeader from '../../component/podcastHeader';
 
-import {
-  Link,
-  DirectLink,
-  Element,
-  Events,
-  animateScroll as scroll,
-  scrollSpy,
-  scroller,
-} from "react-scroll";
-
 import { Cooyub } from "../../component/reusables/icons";
 
 import { CheckAuthHook, getButtonRGBs } from "../../utils/ui.js";

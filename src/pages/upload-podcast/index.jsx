@@ -169,8 +169,8 @@ const everpay = new Everpay();
 
   const handleChangeImage = async (e) => {
     console.log(e.target.files[0]);
-    const file = await reduceImageSize(e.target.files[0]);
-    console.log("REDUCED FILE: ", file);
+    // const file = await reduceImageSize(e.target.files[0]);
+    // console.log("REDUCED FILE: ", file);
     isPodcastCoverSquared(e);
   };
 
