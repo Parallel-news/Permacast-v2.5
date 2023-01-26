@@ -1,14 +1,19 @@
 import { React, useState, useRef, useContext, useCallback, useEffect } from "react";
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { appContext } from "../../utils/initStateGen";
-import { BsArrowRightShort } from "react-icons/bs";
-import LANGUAGES from "../../utils/languages";
-import { PhotoIcon } from "@heroicons/react/24/outline";
-import { useTranslation } from "next-i18next";
-import { UploadsList } from "../../component/uploadsList";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { ContentType, uploadPercent } from "../../atoms";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+
 import Cropper from "react-easy-crop";
+import BigNumber from "bignumber.js";
+import { genAPI } from 'arseeding-js';
+import Everpay from 'everpay';
+
+import { PhotoIcon } from "@heroicons/react/24/outline";
+import { BsArrowRightShort } from "react-icons/bs";
+import { UploadsList } from "../../component/uploadsList";
+
+import { ContentType, uploadPercent } from "../../atoms";
+import LANGUAGES from "../../utils/languages";
 import getCroppedImg from "../../utils/croppedImage";
 import handler from "../../services/services";
 import { validateStrLength } from "../../utils/uploadValidation";
@@ -23,17 +28,11 @@ import {
 } from '../../constants';
 import { CheckAuthHook } from "../../utils/ui";
 import useEthTransactionHook from "../../utils/ethereum";
-import { ValMsg, isValidEmail } from "../../component/reusables/formTools";
-import { providers } from "ethers";
-import { yellowRec } from '../../assets/yellow-rec.svg'; 
-import BigNumber from "bignumber.js";
-import { genAPI } from 'arseeding-js';
-import Everpay from 'everpay';
+import { ValMsg, isValidEmail, reduceImageSize } from "../../component/reusables/formTools";
 
 
 export default function UploadPodcast() {
-const everpay = new Everpay();
-  const appState = useContext(appContext);
+  const everpay = new Everpay();
   // remove state from here
   const [show, setShow] = useState(false);
   const [img, setImg] = useState();
@@ -123,10 +122,10 @@ const everpay = new Everpay();
     showObj.author = podcastAuthor_; 
     showObj.lang = defaultLang; // podcastLanguage_; "en" is the only accepted value & 2chars in length
     showObj.isExplicit = "no"; //podcastExplicit_must be "yes" or "no"
-    showObj.categories = 'True Crime' // podcastCategory_;
+    showObj.categories = podcastCategory_;
     showObj.email = podcastEmail_;
     showObj.contentType = contentType_; // v for video and a for audio
-    //showObj.cover = podcastCover_; // must have "image/*" MIME type
+    showObj.cover = podcastCover_; // must have "image/*" MIME type
     // max size: 64kbs
     showObj.minifiedCover = 'Rtjwzke-8cCLd0DOKGKCx5zNjmoVr51yy_Se1s73YH4'; //must be 43 chars in length
     showObj.cover = '5QzEMAZJvCQmCL2TJpLo789MTforaJBFKKnqBNWg0sA'; //must be 43 chars in length
@@ -174,9 +173,7 @@ const everpay = new Everpay();
     isPodcastCoverSquared(e);
   };
 
-  const [inputImg, setInputImg] = useState(
-    "https://repository-images.githubusercontent.com/438897789/72714beb-d2b9-46e0-ad82-b03ddc78083f"
-  );
+  const [inputImg, setInputImg] = useState("");
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [rotation, setRotation] = useState(0);
   const [zoom, setZoom] = useState(1);
@@ -355,7 +352,7 @@ const everpay = new Everpay();
             required
             type="file"
             accept="image/*"
-            className="opacity-0 z-index-[-1] absolute cursor-pointer"
+            className="opacity-0 z-index-[-1] absolute pointer-events-none"
             ref={podcastCoverRef}
             onChange={(e) => handleChangeImage(e)}
             name="podcastCover"
