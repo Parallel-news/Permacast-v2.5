@@ -40,7 +40,7 @@ export default function ArConnect() {
     <>
       {(walletConnected && (
         <button 
-          className="!w-full btn-base-color flex px-3 justify-center mx-auto text-sm md:text-base normal-case"
+          className="!w-full btn-base-color flex px-3 justify-center mx-auto text-sm md:text-base normal-case focus:outline-white"
           onClick={arconnectDisconnect}
         >
           <span>
