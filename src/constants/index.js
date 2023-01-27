@@ -23,6 +23,9 @@ export const EPISODE_DESC_MAX_LEN = 5000;
 export const PODCAST_COVER_MIN_LEN = 43;
 export const PODCAST_COVER_MAX_LEN = 43;
 
+export const PODCAST_MINIFIED_COVER_MIN_SIZE = 1;
+export const PODCAST_MINIFIED_COVER_MAX_SIZE = 65535;
+
 export const IS_EXPLICIT_VALUES = ["yes", "no"];
 export const CONTENT_TYPE_VALUES = ["v", "a"];
 

@@ -13,7 +13,6 @@ import Fullscreen from './fullscreen';
 import VideoModal from './video_modal';
 
 import { appContext } from '../utils/initStateGen.js';
-// import { getAllData } from "../src/services/services";
 import { isFullscreen, queue, currentEpisode, isPaused, queueVisible, themeColor } from '../atoms/index.js';
 
 interface LayoutInterface {

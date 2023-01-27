@@ -16,7 +16,7 @@ import {
   createClient,
   WagmiConfig,
 } from 'wagmi';
-import { mainnet } from 'wagmi';
+import { mainnet, goerli } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 import Layout from '../component/layout';
 
@@ -32,7 +32,7 @@ import '../styles/globals.css';
 
 function App({ Component, pageProps }) {
   const { chains, provider } = configureChains(
-    [mainnet],
+    [mainnet, goerli],
     [publicProvider()]
   );
   const { connectors } = getDefaultWallets({appName: 'Permacast', chains});

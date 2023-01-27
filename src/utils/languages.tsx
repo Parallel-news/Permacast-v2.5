@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 export const categories_en = [
   "Arts",
   "Business",
@@ -560,5 +562,48 @@ export const LANGUAGES = [
     "languages" : languages_zh
   }
 ]
+
+export const useLanguageHook = () => {
+  const { i18n } = useTranslation();
+  const currentLanguage = LANGUAGES.find(
+    (language) => i18n.language === language.code
+  );
+
+  const langsArray = Object.entries(currentLanguage.languages);
+  const categoriesArray = Object.entries(currentLanguage.categories);
+  return [langsArray, categoriesArray]
+}
+
+export const LanguageOptions = () => {
+  const [langsArray, _] = useLanguageHook();
+  //<option disabled defaultValue>Language</option>
+
+  return (
+    <>
+      {langsArray.map((lang: string[]) => 
+        <option value={lang[0]} key={lang[1]}>
+          {lang[1]}
+        </option>
+      )}
+    </>
+  )
+};
+
+export const CategoryOptions = () => {
+  const [_, categoriesArray] = useLanguageHook();
+
+  // <option disabled defaultValue>Category</option>
+  return (
+    <>
+      {categoriesArray.map((lang: string[]) => 
+        <option value={lang[1]} key={lang[0]}>
+          {lang[1]}
+        </option>
+      )}
+    </>
+  )
+};
+
+
 
 export default LANGUAGES

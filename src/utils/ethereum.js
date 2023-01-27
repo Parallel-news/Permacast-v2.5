@@ -7,7 +7,7 @@ export default function useEthTransactionHook() {
   const { config, error } = usePrepareSendTransaction({
     request: {
       to: "0x197f818c1313DC58b32D88078ecdfB40EA822614",
-      value: parseEther('0.001'),
+      value: parseEther('0.00001'),
     },
   })
   const { data, isLoading, isSuccess,  sendTransaction } = useSendTransaction(config);
