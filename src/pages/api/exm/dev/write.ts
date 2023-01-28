@@ -16,7 +16,7 @@ export default async function handler(
     const data = await axios.post(`https://api.exm.dev/api/transactions?token=${DEV_TOKEN}`, {
       functionId: DEV_CONTRACT,
       inputs: [{
-        "input": JSON.stringify({function: "reserve", ...req.body})
+        "input": JSON.stringify(req.body)
       }],
     }, {})
     res.status(200).json(data.data)
