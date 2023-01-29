@@ -38,7 +38,7 @@ export default function UploadPodcast() {
   const [eth, ar] = CheckAuthHook();
   const [data, isLoading, isSuccess, sendTransaction, error] = useEthTransactionHook();
 
-  const [contentType_, ] = useRecoilState(ContentType);
+  const [contentType_, setContentType_] = useRecoilState(ContentType);
   const setPercent = useSetRecoilState(uploadPercent);
 
   // inputs
@@ -119,6 +119,7 @@ export default function UploadPodcast() {
     uploadCover().then((covers) => {
       setPodcastCoverTX(covers[0])
       setPodcastMinifiedCoverTX(covers[1])
+      //@ts-ignore
       sendTransaction();
     })
 
@@ -142,14 +143,18 @@ export default function UploadPodcast() {
 
   // isSuccess property of the wagmi transaction
   useEffect(() => {
-    const signatureMethod = window.arweaveWallet.signature;
-    const methods = window.arweaveWallet.getPermissions;
+    console.log(isSuccess)
+    // @ts-ignore
+    const signatureMethod = window?.arweaveWallet?.signature;
+    // @ts-ignore
+    const methods = window?.arweaveWallet?.getPermissions;
 
     async function fetchData() {
+      //! do not remove this or upload fails
       console.log(await methods())
       const arconnectPubKey = localStorage.getItem("userPubKey")
       if (!arconnectPubKey) throw new Error("ArConnect public key not found");
-      console.log(arconnectPubKey)
+      // console.log(arconnectPubKey)
       const data = new TextEncoder().encode(
         `my Arweave PK for Permacast is ${arconnectPubKey}`
       );
@@ -161,40 +166,47 @@ export default function UploadPodcast() {
       const signedBase = Buffer.from(signature).toString("base64");
       handleExm(signedBase)
     }
-    // fetchData();
-    if (isSuccess) fetchData();
-    if (error) setIsUploading(false);
-  }, [isSuccess]);
 
-  const handleExm = async (signedBase) => {
+    if (isSuccess) {
+      try {
+        fetchData()
+      } catch {
+        setIsUploading(false)
+      }
+    }
+    if (error) setIsUploading(false);
+  }, [isSuccess, data, error, isLoading]);
+
+  const handleExm = async (signedBase: string) => {
     if (!data) throw new Error("Tx failed");
     const userSignature = signedBase;
     const arconnectPubKey = localStorage.getItem("userPubKey")
     if (!userSignature) throw new Error("ArConnect signature not found");
     if (!arconnectPubKey) throw new Error("ArConnect public key not found");
-
-    const showObj = {};
-
-    // // add attrs to input for SWC
-    showObj.function = "createPodcast";
-    showObj.name = podcastName_;
-    showObj.desc = podcastDescription_;
-    showObj.author = podcastAuthor_; 
-    showObj.lang = podcastLanguage_;
-    showObj.isExplicit = podcastExplicit_ ? "yes" : "no";
-    showObj.categories = podcastCategory_;
-    showObj.email = podcastEmail_;
-    showObj.contentType = 'a';//contentType_; // v for video and a for audio
-    showObj.cover = podcastCover_;
-    showObj.minifiedCover = podcastMinifiedCoverTX;
-    showObj.cover = podcastCoverTX;
-    showObj.master_network = "EVM";
-    showObj.network = "ethereum";
-    showObj.token = "ETH";
-    showObj.label = null; // TODO implement later
-    showObj.jwk_n = arconnectPubKey;
-    showObj.txid = data?.hash;
-    showObj.sig = userSignature;
+    
+    // @ts-ignore
+    const hash = data?.hash
+    const showObj = {
+      function: "createPodcast",
+      name: podcastName_,
+      desc: podcastDescription_,
+      author: podcastAuthor_,
+      lang: podcastLanguage_,
+      isExplicit: podcastExplicit_ ? "yes" : "no",
+      categories: podcastCategory_,
+      email: podcastEmail_,
+      contentType: contentType_, // v for video and a for audio
+      minifiedCover: podcastMinifiedCoverTX,
+      cover: podcastCoverTX,
+      master_network: "EVM",
+      network: "ethereum",
+      token: "ETH",
+      label: null, // TODO implement later
+      jwk_n: arconnectPubKey,
+      txid: hash,
+      sig: userSignature
+    };
+  
     const result = await axios.post('/api/exm/dev/write', showObj);
     console.log(result.data)
     setIsUploading(false)
@@ -213,22 +225,22 @@ export default function UploadPodcast() {
    * @param {string - form type} type 
    * @returns Validation message || ""
    */
-  const handleValMsg =(input, type) => {
+  const handleValMsg = (input: string, type: string) => {
     switch(type) {
       case 'podName':
-        if((input > PODCAST_NAME_MAX_LEN || input < PODCAST_NAME_MIN_LEN)) {
+        if((input.length > PODCAST_NAME_MAX_LEN || input.length < PODCAST_NAME_MIN_LEN)) {
           return PODCAST_NAME_VAL_MSG;
         } else {
           return "";
         }
       case 'podDesc': 
-        if((input > PODCAST_DESC_MAX_LEN || input < PODCAST_DESC_MIN_LEN)) {
+        if((input.length > PODCAST_DESC_MAX_LEN || input.length < PODCAST_DESC_MIN_LEN)) {
           return PODCAST_DESC_VAL_MSG;
         } else {
           return "";
         }
       case 'podAuthor':
-        if((input > PODCAST_AUTHOR_MAX_LEN || input < PODCAST_AUTHOR_MIN_LEN)) {
+        if((input.length > PODCAST_AUTHOR_MAX_LEN || input.length < PODCAST_AUTHOR_MIN_LEN)) {
           return PODCAST_AUTH_VAL_MSG;
         } else {
           return "";
@@ -269,7 +281,7 @@ export default function UploadPodcast() {
     CONTENT_TYPE_VALUES.includes(contentType_) ? "" : setPodMiscMsg("Invalid Content Type");
 
     //if any of messages occupied, do not submit and leave an error message f
-    if (podNameMsg.length > 0 || podDescMsg.length > 0 || podAuthMsg.length > 0 || podEmailMsg > 0) {
+    if (podNameMsg.length > 0 || podDescMsg.length > 0 || podAuthMsg.length > 0 || podEmailMsg.length > 0) {
       setPodSubmitMsg("Please fill form correctly");
       return false
     } else {
@@ -363,6 +375,7 @@ export default function UploadPodcast() {
               htmlFor="podcastCover"
               className="cursor-pointer transition duration-300 ease-in-out text-zinc-600 hover:text-white flex md:block md:h-full w-48"
             >
+              {/* @ts-ignore */}
               {podcastCoverRef.current?.files?.[0] ? (
                 <div className="cursor-pointer bg-zinc-900 h-48 w-48 rounded-[20px] flex items-center justify-center">
                   <img src={img} className="h-48 w-48" />
@@ -394,7 +407,7 @@ export default function UploadPodcast() {
                     title="Between 2 and 500 characters"
                     type="text"
                     onChange={(e) => {
-                      setPodNameMsg(handleValMsg(e.target.value.length, "podName"));
+                      setPodNameMsg(handleValMsg(e.target.value, "podName"));
                       setPodcastName_(e.target.value);
                     }}
                     name="podcastName"
@@ -406,12 +419,11 @@ export default function UploadPodcast() {
                   <textarea
                     className="input-default resize-none py-3 px-5 w-full h-[124px]"
                     placeholder={t("uploadshow.description")}
-                    pattern=".{10,15000}"
                     title="Between 10 and 15000 characters"
                     name="podcastDescription"
                     required
                     onChange={(e) => {
-                      setPodDescMsg(handleValMsg(e.target.value.length, "podDesc"));
+                      setPodDescMsg(handleValMsg(e.target.value, "podDesc"));
                       setPodcastDescription_(e.target.value);
                     }}
                   />
@@ -424,7 +436,7 @@ export default function UploadPodcast() {
                   placeholder={t("uploadshow.author")}
                   name="podcastAuthor"
                   onChange={(e) => {
-                    setPodAuthMsg(handleValMsg(e.target.value.length, "podAuthor"));
+                    setPodAuthMsg(handleValMsg(e.target.value, "podAuthor"));
                     setPodcastAuthor_(e.target.value);
                   }}
                 />
@@ -468,17 +480,32 @@ export default function UploadPodcast() {
                   <LanguageOptions />
                 </select>
               </div>
-              <label className="flex mb-5 items-center">
-                <input
-                  id="podcastExplicit"
-                  type="checkbox"
-                  className="checkbox checkbox-ghost bg-yellow mr-2"
-                  onChange={() => setPodcastExplicit_(!podcastExplicit_)}
-                />
-                <span className="label-text cursor-pointer">
-                  {t("uploadshow.explicit")}
-                </span>
-              </label>
+              <div className="flex mb-5 items-center">
+                <label className="flex items-center mr-5">
+                  <input
+                    id="podcastExplicit"
+                    type="checkbox"
+                    className="checkbox checkbox-ghost bg-yellow mr-2"
+                    onChange={() => setPodcastExplicit_(!podcastExplicit_)}
+                  />
+                  <span className="label-text cursor-pointer">
+                    {t("uploadshow.explicit")}
+                  </span>
+                </label>
+                <label className="flex items-center label">
+                  <div className="mr-2 cursor-pointer label-text">
+                    {t("uploadshow.contentvideo")}
+                  </div>
+                  <input type="checkbox" className="toggle" checked={contentType_ === "a" ? true: false}
+                    onChange={() => setContentType_(contentType_ === "a" ? "v": "a")}
+                  />
+                  {/* // onChange={() => contentType_ === "a" ? "v": "a"}> */}
+                  <div className="ml-2 cursor-pointer label-text">
+                    {t("uploadshow.contentaudio")}
+                  </div>
+                </label>
+
+              </div>
               <div className="flex items-center place-content-end pb-28">
                 <div className="bg-zinc-800 rounded-lg px-4 py-[9px] mr-4">
                   {t("uploadshow.feetext")}
@@ -493,10 +520,7 @@ export default function UploadPodcast() {
                         className="btn btn-primary p-2 rounded-lg"
                         disabled
                       >
-                        <div
-                          className="animate-spin border-t-3 rounded-t-full border-yellow-100 h-5 w-5 mr-3"
-                          viewBox="0 0 24 24"
-                        ></div>
+                        <div className="animate-spin border-t-3 rounded-t-full border-yellow-100 h-5 w-5 mr-3"></div>
                         {t("uploadshow.uploading")}
                       </button>
                     ) : (
