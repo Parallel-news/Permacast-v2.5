@@ -57,6 +57,8 @@
 		"language": "Podcast language",
 		"category": "Category",
 		"explicit": "Contains explicit content",
+		"contentaudio": "Audio only",
+		"contentvideo": "Video only",
 		"disabled": "Connect wallets to continue",
 		"upload": "Create",
 		"uploading": "Processing...",

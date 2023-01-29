@@ -58,6 +58,8 @@
 		"language": "播客语言",
 		"category": "类别",
 		"explicit": "少儿不宜",
+		"contentaudio": "仅音频",
+		"contentvideo": "仅视频",
 		"disabled": "连接钱包以继续",
 		"upload": "上传",
 		"uploading": "加工...",
