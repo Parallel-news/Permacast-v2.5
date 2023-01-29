@@ -3,10 +3,8 @@ import { useState, useEffect, useRef, useContext } from 'react';
 import Track from './track';
 import { GlobalPlayButton } from './reusables/icons';
 import { Bars4Icon, ShareIcon, ArrowsPointingOutIcon, PauseIcon, SpeakerWaveIcon, ForwardIcon, BackwardIcon } from "@heroicons/react/24/outline";
-import { appContext } from '../utils/initStateGen';
 
 const AudioPlayer = ({ url }) => {
-  const appState = useContext(appContext);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [trackProgress, setTrackProgress] = useState(0);
@@ -110,7 +108,7 @@ const AudioPlayer = ({ url }) => {
       // Set the isReady ref as true for the next pass
       isReady.current = true;
     }
-  }, [appState.playback.currentEpisode]);
+  }, []); //[appState.playback.currentEpisode]);
 
   useEffect(() => {
     // Pause and clean up on unmount
@@ -182,7 +180,6 @@ export function AudioControls ({isPlaying, onPlayPauseClick, onPrevClick, onNext
 
 export function PlayerMobile({ episode }) {
   // only visual for now
-  const appState = useContext(appContext);
 
   return (
     <div className="w-full h-20 pt-2 px-4 rounded-t-md bg-zinc-900 text-zinc-200 overflow-y-hidden flex items-center">
@@ -198,14 +195,12 @@ export function PlayerMobile({ episode }) {
 };
 
 export function Player({episode}) {
-  const appState = useContext(appContext);
-  const { themeColor } = appState.theme;
 
   return (
     <div className="w-screen rounded-t-3xl h-[84px] pt-4 px-8 bg-zinc-900 text-zinc-200 overflow-y-hidden">
       <div className="grid grid-cols-12 items-center justify-between">
         <div className="col-span-3">
-          <Track episode={episode} playButtonSize="0" color={themeColor} />
+          {/* <Track episode={episode} playButtonSize="0" color={themeColor} /> */}
         </div>
         <div className="col-span-6">
           <div className="flex">

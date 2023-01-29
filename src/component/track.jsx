@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from "react";
 import { Cooyub } from "./reusables/icons";
-import { appContext } from "../utils/initStateGen";
+
 import { getButtonRGBs } from "../utils/ui";
 // import PlayButton from "./reusables/playButton";
 import { PlayIcon, PauseIcon } from "@heroicons/react/24/outline";

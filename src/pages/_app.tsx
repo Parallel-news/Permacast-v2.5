@@ -32,7 +32,7 @@ import '../styles/globals.css';
 
 function App({ Component, pageProps }) {
   const { chains, provider } = configureChains(
-    [mainnet, goerli],
+    [mainnet],
     [publicProvider()]
   );
   const { connectors } = getDefaultWallets({appName: 'Permacast', chains});

@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
-import { getCreator, getPodcasts, convertToPodcast } from '../utils/podcast';
-import TipButton from '../component/reusables/tip';
-import Track from '../component/track';
+import { getCreator, getPodcasts, convertToPodcast } from '../../../utils/podcast';
+import TipButton from '../../../component/reusables/tip';
+import Track from '../../../component/track';
+
 
 export default function Creator({creatorAddress}) {
   const { t } = useTranslation();
@@ -72,16 +73,29 @@ export default function Creator({creatorAddress}) {
 
 
 
-Creator.getInitialProps = async ({ query }) => {
-  // try {
-  //   if (!query.user) return
-  //   const res = await axios.get(`http://ans-stats.decent.land/profile/${query.user}`);
-  //   const userInfo = res.data;
-  //   return { pathFullInfo: userInfo };
-  // } catch (error) {
-  //   console.log("attempting to use domain routing...");
-  //   return { pathFullInfo: false };
-  // };
+// Creator.getInitialProps = async ({ query }) => {
+//   // try {
+//   //   if (!query.user) return
+//   //   const res = await axios.get(`http://ans-stats.decent.land/profile/${query.user}`);
+//   //   const userInfo = res.data;
+//   //   return { pathFullInfo: userInfo };
+//   // } catch (error) {
+//   //   console.log("attempting to use domain routing...");
+//   //   return { pathFullInfo: false };
+//   // };
+// };
+
+// pages/blog/[slug].js
+export async function getStaticPaths() {
+  return {
+    paths: [
+      // String variant:
+      '/creator/arweaveaddr',
+      // Object variant:
+      // { params: { slug: 'second-post' } },
+    ],
+    fallback: true,
+  };
 };
 
 // import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
