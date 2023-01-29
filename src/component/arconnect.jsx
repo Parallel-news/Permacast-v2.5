@@ -21,17 +21,7 @@ export default function ArConnect() {
       const arconnectPubKey = await window.arweaveWallet.getActivePublicKey();
       if (!arconnectPubKey) throw new Error("ArConnect public key not found");
   
-      const data = new TextEncoder().encode(
-        `my Arweave PK for Permacast is ${arconnectPubKey}`
-      );
-  
-      const signature = await window.arweaveWallet.signature(data, {
-        name: "RSA-PSS",
-        saltLength: 32,
-      });
-      const signedBase = Buffer.from(signature).toString("base64");
-      localStorage.setItem("userPubKey", arconnectPubKey)
-      localStorage.setItem("userSignature", signedBase)  
+      localStorage.setItem("userPubKey", arconnectPubKey);
     }
     generateSignature()
   }, [address, walletConnected])

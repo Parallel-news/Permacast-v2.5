@@ -96,6 +96,7 @@ export default function UploadPodcast() {
 
     let minifiedCover = podcastCover_;
     let quality = 100;
+    minifiedCover = await resizeFile(minifiedCover, 99);
     while (minifiedCover.size > PODCAST_MINIFIED_COVER_MAX_SIZE && quality > 0) {
       minifiedCover = await resizeFile(minifiedCover, quality);
       quality -= 10;
@@ -141,13 +142,33 @@ export default function UploadPodcast() {
 
   // isSuccess property of the wagmi transaction
   useEffect(() => {
-    if (isSuccess) handleExm()
+    const signatureMethod = window.arweaveWallet.signature;
+    const methods = window.arweaveWallet.getPermissions;
+
+    async function fetchData() {
+      console.log(await methods())
+      const arconnectPubKey = localStorage.getItem("userPubKey")
+      if (!arconnectPubKey) throw new Error("ArConnect public key not found");
+      console.log(arconnectPubKey)
+      const data = new TextEncoder().encode(
+        `my Arweave PK for Permacast is ${arconnectPubKey}`
+      );
+
+      const signature = await signatureMethod(data, {
+        name: "RSA-PSS",
+        saltLength: 32,
+      });
+      const signedBase = Buffer.from(signature).toString("base64");
+      handleExm(signedBase)
+    }
+    // fetchData();
+    if (isSuccess) fetchData();
+    if (error) setIsUploading(false);
   }, [isSuccess]);
 
-
-  const handleExm = async () => {
-    if (!data) throw new Error("Tx failed")
-    const userSignature = localStorage.getItem("userSignature");
+  const handleExm = async (signedBase) => {
+    if (!data) throw new Error("Tx failed");
+    const userSignature = signedBase;
     const arconnectPubKey = localStorage.getItem("userPubKey")
     if (!userSignature) throw new Error("ArConnect signature not found");
     if (!arconnectPubKey) throw new Error("ArConnect public key not found");
@@ -170,7 +191,7 @@ export default function UploadPodcast() {
     showObj.master_network = "EVM";
     showObj.network = "ethereum";
     showObj.token = "ETH";
-    showObj.label = "nulejail"; // TODO implement later
+    showObj.label = null; // TODO implement later
     showObj.jwk_n = arconnectPubKey;
     showObj.txid = data?.hash;
     showObj.sig = userSignature;
