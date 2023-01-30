@@ -1,14 +1,12 @@
 import React, { useContext } from 'react';
 import { HeartIcon } from '@heroicons/react/24/solid';
-import { appContext } from '../../utils/initStateGen.js';
+
 import { getButtonRGBs } from '../../utils/ui';
 import { useTranslation } from 'next-i18next';
 
 export default function TipButton({tipColor=false}) {
-  const appState = useContext(appContext);
   const { t } = useTranslation();
-  const { currentPodcastColor } = appState.theme;
-  let color = tipColor || currentPodcastColor;
+  let color = tipColor || "rgb(255, 0, 255)";
 
   return (
     <div className="tooltip" data-tip="Coming soon!">

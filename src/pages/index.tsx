@@ -41,31 +41,13 @@ const Home: NextPage = () => {
     console.log("index.tsx useEffect");
     const fetchData = async () => {
       setLoading(true)
-      const exmState: EXMDevState = (await axios.get('/api/exm/dev-read')).data
+      const exmState: EXMDevState = (await axios.get('/api/exm/dev/read')).data
       const { podcasts } = exmState;
       const episodes: Episode[] = podcasts.map((podcast: PodcastDev) => podcast.episodes).flat()
       
       setLatestEpisodes_(episodes.sort((episodeA, episodeB) => episodeB.uploadedAt - episodeA.uploadedAt))
       setPodcasts_(podcasts)
-      
-      // setSecondaryData_(
-      //   primaryData_.podcasts.filter((obj) => {
-      //     if(switchFocus_){
-      //       return obj.contentType === 'audio/'
-      //     } else {
-      //       return obj.contentType === 'video/'
-      //     }
-      //   })[0]
-      // );
-      // setRecentlyAdded_(
-      //   primaryData_.podcasts.filter((obj) => {
-      //     if(switchFocus_){
-      //       return obj.contentType === 'audio/'
-      //     }else{
-      //       return obj.contentType === 'video/'
-      //     }
-      //   })
-      // );
+
       setLoading(false)
     };
 
@@ -73,52 +55,21 @@ const Home: NextPage = () => {
 
   }, []);
 
+  const PodcastTypeButton = () => {
+    return (
+      <button 
+        className={`btn btn-sm btn-primary`}
+        onClick={() => {
+          setSwitchFocus_(true);
+        }}
+      >
+      </button>
+    )
+  }
+
   return (
     <div className="w-full pb-10 mb-10">
       <Greeting />
-      {!loading && (
-        <div
-          className={`w-full h-[25px] flex flex-row ml-[6px] relative bottom-5`}
-        >
-          <div
-            className={`h-full min-w-[30px] rounded-[20px] flex flex-row justify-center items-center mx-1 cursor-pointer ${
-              switchFocus_
-                ? "bg-white/70 hover:bg-white/80"
-                : "bg-white/50 hover:bg-white/80"
-            } transition-all duration-200`}
-            onClick={() => {
-              setSwitchFocus_(true);
-              // setRecentlyAdded_(
-              //   primaryData_.podcasts.filter((obj) => obj.contentType === "audio/")
-              //   );
-                // handler({x: 'req'})
-            }}
-          >
-            <p className={`m-2 text-black/80 font-medium text-[13px]`}>
-              Episodes
-            </p>
-          </div>
-
-          <div
-            className={`h-full min-w-[30px] rounded-[20px] flex flex-row justify-center items-center mx-1 cursor-pointer ${
-              !switchFocus_
-                ? "bg-white/70 hover:bg-white/80"
-                : "bg-white/50 hover:bg-white/80"
-            } transition-all duration-200`}
-            onClick={() => {
-              setSwitchFocus_(false);
-              // setRecentlyAdded_(
-              //   primaryData_.podcasts.filter((obj) => obj.contentType === "video/")
-              // );
-              // console.log(data_)
-            }}
-          >
-            <p className={`m-2 text-black/80 font-medium text-[13px]`}>
-              Videos
-            </p>
-          </div>
-        </div>
-      )}
 
       {/* {latestEpisodes_.length > 0 ? (
         <div className="hidden md:block">
@@ -127,11 +78,9 @@ const Home: NextPage = () => {
       ) : <Loading />} */}
 
       {podcasts_.length > 0 ? (
-        <div className="md:grid w-full mt-8 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-x-12">
+        <div className="w-full mt-8 carousel gap-x-16">
           {podcasts_.map((podcast: PodcastDev, index: number) => 
-            <Fragment key={index}>
-              <FeaturedPodcast podcast={podcast} />
-            </Fragment>
+            <FeaturedPodcast podcast={podcast} key={index} />
           )}
         </div>
       ): <Loading />}

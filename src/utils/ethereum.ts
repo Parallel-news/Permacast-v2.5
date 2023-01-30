@@ -1,7 +1,8 @@
+import { SendTransactionResult } from "@wagmi/core";
 import { useSendTransaction, usePrepareSendTransaction, useAccount } from 'wagmi';
 import { parseEther } from 'ethers/lib/utils';
 
-export default function useEthTransactionHook() {
+const useEthTransactionHook = () => {
   // const { address, isConnecting, isDisconnected } = useAccount();
 
   const { config, error } = usePrepareSendTransaction({
@@ -10,7 +11,8 @@ export default function useEthTransactionHook() {
       value: parseEther('0.001'),
     },
   })
-  const { data, isLoading, isSuccess,  sendTransaction } = useSendTransaction(config);
+
+  const { data, isLoading, isSuccess, sendTransaction } = useSendTransaction(config);
 
   // example from wagmi:
   /*
@@ -23,5 +25,7 @@ export default function useEthTransactionHook() {
       )}
     </> 
   */
-  return [data, isLoading, isSuccess, sendTransaction, error]
+  return [data, isLoading, isSuccess, sendTransaction, error];
 }
+
+export default useEthTransactionHook;

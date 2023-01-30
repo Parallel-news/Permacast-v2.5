@@ -13,8 +13,8 @@ export default async function handler(
   res: NextApiResponse<ResponseData>
 ) {
   try {
-    const data = await axios.post(`https://api.exm.dev/api/transactions?token=${TOKEN}`, {
-      functionId: CONTRACT,
+    const data = await axios.post(`https://api.exm.dev/api/transactions?token=${DEV_TOKEN}`, {
+      functionId: DEV_CONTRACT,
       inputs: [{
         "input": JSON.stringify(req.body)
       }],

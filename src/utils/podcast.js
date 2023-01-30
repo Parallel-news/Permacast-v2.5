@@ -1,4 +1,4 @@
-import FastAverageColor from 'fast-average-color';
+import { FastAverageColor } from 'fast-average-color';
 const ar = "https://arweave.net/";
 
 export async function getColor (url) {

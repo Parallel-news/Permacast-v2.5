@@ -58,11 +58,20 @@
 		"language": "播客语言",
 		"category": "类别",
 		"explicit": "少儿不宜",
+		"contentaudio": "仅音频",
+		"contentvideo": "仅视频",
 		"disabled": "连接钱包以继续",
 		"upload": "上传",
 		"uploading": "加工...",
 		"cancel": "取消",
 		"feetext": "上传节目的费用：",
+		"validation": {
+			"name": "播客名称必须介于 {{minLength}} 和 {{maxLength}} 个字符之间。",
+			"description": "描述必须介于 {{minLength}} 和 {{maxLength}} 个字符之间",
+			"author": "作者必须在 {{minLength}} 和 {{maxLength}} 个字符之间",
+			"email": "请输入有效的邮箱",
+			"success": "播客上传成功！"
+		},
 		"swal": {
 			"showadded": {
 				"title": "节目已添加",

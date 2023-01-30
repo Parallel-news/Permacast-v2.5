@@ -1,8 +1,8 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { useTranslation } from 'next-i18next';
 import { FiFile } from 'react-icons/fi';
-import { appContext } from '../utils/initStateGen';
+
 import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import Modal from './reusables/modal';
 import {

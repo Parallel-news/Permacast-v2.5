@@ -12,8 +12,6 @@ import EpisodeQueue from './episodeQueue';
 import Fullscreen from './fullscreen';
 import VideoModal from './video_modal';
 
-import { appContext } from '../utils/initStateGen.js';
-// import { getAllData } from "../src/services/services";
 import { isFullscreen, queue, currentEpisode, isPaused, queueVisible, themeColor } from '../atoms/index.js';
 
 interface LayoutInterface {
@@ -82,27 +80,6 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
   }, [appLoaded]);
 
 
-  const appState = {
-    loading: loading,
-    queue: {
-      currentEpisode: _currentEpisode, // move this down to playback
-      get: () => _queue,
-      enqueueEpisode: (episode) => _setQueue([episode]),
-      enqueuePodcast: (episodes) => _setQueue(episodes),
-      // play: (episode) => playEpisode(episode),
-      playEpisode: (episode, number) => {
-        _setQueue([episode])
-        // playEpisode(episode, number)
-      },
-    },
-    player: player,
-    playback: {
-      isPaused: _isPaused,
-      setIsPaused: _setIsPaused,
-    },
-    videoRef: videoRef,
-  }
-
   // const playEpisode = (episode, number = 1) => {
   //   console.log("PLAYEPISODE BEING CALLED");
   //   const shikwasaPlayer = new Shikwasa({
@@ -138,41 +115,39 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
   // };
 
   return (
-    <appContext.Provider value={appState}>
-      <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
-        <div className="flex h-screen">
-          <div className="fixed z-[60] bottom-0 w-full">
-            <div className={`relative podcast-player rounded-t-xl backdrop-blur-sm ${isFullscreen_ ? "bg-zinc-900/60" : "bg-zinc-900"}`}>
-              {/* {!loading && currentEpisode ? <Player episode={currentEpisode} />: <div>Loading...</div>} */}
-            </div>
+    <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
+      <div className="flex h-screen">
+        <div className="fixed z-[60] bottom-0 w-full">
+          <div className={`relative podcast-player rounded-t-xl backdrop-blur-sm ${isFullscreen_ ? "bg-zinc-900/60" : "bg-zinc-900"}`}>
+            {/* {!loading && currentEpisode ? <Player episode={currentEpisode} />: <div>Loading...</div>} */}
           </div>
-          <div className="hidden md:block z-50">
-            <div className="w-[100px] z-50 flex justify-center">
-              <Sidenav />
-            </div>
+        </div>
+        <div className="hidden md:block z-50">
+          <div className="w-[100px] z-50 flex justify-center">
+            <Sidenav />
           </div>
-
-          <div className="z-50">
-            <div className="absolute z-50 bottom-0 right-0" style={{ display: _queueVisible ? 'block' : 'none' }}>
-              {!loading ? <EpisodeQueue /> : <div className="h-full w-full animate-pulse bg-gray-900/30"></div>}
-            </div>
-          </div>
-          {isFullscreen_ && <Fullscreen episode={_currentEpisode} id={Number(_currentEpisode?.number) || 1} />}
-          <Background>
-            <div className="ml-8 pr-8 pt-9">
-              <div className="mb-10">
-                <NavBar />
-              </div>
-              <div className="w-full overflow-hidden">
-                {children}
-              </div>
-            </div>
-          </Background>
-          <VideoModal/>
         </div>
 
+        <div className="z-50">
+          <div className="absolute z-50 bottom-0 right-0" style={{ display: _queueVisible ? 'block' : 'none' }}>
+            {!loading ? <EpisodeQueue /> : <div className="h-full w-full animate-pulse bg-gray-900/30"></div>}
+          </div>
+        </div>
+        {isFullscreen_ && <Fullscreen episode={_currentEpisode} id={Number(_currentEpisode?.number) || 1} />}
+        <Background>
+          <div className="ml-8 pr-8 pt-9">
+            <div className="mb-10">
+              <NavBar />
+            </div>
+            <div className="w-full overflow-hidden">
+              {children}
+            </div>
+          </div>
+        </Background>
+        <VideoModal/>
       </div>
-    </appContext.Provider >
+
+    </div>
   )
 }
 

@@ -57,12 +57,21 @@
 		"language": "Podcast language",
 		"category": "Category",
 		"explicit": "Contains explicit content",
+		"contentaudio": "Audio only",
+		"contentvideo": "Video only",
 		"disabled": "Connect wallets to continue",
 		"upload": "Create",
 		"uploading": "Processing...",
 		"cancel": "Cancel",
 		"feetext": "Uploading the show will cost: ",
 		"feeexplanation": "We charge a flat fee to prevent spam",
+		"validation": {
+			"name": "Podcast name must be between {{minLength}} and {{maxLength}} characters.",
+			"description": "Description must be between {{minLength}} and {{maxLength}} characters",
+			"author": "Author must be between {{minLength}} and {{maxLength}} characters",
+			"email": "Please enter a valid email",
+			"success": "Podcast uploaded successfully!"
+		},
 		"swal": {
 			"showadded": {
 				"title": "Show added",

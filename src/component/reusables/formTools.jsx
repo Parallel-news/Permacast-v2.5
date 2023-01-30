@@ -5,10 +5,10 @@
  * @returns Text highlighted validation concern
  */
 export const ValMsg = props => {
-    const { valMsg, className } = props;
-    return  (
-      <p className={`text-red-300 flex ${className}`}>{valMsg}</p>
-    );
+  const { valMsg, className } = props;
+  return (
+    <p className={`text-red-300 flex ${className}`}>{valMsg}</p>
+  );
 }
 
 /**
@@ -23,15 +23,15 @@ export const isValidEmail = email => {
 
 
 export function reduceImageSize(file) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     var reader = new FileReader();
     reader.readAsDataURL(file);
 
-    reader.onload = function() {
+    reader.onload = function () {
       var image = new Image();
       image.src = reader.result;
 
-      image.onload = function() {
+      image.onload = function () {
         var canvas = document.createElement('canvas');
         canvas.width = image.width;
         canvas.height = image.height;
@@ -40,13 +40,13 @@ export function reduceImageSize(file) {
         var MAX_SIZE = 64 * 1024;
         var quality = 1;
         while (true) {
-            canvas.toBlob(function(blob) {
-                var fileSize = blob.size;
-                if (fileSize <= MAX_SIZE) {
-                    resolve(blob);
-                }
-                quality -= 0.1;
-            }, 'image/jpeg', quality);
+          canvas.toBlob(function (blob) {
+            var fileSize = blob.size;
+            if (fileSize <= MAX_SIZE) {
+              resolve(blob);
+            }
+            quality -= 0.1;
+          }, 'image/jpeg', quality);
         }
       };
     };

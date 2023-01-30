@@ -1,4 +1,3 @@
-import React, { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 import Script from 'next/script';
 import { appWithTranslation } from 'next-i18next';
@@ -17,7 +16,7 @@ import {
   createClient,
   WagmiConfig,
 } from 'wagmi';
-import { mainnet } from 'wagmi';
+import { mainnet, goerli } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 import Layout from '../component/layout';
 
@@ -25,10 +24,8 @@ import Layout from '../component/layout';
 import '@rainbow-me/rainbowkit/styles.css';
 import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
-import '../tailwind.css';
-import '../styles/index.css';
-// import '../styles/globals.css'
-// import '../styles/daisyUI.css'
+import '../styles/globals.css';
+
 // import { AnimatePresence } from "framer-motion";
 
 

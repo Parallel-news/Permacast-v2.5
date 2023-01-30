@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { FC, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from 'next/router'
 import { useTranslation } from "next-i18next";
@@ -37,68 +37,78 @@ export function Sidenav() {
   const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
 
   const isHome = router.pathname === "/";
-  const isUploadPodcast = router.pathname === "upload-podcast";
+  const isUploadPodcast = router.pathname === "/upload-podcast";
   const isFeed = router.pathname === "feed";
 
-  interface NavButton {
-    url:      string;
+  interface INavButton {
+    url:       string;
     condition: boolean;
     icon:      JSX.Element;
   }
 
-  const NavButton = ({url, condition, icon}: NavButton) => {
+  const NavButton: FC<INavButton> = ({url, condition, icon}) => {
     return (
-      <Link href={url} style={{pointerEvents: condition ? 'none': 'auto'}}>
+      <>
+        {condition ? (
+          <button disabled className="text-white rounded-full">
+            {icon}
+          </button>
+        ): (
+          <Link href={url} className="w-9 h-9">
+            <button
+              className={SIDENAV_BUTTON}
+              onClick={() => {
+                setIsFullscreen_(false)
+              }}
+            >
+              {icon}
+            </button>
+          </Link>
+        )}
+      </>
+    )
+  }
+
+  const LanguageDropdown: FC = () => {
+    return (
+      <div className="dropdown dropdown-hover mb-[-6px]">
         <button
-          className={SIDENAV_BUTTON}
-          disabled={condition}
-          onClick={() => {
-            setIsFullscreen_(false)
-          }}
-          style={{ color: condition ? "white": "" }}
+          tabIndex={0}
+          className={SIDENAV_BUTTON + " w-9 hover:text-zinc-200"}
         >
-          {icon}
+          <LanguageIcon />
         </button>
-      </Link>
+        <ul
+          tabIndex={0}
+          className="dropdown-content menu p-2 shadow bg-zinc-900 rounded-box w-36"
+        >
+          {LANGUAGES.map((l) => (
+            <li key={l.code}>
+              <span 
+                onClick={() => {
+                  setIsFullscreen_(false)
+                  changeLanguage(l.code)
+                }}
+              >{l.name}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     )
   }
 
   return (
     <div className="h-full pt-[42px]">
-      <div className="grid rows-5 gap-9 text-zinc-400">
+      <div className="grid rows-5 gap-9 text-zinc-300">
         <button className={SIDENAV_BUTTON}>
           <Cooyub svgStyle="w-9 h-9" rectStyle="w-9 h-9" fill="#ffff00" />
         </button>
 
         <NavButton url="/" condition={isHome} icon={<HomeIcon />} />
-
-        <div className="tooltip text-zinc-600" data-tip="Coming soon!">
+        <div className="tooltip text-zinc-700" data-tip="Coming soon!">
           <RectangleStackIcon />
         </div>
-
-        <div className="dropdown dropdown-hover mb-[-6px]">
-          <button
-            tabIndex={0}
-            className={SIDENAV_BUTTON + " w-9 hover:text-zinc-200"}
-          >
-            <LanguageIcon />
-          </button>
-          <ul
-            tabIndex={0}
-            className="dropdown-content menu p-2 shadow bg-zinc-900 rounded-box w-36"
-          >
-            {LANGUAGES.map((l) => (
-              <li key={l.code}>
-                <span 
-                  onClick={() => {
-                    setIsFullscreen_(false)
-                    changeLanguage(l.code)
-                  }}
-                >{l.name}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <LanguageDropdown />
         <NavButton url={'/upload-podcast'} condition={isUploadPodcast} icon={<PlusIcon />} />
         {/* <UploadCount /> */}
         <a

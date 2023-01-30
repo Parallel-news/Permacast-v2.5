@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useAns } from 'ans-for-all';
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next';
 
 export default function ArConnect() {
   const { t } = useTranslation()
@@ -21,17 +21,7 @@ export default function ArConnect() {
       const arconnectPubKey = await window.arweaveWallet.getActivePublicKey();
       if (!arconnectPubKey) throw new Error("ArConnect public key not found");
   
-      const data = new TextEncoder().encode(
-        `my Arweave PK for Permacast is ${arconnectPubKey}`
-      );
-  
-      const signature = await window.arweaveWallet.signature(data, {
-        name: "RSA-PSS",
-        saltLength: 32,
-      });
-      const signedBase = Buffer.from(signature).toString("base64");
-      localStorage.setItem("userPubKey", arconnectPubKey)
-      localStorage.setItem("userSignature", signedBase)  
+      localStorage.setItem("userPubKey", arconnectPubKey);
     }
     generateSignature()
   }, [address, walletConnected])
@@ -40,7 +30,7 @@ export default function ArConnect() {
     <>
       {(walletConnected && (
         <button 
-          className="!w-full btn-base-color flex px-3 justify-center mx-auto text-sm md:text-base normal-case"
+          className="!w-full btn-base-color flex px-3 justify-center mx-auto text-sm md:text-base normal-case focus:outline-white"
           onClick={arconnectDisconnect}
         >
           <span>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { useRecoilState } from "recoil";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from "next-i18next";
 
@@ -7,23 +8,18 @@ import {
   ArrowUpOnSquareIcon,
 } from "@heroicons/react/24/outline";
 
-import { getButtonRGBs, isTooLight } from "../../utils/ui";
-import { appContext } from "../../utils/initStateGen.js";
+import { getButtonRGBs, isTooLight } from "../../../../utils/ui";
 
-import TipButton from "../../component/reusables/tip";
-// import PlayButton from "../../component/reusables/playButton";
-import Track from "../../component/track";
-import { primaryData, secondaryData, switchFocus } from "../../atoms";
-import { useRecoilState } from "recoil";
+
+import TipButton from "../../../../component/reusables/tip";
+// import PlayButton from "../../../../component/reusables/playButton";
+import Track from "../../../../component/track";
+import { switchFocus } from "../../../../atoms";
 
 export default function Episode(props) {
   const { podcastId, episodeNumber } = [2,3]
   const { t } = useTranslation();
 
-  const appState = useContext(appContext);
-
-  const { currentPodcastColor, setCurrentPodcastColor } = appState.theme;
-  const { playEpisode, currentEpisode } = appState.queue;
   const [copied, setCopied] = useState(false);
   const [episode, setEpisode] = useState();
   const [nextEpisode, setNextEpisode] = useState();
@@ -31,26 +27,10 @@ export default function Episode(props) {
   const [rgb, setRgb] = useState({});
 
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
-  const [primaryData_, setPrimaryData_] = useRecoilState(primaryData);
-  const [secondaryData_, setSecondaryData_] = useRecoilState(secondaryData);
   const [videoShows_, setVideoShows_] = useState([]);
 
   useEffect(() => {
-    setEpisode(
-      primaryData_.podcasts
-        ?.filter((obj) => {
-          return obj.pid === podcastId;
-        })[0]
-        ?.episodes.filter((obj) => {
-          return obj.eid === episodeNumber;
-        })[0]
-    );
-
-    setSecondaryData_(
-      primaryData_?.podcasts?.filter((obj) => {
-        return obj.pid === props.match.params.podcastId;
-      })[0]
-    );
+    setEpisode();
 
     // setVideoShows_(
     //   primaryData_.podcasts.filter((obj) => {
@@ -58,7 +38,7 @@ export default function Episode(props) {
     //   })[0].episodes
     // );
     const playerObj_ = document.getElementById("hidden-player");
-    if(!(playerObj_ === null)){
+    if (!(playerObj_ === null)) {
       playerObj_.src =
       "https://arweave.net/" + episode?.contentTx;
     }
@@ -89,7 +69,7 @@ export default function Episode(props) {
               class="video-js"
               controls
               preload="auto"
-              poster={"https://arweave.net/" + secondaryData_.cover}
+              poster={"https://arweave.net/"}
               data-setup="{}"
               className="rounded-[4px] w-full h-full"
             >
@@ -113,12 +93,7 @@ export default function Episode(props) {
           </div>
           <div className="flex flex-col md:flex-row items-center">
             <img
-              src={
-                "https://arweave.net/" +
-                primaryData_.podcasts.filter((obj) => {
-                  return obj.pid === podcastId;
-                })[0].cover
-              }
+              src={"https://arweave.net/"}
               className="w-40 h-40 cursor-pointer"
               // onClick={() => history.push(`/podcast/${podcastId}`)}
             />
@@ -135,13 +110,6 @@ export default function Episode(props) {
                   }}
                 >
                   {t("episode.number")}{" "}
-                  {primaryData_.podcasts
-                    .filter((obj) => {
-                      return obj.pid === podcastId;
-                    })[0]
-                    .episodes.findIndex((obj) => {
-                      return obj.eid === episodeNumber;
-                    }) + 1}
                 </div>
                 <div className={"text-sm text-gray-200"}>
                   {new Date(
@@ -202,7 +170,7 @@ export default function Episode(props) {
               </div>
 
               <div className="p-2.5 border rounded-xl border-zinc-600">
-                <Track
+                {/* <Track
                   episode={nextEpisode}
                   episodeNumber={
                     primaryData_.podcasts
@@ -213,7 +181,7 @@ export default function Episode(props) {
                         return obj.eid === episodeNumber;
                       }) + 2
                   }
-                />
+                /> */}
               </div>
             </div>
           )}
@@ -223,6 +191,19 @@ export default function Episode(props) {
       )}
     </div>
   );
+}
+
+// pages/blog/[slug].js
+export async function getStaticPaths() {
+  return {
+    paths: [
+      // String variant:
+      '/episode/pid/eid',
+      // Object variant:
+      // { params: { slug: 'second-post' } },
+    ],
+    fallback: true,
+  }
 }
 
 // import { serverSideTranslations } from 'next-i18next/serverSideTranslations';

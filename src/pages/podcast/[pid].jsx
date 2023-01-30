@@ -1,29 +1,21 @@
 import React, { useContext, useEffect, useState } from "react";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useRecoilState } from 'recoil';
-import Shikwasa from "../../shikwasa-src/main.js";
 import { useTranslation } from "next-i18next";
+import { useRecoilState } from 'recoil';
+
+import Shikwasa from "../../shikwasa-src/main.js";
+
 import { PlayIcon } from "@heroicons/react/24/outline";
+import { Cooyub } from "../../component/reusables/icons";
+
 import Track from "../../component/track";
 import TipButton from "../../component/reusables/tip";
 import UploadEpisode from "../../component/uploadEpisode";
 import UploadVideo from "../../component/uploadVideo";
 import PodcastHeader from '../../component/podcastHeader';
 
-import {
-  Link,
-  DirectLink,
-  Element,
-  Events,
-  animateScroll as scroll,
-  scrollSpy,
-  scroller,
-} from "react-scroll";
-
-import { Cooyub } from "../../component/reusables/icons";
-
 import { CheckAuthHook, getButtonRGBs } from "../../utils/ui.js";
-import { isDarkMode } from "../../utils/theme.js";
+
 
 import {
   switchFocus,
@@ -161,7 +153,7 @@ const Podcast = (props) => {
     const player = new Shikwasa({
       container: () => document.querySelector(".podcast-player"),
       themeColor: "gray",
-      theme: `${isDarkMode() ? "dark" : "light"}`,
+      theme: "dark",
       autoplay: true,
       audio: {
         title: e.episodeName,
@@ -375,7 +367,7 @@ export async function getStaticPaths() {
   return {
     paths: [
       // String variant:
-      '/podcast/1',
+      '/podcast/pid',
       // Object variant:
       // { params: { slug: 'second-post' } },
     ],
