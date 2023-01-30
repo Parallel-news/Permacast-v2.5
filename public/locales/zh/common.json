@@ -69,7 +69,8 @@
 			"name": "播客名称必须介于 {{minLength}} 和 {{maxLength}} 个字符之间。",
 			"description": "描述必须介于 {{minLength}} 和 {{maxLength}} 个字符之间",
 			"author": "作者必须在 {{minLength}} 和 {{maxLength}} 个字符之间",
-			"email": "请输入有效的邮箱"
+			"email": "请输入有效的邮箱",
+			"success": "播客上传成功！"
 		},
 		"swal": {
 			"showadded": {

@@ -54,7 +54,6 @@ export default function UploadPodcast() {
   const [podDescMsg, setPodDescMsg] = useState("");
   const [podAuthMsg, setPodAuthMsg] = useState("");
   const [podEmailMsg, setPodEmailMsg] = useState("");
-  const [podMiscMsg, setPodMiscMsg] = useState("");
   const [podSubmitMsg, setPodSubmitMsg] = useState("");
 
   const [isUploading, setIsUploading] = useState(false);
@@ -162,7 +161,7 @@ export default function UploadPodcast() {
         saltLength: 32,
       });
       const signedBase = Buffer.from(signature).toString("base64");
-      handleExm(signedBase)
+      handleExm(signedBase);
     }
 
     if (isSuccess) {
@@ -172,7 +171,7 @@ export default function UploadPodcast() {
         setIsUploading(false)
       }
     }
-    if (error) setIsUploading(false);
+    setIsUploading(false);
   }, [isSuccess, data, error, isLoading]);
 
   const handleExm = async (signedBase: string) => {
@@ -206,8 +205,9 @@ export default function UploadPodcast() {
     };
   
     const result = await axios.post('/api/exm/dev/write', showObj);
-    console.log(result.data)
+    // console.log(result.data)
     setIsUploading(false)
+    if (result.status === 200) setPodSubmitMsg(t("uploadshow.validation.success"))
   };
 
   const handleChangeImage = async (e) => {
@@ -458,7 +458,6 @@ export default function UploadPodcast() {
                     {t("uploadshow.contentaudio")}
                   </div>
                 </label>
-
               </div>
               <div className="flex items-center place-content-end pb-28">
                 <div className="bg-zinc-800 rounded-lg px-4 py-[9px] mr-4">
