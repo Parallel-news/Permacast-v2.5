@@ -22,8 +22,6 @@ import {
   PODCAST_LANG_MIN_LEN, PODCAST_LANG_MAX_LEN, PODCAST_CAT_MIN_LEN,
   PODCAST_CAT_MAX_LEN, IS_EXPLICIT_VALUES, 
   PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN, CONTENT_TYPE_VALUES,
-  PODCAST_NAME_VAL_MSG, PODCAST_DESC_VAL_MSG, PODCAST_AUTH_VAL_MSG,
-  PODCAST_EMAIL_VAL_MSG,
   PODCAST_MINIFIED_COVER_MAX_SIZE
 } from '../../constants';
 import { CheckAuthHook } from "../../utils/ui";
@@ -229,19 +227,19 @@ export default function UploadPodcast() {
     switch(type) {
       case 'podName':
         if((input.length > PODCAST_NAME_MAX_LEN || input.length < PODCAST_NAME_MIN_LEN)) {
-          return PODCAST_NAME_VAL_MSG;
+          return t("uploadshow.validation.name", {minLength: PODCAST_NAME_MIN_LEN, maxLength: PODCAST_NAME_MAX_LEN});
         } else {
           return "";
         }
-      case 'podDesc': 
+      case 'podDesc':
         if((input.length > PODCAST_DESC_MAX_LEN || input.length < PODCAST_DESC_MIN_LEN)) {
-          return PODCAST_DESC_VAL_MSG;
+          return t("uploadshow.validation.description", {minLength: PODCAST_DESC_MIN_LEN, maxLength: PODCAST_DESC_MAX_LEN});
         } else {
           return "";
         }
       case 'podAuthor':
         if((input.length > PODCAST_AUTHOR_MAX_LEN || input.length < PODCAST_AUTHOR_MIN_LEN)) {
-          return PODCAST_AUTH_VAL_MSG;
+          return t("uploadshow.validation.author", {minLength: PODCAST_AUTHOR_MIN_LEN, maxLength: PODCAST_AUTHOR_MAX_LEN});
         } else {
           return "";
         }
@@ -249,52 +247,8 @@ export default function UploadPodcast() {
         if(isValidEmail(input)) {
           return "";
         } else {
-          return PODCAST_EMAIL_VAL_MSG;
+          return t("uploadshow.validation.email");
         }
-    }
-  }
-
-  /**
-   * Checks all form inputs in case UI is skipped for malicious intents
-   * @returns Form inputs || Submission error
-   */
-  const formIsValid = () => {
-    // console.log(
-    //   podcastName_,
-    //   podcastDescription_,
-    //   podcastAuthor_,
-    //   podcastEmail_,
-    //   podcastCategory_,
-    //   podcastCover_,
-    //   podcastLanguage_,
-    //   podcastExplicit_
-    // );
-
-    validateStrLength(podcastName_, PODCAST_NAME_MIN_LEN, PODCAST_NAME_MAX_LEN) ? "" : setPodNameMsg(PODCAST_NAME_VAL_MSG);
-    validateStrLength(podcastDescription_, PODCAST_DESC_MIN_LEN, PODCAST_DESC_MAX_LEN) ? "" : setPodDescMsg(PODCAST_DESC_VAL_MSG);
-    validateStrLength(podcastAuthor_, PODCAST_AUTHOR_MIN_LEN, PODCAST_AUTHOR_MAX_LEN) ? "" : setPodAuthMsg(PODCAST_AUTH_VAL_MSG);
-    validateStrLength(podcastLanguage_, PODCAST_LANG_MIN_LEN, PODCAST_LANG_MAX_LEN) ? "" : setPodMiscMsg("Invalid language");
-    // validateStrLength(podcastCover_, PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN) ? "" : setPodMiscMsg("Invalid Cover");
-    validateStrLength(podcastCategory_,  PODCAST_CAT_MIN_LEN, PODCAST_CAT_MAX_LEN) ? "" : setPodMiscMsg("Invalid Category");
-    isValidEmail(podcastEmail_) ? "" : setPodEmailMsg(PODCAST_EMAIL_VAL_MSG);
-    // IS_EXPLICIT_VALUES.includes(podcastExplicit_) ? "" : setPodMiscMsg("Invalid Explicit Value");
-    CONTENT_TYPE_VALUES.includes(contentType_) ? "" : setPodMiscMsg("Invalid Content Type");
-
-    //if any of messages occupied, do not submit and leave an error message f
-    if (podNameMsg.length > 0 || podDescMsg.length > 0 || podAuthMsg.length > 0 || podEmailMsg.length > 0) {
-      setPodSubmitMsg("Please fill form correctly");
-      return false
-    } else {
-      return [
-        podcastName_,
-        podcastDescription_,
-        podcastAuthor_,
-        podcastEmail_,
-        podcastCategory_,
-        // podcastCover_,
-        podcastLanguage_,
-        podcastExplicit_
-      ]
     }
   }
 

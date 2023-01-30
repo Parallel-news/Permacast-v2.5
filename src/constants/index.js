@@ -28,10 +28,3 @@ export const PODCAST_MINIFIED_COVER_MAX_SIZE = 65535;
 
 export const IS_EXPLICIT_VALUES = ["yes", "no"];
 export const CONTENT_TYPE_VALUES = ["v", "a"];
-
-export const PODCAST_NAME_VAL_MSG = `Name must be between ${PODCAST_NAME_MIN_LEN} and ${PODCAST_NAME_MAX_LEN} characters`;
-export const PODCAST_DESC_VAL_MSG = `Description must be between ${PODCAST_DESC_MIN_LEN} and ${PODCAST_DESC_MAX_LEN} characters`;
-export const PODCAST_AUTH_VAL_MSG = `Author must be between ${PODCAST_AUTHOR_MIN_LEN} and ${PODCAST_AUTHOR_MAX_LEN} characters`;
-export const PODCAST_EMAIL_VAL_MSG = `Please enter a valid email`;
-
-
