@@ -2479,7 +2479,7 @@ algosdk@^1.13.1:
 
 ans-for-all@decentldotland/ans-for-all:
   version "0.1.1"
-  resolved "git+ssh://git@github.com/decentldotland/ans-for-all.git#4c5a55a25f9a033f0655e1334076fd1526fde578"
+  resolved "https://codeload.github.com/decentldotland/ans-for-all/tar.gz/4c5a55a25f9a033f0655e1334076fd1526fde578"
   dependencies:
     "@babel/preset-env" "^7.18.2"
     "@babel/preset-react" "^7.17.12"
