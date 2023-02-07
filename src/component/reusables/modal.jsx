@@ -1,10 +1,10 @@
-import { Fragment, useContext } from 'react';
+import { Fragment } from 'react';
 import { Transition, Dialog } from '@headlessui/react';
-import { appContext } from '../../utils/initStateGen';
+import { globalModalOpen } from '../../atoms';
+import { useRecoilState } from 'recoil';
 
 export default function Modal(props) {
-  const appState = useContext(appContext);
-  const {isOpen, setIsOpen} = appState.globalModal;
+  const [isOpen, setIsOpen] = useRecoilState(globalModalOpen);
 
   return (
     <Transition appear show={isOpen} as={Fragment}>

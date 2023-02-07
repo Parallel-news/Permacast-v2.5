@@ -1,15 +1,12 @@
 import React, { useContext } from 'react';
-import Swal from 'sweetalert2';
 import { HeartIcon } from '@heroicons/react/24/solid';
-import { appContext } from '../../utils/initStateGen.js';
+
 import { getButtonRGBs } from '../../utils/ui';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 export default function TipButton({tipColor=false}) {
-  const appState = useContext(appContext);
   const { t } = useTranslation();
-  const { currentPodcastColor } = appState.theme;
-  let color = tipColor || currentPodcastColor;
+  let color = tipColor || "rgb(255, 0, 255)";
 
   return (
     <div className="tooltip" data-tip="Coming soon!">
@@ -21,12 +18,6 @@ export default function TipButton({tipColor=false}) {
 }
 
 export function tipPrompt (t) {
-  Swal.fire({
-    title: t("podcasthtml.swal.title"),
-    text: t("podcasthtml.swal.text"),
-    customClass: "font-mono",
-  })
-  return false
 
   // const addr = await window.arweaveWallet.getActiveAddress();
 

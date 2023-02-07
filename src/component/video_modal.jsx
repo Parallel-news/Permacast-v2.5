@@ -13,7 +13,6 @@ export default function VideoModal() {
     const playerObj = document.getElementById("my-player");
     playerObj.src = vs_[0]
   }, [vs_])
-  const playerObj = document.getElementById("my-player");
 
   return (
     <div

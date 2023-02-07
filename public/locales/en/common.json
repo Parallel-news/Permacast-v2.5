@@ -1,0 +1,156 @@
+{
+	"language": "Language",
+	"navbar": {
+		"home": "Home",
+		"help": "Get help",
+		"new": "What's new",
+		"wallets": "Wallets",
+		"swal": {
+			"title": "New in permacast V3 ✨",
+			"html": "<li>iTunes/Spotify compatible RSS imports via the upcoming permacast CLI</li><li>Gas cost reduction</li><li>Auto-protection from duplicated uploads</li><li><a href='https://github.com/Parallel-news/permacast/issues/46'>Read full changelog</a></li>"
+		}
+	},
+	"connector": {
+		"login": "ArConnect login",
+		"logout": "Logout",
+		"swal": {
+			"title": "Install ArConnect to continue",
+			"text": "Permacast uses ArConnect to make it easier to authenticate and send transactions for questions and answers",
+			"footer": "Download ArConnect here"
+		}
+	},
+	"home": {
+    "hi": "Hi, ",
+		"welcome": "Welcome!",
+		"subtext": "Let's see what we have for today",
+		"playfeaturedepisode": "Play",
+		"viewfeaturedepisode": "View",
+		"episode": "Episode",
+		"episodes": "Episodes",
+		"recentlyadded": "Recently added",
+		"featuredcreators": "Featured creators"
+  },
+	"search" : {
+		"placeholder": "Search for a podcast",
+		"loading": "Fetching titles...",
+		"starttyping": "Start typing to search",
+		"podcasts": "Podcasts",
+		"nopodcasts": "No podcasts found.",
+		"episodes": "Episodes",
+		"noepisodes":"No episodes found."
+	},
+	"queue": {
+		"currentlyplaying": "Currently playing",
+		"upnext": "Up next",
+		"emptyqueue": "Your queue is empty, add some episodes to it!"
+	},
+	"uploadshow": {
+		"addpodcast": "New Show",
+		"title": "New Show",
+		"uploadstitle": "Uploads",
+		"label": "You'll add episodes to the show next.",
+		"name": "Show name",
+		"description": "Show description",
+		"image": "Cover image",
+		"author": "Author",
+		"email": "Email",
+		"language": "Podcast language",
+		"category": "Category",
+		"explicit": "Contains explicit content",
+		"contentaudio": "Audio only",
+		"contentvideo": "Video only",
+		"disabled": "Connect wallets to continue",
+		"upload": "Create",
+		"uploading": "Processing...",
+		"cancel": "Cancel",
+		"feetext": "Uploading the show will cost: ",
+		"feeexplanation": "We charge a flat fee to prevent spam",
+		"validation": {
+			"name": "Podcast name must be between {{minLength}} and {{maxLength}} characters.",
+			"description": "Description must be between {{minLength}} and {{maxLength}} characters",
+			"author": "Author must be between {{minLength}} and {{maxLength}} characters",
+			"email": "Please enter a valid email",
+			"success": "Podcast uploaded successfully!"
+		},
+		"swal": {
+			"showadded": {
+				"title": "Show added",
+				"text": "Show added permanently to Arweave. Check in a few minutes after the transaction has mined."
+			},
+			"uploadfailed": {
+				"title": "Unable to add show",
+				"text": "Check your wallet balance and network connection"
+			},
+			"reset": {
+				"text": "Podcast cover image is not squared (1:1 aspect ratio)!"
+			},
+			"uploading": {
+				"title": "Uploading, please wait a few seconds..."
+			}
+		}
+	},
+	"podcasthtml": {
+		"swal": {
+			"title": "Coming soon",
+			"text": "Tip your favorite podcasts with $NEWS to show support"
+		}
+	},
+	"uploadepisode": {
+		"swal": {
+			"upload": {
+				"title": "Upload underway!",
+				"text": "We'll let you know when it's done. Go grab a ☕ or 🍺"
+			},
+			"uploadcomplete": {
+				"title": "Upload complete",
+				"text": "Episode uploaded permanently to Arweave. Check in a few minutes after the transaction has mined."
+			},
+			"uploadfailed": {
+				"title": "Upload failed",
+				"text": "Check your AR balance and network connection"
+			}
+		},
+		"feetext": "Uploading the episode will cost: ",
+		"title": "Add new episode",
+		"name": "Episode name",
+		"description": "Episode description",
+		"file": "Episode media",
+		"verto": "Upload to Verto",
+		"toupload": "to upload",
+		"upload": "Upload",
+		"uploading": "Uploading, please wait...",
+		"uploaded": "Uploaded"
+	},
+	"podcast": {
+		"newepisode": "Add episode"
+	},
+	"episode": {
+		"number": "Episode",
+		"download": "Download",
+		"nextepisode": "Next Episode",
+		"share": "Share",
+		"copied": "Copied to clipboard",
+		"nodescription": "No description provided"
+	},
+	"creator": {
+		"ans": "View on ANS",
+		"podcasts": "Podcasts",
+		"nopodcasts": "No podcasts found",
+		"address": "Address",
+		"notfound": "not found on ANS"
+	},
+	"tip": "Tip",
+	"loadingpodcasts": "Loading podcasts...",
+	"loadingepisodes": "Loading episodes...",
+	"nopodcasts": "No podcasts here yet. Upload one!",
+	"noepisodes": "No episodes uploaded yet.",	
+	"sortpodcastsby": "Sort podcasts by",
+	"sorting": {
+		"podcastsactivity": "Latest Active podcast",
+		"episodescount": "Episodes Count"
+	},
+	"fullscreen": {
+		"episode": "Episode"
+	},
+	"view": "View"
+}
