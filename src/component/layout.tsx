@@ -72,7 +72,7 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
   
     // TODO: generalize
     // if (!localStorage.getItem("checkupDate")) localStorage.setItem("checkupDate", new Date());
-    // playEpisode(null);
+    playEpisode(null);
     if (!appLoaded) {
       setAppLoaded(true);
     }
@@ -80,39 +80,29 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
   }, [appLoaded]);
 
 
-  // const playEpisode = (episode, number = 1) => {
-  //   console.log("PLAYEPISODE BEING CALLED");
-  //   const shikwasaPlayer = new Shikwasa({
-  //     container: () => document.querySelector('.podcast-player'),
-  //     themeColor: 'yellow',
-  //     theme: 'dark',
-  //     autoplay: true,
-  //     audio: {
-  //       title: episode?.episodeName || 'Permacast not selected',
-  //       artist: primaryData_.podcasts === undefined ?
-  //         'Standby..' : primaryData_.podcasts.filter((obj_) => {
-  //           return obj_.episodes.filter((obj__) => {
-  //             return obj__.eid === episode.eid
-  //           })
-  //         })[0].author,
-  //       cover: primaryData_.podcasts === undefined ?
-  //       'https://ih1.redbubble.net/image.2647292310.1736/st,small,845x845-pad,1000x1000,f8f8f8.jpg' : 'https://arweave.net/'+primaryData_.podcasts.filter((obj_) => {
-  //           return obj_.episodes.filter((obj__) => {
-  //             return obj__.eid === episode.eid
-  //           })
-  //         })[0].cover,
-  //       color: episode?.color || 'text-[rgb(255,255,0)] bg-[rgb(255,255,0)]/20',
-  //       src: `https://arweave.net/${episode?.contentTx}`,
-  //     },
-  //   })
+  const playEpisode = (episode, number = 1) => {
+    console.log("PLAYEPISODE BEING CALLED");
+    const shikwasaPlayer = new Shikwasa({
+      container: () => document.querySelector('.podcast-player'),
+      themeColor: 'yellow',
+      theme: 'dark',
+      autoplay: true,
+      audio: {
+        title: episode?.episodeName || 'No episode selected',
+        artist: 'null',
+        cover: "https://arweave.net/Rtjwzke-8cCLd0DOKGKCx5zNjmoVr51yy_Se1s73YH4",
+        color: episode?.color || 'text-[rgb(255,255,0)] bg-[rgb(255,255,0)]/20',
+        src: `https://arweave.net/${episode?.contentTx}`,
+      },
+    })
 
-  //   if (episode) {
-  //     setPlayer(shikwasaPlayer)
-  //     _setCurrentEpisode({ ...episode, number: number }) // add it to local storage for later
-  //     shikwasaPlayer.play()
-  //     // window.scrollTo(0, document.body.scrollHeight)
-  //   }
-  // };
+    if (episode) {
+      // setPlayer(shikwasaPlayer)
+      _setCurrentEpisode({ ...episode, number: number }) // add it to local storage for later
+      shikwasaPlayer.play()
+      // window.scrollTo(0, document.body.scrollHeight)
+    }
+  };
 
   return (
     <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
