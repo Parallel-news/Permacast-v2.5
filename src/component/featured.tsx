@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, memo, FC } from "react";
 import { useTranslation } from "next-i18next";
-import { useAns } from 'ans-for-all';
+import { useArconnect } from 'react-arconnect';
 import {
   replaceDarkColorsRGB,
   isTooLight,
@@ -26,15 +26,15 @@ import { PodcastDev } from "../interfaces/index";
 export function Greeting() {
   const { t } = useTranslation();
   const {
-    ansData,
-  } = useAns();
+    ANS,
+  } = useArconnect();
   
   return (
     <div>
       <h1 className="text-zinc-100 text-xl">
-        {ansData?.currentLabel ? (
+        {ANS?.currentLabel ? (
           <>
-            {t("home.hi")} {trimANSLabel(ansData?.currentLabel)}!
+            {t("home.hi")} {trimANSLabel(ANS?.currentLabel)}!
           </>
         ) : (
           <>{t("home.welcome")}</>

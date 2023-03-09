@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect, memo, FC } from "react";
 import { useTranslation } from "next-i18next";
-import { useAns } from 'ans-for-all';
+
 import {
   replaceDarkColorsRGB,
   isTooLight,

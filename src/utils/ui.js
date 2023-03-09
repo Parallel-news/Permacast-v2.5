@@ -1,12 +1,12 @@
 import Shikwasa from '../shikwasa-src/main.js';
 import { useAccount } from 'wagmi';
-import { useAns } from 'ans-for-all';
+import { useArconnect } from 'react-arconnect';
 
 export function CheckAuthHook() {
-  const { address } = useAccount();
-  const arweave = useAns();
+  const { address: EthAddress } = useAccount();
+  const { address: ArConnectAddress } = useArconnect();
 
-  return [address, arweave?.address];
+  return [EthAddress, ArConnectAddress];
 }
 
 // const dim = (color: string, dimness: number) => color?.replace('rgb', 'rgba')?.replace(')', `, ${dimness})`)
