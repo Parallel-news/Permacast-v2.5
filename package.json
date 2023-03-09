@@ -33,6 +33,7 @@
     "react-dom": "latest",
     "react-dropzone": "^11.3.4",
     "react-easy-crop": "^4.6.2",
+    "react-i18next": "^12.2.0",
     "react-icons": "^4.2.0",
     "react-image-file-resizer": "^0.4.8",
     "recoil": "^0.7.6",
