@@ -43,6 +43,7 @@ const FeaturedPodcast: FC<FeaturedPodcastInterface> = ({ podcast }) => {
   useEffect(() => {
     console.log(podcast)
     const fetchColor = async () => {
+      if (!minifiedCover) return;
       const fac = new FastAverageColor();
       const color: FastAverageColorResult = await fac.getColorAsync('https://arweave.net/' + minifiedCover)
       if (color?.error) return;
