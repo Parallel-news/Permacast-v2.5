@@ -35,7 +35,7 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
   const [currentPodcastColor, setCurrentPodcastColor] = useState('rgb(255, 255, 0)');
   const [backdropColor, ] = useState();
   const [address, setAddress] = useState();
-  const [ANSData, setANSData] = useState({ address_color: "", currentLabel: "", avatar: "" });
+  const [ANS, setANS] = useState({ address_color: "", currentLabel: "", avatar: "" });
   const [walletConnected, setWalletConnected] = useState(false);
   const [player, setPlayer] = useState();
 
