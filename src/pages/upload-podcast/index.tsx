@@ -204,7 +204,7 @@ export default function UploadPodcast() {
       sig: userSignature
     };
   
-    const result = await axios.post('/api/exm/dev/write', showObj);
+    const result = await axios.post('/api/exm/write', showObj);
     // console.log(result.data)
     setIsUploading(false)
     if (result.status === 200) setPodSubmitMsg(t("uploadshow.validation.success"))
