@@ -20,3 +20,11 @@ export interface HSL {
 export type RGBtoHSLInterface = (rgb: RGB) => HSL;
 
 export type replaceColorsInterface = (rgba: RGBA) => RGB;
+
+
+export type ShowShikwasaPlayerInterface = (
+  title:  string,
+  artist: string,
+  cover:  string,
+  src:    string,
+) => void;
