@@ -14,7 +14,7 @@ import UploadEpisode from "../../component/uploadEpisode";
 import UploadVideo from "../../component/uploadVideo";
 import PodcastHeader from '../../component/podcastHeader';
 
-import { CheckAuthHook, getButtonRGBs } from "../../utils/ui.js";
+import { CheckAuthHook, getButtonRGBs } from "../../utils/ui";
 
 
 import {

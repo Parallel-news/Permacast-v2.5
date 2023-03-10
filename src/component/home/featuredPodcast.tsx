@@ -4,75 +4,83 @@ import { useRecoilState } from "recoil";
 import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
 
 import {
-  replaceDarkColorsRGB,
   isTooLight,
-  RGBobjectToString,
-  getButtonRGBs,
-  dimColor,
+  RGBAstringToObject,
+  RGBAobjectToString,
+  dimColorString,
+  showShikwasaPlayer,
 } from "../../utils/ui";
 
-import { Cooyub, PlayButton } from "../reusables/icons";
+import { PlayButton } from "../reusables/icons";
 
 import {
   switchFocus,
   videoSelection,
   creators,
-  currentThemeColor
+  currentThemeColor,
+  queue
 } from "../../atoms";
 import { PodcastDev } from "../../interfaces/index.js";
 import Link from "next/link";
+import { RGBA } from "../../interfaces/ui";
 
-interface FeaturedPodcastInterface {
-  podcast: PodcastDev;
-};
 
-const FeaturedPodcast: FC<FeaturedPodcastInterface> = ({ podcast }) => {
-
-  const {
-    cover,
-    pid,
-    minifiedCover,
-    podcastName,
-    episodes,
-    label,
-    description,
-  } = podcast;
-
-  const [dominantColor, setDominantColor] = useState<string>();
-
-  useEffect(() => {
-    console.log(podcast)
-    const fetchColor = async () => {
-      if (!minifiedCover) return;
-      const fac = new FastAverageColor();
-      const color: FastAverageColorResult = await fac.getColorAsync('https://arweave.net/' + minifiedCover)
-      if (color?.error) return;
-      setDominantColor(dimColor(color.rgb, 0.6))
-    }
-    fetchColor();
-  }, [])
-  getButtonRGBs  
-  // const textColor = isTooLight(rgb) ? "black" : "white";
+const FeaturedPodcast: FC<PodcastDev> = ({
+  cover,
+  pid,
+  minifiedCover,
+  podcastName,
+  episodes,
+  author,
+  label,
+  description,
+  
+}) => {
 
   const { t } = useTranslation();
+
+  const [dominantColor, setDominantColor] = useState<string>('');
+  const [textColor, setTextColor] = useState<string>('');
+
+  const [_queue, _setQueue] = useRecoilState(queue);
 
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
   const [vs_, setVS_] = useRecoilState(videoSelection);
 
+
+  useEffect(() => {
+    const fetchColor = async () => {
+      const coverToBeUsed = (minifiedCover || cover);
+      if (!coverToBeUsed) return;
+      const fac = new FastAverageColor();
+      const averageColor: FastAverageColorResult = await fac.getColorAsync('https://arweave.net/' + coverToBeUsed)
+      if (averageColor.error) return;
+      const rgba: RGBA = RGBAstringToObject(averageColor.rgba);
+      const stringRGBA = RGBAobjectToString(rgba);
+      setDominantColor(stringRGBA);
+      const colorForText = isTooLight(rgba) ? "rgb(0, 0, 0)" : "rgb(255, 255, 255)";
+      setTextColor(colorForText);
+    }
+    fetchColor();
+  }, [])
+
   return (
-    <div className={`rounded-3xl text-white/30 relative overflow-hidden carousel-item`} style={{backgroundColor: dominantColor}}>
+    <div 
+      className={`rounded-3xl text-white/30 relative overflow-hidden carousel-item hover-up-effect mx-2 max-w-[280px]`} 
+      style={{backgroundColor: dominantColor}}
+    >
       <div className={`w-full h-full absolute top-0 right-0`} />
       <div className="h-1/6 w-full px-5 pb-2 cursor-pointer relative">
         <Link href={`/podcast/${pid}`}>
-          <div className="pt-5 pb-3 text-xs">
+          <div className="pt-5 pb-3 text-xs font-semibold" style={{color: textColor}}>
             {episodes.length}{" "}
             {episodes.length === 1
               ? t("home.episode")
               : t("home.episodes")}
           </div>
-          <div className="w-full mb-7 max-w-[200px] overflow-x-hidden mx-auto">
+          <div className="w-full mb-7 max-w-[250px] overflow-x-hidden mx-auto">
             <img
-              className="object-cover aspect-square h-[200px]"
+              className="object-cover aspect-square h-[240px]"
               src={"https://arweave.net/" + cover}
               alt={podcastName}
             />
@@ -80,31 +88,19 @@ const FeaturedPodcast: FC<FeaturedPodcastInterface> = ({ podcast }) => {
         </Link>
         <div className="h-16 flex items-center">
           <div
-            style={{backgroundColor: dominantColor}}
-            className="z-10 rounded-full w-10 h-10 flex justify-center items-center shrink-0"
+            style={{backgroundColor: dimColorString(textColor, 0.2)}}
+            className={`z-10 rounded-full w-10 h-10 flex justify-center items-center shrink-0 default-animation hover:scale-[1.1]`}
             onClick={() => {
-              // Promise.all(firstTenEpisodes(true)).then((episodes) => {
-              //   enqueuePodcast(episodes);
-              //   play(episodes[0]);
-              // });
-              if (switchFocus_) {
-                // appState.queue.playEpisode(
-                //   secondaryData_.episodes[0],
-                //   secondaryData_.episodes[0].eid
-                // );
-              } else {
-                // setVS_([
-                //   "https://arweave.net/" +
-                //     secondaryData_.episodes[0].contentTx,
-                //   {},
-                // ]);
-              }
+              if (!episodes) return;
+              _setQueue(episodes);
+              const { episodeName, contentTx } = episodes[0]
+              showShikwasaPlayer(episodeName, author, cover, contentTx)
             }}
           >
-            <PlayButton svgStyle={"white"} fill={"white"} outline={"white"} />
+            <PlayButton svgColor={textColor} fillColor={textColor} outlineColor={textColor} />
           </div>
-          <Link className="ml-3 w-full" href={`/podcast/${pid}`}>
-            <div className="text-lg line-clamp-1 cursor-pointer">
+          <Link className="ml-3 w-full" href={`/podcast/${pid}`} style={{color: textColor}}>
+            <div className="text-lg hover:underline font-medium line-clamp-1 cursor-pointer">
               {podcastName}
             </div>
             <div className="text-xs max-w-[85%] line-clamp-3 break-all">
@@ -115,6 +111,6 @@ const FeaturedPodcast: FC<FeaturedPodcastInterface> = ({ podcast }) => {
       </div>
     </div>
   );
-}
+};
 
 export default FeaturedPodcast;
