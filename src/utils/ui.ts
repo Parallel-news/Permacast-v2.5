@@ -1,7 +1,7 @@
 import Shikwasa from '../shikwasa-src/main.js';
 import { useAccount } from 'wagmi';
 import { useArconnect } from 'react-arconnect';
-import { HSL, replaceColorsInterface, RGB, RGBA, RGBtoHSLInterface } from '../interfaces/ui.js';
+import { HSL, replaceColorsInterface, RGB, RGBA, RGBtoHSLInterface, ShowShikwasaPlayerInterface } from '../interfaces/ui';
 
 export const CheckAuthHook = () => {
   const { address: EthAddress } = useAccount();
@@ -10,12 +10,20 @@ export const CheckAuthHook = () => {
   return [EthAddress, ArConnectAddress];
 }
 
-export const dimColor = (color: string, dimness: number): string => {
-  if (color.includes('rgba')) return color;
-  return color.replace('rgb', 'rgba')?.replace(')', `,${dimness})`)
-}
+export const RGBobjectToString = (rgb: RGB) => `rgba(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+export const RGBAobjectToString = (rgba: RGBA) => `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`;
 
-export const RGBobjectToString = (rgb: RGB) => `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+export const RGBAstringToObject = (rgba: string): RGBA => {
+  // Remove "rgba(" and ")" from the string, and split the values into an array
+  const values = rgba.replace('rgba(', '').replace(')', '').split(',');
+
+  const r = parseInt(values[0]);
+  const g = parseInt(values[1]);
+  const b = parseInt(values[2]);
+  const a = parseFloat(values[3]);
+
+  return { r, g, b, a };
+}
 
 export const RGBobjectToArray = (rgb: RGB) => [rgb.r, rgb.g, rgb.b];
 
@@ -106,17 +114,17 @@ export const replaceLightColorsRGB: replaceColorsInterface = (rgba: RGBA) => {
   return { r, g, b };
 };
 
-export const isTooDark = (rgba: RGBA): boolean => {
-  const lightness = rgba.a;
+export const isTooDark = (rgba: RGBA, lightness = 0.25): boolean => {
   let hsl = RGBtoHSL(rgba);
   return hsl.l < lightness;
 };
 
-export const isTooLight = (rgba: RGBA): boolean => {
-  const lightness = rgba.a;
+export const isTooLight = (rgba: RGBA, lightness = 0.8): boolean => {
   let hsl = RGBtoHSL(rgba);
   return hsl.l > lightness;
 };
+
+export const dimColorString = (rgb: string, dimness: number) => rgb.replace(')', ','+dimness+')')
 
 export function getButtonRGBs(rgb: RGB, textLightness=0.8, backgroundLightness=0.15) {
   const replacedRGB = RGBobjectToString(replaceDarkColorsRGB({...rgb, a: 0.45 }));
@@ -130,17 +138,17 @@ export const trimANSLabel = (label: string) => {
   return label.replace(/\w/, c => c.toUpperCase()).replace('ar', '')
 };
 
-export const showPlayer = (podcast, episode) => {
+export const showShikwasaPlayer: ShowShikwasaPlayerInterface = (title, artist, cover, src) => {
   const player = new Shikwasa({
     container: () => document.querySelector('.podcast-player'),
     themeColor: 'gray',
     theme: `dark`,
     autoplay: true,
     audio: {
-      title: episode.episodeName,
-      artist: podcast.podcastName,
-      cover: `https://arweave.net/${podcast.cover}`,
-      src: `https://arweave.net/${episode.contentTx}`,
+      title: title,
+      artist: artist,
+      cover: `https://arweave.net/${cover}`,
+      src: `https://arweave.net/${src}`,
     },
     download: true
   })
