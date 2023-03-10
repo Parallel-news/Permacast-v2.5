@@ -7,7 +7,7 @@ const EpisodeQueue: FC = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="rounded-l-3xl w-72 text-white h-screen overflow-y-auto p-4 bg-zinc-900">
+    <div className="rounded-l-3xl w-72 text-white h-screen overflow-y-auto p-4 bg-zinc-800">
       {[].map((episode, index) => (
         <Fragment key={index}>
           {index === 0 && <div className="text-zinc-500 mb-4">{t("queue.currentlyplaying")}</div>}

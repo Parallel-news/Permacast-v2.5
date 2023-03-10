@@ -119,7 +119,7 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
         </div>
 
         <div className="z-50">
-          <div className="absolute z-50 bottom-0 right-0" style={{ display: _queueVisible ? 'block' : 'none' }}>
+          <div className="absolute z-50 bottom-0 right-12" style={{ display: _queueVisible ? 'block' : 'none' }}>
             {!loading ? <EpisodeQueue /> : <div className="h-full w-full animate-pulse bg-gray-900/30"></div>}
           </div>
         </div>
