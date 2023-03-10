@@ -19,6 +19,14 @@
   .btn-default {
     @apply btn btn-secondary btn-base-color;
   }
+  
+  .default-animation {
+    @apply ease-in-out duration-300 transition-all;
+  }
+
+  .hover-up-effect {
+    @apply hover:shadow-white/20 hover:shadow-lg default-animation;
+  } //hover:-translate-y-1
 }
 
 .HideScollBar::-webkit-scrollbar {
