@@ -23,6 +23,7 @@ export type replaceColorsInterface = (rgba: RGBA) => RGB;
 
 
 export type ShowShikwasaPlayerInterface = (
+  themeColor:  string,
   title:  string,
   artist: string,
   cover:  string,
