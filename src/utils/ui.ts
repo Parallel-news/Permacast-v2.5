@@ -1,7 +1,8 @@
 import Shikwasa from '../shikwasa-src/main.js';
 import { useAccount } from 'wagmi';
 import { useArconnect } from 'react-arconnect';
-import { HSL, replaceColorsInterface, RGB, RGBA, RGBtoHSLInterface, ShowShikwasaPlayerInterface } from '../interfaces/ui';
+import { HSL, replaceColorsInterface, RGB, RGBA, RGBtoHSLInterface } from '../interfaces/ui';
+import { ShowShikwasaPlayerInterface } from '../interfaces/playback';
 
 export const CheckAuthHook = () => {
   const { address: EthAddress } = useAccount();
@@ -126,6 +127,8 @@ export const isTooLight = (rgba: RGBA, lightness = 0.8): boolean => {
 
 export const dimColorString = (rgb: string, dimness: number) => rgb.replace(')', ','+dimness+')')
 
+export const dimColorObject = (rgb: RGB, dimness: number): RGBA => ({ r: rgb.r, g: rgb.g, b: rgb.b, a: dimness })
+
 export function getButtonRGBs(rgb: RGB, textLightness=0.8, backgroundLightness=0.15) {
   const replacedRGB = RGBobjectToString(replaceDarkColorsRGB({...rgb, a: 0.45 }));
   const iconColor = replacedRGB?.replace('rgb', 'rgba')?.replace(')', `, ${textLightness})`);
@@ -138,10 +141,16 @@ export const trimANSLabel = (label: string) => {
   return label.replace(/\w/, c => c.toUpperCase()).replace('ar', '')
 };
 
-export const showShikwasaPlayer: ShowShikwasaPlayerInterface = (title, artist, cover, src) => {
+export const showShikwasaPlayer: ShowShikwasaPlayerInterface = ({
+  themeColor,
+  title,
+  artist,
+  cover, 
+  src
+}) => {
   const player = new Shikwasa({
     container: () => document.querySelector('.podcast-player'),
-    themeColor: 'gray',
+    themeColor: themeColor,
     theme: `dark`,
     autoplay: true,
     audio: {
@@ -149,9 +158,10 @@ export const showShikwasaPlayer: ShowShikwasaPlayerInterface = (title, artist, c
       artist: artist,
       cover: `https://arweave.net/${cover}`,
       src: `https://arweave.net/${src}`,
+      color: themeColor,
     },
     download: true
   })
   player.play()
   window.scrollTo(0, document.body.scrollHeight)
-}
+};
