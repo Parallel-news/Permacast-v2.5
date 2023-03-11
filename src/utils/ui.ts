@@ -1,7 +1,8 @@
 import Shikwasa from '../shikwasa-src/main.js';
 import { useAccount } from 'wagmi';
 import { useArconnect } from 'react-arconnect';
-import { HSL, replaceColorsInterface, RGB, RGBA, RGBtoHSLInterface, ShowShikwasaPlayerInterface } from '../interfaces/ui';
+import { HSL, replaceColorsInterface, RGB, RGBA, RGBtoHSLInterface } from '../interfaces/ui';
+import { ShowShikwasaPlayerInterface } from '../interfaces/playback';
 
 export const CheckAuthHook = () => {
   const { address: EthAddress } = useAccount();
@@ -140,7 +141,13 @@ export const trimANSLabel = (label: string) => {
   return label.replace(/\w/, c => c.toUpperCase()).replace('ar', '')
 };
 
-export const showShikwasaPlayer: ShowShikwasaPlayerInterface = (themeColor, title, artist, cover, src) => {
+export const showShikwasaPlayer: ShowShikwasaPlayerInterface = ({
+  themeColor,
+  title,
+  artist,
+  cover, 
+  src
+}) => {
   const player = new Shikwasa({
     container: () => document.querySelector('.podcast-player'),
     themeColor: themeColor,
@@ -157,4 +164,4 @@ export const showShikwasaPlayer: ShowShikwasaPlayerInterface = (themeColor, titl
   })
   player.play()
   window.scrollTo(0, document.body.scrollHeight)
-}
+};
