@@ -37,7 +37,6 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
   const [address, setAddress] = useState();
   const [ANS, setANS] = useState({ address_color: "", currentLabel: "", avatar: "" });
   const [walletConnected, setWalletConnected] = useState(false);
-  const [player, setPlayer] = useState();
 
   // for the queue button
   useEffect(() => {
@@ -49,12 +48,10 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
       console.log(e);
     }
       
-    if (!player) return;
-    // const queue = player.ui.queueBtn;
     // const paused = player.ui.playBtn;
     // const fullscreen = player.ui.fullscreenBtn;
 
-    // queue.addEventListener('click', () => _setQueueVisible(visible => !visible));
+    //queue.addEventListener('click', () => _setQueueVisible(visible => !visible));
     // paused.addEventListener('click', () => _setIsPaused(paused => !paused));
     // fullscreen.addEventListener('click', () => setIsFullscreen_(isFullscreen_ => !isFullscreen_));
   }, []);

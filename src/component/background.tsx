@@ -2,7 +2,7 @@ import { useEffect, ReactNode } from "react";
 import { useRouter } from "next/router";
 import { useRecoilState } from "recoil";
 import { backgroundColor, podcastColor, themeColor } from '../atoms/index';
-import { dimColor } from "../utils/ui";
+import { dimColorString } from "../utils/ui";
 
 interface BackgroundInterface {
   children: ReactNode;
@@ -24,8 +24,8 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
 
   useEffect(() => {
     // console.log("background.tsx useEffect");
-    if (useDefaultBackground.includes(pathname)) setBackgroundColor_(dimColor(themeColor_, 0.2));
-    else setBackgroundColor_(dimColor(podcastColor_, 0.4))
+    if (useDefaultBackground.includes(pathname)) setBackgroundColor_(dimColorString(themeColor_, 0.2));
+    else setBackgroundColor_(dimColorString(podcastColor_, 0.4))
   }, [pathname])
 
   // finish the animation for this transition later on
