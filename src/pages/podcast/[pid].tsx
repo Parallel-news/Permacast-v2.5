@@ -1,87 +1,142 @@
 import Image from "next/image"
 import { DescriptionButton } from "../../component/reusables/buttons"
-import { HeartIcon, ArrowDownTrayIcon, ArrowTopRightOnSquareIcon, PlayIcon } from '@heroicons/react/24/solid';
+import { 
+    HeartIcon, 
+    ArrowDownTrayIcon, 
+    ArrowTopRightOnSquareIcon, 
+    PlayIcon 
+} from '@heroicons/react/24/solid';
+import { 
+    DescriptionContainerInter,
+    EpisodeInfoButtonsInter,
+    EpisodeInfoSubInter,
+    EpisodeNumberInter,
+    EpisodeInfoInter,
+    EpisodeBannerInter,
+    episodeDateStyling,
+    episodeIconStyling,
+    episodeInfoStyling,
+    episodeInfoSubStyling,
+    episodeNumberStyling, 
+    episodeTitleStyling,
+    podcastIdStyling,
+    episodeBannerStyling,
+    episodeInfoButtonsStyling
+} from "./pidTools";
 
 export default function PodcastId() {
+    //State Calls Here
+    const DummyDesc = `The All-American Rejects are an American rock band from Stillwater, Oklahoma, formed in 1999.[4] The band consists of lead vocalist and bassist Tyson Ritter, lead guitarist and backing vocalist Nick Wheeler, rhythm guitarist and backing vocalist Mike Kennerty, and drummer Chris Gaylor. Wheeler and Ritter serve as the band's songwriters; Wheeler is the primary composer and Ritter is the primary lyricist. Although Kennerty and Gaylor are not founding members, they have appeared in all of the band's music videos and on all studio releases except for the band's self-titled debut.`
+    const title = "All Core Devs: Meeting 9"
+    const imgSrc = "/aa.jpg"
+    const color = "#818cf8"
+    const episodeNum = "1"
+    const date = "May 10, 2022"
+    
     return (
-        <div className="w-[75%]">
-            <EpisodeBanner />
+        <div className={podcastIdStyling}>
+            {/*Episode Cover & Info*/}
+            <EpisodeBanner 
+                title={title}
+                imgSrc={imgSrc}
+                color={color}
+                episodeNum={episodeNum}
+                date={date}
+            />
+            {/*Episode Description*/}
+            <EpisodeDescription 
+                text={DummyDesc} 
+            />
         </div>
-        
     )
 }
 
-const EpisodeBanner = () => {
-    return (
-        <div className="flex flex-row w-full h-60 space-x-16">
+const EpisodeBanner = (props: EpisodeBannerInter) => { 
+    return (    
+        <div className={episodeBannerStyling}>
             <Image
-                src="/aa.jpg"
+                src={props.imgSrc}
                 alt="Episode Cover"
                 height={25}
                 width={225}
                 className="object-cover rounded-3xl"
             />
-            <EpisodeInfo />
-        </div>
-    )
-}
-
-const EpisodeInfo = () => {
-    return (
-        <div className="flex flex-col justify-center space-y-4">
-            <p className="text-white text-[40px] font-medium pb-0 flex items-end">All Core Devs: Meeting 9</p>
-            <EpisodeInfoSub />
-            <EpisodeInfoButtons />
-        </div>
-    )
-}
-
-const EpisodeInfoSub = () => {
-    return(
-        <div className="flex flex-row items-center space-x-3">
-            <EpisodeNumber 
-                episodeNum="1"
-                color="#6366f1"
+            <EpisodeInfo
+                title={props.title} 
+                color={props.color}
+                episodeNum={props.episodeNum}
+                date={props.date}
             />
-            <p className="text-gray-500 text-[11px] font-bold">May 10, 2022</p>
         </div>
     )
 }
 
-const EpisodeInfoButtons = () => {
+const EpisodeInfo = (props: EpisodeInfoInter) => {
     return (
-        <div className="flex flex-row space-x-6">
+        <div className={episodeInfoStyling}>
+            <p className={episodeTitleStyling}>{props.title}</p>
+            <EpisodeInfoSub 
+                color={props.color}
+                episodeNum={props.episodeNum}
+                date={props.date}
+            />
+            <EpisodeInfoButtons
+                color={props.color}
+            />
+        </div>
+    )
+}
+
+const EpisodeInfoSub = (props: EpisodeInfoSubInter) => {
+    return(
+        <div className={episodeInfoSubStyling}>
+            <EpisodeNumber 
+                episodeNum={props.episodeNum}
+                color={props.color}
+            />
+            <p className={episodeDateStyling}>{props.date}</p>
+        </div>
+    )
+}
+
+const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
+    const { color } = props
+    return (
+        <div className={episodeInfoButtonsStyling}>
             <DescriptionButton 
                 icon={<PlayIcon className="w-6 h-6" />}
                 text={""}
-                color="#6366f1"
+                color={color}
             />
             <DescriptionButton
-                icon={<HeartIcon className="mr-2 w-4 h-4" />} 
+                icon={<HeartIcon className={episodeIconStyling} />} 
                 text={"Tip"}
-                color="#6366f1" 
+                color={color} 
             />
             <DescriptionButton
-                icon={<ArrowDownTrayIcon className="mr-2 w-4 h-4 stroke-2" />} 
+                icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
                 text={"Download"}
-                color="#6366f1"
+                color={color}
             />
             <DescriptionButton
-                icon={<ArrowTopRightOnSquareIcon className="mr-2 w-4 h-4 stroke-2" />} 
+                icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
                 text={"Share"}
-                color="#6366f1"
+                color={color}
             />
         </div>
     )
-}
-
-interface EpisodeNumberInter {
-    episodeNum: string;
-    color: string;
 }
 
 const EpisodeNumber = (props: EpisodeNumberInter) => {
     return (
-        <p className="rounded-2xl bg-gray-400/30 p-2 py-1 text-[10px]" style={{color: props.color}}>Episode {props.episodeNum}</p>
+        <p className={episodeNumberStyling} style={{color: props.color}}>Episode {props.episodeNum}</p>
+    )
+}
+
+const EpisodeDescription = (props: DescriptionContainerInter) => {
+    return (
+        <div className="w-full">
+            <p className="text-neutral-400">{props.text}</p>
+        </div>
     )
 }
