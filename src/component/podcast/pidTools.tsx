@@ -6,8 +6,9 @@ import {
     ArrowTopRightOnSquareIcon, 
     PlayIcon 
 } from '@heroicons/react/24/solid';
+import TextTruncate from "../TextTruncate";
 
-export default function fun() {
+export default function pidTools() {
     return false
 }
 
@@ -57,6 +58,7 @@ export const episodeInfoStyling = "flex flex-col justify-center space-y-4"
 export const episodeInfoSubStyling = "flex flex-row items-center space-x-3"
 export const episodeNumberStyling = "rounded-2xl bg-gray-400/30 p-2 py-1 text-[11px]"
 export const episodeTitleStyling = "text-white text-[40px] font-medium pb-0 flex items-end"
+export const textTruncateButtonStyling = "text-gray-400 font-bold hover:text-blue-400 transition duration-400 ease-in-out"
 
 // 3. Custom Functions
 
@@ -146,7 +148,13 @@ export const EpisodeNumber = (props: EpisodeNumberInter) => {
 export const EpisodeDescription = (props: DescriptionContainerInter) => {
     return (
         <div className="w-full">
-            <p className="text-neutral-400">{props.text}</p>
+            <TextTruncate 
+                text={props.text}
+                limit={400}
+                textClass="text-neutral-400"
+                buttonClass={textTruncateButtonStyling}
+            />
         </div>
     )
 }
+//<p className="text-neutral-400">{props.text}</p>

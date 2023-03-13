@@ -3,6 +3,7 @@ import {
     EpisodeDescription,
     podcastIdStyling,
 } from "../../component/podcast/pidTools";
+import TextTruncate from "../../component/TextTruncate";
 
 export default function PodcastId() {
     //State Calls Here
@@ -24,7 +25,7 @@ export default function PodcastId() {
                 date={date}
             />
             {/*Episode Description*/}
-            <EpisodeDescription 
+            <EpisodeDescription
                 text={DummyDesc} 
             />
         </div>

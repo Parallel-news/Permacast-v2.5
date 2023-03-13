@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 
-const TextTruncate = ({ text, limit }) => {
+
+interface TextTruncateProps {
+    text: string;
+    limit: number;
+    textClass: string;
+    buttonClass: string;
+}
+
+const TextTruncate: React.FC<TextTruncateProps> = ({ text, limit, textClass, buttonClass }) => {
   const [showFullText, setShowFullText] = useState(false);
   const truncatedText = showFullText ? text : `${text.slice(0, limit)}...`;
 
@@ -10,9 +18,9 @@ const TextTruncate = ({ text, limit }) => {
 
   return (
     <div>
-      <p>{truncatedText}</p>
+      <p className={textClass}>{truncatedText}</p>
       {text.length > limit && (
-        <button onClick={toggleShowFullText}>
+        <button onClick={toggleShowFullText} className={buttonClass}>
           {showFullText ? "Show Less" : "Show More"}
         </button>
       )}
