@@ -4,13 +4,6 @@ import { useArconnect } from 'react-arconnect';
 import { HSL, replaceColorsInterface, RGB, RGBA, RGBtoHSLInterface } from '../interfaces/ui';
 import { ShowShikwasaPlayerInterface } from '../interfaces/playback';
 
-export const CheckAuthHook = () => {
-  const { address: EthAddress } = useAccount();
-  const { address: ArConnectAddress } = useArconnect();
-
-  return [EthAddress, ArConnectAddress];
-}
-
 export const RGBobjectToString = (rgb: RGB) => `rgba(${rgb.r}, ${rgb.g}, ${rgb.b})`;
 export const RGBAobjectToString = (rgba: RGBA) => `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`;
 
@@ -145,7 +138,7 @@ export const showShikwasaPlayer: ShowShikwasaPlayerInterface = ({
   themeColor,
   title,
   artist,
-  cover, 
+  cover,
   src
 }) => {
   const player = new Shikwasa({
@@ -161,8 +154,8 @@ export const showShikwasaPlayer: ShowShikwasaPlayerInterface = ({
       color: themeColor,
     },
     download: true
-  })
-  player.play()
-  window.scrollTo(0, document.body.scrollHeight)
-
+  });
+  player.play();
+  window.scrollTo(0, document.body.scrollHeight);
+  return player;
 };
