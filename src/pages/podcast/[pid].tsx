@@ -13,6 +13,8 @@ export default function PodcastId() {
     const color = "#818cf8"
     const episodeNum = "1"
     const date = "May 10, 2022"
+    const creator = "@martonlederer"
+    const episodeTitle = "American Rhetoric"
 
     return (
         <div className={podcastIdStyling}>
@@ -30,7 +32,11 @@ export default function PodcastId() {
             />
             {/*Next Episode*/}
             <NextEpisode 
-            
+                description={DummyDesc} 
+                imgSrc={imgSrc}
+                creator={creator}
+                color={color}
+                title={episodeTitle}
             />
         </div>
     )

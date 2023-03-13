@@ -63,6 +63,10 @@ export interface EpisodeBoxTitleData {
     title: string;
 }
 
+export interface EpisodeBoxInter extends EpisodeBoxTitleData {
+    description: string;
+}
+
 // 2. Stylings
 export const episodeIconStyling = "mr-2 w-4 h-4"
 export const creatorTagDivStyling = "flex flex-row space-x-3"
@@ -183,23 +187,21 @@ export const EpisodeDescription = (props: DescriptionContainerInter) => {
     )
 }
 
-export const NextEpisode = () => {
+
+
+export const NextEpisode = (props: EpisodeBoxInter) => {
     return (
         <div className={nextEpisodeStyling}>
             <p className={nextEpisodeTitleStyling}>Next Episode</p>
-            <EpisodeBox 
-                imgSrc="/aa.jpg"
-                creator="@martonlederer"
-                color="#c084fc"
-                title="American Rhetoric"
+            <EpisodeBox
+                description={props.description} 
+                imgSrc={props.imgSrc}
+                creator={props.creator}
+                color={props.color}
+                title={props.title}
             />
         </div>
     )
-}
-const DummyDesc = `The All-American Rejects are an American rock band from Stillwater, Oklahoma, formed in 1999.[4] The band consists of lead vocalist and bassist Tyson Ritter, lead guitarist and backing vocalist Nick Wheeler, rhythm guitarist and backing vocalist Mike Kennerty, and drummer Chris Gaylor. Wheeler and Ritter serve as the band's songwriters; Wheeler is the primary composer and Ritter is the primary lyricist. Although Kennerty and Gaylor are not founding members, they have appeared in all of the band's music videos and on all studio releases except for the band's self-titled debut.`
-
-interface EpisodeBoxInter extends EpisodeBoxTitleData {
-
 }
 
 export const EpisodeBox = (props: EpisodeBoxInter) => {
@@ -215,7 +217,7 @@ export const EpisodeBox = (props: EpisodeBoxInter) => {
             {/*Episode Description*/}
             <div className="w-[50%]">
                 <TextTruncate 
-                    text={DummyDesc}
+                    text={props.description}
                     limit={STR_LEN_EPISODE_BOX}
                     textClass="text-neutral-400 text-[12px]"
                     buttonClass={textTruncateButtonStyling+" text-[13px]"}
@@ -225,7 +227,7 @@ export const EpisodeBox = (props: EpisodeBoxInter) => {
             <DescriptionButton 
                 icon={<PlayIcon className="w-6 h-6" />}
                 text={""}
-                color={"#a78bfa"}
+                color={props.color}
             />
         </div>
     )

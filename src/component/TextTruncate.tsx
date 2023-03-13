@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FADE_IN_STYLE } from "../constants";
 
 
@@ -12,15 +12,7 @@ interface TextTruncateProps {
 const TextTruncate: React.FC<TextTruncateProps> = ({ text, limit, textClass, buttonClass }) => {
   const [showFullText, setShowFullText] = useState(false);
   const truncatedText = showFullText ? text : `${text.slice(0, limit)}...`;
-  const [isVisible, setIsVisible] = useState<boolean>(false)
-
-  useEffect(() => {
-    setIsVisible(false)
-    const timeout = setTimeout(() => {
-      setIsVisible(true)
-    }, 200);
-    return () => clearTimeout(timeout);
-  }, [])
+  const [isVisible, setIsVisible] = useState<boolean>(true)
 
   const toggleShowFullText = () => {
     setIsVisible(false)
