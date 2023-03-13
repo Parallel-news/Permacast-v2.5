@@ -25,7 +25,7 @@ export default function PodcastId() {
 
     useEffect(() => {
         setBackgroundColor_(color)
-        setPodcastColor_(hexToRGB(color, 0.05))
+        setPodcastColor_(hexToRGB(color, 0.9))
     }, [])
 
     return (

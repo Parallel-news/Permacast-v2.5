@@ -23,7 +23,7 @@ const TextTruncate: React.FC<TextTruncateProps> = ({ text, limit, textClass, but
   };
 
   return (
-    <div>
+    <div className="h-[33%]">
       <p className={textClass+" "+(FADE_IN_STYLE)+" "+(isVisible && "opacity-100")}>{truncatedText}</p>
       {text.length > limit && (
         <button onClick={toggleShowFullText} className={buttonClass}>
