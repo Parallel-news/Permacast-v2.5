@@ -164,4 +164,5 @@ export const showShikwasaPlayer: ShowShikwasaPlayerInterface = ({
   })
   player.play()
   window.scrollTo(0, document.body.scrollHeight)
+
 };
