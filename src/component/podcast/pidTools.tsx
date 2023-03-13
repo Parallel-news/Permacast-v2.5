@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { DescriptionButton } from "../buttons";
+import { DescriptionButton } from "../reusables/buttons";
 import { 
     HeartIcon, 
     ArrowDownTrayIcon, 

@@ -2,7 +2,7 @@ import {
     EpisodeBanner,
     EpisodeDescription,
     podcastIdStyling,
-} from "../../component/reusables/podcast/pidTools";
+} from "../../component/podcast/pidTools";
 
 export default function PodcastId() {
     //State Calls Here
