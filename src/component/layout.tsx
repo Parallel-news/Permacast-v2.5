@@ -12,7 +12,7 @@ import EpisodeQueue from './episodeQueue';
 import Fullscreen from './fullscreen';
 import VideoModal from './video_modal';
 
-import { isFullscreen, queue, currentEpisode, isPaused, isQueueVisible, themeColor } from '../atoms/index.js';
+import { isFullscreen, queue, currentEpisode, isPlaying, isQueueVisible, themeColor } from '../atoms/index.js';
 
 interface LayoutInterface {
   children: ReactNode;
@@ -26,7 +26,7 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
 
   const videoRef = useRef();
   const [_isFullscreen, _setIsFullscreen] = useRecoilState(isFullscreen);
-  const [_isPaused, _setIsPaused] = useRecoilState(isPaused);
+  const [_isPlaying, _setIsPlaying] = useRecoilState(isPlaying);
   const [_currentEpisode, _setCurrentEpisode] = useRecoilState(currentEpisode);
   const [_queue, _setQueue] = useRecoilState(queue);
   const [_isQueueVisible, _setQueueVisible] = useRecoilState(isQueueVisible);
@@ -38,34 +38,17 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
   const [ANS, setANS] = useState({ address_color: "", currentLabel: "", avatar: "" });
   const [walletConnected, setWalletConnected] = useState(false);
 
-  // for the queue button
-  useEffect(() => {
-    console.log("Use effect player");
-    try {
-      // getAllData({signal: abortContr.signal}).then((data) => setPrimaryData_(data));
-    } catch(e) {
-      console.log("Error fetching read data from App.js");
-      console.log(e);
-    }
-      
-    // const paused = player.ui.playBtn;
-    // const fullscreen = player.ui.fullscreenBtn;
-
-    //queue.addEventListener('click', () => _setQueueVisible(visible => !visible));
-    // paused.addEventListener('click', () => _setIsPaused(paused => !paused));
-    // fullscreen.addEventListener('click', () => setIsFullscreen_(isFullscreen_ => !isFullscreen_));
-  }, []);
-
   const [recentlyAdded, setRecentlyAdded] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   // Episode  Loader + spacebar for play/pause
   useEffect(() => {
-    window.addEventListener('keydown', function (e) {
-      if (e.key == " " && e.target == document.body) {
-        e.preventDefault();
-      }
-    });
+    // TODO: reimplement later
+    // window.addEventListener('keydown', function (e) {
+    //   if (e.key == " " && e.target == document.body) {
+    //     e.preventDefault();
+    //   }
+    // });
   
     // TODO: generalize
     // if (!localStorage.getItem("checkupDate")) localStorage.setItem("checkupDate", new Date());
@@ -78,7 +61,6 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
 
 
   const playEpisode = (episode, number = 1) => {
-    console.log("PLAYEPISODE BEING CALLED");
     const shikwasaPlayer = new Shikwasa({
       container: () => document.querySelector('.podcast-player'),
       themeColor: 'yellow',
@@ -132,7 +114,6 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
         </Background>
         <VideoModal/>
       </div>
-
     </div>
   )
 }
