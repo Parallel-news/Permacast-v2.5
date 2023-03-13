@@ -1,4 +1,3 @@
-import { inspectShikwasaPlayer } from "../../utils/ui"
 import Player from "../../component/player/ShikwasaPlayer";
 
 export default function Test() {

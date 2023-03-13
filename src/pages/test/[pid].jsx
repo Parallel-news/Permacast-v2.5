@@ -367,7 +367,7 @@ export async function getStaticPaths() {
   return {
     paths: [
       // String variant:
-      '/podcast/pid',
+      '/test/pid',
       // Object variant:
       // { params: { slug: 'second-post' } },
     ],
