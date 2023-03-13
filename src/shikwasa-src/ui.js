@@ -2,6 +2,7 @@ import PlayerComp from './templates/Player'
 import IconComp from './templates/Icon'
 import { secondToTime, numToString, marquee, createElement, toggleAttribute } from './utils'
 import applyFocusVisible from './focus-visible'
+import { dimColorObject, isTooLight, RGBAobjectToString, RGBAstringToObject } from '../utils/ui'
 
 let resize,
   coverUrl = null
@@ -138,7 +139,15 @@ export default class UI {
     this.title.innerHTML = audio.title
     this.titleInner.setAttribute('data-title', audio.title)
     this.artist.innerHTML = audio.artist
-    this.artist.className = 'rounded-full px-3 py-1 ' + (audio.color ? audio.color : 'bg-yellow-300/20 text-[rgb(255,255,0)]')
+    let artistColor = audio.color;
+    let artistTextColor;
+    if (artistColor) {
+      let { r, g, b, a } = RGBAstringToObject(audio.color)
+      artistColor = RGBAobjectToString(dimColorObject({ r, g, b }, 0.4));
+      artistTextColor = isTooLight({r, g, b, a}, 0.8) ? 'black' : 'white';
+    }
+    this.artist.style = (artistColor && 'background-color:' + artistColor + ';color:' + artistTextColor)
+    this.artist.className = 'rounded-full px-3 py-1 ' + (!artistColor && 'bg-yellow-300/20 text-[rgb(255,255,0)]')
     if (audio.duration) {
       this.duration.innerHTML = secondToTime(audio.duration)
     }

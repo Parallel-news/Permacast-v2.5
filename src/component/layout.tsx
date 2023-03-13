@@ -86,9 +86,9 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
       autoplay: true,
       audio: {
         title: episode?.episodeName || 'No episode selected',
-        artist: 'null',
+        artist: '',
         cover: "https://arweave.net/Rtjwzke-8cCLd0DOKGKCx5zNjmoVr51yy_Se1s73YH4",
-        color: episode?.color || 'text-[rgb(255,255,0)] bg-[rgb(255,255,0)]/20',
+        color: '',
         src: `https://arweave.net/${episode?.contentTx}`,
       },
     })
