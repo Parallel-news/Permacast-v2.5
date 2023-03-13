@@ -480,9 +480,9 @@ export default function UploadPodcast() {
                       <button
                         type="submit"
                         className="btn btn-secondary" 
-                        disabled={!(eth && ar)}
+                        disabled={!(ethAddress && arAddress)}
                       >
-                        {((eth && ar)) ? t("uploadshow.upload"): t("uploadshow.disabled")}
+                        {((ethAddress && arAddress)) ? t("uploadshow.upload"): t("uploadshow.disabled")}
                         <BsArrowRightShort className="w-7 h-7" />
                       </button>
                     )}
