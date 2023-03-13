@@ -24,22 +24,23 @@ import {
 import { Episode, PodcastDev } from "../../interfaces/index.js";
 import Link from "next/link";
 import { RGB, RGBA } from "../../interfaces/ui";
-import { FeaturedPodcastPlayButtonInterface, showShikwasaPlayerArguments } from "../../interfaces/playback"; 
-import FeaturedPodcastPlayButton from "../reusables/playButton";
+import FeaturedPodcastPlayButton, { FeaturedPodcastDummyPlayButton } from "./featuredPodcastPlayButton";
 import { PauseIcon } from "@heroicons/react/24/outline";
 import { usePlayerConnector } from "../../hooks";
 
 
-const FeaturedPodcast: FC<PodcastDev> = ({
-  cover,
-  pid,
-  minifiedCover,
-  podcastName,
-  episodes,
-  author,
-  label,
-  description,
-}) => {
+const FeaturedPodcast: FC<PodcastDev> = (podcast) => {
+
+  const {
+    cover,
+    pid,
+    minifiedCover,
+    podcastName,
+    episodes,
+    author,
+    label,
+    description,
+  } = podcast;
 
   const { t } = useTranslation();
   const [player, launchPlayer] = usePlayerConnector();
@@ -77,51 +78,9 @@ const FeaturedPodcast: FC<PodcastDev> = ({
         : t("home.episodes")}
     </>
   );
-  
-  // WIP
-  // This would require a proper integration with the player and a few other things:
-  // 1. To check against which podcast name is playing (to save current podcast name into recoil state)
-  // 2. To show paused button if the player is paused when playing an episode from current podcast
-  // 3. To prevent the player from enqueueing the same episodes again if one of them is already playing
-  // 4. To automatically pause when queue state clears all episodes from currently playing podcast
 
-  const FeaturedPodcastPlayButton: FC<FeaturedPodcastPlayButtonInterface> = ({ episodes, buttonColor, playerInfo }) => {
-    const { episodeName, contentTx } = episodes[0];
-    
-    const [_queue, _setQueue] = useRecoilState<Episode[]>(queue);
-    const [isPlaying, setIsPlaying] = useState<boolean>(false);
-    const convertedButtonColor = RGBobjectToString(buttonColor);
-  
-    useEffect(() => {
-      // if (!_queue.length) {
-      //   setIsPlaying(false);
-      //   return;
-      // };
-    }, [_queue])
-  
-    return (
-      <div
-        style={{backgroundColor: dimColorString(convertedButtonColor, 0.2)}}
-        className={`z-10 rounded-full w-10 h-10 flex justify-center items-center shrink-0 default-animation hover:scale-[1.1]`}
-        onClick={() => {
-          if (!episodes.length || isPlaying) return;
-          _setQueue(episodes);
-          showShikwasaPlayer(playerInfo);
-        }}
-      >
-        {!isPlaying ? (
-          <PauseIcon className="w-4 h-4 fill-current stroke-[3]" />
-        ): (
-          <PlayButton 
-            svgColor={convertedButtonColor} 
-            fillColor={convertedButtonColor}
-            outlineColor={convertedButtonColor}
-          />
-        )}
-      </div>
-    );
-  };
-
+  const episode = episodes.length ? episodes[0]: undefined
+  const playerInfoArgs = { themeColor, buttonColor: textColor, title: episode?.episodeName, artist: author, cover, src: episode?.contentTx }
 
   return (
     <div
@@ -145,19 +104,15 @@ const FeaturedPodcast: FC<PodcastDev> = ({
           </div>
         </Link>
         <div className="h-16 flex items-center">
-          <div
-            style={{backgroundColor: dimColorString(textColor, 0.2)}}
-            className={`z-10 rounded-full w-10 h-10 flex justify-center items-center shrink-0 default-animation hover:scale-[1.1]`}
-            onClick={() => {
-              if (!episodes) return;
-              _setQueue(episodes);
-              const { episodeName: title, contentTx: src } = episodes[0];
-              launchPlayer({ themeColor, title, artist: author, cover, src })
-              return player;
-            }}
-          >
-            <PlayButton svgColor={textColor} fillColor={textColor} outlineColor={textColor} />
-          </div>
+          {episodes.length ? (
+            <FeaturedPodcastPlayButton
+              playerInfo={playerInfoArgs}
+              podcastInfo={podcast}
+              episodes={episodes}
+            />
+          ): (
+            <FeaturedPodcastDummyPlayButton buttonColor={textColor} />
+          )}
           <Link className="ml-3 w-full" href={`/podcast/${pid}`} style={{color: textColor}}>
             <div className="text-lg hover:underline font-medium line-clamp-1 cursor-pointer">
               {podcastName}
