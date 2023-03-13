@@ -1,7 +1,7 @@
 import { useAccount } from 'wagmi';
 import { useArconnect } from 'react-arconnect';
 import { useRecoilState } from 'recoil';
-import { isFullscreen, isPaused, isQueueVisible, player, queue } from '../atoms';
+import { currentPodcast, isFullscreen, isPlaying, isQueueVisible, queue } from '../atoms';
 import { useEffect, useState } from 'react';
 import { showShikwasaPlayer } from '../utils/ui';
 import { showShikwasaPlayerArguments } from '../interfaces/playback';
@@ -15,26 +15,33 @@ export const useWalletAddresses = () => {
 };
 
 export const usePlayerConnector = () => {
-  const [player_, setPlayer_] = useRecoilState<any>(player);
+
   const [isQueueVisible_, setQueueVisible_] = useRecoilState(isQueueVisible);
-  const [isPaused_, setIsPaused_] = useRecoilState(isPaused);
+  const [_isPlaying, _setIsPlaying] = useRecoilState(isPlaying);
   const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
+  const [currentPodcast_, setCurrentPodcast_] = useRecoilState(currentPodcast);
   const [_queue, _setQueue] = useRecoilState(queue);
 
-  const launchPlayer = (args: showShikwasaPlayerArguments, episodes: Episode[]) => {
-    const playuh = showShikwasaPlayer(args);
-    if (!playuh) return;
-    // setPlayer_(playuh);
+  const launchPlayer = (args: showShikwasaPlayerArguments, podcast?: any, episodes?: Episode[]) => {
+    const playerObject = showShikwasaPlayer(args);
+    if (!playerObject) return;
+    // setPlayer_(playerObject);
+    if (podcast) setCurrentPodcast_(podcast);
     if (episodes && episodes.length) _setQueue(episodes);
-    const queue = playuh?.ui?.queueBtn;
-    const paused = playuh?.ui?.playBtn;
-    const fullscreen = playuh?.ui?.fullscreenBtn;
+    const queue = playerObject?.ui?.queueBtn;
+    const paused = playerObject?.ui?.playBtn;
+    const fullscreen = playerObject?.ui?.fullscreenBtn;
 
     queue?.addEventListener('click', () => setQueueVisible_(visible => !visible));
-    paused?.addEventListener('click', () => setIsPaused_(paused => !paused));
+    paused?.addEventListener('click', () => _setIsPlaying(playing => !playing));
     fullscreen?.addEventListener('click', () => setIsFullscreen_(isFullscreen => !isFullscreen));
     console.log('mounted successfully');
+    return playerObject;
   };
 
-  return [player_, launchPlayer];
+  const pause = () => {}
+
+  const play = () => {}
+
+  return [launchPlayer];
 }
