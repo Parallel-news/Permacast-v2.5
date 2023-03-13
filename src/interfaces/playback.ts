@@ -1,4 +1,5 @@
 import { Episode } from ".";
+import Player from "../shikwasa-src/player";
 import { RGB } from "./ui";
 
 export interface showShikwasaPlayerArguments {
@@ -15,7 +16,7 @@ export type ShowShikwasaPlayerInterface = ({
   artist,
   cover,
   src
-}: showShikwasaPlayerArguments) => void;
+}: showShikwasaPlayerArguments) => Player;
 
 export interface FeaturedPodcastPlayButtonInterface {
   episodes:      Episode[];
