@@ -1,9 +1,9 @@
 import { 
     EpisodeBanner,
     EpisodeDescription,
+    NextEpisode,
     podcastIdStyling,
 } from "../../component/podcast/pidTools";
-import TextTruncate from "../../component/TextTruncate";
 
 export default function PodcastId() {
     //State Calls Here
@@ -27,6 +27,10 @@ export default function PodcastId() {
             {/*Episode Description*/}
             <EpisodeDescription
                 text={DummyDesc} 
+            />
+            {/*Next Episode*/}
+            <NextEpisode 
+            
             />
         </div>
     )
