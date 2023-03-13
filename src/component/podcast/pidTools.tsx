@@ -8,6 +8,7 @@ import {
 } from '@heroicons/react/24/solid';
 import TextTruncate from "../TextTruncate";
 import { hexToRGB } from "../../utils/reusables";
+import { FADE_IN_STYLE, STR_LEN_EPISODE_BOX, STR_LEN_EPISODE_DESC } from "../../constants";
 
 export default function pidTools() {
     return false
@@ -49,22 +50,40 @@ export interface EpisodeInfoInter extends EpisodeInfoSubInter {
     title: string;
 }
 
+export interface CreatorTagInter {
+    color: string;
+    creator: string;
+    imgSrc: string;
+}
+
+export interface EpisodeBoxTitleData {
+    imgSrc: string;
+    creator: string;
+    color: string;
+    title: string;
+}
+
 // 2. Stylings
 export const episodeIconStyling = "mr-2 w-4 h-4"
+export const creatorTagDivStyling = "flex flex-row space-x-3"
+export const byStyling = "text-neutral-400 text-[12px] inline"
 export const podcastIdStyling = "flex flex-col space-y-8 w-[75%]"
 export const nextEpisodeStyling = "w-full flex flex-col space-y-6"
 export const episodeInfoButtonsStyling = "flex flex-row space-x-6"
+export const episodeBoxTitleDataImg = "object-cover h-12 rounded-xl"
 export const episodeDateStyling = "text-gray-500 text-[11px] font-bold"
+export const creatorTagImgStyling = "object-cover h-4 rounded-full mr-1"
+export const episodeBoxTitleStyling = "text-lg text-white font-semibold"
 export const episodeBannerStyling = "flex flex-row w-full h-60 space-x-16"
 export const episodeInfoStyling = "flex flex-col justify-center space-y-4"
 export const episodeInfoSubStyling = "flex flex-row items-center space-x-3"
 export const creatorTagStyling = "flex flex-row items-center p-1.5 rounded-3xl"
+export const episodeBoxTitleDataStyling = "flex flex-row items-center space-x-3"
 export const nextEpisodeTitleStyling = "text-2xl text-neutral-300/90 font-semibold"
 export const episodeNumberStyling = "rounded-2xl bg-gray-400/30 p-2 py-1 text-[11px]"
-export const episodeBoxStyling = "w-full rounded-2xl border-2 border-gray-400/30 h-fit p-3"
 export const episodeTitleStyling = "text-white text-[40px] font-medium pb-0 flex items-end"
+export const episodeBoxStyling = "w-full rounded-2xl border-2 border-gray-400/30 h-fit p-3 flex flex-row justify-between items-center"
 export const textTruncateButtonStyling = "text-gray-400 font-bold hover:text-blue-400 transition duration-400 ease-in-out"
-
 
 // 3. Custom Functions
 
@@ -156,8 +175,8 @@ export const EpisodeDescription = (props: DescriptionContainerInter) => {
         <div className="w-full">
             <TextTruncate 
                 text={props.text}
-                limit={400}
-                textClass="text-neutral-400"
+                limit={STR_LEN_EPISODE_DESC}
+                textClass={`text-neutral-400`}
                 buttonClass={textTruncateButtonStyling}
             />
         </div>
@@ -168,55 +187,81 @@ export const NextEpisode = () => {
     return (
         <div className={nextEpisodeStyling}>
             <p className={nextEpisodeTitleStyling}>Next Episode</p>
-            <EpisodeBox />
+            <EpisodeBox 
+                imgSrc="/aa.jpg"
+                creator="@martonlederer"
+                color="#c084fc"
+                title="American Rhetoric"
+            />
         </div>
     )
 }
+const DummyDesc = `The All-American Rejects are an American rock band from Stillwater, Oklahoma, formed in 1999.[4] The band consists of lead vocalist and bassist Tyson Ritter, lead guitarist and backing vocalist Nick Wheeler, rhythm guitarist and backing vocalist Mike Kennerty, and drummer Chris Gaylor. Wheeler and Ritter serve as the band's songwriters; Wheeler is the primary composer and Ritter is the primary lyricist. Although Kennerty and Gaylor are not founding members, they have appeared in all of the band's music videos and on all studio releases except for the band's self-titled debut.`
 
-export const EpisodeBox = () => {
+interface EpisodeBoxInter extends EpisodeBoxTitleData {
+
+}
+
+export const EpisodeBox = (props: EpisodeBoxInter) => {
     return  (
         <div className={episodeBoxStyling}>
-            <EpisodeBoxTitleData />
+            {/*Title Data*/}
+            <EpisodeBoxTitleData 
+                imgSrc={props.imgSrc}
+                creator={props.creator}
+                color={props.color}
+                title={props.title}
+            />
+            {/*Episode Description*/}
+            <div className="w-[50%]">
+                <TextTruncate 
+                    text={DummyDesc}
+                    limit={STR_LEN_EPISODE_BOX}
+                    textClass="text-neutral-400 text-[12px]"
+                    buttonClass={textTruncateButtonStyling+" text-[13px]"}
+                />
+            </div>
+            {/*Play Button*/}
+            <DescriptionButton 
+                icon={<PlayIcon className="w-6 h-6" />}
+                text={""}
+                color={"#a78bfa"}
+            />
         </div>
     )
 }
 
-export const EpisodeBoxTitleData = () => {
+export const EpisodeBoxTitleData = (props: EpisodeBoxTitleData) => {
     return (
-        <div className="flex flex-row items-center space-x-3">
+        <div className={episodeBoxTitleDataStyling}>
             <Image 
                 src="/aa.jpg"
                 alt="Episode Cover"
                 height={30}
                 width={50}
-                className="object-cover h-12 rounded-xl"
+                className={episodeBoxTitleDataImg}
             />
             <div className="flex flex-col">
-                <p className="text-lg text-white font-semibold">American Rhetoric</p>
-                <div className="flex flex-row space-x-3">
-                    <p className="text-neutral-400 text-[12px] inline">by</p>
-                    <CreatorTag color={"#c084fc"} creator={"@martonlederer"} imgSrc={"/aa.jpg"}/>
+                <p className={episodeBoxTitleStyling}>{props.title}</p>
+                <div className={creatorTagDivStyling}>
+                    <p className={byStyling}>by</p>
+                    <CreatorTag color={props.color} creator={props.creator} imgSrc={props.imgSrc}/>
                 </div>
             </div>
         </div>
     )
 }
 
-interface CreatorTagInter {
-    color: string;
-    creator: string;
-    imgSrc: string;
-}
 export const CreatorTag = (props: CreatorTagInter) => {
     return (
-        <div className={} style={{backgroundColor: hexToRGB(props.color, 0.3)}}>
+        <div className={creatorTagStyling} style={{backgroundColor: hexToRGB(props.color, 0.3)}}>
             {props.imgSrc.length > 0 ?
                 <Image 
                     src={props.imgSrc}
                     alt="Episode Cover"
                     height={6}
                     width={15}
-                    className="object-cover h-4 rounded-full mr-1"
+                    className={creatorTagImgStyling}
                 />
                 :
                 ""
