@@ -12,7 +12,7 @@ import EpisodeQueue from './episodeQueue';
 import Fullscreen from './fullscreen';
 import VideoModal from './video_modal';
 
-import { isFullscreen, queue, currentEpisode, isPaused, queueVisible, themeColor } from '../atoms/index.js';
+import { isFullscreen, queue, currentEpisode, isPlaying, isQueueVisible, themeColor } from '../atoms/index.js';
 
 interface LayoutInterface {
   children: ReactNode;
@@ -25,11 +25,11 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
   const [appLoaded, setAppLoaded] = useState(false);
 
   const videoRef = useRef();
-  const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
-  const [_isPaused, _setIsPaused] = useRecoilState(isPaused);
+  const [_isFullscreen, _setIsFullscreen] = useRecoilState(isFullscreen);
+  const [_isPlaying, _setIsPlaying] = useRecoilState(isPlaying);
   const [_currentEpisode, _setCurrentEpisode] = useRecoilState(currentEpisode);
   const [_queue, _setQueue] = useRecoilState(queue);
-  const [_queueVisible, _setQueueVisible] = useRecoilState(queueVisible);
+  const [_isQueueVisible, _setQueueVisible] = useRecoilState(isQueueVisible);
 
   const [themeColor_, ] = useRecoilState(themeColor);
   const [currentPodcastColor, setCurrentPodcastColor] = useState('rgb(255, 255, 0)');
@@ -38,34 +38,17 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
   const [ANS, setANS] = useState({ address_color: "", currentLabel: "", avatar: "" });
   const [walletConnected, setWalletConnected] = useState(false);
 
-  // for the queue button
-  useEffect(() => {
-    console.log("Use effect player");
-    try {
-      // getAllData({signal: abortContr.signal}).then((data) => setPrimaryData_(data));
-    } catch(e) {
-      console.log("Error fetching read data from App.js");
-      console.log(e);
-    }
-      
-    // const paused = player.ui.playBtn;
-    // const fullscreen = player.ui.fullscreenBtn;
-
-    //queue.addEventListener('click', () => _setQueueVisible(visible => !visible));
-    // paused.addEventListener('click', () => _setIsPaused(paused => !paused));
-    // fullscreen.addEventListener('click', () => setIsFullscreen_(isFullscreen_ => !isFullscreen_));
-  }, []);
-
   const [recentlyAdded, setRecentlyAdded] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   // Episode  Loader + spacebar for play/pause
   useEffect(() => {
-    window.addEventListener('keydown', function (e) {
-      if (e.key == " " && e.target == document.body) {
-        e.preventDefault();
-      }
-    });
+    // TODO: reimplement later
+    // window.addEventListener('keydown', function (e) {
+    //   if (e.key == " " && e.target == document.body) {
+    //     e.preventDefault();
+    //   }
+    // });
   
     // TODO: generalize
     // if (!localStorage.getItem("checkupDate")) localStorage.setItem("checkupDate", new Date());
@@ -78,7 +61,6 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
 
 
   const playEpisode = (episode, number = 1) => {
-    console.log("PLAYEPISODE BEING CALLED");
     const shikwasaPlayer = new Shikwasa({
       container: () => document.querySelector('.podcast-player'),
       themeColor: 'yellow',
@@ -105,7 +87,7 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
     <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
       <div className="flex h-screen">
         <div className="fixed z-[60] bottom-0 w-full">
-          <div className={`relative podcast-player rounded-t-xl backdrop-blur-sm ${isFullscreen_ ? "bg-zinc-900/60" : "bg-zinc-900"}`}>
+          <div className={`relative podcast-player rounded-t-xl backdrop-blur-sm ${_isFullscreen ? "bg-zinc-900/60" : "bg-zinc-900"}`}>
             {/* {!loading && currentEpisode ? <Player episode={currentEpisode} />: <div>Loading...</div>} */}
           </div>
         </div>
@@ -114,13 +96,12 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
             <Sidenav />
           </div>
         </div>
-
         <div className="z-50">
-          <div className="absolute z-50 bottom-0 right-12" style={{ display: _queueVisible ? 'block' : 'none' }}>
-            {!loading ? <EpisodeQueue /> : <div className="h-full w-full animate-pulse bg-gray-900/30"></div>}
+          <div className="absolute z-50 bottom-0 right-0">
+            {_isQueueVisible && <EpisodeQueue />}
           </div>
         </div>
-        {isFullscreen_ && <Fullscreen episode={_currentEpisode} id={Number(_currentEpisode?.number) || 1} />}
+        {_isFullscreen && <Fullscreen episode={_currentEpisode} id={Number(_currentEpisode?.number) || 1} />}
         <Background>
           <div className="ml-8 pr-8 pt-9">
             <div className="mb-10">
@@ -133,7 +114,6 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
         </Background>
         <VideoModal/>
       </div>
-
     </div>
   )
 }

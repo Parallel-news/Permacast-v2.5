@@ -82,9 +82,17 @@ export const creators = atom({
     default: []
 });
 
+
+// *** PLAYBACK ***
+
 export const queue = atom({
     key: "queue",
     default: []
+});
+
+export const currentPodcast = atom({
+    key: "currentPodcast",
+    default: {}
 });
 
 export const currentEpisode = atom({
@@ -92,23 +100,18 @@ export const currentEpisode = atom({
     default: { contentTx: 'null', pid: 'null', eid: 'null', number: '1' }
 });
 
-export const player = atom({
-    key: "player",
-    default: {}
-});
-
 export const queueHistory = atom({
     key: "queueHistory",
     default: []
 })
 
-export const isPaused = atom({
-    key: "isPaused",
-    default: ""
+export const isPlaying = atom({
+    key: "isPlaying",
+    default: false
 });
 
-export const queueVisible = atom({
-    key: "queueVisible",
+export const isQueueVisible = atom({
+    key: "isQueueVisible",
     default: false
 })
 
