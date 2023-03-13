@@ -104,11 +104,11 @@ export const queueHistory = atom({
 
 export const isPaused = atom({
     key: "isPaused",
-    default: ""
+    default: false
 });
 
-export const queueVisible = atom({
-    key: "queueVisible",
+export const isQueueVisible = atom({
+    key: "isQueueVisible",
     default: false
 })
 
