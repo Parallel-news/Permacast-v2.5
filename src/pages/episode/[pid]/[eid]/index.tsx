@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { backgroundColor } from "../../atoms";
+import { backgroundColor } from "../../../../atoms";
 import { 
     EpisodeBanner,
     EpisodeDescription,
     NextEpisode,
-    podcastIdStyling,
-} from "../../component/episode/eidTools";
+    podcastIdStyling
+ } from "../../../../component/episode/eidTools";
 
 export default function PodcastId() {
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);

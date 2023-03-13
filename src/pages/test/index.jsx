@@ -8,13 +8,13 @@ import {
   ArrowUpOnSquareIcon,
 } from "@heroicons/react/24/outline";
 
-import { getButtonRGBs, isTooLight } from "../../../../utils/ui";
+import { getButtonRGBs, isTooLight } from "../../utils/ui";
 
 
-import TipButton from "../../../../component/reusables/tip";
+import TipButton from "../../component/reusables/tip";
 // import PlayButton from "../../../../component/reusables/playButton";
-import Track from "../../../../component/track";
-import { switchFocus } from "../../../../atoms";
+import Track from "../../component/track";
+import { switchFocus } from "../../atoms";
 
 export default function Episode(props) {
   const { podcastId, episodeNumber } = [2,3]
