@@ -14,7 +14,7 @@ import UploadEpisode from "../../component/uploadEpisode";
 import UploadVideo from "../../component/uploadVideo";
 import PodcastHeader from '../../component/podcastHeader';
 
-import { CheckAuthHook, getButtonRGBs } from "../../utils/ui";
+import { useWalletAddresses } from "../../hooks";
 
 
 import {
@@ -40,7 +40,7 @@ const Podcast = (props) => {
   const [showEpisodeForm, setShowEpisodeForm] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const [_, userArAddress] = CheckAuthHook();
+  const [_, arAddress] = useWalletAddresses();
 
   const loadEpisodes = async (podcast, episodes) => {
     const episodeList = [];
@@ -113,8 +113,8 @@ const Podcast = (props) => {
 
   const checkEpisodeForm = async (podObj) => {
     if (
-      userArAddress === podObj.creatorAddress ||
-      podObj.superAdmins.includes(userArAddress)
+      arAddress === podObj.creatorAddress ||
+      podObj.superAdmins.includes(arAddress)
     ) {
       setShowEpisodeForm(true);
       window.scrollTo(0, 0);
@@ -190,8 +190,8 @@ const Podcast = (props) => {
   }, [])
 
   const isOwner =
-    thePodcast?.creatorAddress === userArAddress ||
-    thePodcast?.superAdmins?.includes(userArAddress);
+    thePodcast?.creatorAddress === arAddress ||
+    thePodcast?.superAdmins?.includes(arAddress);
 
   return (
     <div className="flex flex-col items-center justify-center mb-20">

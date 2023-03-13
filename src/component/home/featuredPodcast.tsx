@@ -18,7 +18,7 @@ import {
   switchFocus,
   videoSelection,
   queue,
-  player
+  isQueueVisible,
 } from "../../atoms";
 
 import { Episode, PodcastDev } from "../../interfaces/index.js";
@@ -27,6 +27,7 @@ import { RGB, RGBA } from "../../interfaces/ui";
 import { FeaturedPodcastPlayButtonInterface, showShikwasaPlayerArguments } from "../../interfaces/playback"; 
 import FeaturedPodcastPlayButton from "../reusables/playButton";
 import { PauseIcon } from "@heroicons/react/24/outline";
+import { usePlayerConnector } from "../../hooks";
 
 
 const FeaturedPodcast: FC<PodcastDev> = ({
@@ -41,15 +42,16 @@ const FeaturedPodcast: FC<PodcastDev> = ({
 }) => {
 
   const { t } = useTranslation();
-
-  const [dominantColor, setDominantColor] = useState<string>('');
+  const [player, launchPlayer] = usePlayerConnector();
+  const [themeColor, setThemeColor] = useState<string>('');
   const [textColor, setTextColor] = useState<string>('');
 
   const [_queue, _setQueue] = useRecoilState(queue);
 
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
   const [vs_, setVS_] = useRecoilState(videoSelection);
-  const [player_, _] = useRecoilState(player);
+
+  const [_isQueueVisible, _setQueueVisible] = useRecoilState(isQueueVisible);
 
   useEffect(() => {
     const fetchColor = async () => {
@@ -60,8 +62,8 @@ const FeaturedPodcast: FC<PodcastDev> = ({
       if (averageColor.error) return;
       const rgba: RGBA = RGBAstringToObject(averageColor.rgba);
       const stringRGBA = RGBAobjectToString(rgba);
-      setDominantColor(stringRGBA);
-      const colorForText = isTooLight(rgba) ? "rgb(0, 0, 0)" : "rgb(255, 255, 255)";
+      setThemeColor(stringRGBA);
+      const colorForText = isTooLight(rgba, 0.6) ? "rgb(0, 0, 0)" : "rgb(255, 255, 255)";
       setTextColor(colorForText);
     }
     fetchColor();
@@ -122,22 +124,24 @@ const FeaturedPodcast: FC<PodcastDev> = ({
 
 
   return (
-    <div 
-      className={`rounded-3xl text-white/30 relative overflow-hidden carousel-item hover-up-effect mx-2 max-w-[280px]`} 
-      style={{backgroundColor: dominantColor}}
+    <div
+      className={`rounded-3xl text-white/30 relative overflow-hidden carousel-item hover-up-effect mx-2 max-w-[280px]`}
+      style={{ backgroundColor: themeColor }}
     >
       <div className={`w-full h-full absolute top-0 right-0`} />
-      <div className="h-1/6 w-full px-5 pb-2 cursor-pointer relative">
+      <div className="w-full h-1/6 px-5 pb-2 cursor-pointer relative">
         <Link href={`/podcast/${pid}`}>
-          <div className="pt-5 pb-3 text-xs font-semibold" style={{color: textColor}}>
+          <div className="pt-5 pb-3 text-xs font-semibold" style={{ color: textColor }}>
             <EpisodeCount count={episodes.length} />
           </div>
-          <div className="w-full mb-7 max-w-[250px] overflow-x-hidden mx-auto">
-            <img
-              className="object-cover aspect-square h-[240px]"
-              src={"https://arweave.net/" + cover}
-              alt={podcastName}
-            />
+          <div className="w-full max-w-[250px] overflow-x-hidden mx-auto mb-2">
+            {cover &&
+              <img
+                className="object-cover aspect-square h-[240px]"
+                src={"https://arweave.net/" + cover}
+                alt={podcastName}
+              />
+            }
           </div>
         </Link>
         <div className="h-16 flex items-center">
@@ -147,8 +151,9 @@ const FeaturedPodcast: FC<PodcastDev> = ({
             onClick={() => {
               if (!episodes) return;
               _setQueue(episodes);
-              const { episodeName, contentTx } = episodes[0]
-              showShikwasaPlayer({themeColor: dominantColor, title: episodeName, artist: author, cover, src: contentTx})
+              const { episodeName: title, contentTx: src } = episodes[0];
+              launchPlayer({ themeColor, title, artist: author, cover, src })
+              return player;
             }}
           >
             <PlayButton svgColor={textColor} fillColor={textColor} outlineColor={textColor} />
@@ -157,7 +162,7 @@ const FeaturedPodcast: FC<PodcastDev> = ({
             <div className="text-lg hover:underline font-medium line-clamp-1 cursor-pointer">
               {podcastName}
             </div>
-            <div className="text-xs max-w-[85%] line-clamp-3 break-all">
+            <div className="text-xs line-clamp-2">
               {description}
             </div>
           </Link>

@@ -24,7 +24,7 @@ import {
   PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN, CONTENT_TYPE_VALUES,
   PODCAST_MINIFIED_COVER_MAX_SIZE
 } from '../../constants';
-import { CheckAuthHook } from "../../utils/ui";
+import { useWalletAddresses } from "../../hooks";
 import useEthTransactionHook from "../../utils/ethereum";
 import { ValMsg, isValidEmail, reduceImageSize } from "../../component/reusables/formTools";
 import { convertFilesToBuffer } from "../../utils/arseed";
@@ -33,7 +33,7 @@ export default function UploadPodcast() {
   const { t } = useTranslation();
 
   // remove state from here
-  const [eth, ar] = CheckAuthHook();
+  const [ethAddress, arAddress] = useWalletAddresses();
   const [data, isLoading, isSuccess, sendTransaction, error] = useEthTransactionHook();
 
   const [contentType_, setContentType_] = useRecoilState(ContentType);
@@ -110,7 +110,7 @@ export default function UploadPodcast() {
   // for the sake of clarity, putting these two along each other
   const payEthAndUpload = async (e) => {
     e.preventDefault();
-    if (!(eth && ar)) return;
+    if (!(ethAddress && arAddress)) return;
     // if (!!formIsValid()) return;
     setIsUploading(true)
     uploadCover().then((covers) => {

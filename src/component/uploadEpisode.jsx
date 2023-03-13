@@ -9,7 +9,7 @@ import {
   processFile,
 } from '../utils/shorthands.js';
 
-import { CheckAuthHook } from "../utils/ui";
+import { useWalletAddresses } from "../hooks";
 import { globalModalOpen } from '../atoms';
 
 
@@ -24,7 +24,7 @@ export default function UploadEpisode({ podcast }) {
   const [episodeUploading, setEpisodeUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(false)
   const [uploadPercentComplete, setUploadPercentComplete] = useState(0)
-  const [eth, ar] = CheckAuthHook();
+  const [ethAddress, arAddress] = useWalletAddresses();
 
   const listEpisodeOnVerto = async (episodeId) => {
   }
@@ -111,11 +111,11 @@ export default function UploadEpisode({ podcast }) {
                 {!episodeUploading ?
                   <button
                     className="btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8"
-                    disabled={!(eth && ar)}
+                    disabled={!(ethAddress && arAddress)}
                     type="submit"
                   >
                     <ArrowUpTrayIcon className="h-5 w-5 mr-2" />
-                    {!(eth && ar) ? t("uploadepisode.upload"): t("uploadshow.disabled")}
+                    {!(ethAddress && arAddress) ? t("uploadepisode.upload"): t("uploadshow.disabled")}
                   </button>
                   :
                   <button
