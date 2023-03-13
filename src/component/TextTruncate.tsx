@@ -20,10 +20,14 @@ const TextTruncate: React.FC<TextTruncateProps> = ({ text, limit, textClass, but
       setIsVisible(true)
     }, 200);
     return () => clearTimeout(timeout);
-  }, [showFullText])
+  }, [])
 
   const toggleShowFullText = () => {
-    setShowFullText(!showFullText);
+    setIsVisible(false)
+    const timeout = setTimeout(() => {
+      setIsVisible(true)
+      setShowFullText(!showFullText);
+    }, 200);
   };
 
   return (
