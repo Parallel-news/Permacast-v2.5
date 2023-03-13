@@ -90,14 +90,14 @@ export const queue = atom({
     default: []
 });
 
+export const currentPodcast = atom({
+    key: "currentPodcast",
+    default: {}
+});
+
 export const currentEpisode = atom({
     key: "currentEpisode",
     default: { contentTx: 'null', pid: 'null', eid: 'null', number: '1' }
-});
-
-export const player = atom({
-    key: "player",
-    default: {}
 });
 
 export const queueHistory = atom({
@@ -105,8 +105,8 @@ export const queueHistory = atom({
     default: []
 })
 
-export const isPaused = atom({
-    key: "isPaused",
+export const isPlaying = atom({
+    key: "isPlaying",
     default: false
 });
 
