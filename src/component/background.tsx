@@ -24,8 +24,8 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
 
   useEffect(() => {
     // console.log("background.tsx useEffect");
-    if (useDefaultBackground.includes(pathname)) setBackgroundColor_(dimColorString(themeColor_, 0.2));
-    else setBackgroundColor_(dimColorString(podcastColor_, 0.4))
+    if (useDefaultBackground.includes(pathname)) setBackgroundColor_(dimColorString(themeColor_, 0.1));
+    else setBackgroundColor_(dimColorString(podcastColor_, 0.1))
   }, [pathname])
 
   // finish the animation for this transition later on

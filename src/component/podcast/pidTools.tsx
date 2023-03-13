@@ -71,7 +71,7 @@ export interface EpisodeBoxInter extends EpisodeBoxTitleData {
 export const episodeIconStyling = "mr-2 w-4 h-4"
 export const creatorTagDivStyling = "flex flex-row space-x-3"
 export const byStyling = "text-neutral-400 text-[12px] inline"
-export const podcastIdStyling = "flex flex-col space-y-8 w-[75%]"
+export const podcastIdStyling = "flex flex-col space-y-8 w-[75%] mb-[200px]"
 export const nextEpisodeStyling = "w-full flex flex-col space-y-6"
 export const episodeInfoButtonsStyling = "flex flex-row space-x-6"
 export const episodeBoxTitleDataImg = "object-cover h-12 rounded-xl"
