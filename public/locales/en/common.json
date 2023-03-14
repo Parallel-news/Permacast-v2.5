@@ -29,7 +29,7 @@
 		"episodes": "Episodes",
 		"recentlyadded": "Recently added",
 		"featuredcreators": "Featured creators"
-  },
+  	},
 	"search" : {
 		"placeholder": "Search for a podcast",
 		"loading": "Fetching titles...",
@@ -155,5 +155,9 @@
 	"fullscreen": {
 		"episode": "Episode"
 	},
-	"view": "View"
+	"view": "View",
+	"textTruncate": {
+		"showMore": "Show More",
+		"showLess": "Show Less"
+	}
 }
