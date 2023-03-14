@@ -74,11 +74,16 @@ const FeaturedPodcastPlayButton: FC<FeaturedPodcastPlayButtonInterface> = ({ pla
   };
 };
 
-export const FeaturedPodcastDummyPlayButton: FC<{buttonColor: string}> = ({ buttonColor }) => {
+interface PlayButtonInterface {
+  buttonColor: string;
+  size?: number;
+};
+
+export const FeaturedPodcastDummyPlayButton: FC<PlayButtonInterface> = ({ buttonColor, size }) => {
   return (
     <button
-      style={{backgroundColor: dimColorString(buttonColor, 0.2)}}
-      className={`z-10 rounded-full w-10 h-10 flex justify-center items-center shrink-0 default-animation hover:scale-[1.1]`}
+      style={{backgroundColor: dimColorString(buttonColor, 0.2), width: size || '40px', height: size || '40px'}}
+      className={`z-10 rounded-full flex justify-center items-center shrink-0 default-animation hover:scale-[1.1]`}
       onClick={() => {}}
     >
     <PlayButton
