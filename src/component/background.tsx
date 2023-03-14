@@ -2,7 +2,7 @@ import { useEffect, ReactNode } from "react";
 import { useRouter } from "next/router";
 import { useRecoilState } from "recoil";
 import { backgroundColor, podcastColor, themeColor } from '../atoms/index';
-import { dimColor } from "../utils/ui";
+import { dimColorString } from "../utils/ui";
 
 interface BackgroundInterface {
   children: ReactNode;
@@ -24,12 +24,12 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
 
   useEffect(() => {
     // console.log("background.tsx useEffect");
-    if (useDefaultBackground.includes(pathname)) setBackgroundColor_(dimColor(themeColor_, 0.2));
-    else setBackgroundColor_(dimColor(podcastColor_, 0.4))
+    if (useDefaultBackground.includes(pathname)) setBackgroundColor_(dimColorString(themeColor_, 0.1));
+    else setBackgroundColor_(dimColorString(podcastColor_, 0.1))
   }, [pathname])
 
   // finish the animation for this transition later on
-  const styles = {transition: 'opacity 2.5s ease', backgroundImage: `linear-gradient(${backgroundColor_}, black)`};
+  const styles = {transition: 'opacity 2.5s ease', backgroundImage: `linear-gradient(${backgroundColor_}, black, black, black)`};
 
   return (
     <div className="w-screen overflow-scroll" style={true ? styles : {}}>

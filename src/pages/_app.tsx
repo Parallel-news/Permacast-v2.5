@@ -3,7 +3,7 @@ import Script from 'next/script';
 import { appWithTranslation } from 'next-i18next';
 
 import { RecoilRoot } from 'recoil';
-import { AnsProvider } from 'ans-for-all';
+import { ArconnectProvider } from 'react-arconnect';
 
 import '@rainbow-me/rainbowkit/styles.css';
 import {
@@ -46,7 +46,7 @@ function App({ Component, pageProps }) {
   return (
     <RecoilRoot> 
       {/* <AnimatePresence exitBeforeEnter> */}
-        <AnsProvider>
+        <ArconnectProvider>
           <Head>
             <title>Permacast</title>
             <meta name="description" content="Home | Permacast" />
@@ -87,7 +87,7 @@ function App({ Component, pageProps }) {
               </Layout>
             </RainbowKitProvider>
           </WagmiConfig>
-        </AnsProvider>
+        </ArconnectProvider>
       {/* </AnimatePresence> */}
     </RecoilRoot>
   )

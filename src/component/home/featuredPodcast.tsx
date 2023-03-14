@@ -4,29 +4,123 @@ import { useRecoilState } from "recoil";
 import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
 
 import {
-  replaceDarkColorsRGB,
   isTooLight,
+  RGBAstringToObject,
+  RGBAobjectToString,
+  dimColorString,
+  showShikwasaPlayer,
   RGBobjectToString,
-  getButtonRGBs,
-  dimColor,
+  fetchAverageColor,
+  getCoverColorScheme,
 } from "../../utils/ui";
 
-import { Cooyub, PlayButton } from "../reusables/icons";
+import { PlayButton } from "../reusables/icons";
 
 import {
   switchFocus,
   videoSelection,
-  creators,
-  currentThemeColor
+  queue,
+  isQueueVisible,
 } from "../../atoms";
-import { PodcastDev } from "../../interfaces/index.js";
-import Link from "next/link";
 
-interface FeaturedPodcastInterface {
-  podcast: PodcastDev;
+import { arweaveTX, Episode, PodcastDev } from "../../interfaces/index.js";
+import Link from "next/link";
+import { RGB, RGBA } from "../../interfaces/ui";
+import FeaturedPodcastPlayButton, { FeaturedPodcastDummyPlayButton } from "./featuredPodcastPlayButton";
+import { PauseIcon } from "@heroicons/react/24/outline";
+import { usePlayerConnector } from "../../hooks";
+import Image from "next/image";
+
+
+/**
+ * Index
+ * 1. Interfaces
+ * 2. Stylings
+ * 3. Custom Functions
+ * 4. Reusable Components
+ */
+
+// 1. Interfaces 
+
+interface EpisodeCountProps {
+  count: number;
+  textColor: string;
 };
 
-const FeaturedPodcast: FC<FeaturedPodcastInterface> = ({ podcast }) => {
+interface PodcastCoverProps {
+  cover: arweaveTX;
+  podcastName: string;
+};
+
+interface PodcastNameProps {
+  podcastName: string;
+};
+
+interface PodcastDescriptionProps {
+  podcastDescription: string;
+};
+
+// 2. Stylings
+
+const podcastOuterBackgroundStyling = `rounded-3xl text-white/30 relative overflow-hidden carousel-item hover-up-effect mx-2 max-w-[280px]`
+const podcastInnerBackgroundStyling = `w-full h-1/6 px-5 pb-2 cursor-pointer relative`
+const podcastCoverStyling = `w-full max-w-[250px] overflow-x-hidden mx-auto mb-2`
+const podcastEpisodeCountStyling = `pt-5 pb-3 text-xs font-semibold`
+const podcastBottomStyling = `h-16 flex items-center`
+const podcastNameStyling = `text-lg hover:underline font-medium line-clamp-1 cursor-pointer`
+const podcastDescriptionStyling = `text-xs line-clamp-2`
+
+// 3. Custom Functions
+
+// 4. Reusable Components
+
+const EpisodeCount: FC<EpisodeCountProps> = ({ count, textColor }) => {
+  const { t } = useTranslation();
+
+  return (
+    <div className={podcastEpisodeCountStyling} style={{ color: textColor }}>
+      {count}{" "}
+      {count === 1
+        ? t("home.episode")
+        : t("home.episodes")}
+    </div>
+  );
+};
+
+const PocastCover: FC<PodcastCoverProps> = ({ cover, podcastName }) => {
+  return (
+    <div className={podcastCoverStyling}>
+      {cover &&
+        <Image
+          height={240}
+          width={240}
+          className="object-cover aspect-square"
+          src={"https://arweave.net/" + cover}
+          alt={podcastName}
+        />
+      }
+    </div>
+  );
+};
+
+const PodcastName: FC<PodcastNameProps> = ({ podcastName }) => {
+  return (
+    <div className={podcastNameStyling}>
+      {podcastName}
+    </div>
+  );
+};
+
+const PodcastDescription: FC<PodcastDescriptionProps> = ({ podcastDescription }) => {
+  return (
+    <div className={podcastDescriptionStyling}>
+      {podcastDescription}
+    </div>
+  );
+};
+
+
+const FeaturedPodcast: FC<PodcastDev> = (podcast) => {
 
   const {
     cover,
@@ -34,86 +128,58 @@ const FeaturedPodcast: FC<FeaturedPodcastInterface> = ({ podcast }) => {
     minifiedCover,
     podcastName,
     episodes,
+    author,
     label,
     description,
   } = podcast;
 
-  const [dominantColor, setDominantColor] = useState<string>();
+  const [player, launchPlayer] = usePlayerConnector();
+  const [themeColor, setThemeColor] = useState<string>('');
+  const [textColor, setTextColor] = useState<string>('');
 
-  useEffect(() => {
-    console.log(podcast)
-    const fetchColor = async () => {
-      const fac = new FastAverageColor();
-      const color: FastAverageColorResult = await fac.getColorAsync('https://arweave.net/' + minifiedCover)
-      if (color?.error) return;
-      setDominantColor(dimColor(color.rgb, 0.6))
-    }
-    fetchColor();
-  }, [])
-  getButtonRGBs  
-  // const textColor = isTooLight(rgb) ? "black" : "white";
-
-  const { t } = useTranslation();
+  const [_queue, _setQueue] = useRecoilState(queue);
 
   const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
   const [vs_, setVS_] = useRecoilState(videoSelection);
 
+  const [_isQueueVisible, _setQueueVisible] = useRecoilState(isQueueVisible);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const coverToBeUsed = (minifiedCover || cover);
+      const averageColor = await fetchAverageColor(coverToBeUsed);
+      if (averageColor.error) return;
+      const [coverColor, textColor] = getCoverColorScheme(averageColor.rgba);
+      setThemeColor(coverColor);
+      setTextColor(textColor);
+    };
+    fetchData();
+  }, []);
+
+  const episode = episodes.length ? episodes[0]: undefined;
+  const playerInfoArgs = { themeColor, buttonColor: textColor, title: episode?.episodeName, artist: author, cover, src: episode?.contentTx };
+
   return (
-    <div className={`rounded-3xl text-white/30 relative overflow-hidden carousel-item`} style={{backgroundColor: dominantColor}}>
-      <div className={`w-full h-full absolute top-0 right-0`} />
-      <div className="h-1/6 w-full px-5 pb-2 cursor-pointer relative">
+    <div className={podcastOuterBackgroundStyling} style={{ backgroundColor: themeColor }}>
+      <div className={podcastInnerBackgroundStyling}>
         <Link href={`/podcast/${pid}`}>
-          <div className="pt-5 pb-3 text-xs">
-            {episodes.length}{" "}
-            {episodes.length === 1
-              ? t("home.episode")
-              : t("home.episodes")}
-          </div>
-          <div className="w-full mb-7 max-w-[200px] overflow-x-hidden mx-auto">
-            <img
-              className="object-cover aspect-square h-[200px]"
-              src={"https://arweave.net/" + cover}
-              alt={podcastName}
-            />
-          </div>
+          <EpisodeCount count={episodes.length} textColor={textColor} />
+          <PocastCover podcastName={podcastName} cover={cover} />
         </Link>
-        <div className="h-16 flex items-center">
-          <div
-            style={{backgroundColor: dominantColor}}
-            className="z-10 rounded-full w-10 h-10 flex justify-center items-center shrink-0"
-            onClick={() => {
-              // Promise.all(firstTenEpisodes(true)).then((episodes) => {
-              //   enqueuePodcast(episodes);
-              //   play(episodes[0]);
-              // });
-              if (switchFocus_) {
-                // appState.queue.playEpisode(
-                //   secondaryData_.episodes[0],
-                //   secondaryData_.episodes[0].eid
-                // );
-              } else {
-                // setVS_([
-                //   "https://arweave.net/" +
-                //     secondaryData_.episodes[0].contentTx,
-                //   {},
-                // ]);
-              }
-            }}
-          >
-            <PlayButton svgStyle={"white"} fill={"white"} outline={"white"} />
-          </div>
-          <Link className="ml-3 w-full" href={`/podcast/${pid}`}>
-            <div className="text-lg line-clamp-1 cursor-pointer">
-              {podcastName}
-            </div>
-            <div className="text-xs max-w-[85%] line-clamp-3 break-all">
-              {description}
-            </div>
+        <div className={podcastBottomStyling}>
+          <FeaturedPodcastPlayButton
+            playerInfo={playerInfoArgs}
+            podcastInfo={podcast}
+            episodes={episodes}
+          />
+          <Link href={`/podcast/${pid}`} className="ml-3 w-full" style={{color: textColor}}>
+            <PodcastName podcastName={podcastName} />
+            <PodcastDescription podcastDescription={description} />
           </Link>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default FeaturedPodcast;

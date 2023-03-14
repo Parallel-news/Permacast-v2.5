@@ -53,7 +53,7 @@ export default function Track({
   const playCurrentTrack = () => {
     if (!player) return;
     player.toggle();
-    setIsPaused(!isPaused);
+    // setIsPaused(!isPaused);
   };
 
   return (

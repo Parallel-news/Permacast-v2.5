@@ -1,10 +1,6 @@
 import axios from "axios"
 import { NextApiRequest, NextApiResponse } from "next"
-
-const CONTRACT = process.env.EXM_CONTRACT_ADDRESS
-const DEV_CONTRACT = process.env.EXM_DEV_CONTRACT_ADDRESS
-const TOKEN = process.env.EXM_API_TOKEN
-const DEV_TOKEN = process.env.EXM_DEV_API_TOKEN
+import { getContractVariables } from "../../../utils/contract"
 
 interface ResponseData {}
 
@@ -13,8 +9,10 @@ export default async function handler(
   res: NextApiResponse<ResponseData>
 ) {
   try {
-    const data = await axios.post(`https://api.exm.dev/api/transactions?token=${TOKEN}`, {
-      functionId: CONTRACT,
+    const { contractAddress, contractAPIToken } = getContractVariables();
+
+    const data = await axios.post(`https://api.exm.dev/api/transactions?token=${contractAPIToken}`, {
+      functionId: contractAddress,
       inputs: [{
         "input": JSON.stringify(req.body)
       }],

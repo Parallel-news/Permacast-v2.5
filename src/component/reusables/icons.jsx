@@ -6,10 +6,10 @@ export function Cooyub({svgStyle, rectStyle, fill}) {
   )
 }
 
-export function PlayButton ({svgStyle, fill, outline, size="20"}) {
+export function PlayButton ({ svgColor, fillColor, outlineColor, size="20" }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 18 18" fill={svgStyle} xmlns="http://www.w3.org/2000/svg">
-      <path d="M13 9L5 4V14L13 9Z" fill={fill} stroke={outline} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <svg width={size} height={size} viewBox="0 0 18 18" fill={svgColor} xmlns="http://www.w3.org/2000/svg">
+      <path d="M13 9L5 4V14L13 9Z" fill={fillColor} stroke={outlineColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
 }

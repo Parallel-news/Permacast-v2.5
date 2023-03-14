@@ -57,7 +57,7 @@ export interface Podcast {
 }
 
 export interface PodcastDev extends Podcast {
-  minifiedCover: arweaveTX;
+  minifiedCover?: arweaveTX;
 }
 
 export interface Episode {
@@ -71,6 +71,11 @@ export interface Episode {
   uploadedAt:  number;
   isVisible:   boolean;
 }
+
+export interface FullEpisodeInfo {
+  episode: Episode,
+  podcast: PodcastDev,
+};
 
 export interface Ans {
   user:           string;

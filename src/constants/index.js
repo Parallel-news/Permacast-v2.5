@@ -28,3 +28,20 @@ export const PODCAST_MINIFIED_COVER_MAX_SIZE = 65535;
 
 export const IS_EXPLICIT_VALUES = ["yes", "no"];
 export const CONTENT_TYPE_VALUES = ["v", "a"];
+
+/**
+ * FADE_IN_STYLE Instructions
+ * 1. Call in parent most div or commonly changing components
+ * 2. const [isVis, setIsVis] 
+ * 3. Call setIsVis in useEffect, set to true
+ * 4. call isVis && opacity-100 in component classname
+ */
+export const FADE_IN_STYLE = "opacity-0 transition-opacity duration-500 ease-in-out"
+
+// TEXT TRUNCATE
+export const STR_LEN_EPISODE_BOX = 100
+export const STR_LEN_EPISODE_DESC = 400
+
+// API
+export const EXM_READ_LINK = "https://api.exm.dev/read/"
+export const ARWEAVE_READ_LINK = "https://arweave.net/"

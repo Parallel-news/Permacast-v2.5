@@ -12,6 +12,7 @@ package-lock.json
 # production
 /build
 .next
+.husky
 
 # misc
 .DS_Store

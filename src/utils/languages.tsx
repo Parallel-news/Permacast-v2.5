@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'next-i18next';
 
 export const categories_en = [
   "Arts",
@@ -564,7 +564,7 @@ export const LANGUAGES = [
 ]
 
 export const useLanguageHook = () => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const currentLanguage = LANGUAGES.find(
     (language) => i18n.language === language.code
   );

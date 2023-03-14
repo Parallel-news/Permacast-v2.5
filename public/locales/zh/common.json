@@ -141,6 +141,9 @@
 		"notfound": "在 ANS 上找不到"
 	},
 	"tip": "打赏",
+	"track": {
+		"by": "经过"
+	},
 	"loadingpodcasts": "正在加载播客...",
 	"loadingepisodes": "加载剧集...",
 	"nopodcasts": "这里还没有播客，请上传一个!",
