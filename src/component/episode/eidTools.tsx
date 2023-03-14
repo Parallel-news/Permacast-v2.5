@@ -89,14 +89,20 @@ export interface Episode {
   isVisible: boolean;
 }
 
+export interface ErrorTagInter {
+    msg: string;
+}
+
 // 2. Stylings
 export const episodeIconStyling = "mr-2 w-4 h-4"
 export const creatorTagDivStyling = "flex flex-row space-x-3"
 export const byStyling = "text-neutral-400 text-[12px] inline"
 export const episodeInfoButtonsStyling = "flex flex-row space-x-6"
 export const episodeBoxTitleDataImg = "object-cover h-12 rounded-xl"
+export const errorTagStyle = "w-full flex justify-center items-center"
 export const episodeDateStyling = "text-gray-500 text-[11px] font-bold"
 export const creatorTagImgStyling = "object-cover h-4 rounded-full mr-1"
+export const errorTagMsgStyle = "text-neutral-400 text-xl font-semibold"
 export const episodeBoxTitleStyling = "text-lg text-white font-semibold"
 export const episodeBannerStyling = "flex flex-row w-full h-60 space-x-16"
 export const episodeInfoStyling = "flex flex-col justify-center space-y-4"
@@ -299,6 +305,14 @@ export const CreatorTag = (props: CreatorTagInter) => {
                 ""
             }
             <p className="text-[10px]" style={{color: props.color}}>{props.creator}</p>
+        </div>
+    )
+}
+
+export const ErrorTag = (props: ErrorTagInter) => {
+    return (
+        <div className={errorTagStyle}>
+            <p className={errorTagMsgStyle}>{props.msg}</p>
         </div>
     )
 }
