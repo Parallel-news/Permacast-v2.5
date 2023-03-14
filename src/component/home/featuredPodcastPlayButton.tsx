@@ -47,25 +47,31 @@ const FeaturedPodcastPlayButton: FC<FeaturedPodcastPlayButtonInterface> = ({ pla
     };
   }, [currentPodcast_, isPlaying_])
 
-  return (
-    <button
-      style={{backgroundColor: dimColorString(buttonColor, 0.2)}}
-      className={`z-10 rounded-full w-10 h-10 flex justify-center items-center shrink-0 default-animation hover:scale-[1.1]`}
-      onClick={() => {
-        launchPlayer({ themeColor, title, artist, cover, src }, podcastInfo, episodes);
-      }}
-    >
-      {localIsPlaying ? (
-        <PauseIcon className="w-4 h-4 fill-current stroke-[3]" />
-      ): (
-        <PlayButton
-          svgColor={buttonColor}
-          fillColor={buttonColor}
-          outlineColor={buttonColor}
-        />
-      )}
-    </button>
-  );
+  if (episodes.length) {
+    return (
+      <button
+        style={{backgroundColor: dimColorString(buttonColor, 0.2)}}
+        className={`z-10 rounded-full w-10 h-10 flex justify-center items-center shrink-0 default-animation hover:scale-[1.1]`}
+        onClick={() => {
+          launchPlayer({ themeColor, title, artist, cover, src }, podcastInfo, episodes);
+        }}
+      >
+        {localIsPlaying ? (
+          <PauseIcon className="w-4 h-4 fill-current stroke-[3]" />
+        ): (
+          <PlayButton
+            svgColor={buttonColor}
+            fillColor={buttonColor}
+            outlineColor={buttonColor}
+          />
+        )}
+      </button>
+    );
+  } else {
+    return (
+      <FeaturedPodcastDummyPlayButton buttonColor={buttonColor} />
+    );
+  };
 };
 
 export const FeaturedPodcastDummyPlayButton: FC<{buttonColor: string}> = ({ buttonColor }) => {
@@ -81,7 +87,8 @@ export const FeaturedPodcastDummyPlayButton: FC<{buttonColor: string}> = ({ butt
       outlineColor={buttonColor}
     />
     </button>
-  ) 
-}
+  ); 
+};
+
 
 export default FeaturedPodcastPlayButton;

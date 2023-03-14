@@ -1,8 +1,7 @@
 import Shikwasa from '../shikwasa-src/main.js';
-import { useAccount } from 'wagmi';
-import { useArconnect } from 'react-arconnect';
 import { HSL, replaceColorsInterface, RGB, RGBA, RGBtoHSLInterface } from '../interfaces/ui';
 import { ShowShikwasaPlayerInterface } from '../interfaces/playback';
+import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
 
 export const RGBobjectToString = (rgb: RGB) => `rgba(${rgb.r}, ${rgb.g}, ${rgb.b})`;
 export const RGBAobjectToString = (rgba: RGBA) => `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`;
@@ -127,6 +126,20 @@ export function getButtonRGBs(rgb: RGB, textLightness=0.8, backgroundLightness=0
   const iconColor = replacedRGB?.replace('rgb', 'rgba')?.replace(')', `, ${textLightness})`);
   const background = replacedRGB?.replace('rgb', 'rgba')?.replace(')', `, ${backgroundLightness})`);
   return { backgroundColor: background, color: iconColor };
+};
+
+export const fetchAverageColor = async (cover: string): Promise<FastAverageColorResult> => {
+  if (!cover) return;
+  const fac = new FastAverageColor();
+  const averageColor: FastAverageColorResult = await fac.getColorAsync('https://arweave.net/' + cover)
+  return averageColor;
+};
+
+export const getCoverColorScheme = (RGBAstring: string): string[] => {
+  const rgba: RGBA = RGBAstringToObject(RGBAstring);
+  const coverColor = RGBAobjectToString(rgba);
+  const textColor = isTooLight(rgba, 0.6) ? "rgb(0, 0, 0)" : "rgb(255, 255, 255)";
+  return [coverColor, textColor];
 };
 
 // capitalize first letter, remove ar from label
