@@ -109,7 +109,7 @@ const FeaturedCreators: FC = () => {
                   }}
                   href={`/creator/${creator.user}`}
                 >
-                  <div className="absolute bg-gradient-to-l from-[#9E00FF] to-[#1273EA] rotate-45 origin-center w-full h-full"></div>
+                  {/* <div className="absolute bg-gradient-to-l from-[#9E00FF] to-[#1273EA] rotate-45 origin-center w-full h-full"></div> */}
                   {t("view")}
                 </Link>
               </div>
