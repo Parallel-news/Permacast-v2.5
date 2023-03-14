@@ -29,7 +29,7 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
   }, [pathname])
 
   // finish the animation for this transition later on
-  const styles = {transition: 'opacity 2.5s ease', backgroundImage: `linear-gradient(${backgroundColor_}, black)`};
+  const styles = {transition: 'opacity 2.5s ease', backgroundImage: `linear-gradient(${backgroundColor_}, black, black, black)`};
 
   return (
     <div className="w-screen overflow-scroll" style={true ? styles : {}}>

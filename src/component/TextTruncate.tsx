@@ -11,7 +11,7 @@ interface TextTruncateProps {
 
 const TextTruncate: React.FC<TextTruncateProps> = ({ text, limit, textClass, buttonClass }) => {
   const [showFullText, setShowFullText] = useState(false);
-  const truncatedText = showFullText ? text : `${text.slice(0, limit)}...`;
+  const truncatedText = showFullText ? text : `${text.slice(0, limit)}${text.length < limit ? "" : "..."}`;
   const [isVisible, setIsVisible] = useState<boolean>(true)
 
   const toggleShowFullText = () => {
@@ -24,7 +24,7 @@ const TextTruncate: React.FC<TextTruncateProps> = ({ text, limit, textClass, but
 
   return (
     <div>
-      <p className={textClass+" "+(FADE_IN_STYLE)+" "+(isVisible && "opacity-100")}>{truncatedText}</p>
+      <p className={textClass+ " " +(isVisible ? "opacity-100" : (FADE_IN_STYLE))}>{truncatedText}</p>
       {text.length > limit && (
         <button onClick={toggleShowFullText} className={buttonClass}>
           {showFullText ? "Show Less" : "Show More"}

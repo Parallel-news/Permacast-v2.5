@@ -8,7 +8,7 @@ import {
 } from '@heroicons/react/24/solid';
 import TextTruncate from "../TextTruncate";
 import { hexToRGB } from "../../utils/reusables";
-import { FADE_IN_STYLE, STR_LEN_EPISODE_BOX, STR_LEN_EPISODE_DESC } from "../../constants";
+import { STR_LEN_EPISODE_BOX, STR_LEN_EPISODE_DESC } from "../../constants";
 
 export default function pidTools() {
     return false
@@ -65,13 +65,17 @@ export interface EpisodeBoxTitleData {
 
 export interface EpisodeBoxInter extends EpisodeBoxTitleData {
     description: string;
+    
+}
+
+export interface NextEpisodeInter extends EpisodeBoxInter{
+    containerTitle: string;
 }
 
 // 2. Stylings
 export const episodeIconStyling = "mr-2 w-4 h-4"
 export const creatorTagDivStyling = "flex flex-row space-x-3"
 export const byStyling = "text-neutral-400 text-[12px] inline"
-export const podcastIdStyling = "flex flex-col space-y-8 w-[75%] mb-[200px]"
 export const nextEpisodeStyling = "w-full flex flex-col space-y-6"
 export const episodeInfoButtonsStyling = "flex flex-row space-x-6"
 export const episodeBoxTitleDataImg = "object-cover h-12 rounded-xl"
@@ -81,13 +85,14 @@ export const episodeBoxTitleStyling = "text-lg text-white font-semibold"
 export const episodeBannerStyling = "flex flex-row w-full h-60 space-x-16"
 export const episodeInfoStyling = "flex flex-col justify-center space-y-4"
 export const episodeInfoSubStyling = "flex flex-row items-center space-x-3"
+export const podcastIdStyling = "flex flex-col space-y-8 w-[95%] mb-[200px]"
 export const creatorTagStyling = "flex flex-row items-center p-1.5 rounded-3xl"
 export const episodeBoxTitleDataStyling = "flex flex-row items-center space-x-3"
 export const nextEpisodeTitleStyling = "text-2xl text-neutral-300/90 font-semibold"
 export const episodeNumberStyling = "rounded-2xl bg-gray-400/30 p-2 py-1 text-[11px]"
 export const episodeTitleStyling = "text-white text-[40px] font-medium pb-0 flex items-end"
-export const episodeBoxStyling = "w-full rounded-2xl border-2 border-gray-400/30 h-fit p-3 flex flex-row justify-between items-center"
 export const textTruncateButtonStyling = "text-gray-400 font-bold hover:text-blue-400 transition duration-400 ease-in-out"
+export const episodeBoxStyling = "w-full rounded-2xl border-2 border-gray-400/30 h-fit p-3 flex flex-row justify-between items-center"
 
 // 3. Custom Functions
 
@@ -189,10 +194,10 @@ export const EpisodeDescription = (props: DescriptionContainerInter) => {
 
 
 
-export const NextEpisode = (props: EpisodeBoxInter) => {
+export const NextEpisode = (props: NextEpisodeInter) => {
     return (
         <div className={nextEpisodeStyling}>
-            <p className={nextEpisodeTitleStyling}>Next Episode</p>
+            <p className={nextEpisodeTitleStyling}>{props.containerTitle}</p>
             <EpisodeBox
                 description={props.description} 
                 imgSrc={props.imgSrc}
