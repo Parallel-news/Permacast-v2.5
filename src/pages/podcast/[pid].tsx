@@ -1,126 +1,100 @@
-import { useEffect } from "react";
+import axios from "axios";
 import { useRecoilState } from "recoil";
 import { backgroundColor } from "../../atoms";
 import { 
-    episodeIconStyling,
-    EpisodeInfoButtonsInter,
-    episodeInfoButtonsStyling,
-    NextEpisode,
+    Episodes,
+    ErrorTag,
     podcastIdStyling,
 } from "../../component/episode/eidTools";
-import Image from "next/image";
-import { DescriptionButton } from "../../component/reusables/buttons";
-import { 
-    HeartIcon, 
-    PlusIcon,
-    PlayIcon 
-} from '@heroicons/react/24/solid';
+import { PodcastBanner } from "../../component/podcast/pidTools";
+import { EXM_READ_LINK, ARWEAVE_READ_LINK, PAYLOAD_RECEIVED, NO_PODCAST_FOUND } from "../../constants";
+import { getContractVariables } from "../../utils/contract";
+import { findObjectById } from "../../utils/reusables";
+import { formatStringByLen } from "../../utils/reusables";
 
-export default function PodcastId() {
+export default function PodcastId({data, status}) {
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
+    console.log("Data: ", data)
     //State Calls Here
-    const color = "#818cf8"
-    const imgSrc = "/aa.jpg"
-    const title = "Ethereum: All Core Devs Meetings"
-    const description = "This repository archives permanently the meetings of Ethereum core developers meetings."
-    const descriptionLong = "This repository archives permanently the meetings of Ethereum core developers meetings. This repository archives permanently the meetings of Ethereum core developers meetings. This repository archives permanently the meetings of Ethereum core developers meetings. This repository archives permanently the meetings of Ethereum core developers meetings. This repository archives permanently the meetings of Ethereum core developers meetings."
-    const creator = "@martonlederer"
-    const episodeTitle = "American Rhetoric"
-    const nextEpisodeTitle = "Episodes"
-
-    return (
-        <div className={podcastIdStyling}>
-            <PodcastBanner 
-                imgSrc={imgSrc}
-                title={title}
-                description={description}
-                color={color}
-            />
-            {/*Next Episode*/}
-            <NextEpisode 
-                containerTitle={nextEpisodeTitle} 
-                description={descriptionLong} 
-                imgSrc={""}
-                creator={creator}
-                color={color}
-                title={episodeTitle}
-            />            
-        </div>
-    )
-}
-
-interface PodcastInfoInter {
-    title: string;
-    imgSrc: string;
-    description: string;
-}
-
-interface PodcastBannerInter extends PodcastInfoInter {
-    color: string;
-}
-
-export const podcastInfoDescStyling = "text-neutral-400 text-[12px]"
-export const podcastInfoStyling = "flex flex-row items-center space-x-16"
-export const podcastInfoTitleStyling = "text-white text-2xl font-semibold"
-export const podcastButtonsStyling = "flex flex-row items-center space-x-6"
-export const podcastBannerStyling = "flex flex-row w-full justify-between px-24"
-export const podcastInfoTitleDivStyling = "flex flex-col justify-start w-[60%] space-y-2"
-
-export const PodcastBanner = (props: PodcastBannerInter) => {
-    return (
-        <div className={podcastBannerStyling}>
-            <PodcastInfo 
-                imgSrc={props.imgSrc}
-                title={props.title}
-                description={props.description}
-            />
-            <PodcastButtons 
-                color={props.color}
-            />
-        </div>
-    )
-    //Hold Podcast Data and Podcast buttons
-}
-
-export const PodcastInfo = (props: PodcastInfoInter) => {
-    return (
-        <div className={podcastInfoStyling}>
-            <Image
-                src={props.imgSrc}
-                alt="Podcast Cover"
-                height={25}
-                width={150}
-                className="object-cover rounded-3xl"
-            />
-            <div className={podcastInfoTitleDivStyling}>
-                <p className={podcastInfoTitleStyling}>{props.title}</p>
-                <p className={podcastInfoDescStyling}>{props.description}</p>
+    if(data) {
+        const color = "#818cf8"
+        const imgSrc = ARWEAVE_READ_LINK+data.obj?.cover
+        const title = data.obj?.podcastName
+        const description = data.obj?.description
+        const nextEpisodeTitle = "Episodes"
+        const episodes = data.obj?.episodes
+        return (
+            <div className={podcastIdStyling}>
+                <PodcastBanner 
+                    imgSrc={imgSrc}
+                    title={title}
+                    description={description}
+                    color={color}
+                />
+                {/*Episode Track*/}
+                <Episodes
+                    containerTitle={nextEpisodeTitle} 
+                    imgSrc={imgSrc}
+                    color={color}
+                    episodes={episodes}
+                />            
             </div>
-        </div>
-    )
+        )
+    } else if(status === NO_PODCAST_FOUND) {
+        return(
+            <ErrorTag 
+                msg={NO_PODCAST_FOUND}
+            />
+        )
+
+    } else {
+        return(
+            <ErrorTag 
+                msg={"404"}
+            />
+        )
+    }
+    
+
 }
 
-export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
-    const { color } = props
-    return (
-        <div className={podcastButtonsStyling}>
-            <DescriptionButton 
-                icon={<PlayIcon className="w-6 h-6" />}
-                text={""}
-                color={color}
-            />
-            <DescriptionButton
-                icon={<HeartIcon className={episodeIconStyling} />} 
-                text={"Tip"}
-                color={color} 
-            />
-            <DescriptionButton
-                icon={<PlusIcon className={episodeIconStyling} />} 
-                text={"Add Episode"}
-                color={color}
-            />
-        </div>
-    )
-}
+export async function getServerSideProps(context) {
+    // Fetch data from external API
+    const { contractAddress } = getContractVariables();
+    const { params } = context
+    const podcastId = params.pid
+    const res = await axios.post(EXM_READ_LINK+contractAddress)
+    const podcasts = res.data?.podcasts
+    const foundPodcasts = findObjectById(podcasts, podcastId, "pid")
+    // Podcast Found
+    if(foundPodcasts) {
+        const dummyObj = {
+            "eid": "27a0a679f9222bc9dd7eda10d6577002716c90140665f5aff1bc2836fb734492e3632eb787236c9197273224a39607b005c38d8151c7dacc4a673a6dffa45627",
+            "episodeName": "The Payback",
+            "description": "init 777 where I would go and find myself a little lamb that I can cook later with some good seasoning and eat init 777 where I would go and find myself a little lamb that I can cook later with some good seasoning and eat",
+            "contentTx": "6DGL3pxXomRkcgbuUAKqXCdtFSgUuiXYcB9vM8OeFZc",
+            "size": 17445368,
+            "type": "video/mp4",
+            "uploader": "vZY2XY1RD9HIfWi8ift-1_DnHLDadZMWrufSh-_rKF0",
+            "uploadedAt": 1669794153000,
+            "isVisible": true
+        }
+        const data = foundPodcasts
+        data.obj.episodes.push(dummyObj)
+        data.obj.episodes.push(dummyObj)
+        data.obj.episodes.push(dummyObj)
+        data.obj.episodes.push(dummyObj)
+        data.obj.episodes.push(dummyObj)
+        data.obj.episodes.push(dummyObj)
+        const status = PAYLOAD_RECEIVED
+        return { props: { data, status } }
+    // Podcasts Not Found
+    } else {
+        const status = NO_PODCAST_FOUND
+        const data = null
+        return { props: { data, status } }  
+    }   
 
+
+}
 //Get ServerSide Props

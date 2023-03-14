@@ -7,10 +7,10 @@ import {
     PlayIcon 
 } from '@heroicons/react/24/solid';
 import TextTruncate from "../TextTruncate";
-import { hexToRGB } from "../../utils/reusables";
+import { formatStringByLen, hexToRGB } from "../../utils/reusables";
 import { STR_LEN_EPISODE_BOX, STR_LEN_EPISODE_DESC } from "../../constants";
 
-export default function pidTools() {
+export default function eidTools() {
     return false
 }
 
@@ -63,24 +63,46 @@ export interface EpisodeBoxTitleData {
     title: string;
 }
 
-export interface EpisodeBoxInter extends EpisodeBoxTitleData {
-    description: string;
-    
+export interface EpisodeBoxInter {
+    episode: Episode 
+    imgSrc: string;
+    color: string;
 }
 
-export interface NextEpisodeInter extends EpisodeBoxInter{
+
+export interface EpisodesInter {
     containerTitle: string;
+    episodes: Episode[]
+    color: string; 
+    imgSrc: string;
+}
+
+export interface Episode {
+  eid: string;
+  episodeName: string;
+  description: string;
+  contentTx: string;
+  size: number;
+  type: string;
+  uploader: string;
+  uploadedAt: number;
+  isVisible: boolean;
+}
+
+export interface ErrorTagInter {
+    msg: string;
 }
 
 // 2. Stylings
 export const episodeIconStyling = "mr-2 w-4 h-4"
 export const creatorTagDivStyling = "flex flex-row space-x-3"
 export const byStyling = "text-neutral-400 text-[12px] inline"
-export const nextEpisodeStyling = "w-full flex flex-col space-y-6"
 export const episodeInfoButtonsStyling = "flex flex-row space-x-6"
 export const episodeBoxTitleDataImg = "object-cover h-12 rounded-xl"
+export const errorTagStyle = "w-full flex justify-center items-center"
 export const episodeDateStyling = "text-gray-500 text-[11px] font-bold"
 export const creatorTagImgStyling = "object-cover h-4 rounded-full mr-1"
+export const errorTagMsgStyle = "text-neutral-400 text-xl font-semibold"
 export const episodeBoxTitleStyling = "text-lg text-white font-semibold"
 export const episodeBannerStyling = "flex flex-row w-full h-60 space-x-16"
 export const episodeInfoStyling = "flex flex-col justify-center space-y-4"
@@ -91,8 +113,9 @@ export const episodeBoxTitleDataStyling = "flex flex-row items-center space-x-3"
 export const nextEpisodeTitleStyling = "text-2xl text-neutral-300/90 font-semibold"
 export const episodeNumberStyling = "rounded-2xl bg-gray-400/30 p-2 py-1 text-[11px]"
 export const episodeTitleStyling = "text-white text-[40px] font-medium pb-0 flex items-end"
+export const nextEpisodeStyling = "w-full flex flex-col space-y-6  overflow-auto overflow-x-hidden h-[350px]"
 export const textTruncateButtonStyling = "text-gray-400 font-bold hover:text-blue-400 transition duration-400 ease-in-out"
-export const episodeBoxStyling = "w-full rounded-2xl border-2 border-gray-400/30 h-fit p-3 flex flex-row justify-between items-center"
+export const episodeBoxStyling = "w-[98%] rounded-2xl border-2 border-gray-400/30 p-3 flex flex-row justify-between items-center"
 
 // 3. Custom Functions
 
@@ -194,35 +217,43 @@ export const EpisodeDescription = (props: DescriptionContainerInter) => {
 
 
 
-export const NextEpisode = (props: NextEpisodeInter) => {
+export const Episodes = (props: EpisodesInter) => {
+    const episodeList = props.episodes
     return (
         <div className={nextEpisodeStyling}>
             <p className={nextEpisodeTitleStyling}>{props.containerTitle}</p>
-            <EpisodeBox
-                description={props.description} 
-                imgSrc={props.imgSrc}
-                creator={props.creator}
-                color={props.color}
-                title={props.title}
-            />
+            {/*Loop Episodes*/}
+            {episodeList.length > 0 ?
+                episodeList.map((item, index) => (
+                    <EpisodeBox
+                        key={index}
+                        episode={item}
+                        imgSrc={props.imgSrc}
+                        color={props.color}
+                    />
+                ))
+            :
+                <p className="text-neutral-400">None to show...</p>
+            }
         </div>
     )
 }
 
 export const EpisodeBox = (props: EpisodeBoxInter) => {
+    const uploader = props.episode.uploader
     return  (
         <div className={episodeBoxStyling}>
             {/*Title Data*/}
             <EpisodeBoxTitleData 
                 imgSrc={props.imgSrc}
-                creator={props.creator}
+                creator={uploader.length > 15 ? formatStringByLen(uploader, 4, 4) : uploader}
                 color={props.color}
-                title={props.title}
+                title={props.episode.episodeName}
             />
             {/*Episode Description*/}
             <div className="w-[50%]">
                 <TextTruncate 
-                    text={props.description}
+                    text={props.episode.description}
                     limit={STR_LEN_EPISODE_BOX}
                     textClass="text-neutral-400 text-[12px]"
                     buttonClass={textTruncateButtonStyling+" text-[13px]"}
@@ -242,7 +273,7 @@ export const EpisodeBoxTitleData = (props: EpisodeBoxTitleData) => {
     return (
         <div className={episodeBoxTitleDataStyling}>
             <Image 
-                src="/aa.jpg"
+                src={props.imgSrc}
                 alt="Episode Cover"
                 height={30}
                 width={50}
@@ -274,6 +305,14 @@ export const CreatorTag = (props: CreatorTagInter) => {
                 ""
             }
             <p className="text-[10px]" style={{color: props.color}}>{props.creator}</p>
+        </div>
+    )
+}
+
+export const ErrorTag = (props: ErrorTagInter) => {
+    return (
+        <div className={errorTagStyle}>
+            <p className={errorTagMsgStyle}>{props.msg}</p>
         </div>
     )
 }

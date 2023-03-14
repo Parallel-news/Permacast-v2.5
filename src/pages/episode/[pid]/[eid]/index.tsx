@@ -5,60 +5,69 @@ import { backgroundColor } from "../../../../atoms";
 import { 
     EpisodeBanner,
     EpisodeDescription,
-    NextEpisode,
+    Episodes,
+    ErrorTag,
     podcastIdStyling
  } from "../../../../component/episode/eidTools";
-import { EXM_READ_LINK, ARWEAVE_READ_LINK } from "../../../../constants";
+import { EXM_READ_LINK, ARWEAVE_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND } from "../../../../constants";
 import { getContractVariables } from "../../../../utils/contract";
 import { findObjectById, formatStringByLen } from "../../../../utils/reusables";
 
-export default function EpisodeId({data}) {
-
+export default function EpisodeId({data, status}) {
+    console.log("ep data: ", data)
     const [, setBackgroundColor_] = useRecoilState(backgroundColor);
-    const ts = new Date(data?.obj.uploadedAt);
-    const formattedDate = ts.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    console.log("status: ", status)
 
-    //Serverside Results
-    const desc = data?.obj.description
-    const title = data?.obj.episodeName
-    const imgSrc = ARWEAVE_READ_LINK+data?.cover
-    const color = "#818cf8"
-    const episodeNum = data?.index+1
-    const date = formattedDate
-    const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
-    const creatorPfp = ""
-    const episodeTitle = "American Rhetoric"
-    const nextEpisodeTitle = "Next Episode"
+    if(data) {
+        useEffect(() => {
+            setBackgroundColor_(color)
+        }, [])
+        //Serverside Results
+        const ts = new Date(data?.obj.uploadedAt);
+        const formattedDate = ts.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        const d = data?.obj
+        const color = "#818cf8"
+        const nextEpisodeTitle = "Next Episode"
+        const date = formattedDate
+        const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
+        const episodes = d.episodes
 
-    useEffect(() => {
-        setBackgroundColor_(color)
-    }, [])
-
-    return (
-        <div className={podcastIdStyling}>
-            {/*Episode Cover & Info*/}
-            <EpisodeBanner 
-                title={title}
-                imgSrc={imgSrc}
-                color={color}
-                episodeNum={episodeNum}
-                date={date}
+        return (
+            <div className={podcastIdStyling}>
+                {/*Episode Cover & Info*/}
+                <EpisodeBanner 
+                    title={d.episodeName}
+                    imgSrc={ARWEAVE_READ_LINK+data?.cover}
+                    color={color}
+                    episodeNum={data?.index+1}
+                    date={date}
+                />
+                {/*Episode Description*/}
+                <EpisodeDescription
+                    text={d.description} 
+                />
+                {/*Next Episode*/}
+                <Episodes
+                    containerTitle={nextEpisodeTitle} 
+                    imgSrc={ARWEAVE_READ_LINK+data?.cover}
+                    color={color}
+                    episodes={[]}
+                />
+            </div>
+        )
+    } else if(status === NO_PODCAST_FOUND || status === NO_EPISODE_FOUND) {
+        return (
+            <ErrorTag 
+                msg={status}
             />
-            {/*Episode Description*/}
-            <EpisodeDescription
-                text={desc} 
+        )
+    } else {
+        return (
+            <ErrorTag 
+                msg={"404"}
             />
-            {/*Next Episode*/}
-            <NextEpisode
-                containerTitle={nextEpisodeTitle} 
-                description={desc} 
-                imgSrc={""}
-                creator={creator}
-                color={color}
-                title={episodeTitle}
-            />
-        </div>
-    )
+        )
+    }
 }
 
 export async function getServerSideProps(context) {
@@ -70,13 +79,28 @@ export async function getServerSideProps(context) {
     const res = await axios.post(EXM_READ_LINK+contractAddress)
     const podcasts = res.data?.podcasts
     const foundPodcasts = findObjectById(podcasts, podcastId, "pid")
-    const podcastData = {
-        cover: foundPodcasts.obj.cover
-
+    // Podcast Exists
+    if(foundPodcasts) {
+        const podcastData = {
+            cover: foundPodcasts.obj.cover
+    
+        }
+        const foundEpisode = findObjectById(foundPodcasts.obj.episodes, episodeId, "eid")
+        // Episode Exist
+        if(foundEpisode) {
+            const data = { ...podcastData, ...foundEpisode }
+            const status = PAYLOAD_RECEIVED
+            return { props: { data, status } }
+        // Episode Doesnt Exist
+        } else {
+            const data = null
+            const status = NO_EPISODE_FOUND
+            return { props: { data, status } } 
+        }
+    // Podcast Doesnt Exist
+    } else {
+        const data = null
+        const status = NO_PODCAST_FOUND
+        return { props: { data, status } } 
     }
-    const foundEpisode = findObjectById(foundPodcasts.obj.episodes, episodeId, "eid")
-    const data = { ...podcastData, ...foundEpisode }
-
-
-    return { props: { data } }
 }

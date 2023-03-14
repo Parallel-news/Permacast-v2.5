@@ -45,3 +45,10 @@ export const STR_LEN_EPISODE_DESC = 400
 // API
 export const EXM_READ_LINK = "https://api.exm.dev/read/"
 export const ARWEAVE_READ_LINK = "https://arweave.net/"
+
+// ERRORS
+export const NO_PODCAST_FOUND = "No Podcast Found."
+export const NO_EPISODE_FOUND = "No Episode Found."
+
+// SUCCESS
+export const PAYLOAD_RECEIVED = "Received"
