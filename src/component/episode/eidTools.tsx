@@ -65,6 +65,11 @@ export interface EpisodeBoxTitleData {
 
 export interface EpisodeBoxInter extends EpisodeBoxTitleData {
     description: string;
+    
+}
+
+export interface NextEpisodeInter extends EpisodeBoxInter{
+    containerTitle: string;
 }
 
 // 2. Stylings
@@ -189,10 +194,10 @@ export const EpisodeDescription = (props: DescriptionContainerInter) => {
 
 
 
-export const NextEpisode = (props: EpisodeBoxInter) => {
+export const NextEpisode = (props: NextEpisodeInter) => {
     return (
         <div className={nextEpisodeStyling}>
-            <p className={nextEpisodeTitleStyling}>Next Episode</p>
+            <p className={nextEpisodeTitleStyling}>{props.containerTitle}</p>
             <EpisodeBox
                 description={props.description} 
                 imgSrc={props.imgSrc}

@@ -28,6 +28,7 @@ export default function EpisodeId({data}) {
     const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
     const creatorPfp = ""
     const episodeTitle = "American Rhetoric"
+    const nextEpisodeTitle = "Next Episode"
 
     useEffect(() => {
         setBackgroundColor_(color)
@@ -48,7 +49,8 @@ export default function EpisodeId({data}) {
                 text={desc} 
             />
             {/*Next Episode*/}
-            <NextEpisode 
+            <NextEpisode
+                containerTitle={nextEpisodeTitle} 
                 description={desc} 
                 imgSrc={""}
                 creator={creator}
