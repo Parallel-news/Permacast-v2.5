@@ -12,7 +12,8 @@ import EpisodeQueue from './episodeQueue';
 import Fullscreen from './fullscreen';
 import VideoModal from './video_modal';
 
-import { isFullscreen, queue, currentEpisode, isPlaying, isQueueVisible, themeColor } from '../atoms/index.js';
+import { isFullscreen, queue, currentEpisode, isPlaying, isQueueVisible, currentThemeColor } from '../atoms/index.js';
+import { THEME_COLOR } from '../constants/ui';
 
 interface LayoutInterface {
   children: ReactNode;
@@ -31,8 +32,8 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
   const [_queue, _setQueue] = useRecoilState(queue);
   const [_isQueueVisible, _setQueueVisible] = useRecoilState(isQueueVisible);
 
-  const [themeColor_, ] = useRecoilState(themeColor);
-  const [currentPodcastColor, setCurrentPodcastColor] = useState('rgb(255, 255, 0)');
+  const [currentThemeColor_, setCurrentThemeColor_] = useRecoilState(currentThemeColor);
+  const [currentPodcastColor, setCurrentPodcastColor] = useState(THEME_COLOR);
   const [backdropColor, ] = useState();
   const [address, setAddress] = useState();
   const [ANS, setANS] = useState({ address_color: "", currentLabel: "", avatar: "" });
@@ -59,6 +60,9 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
     console.log("Use Effect Episode Loader");
   }, [appLoaded]);
 
+  useEffect(() => {
+    setCurrentThemeColor_(THEME_COLOR);
+  }, [])
 
   const playEpisode = (episode, number = 1) => {
     const shikwasaPlayer = new Shikwasa({
