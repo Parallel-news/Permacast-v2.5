@@ -2,7 +2,7 @@ import axios from "axios";
 import { useRecoilState } from "recoil";
 import { backgroundColor } from "../../atoms";
 import { 
-    NextEpisode,
+    Episodes,
     podcastIdStyling,
 } from "../../component/episode/eidTools";
 import { PodcastBanner } from "../../component/podcast/pidTools";
@@ -33,7 +33,7 @@ export default function PodcastId({data}) {
                 color={color}
             />
             {/*Next Episode*/}
-            <NextEpisode 
+            <Episodes
                 containerTitle={nextEpisodeTitle} 
                 description={descriptionLong} 
                 imgSrc={imgSrc}

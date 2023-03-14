@@ -63,13 +63,18 @@ export interface EpisodeBoxTitleData {
     title: string;
 }
 
-export interface EpisodeBoxInter extends EpisodeBoxTitleData {
-    description: string;
-    
+export interface EpisodeBoxInter {
+    episode: Episode 
+    imgSrc: string;
+    color: string;
 }
 
-export interface NextEpisodeInter extends EpisodeBoxInter{
+
+export interface EpisodesInter {
     containerTitle: string;
+    episodes: Episode[]
+    color: string; 
+    imgSrc: string;
 }
 
 export interface Episode {
@@ -206,17 +211,19 @@ export const EpisodeDescription = (props: DescriptionContainerInter) => {
 
 
 
-export const NextEpisode = (props: NextEpisodeInter) => {
+export const Episodes = (props: EpisodesInter) => {
+    const episodeList = props.episodes
     return (
         <div className={nextEpisodeStyling}>
             <p className={nextEpisodeTitleStyling}>{props.containerTitle}</p>
-            <EpisodeBox
-                description={props.description} 
-                imgSrc={props.imgSrc}
-                creator={props.creator}
-                color={props.color}
-                title={props.title}
-            />
+            {/*Loop Episodes*/}
+            {episodeList.map((item, ) => (
+                <EpisodeBox
+                    episode={item}
+                    imgSrc={props.imgSrc}
+                    color={props.color}
+                />
+            ))}
         </div>
     )
 }
@@ -227,14 +234,14 @@ export const EpisodeBox = (props: EpisodeBoxInter) => {
             {/*Title Data*/}
             <EpisodeBoxTitleData 
                 imgSrc={props.imgSrc}
-                creator={props.creator}
+                creator={props.episode.uploader}
                 color={props.color}
-                title={props.title}
+                title={props.episode.episodeName}
             />
             {/*Episode Description*/}
             <div className="w-[50%]">
                 <TextTruncate 
-                    text={props.description}
+                    text={props.episode.description}
                     limit={STR_LEN_EPISODE_BOX}
                     textClass="text-neutral-400 text-[12px]"
                     buttonClass={textTruncateButtonStyling+" text-[13px]"}

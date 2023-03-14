@@ -5,7 +5,7 @@ import { backgroundColor } from "../../../../atoms";
 import { 
     EpisodeBanner,
     EpisodeDescription,
-    NextEpisode,
+    Episodes,
     podcastIdStyling
  } from "../../../../component/episode/eidTools";
 import { EXM_READ_LINK, ARWEAVE_READ_LINK } from "../../../../constants";
@@ -49,7 +49,7 @@ export default function EpisodeId({data}) {
                 text={desc} 
             />
             {/*Next Episode*/}
-            <NextEpisode
+            <Episodes
                 containerTitle={nextEpisodeTitle} 
                 description={desc} 
                 imgSrc={""}
