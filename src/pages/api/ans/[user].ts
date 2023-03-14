@@ -12,8 +12,8 @@ export default async function handler(
 ) {
   try {
     const { user } = req.query;
-    const data = await axios.get(`http://ans-stats.decent.land/profile/${user}`)
-    res.status(200).json(data.data)
+    const data = await axios.get(`https://ans-resolver.herokuapp.com/resolve-as-arpage/${user}`);
+    res.status(200).json(data.data);
   } catch (error) {
     console.error(error)
     return res.status(error.status || 500).end(error.message)
