@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { backgroundColor } from "../../../../atoms";
@@ -7,8 +8,12 @@ import {
     NextEpisode,
     podcastIdStyling
  } from "../../../../component/episode/eidTools";
+import { EXM_READ_LINK } from "../../../../constants";
+import { getContractVariables } from "../../../../utils/contract";
+import { findObjectByPidAndEid } from "../../../../utils/reusables";
 
-export default function PodcastId() {
+export default function EpisodeId({data}) {
+    console.log("DATA: ", data)
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
     //State Calls Here
     const DummyDesc = `The All-American Rejects are an American rock band from Stillwater, Oklahoma, formed in 1999.[4] The band consists of lead vocalist and bassist Tyson Ritter, lead guitarist and backing vocalist Nick Wheeler, rhythm guitarist and backing vocalist Mike Kennerty, and drummer Chris Gaylor. Wheeler and Ritter serve as the band's songwriters; Wheeler is the primary composer and Ritter is the primary lyricist. Although Kennerty and Gaylor are not founding members, they have appeared in all of the band's music videos and on all studio releases except for the band's self-titled debut.`
@@ -50,4 +55,16 @@ export default function PodcastId() {
     )
 }
 
-//Get ServerSide Props
+export async function getServerSideProps(context) {
+    // Fetch data from external API
+    const { contractAddress } = getContractVariables();
+    const { params } = context
+    const episodeId = params.eid
+    const podcastId = params.pid
+    const res = await axios.post(EXM_READ_LINK+contractAddress)
+    const podcasts = res.data?.podcasts
+    const data = findObjectByPidAndEid(podcasts, podcastId, episodeId)
+    // Only grab data that contains the pid and eid 
+    // Pass data to the page via props
+    return { props: { data } }
+  }

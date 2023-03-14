@@ -38,5 +38,9 @@ export const CONTENT_TYPE_VALUES = ["v", "a"];
  */
 export const FADE_IN_STYLE = "opacity-0 transition-opacity duration-500 ease-in-out"
 
+// TEXT TRUNCATE
 export const STR_LEN_EPISODE_BOX = 100
 export const STR_LEN_EPISODE_DESC = 400
+
+// EXM
+export const EXM_READ_LINK = "https://api.exm.dev/read/"
