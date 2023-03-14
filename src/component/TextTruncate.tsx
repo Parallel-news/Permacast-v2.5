@@ -11,7 +11,7 @@ interface TextTruncateProps {
 
 const TextTruncate: React.FC<TextTruncateProps> = ({ text, limit, textClass, buttonClass }) => {
   const [showFullText, setShowFullText] = useState(false);
-  const truncatedText = showFullText ? text : `${text.slice(0, limit)}...`;
+  const truncatedText = showFullText ? text : `${text.slice(0, limit)}${text.length < limit ? "" : "..."}`;
   const [isVisible, setIsVisible] = useState<boolean>(true)
 
   const toggleShowFullText = () => {
