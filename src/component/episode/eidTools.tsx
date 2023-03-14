@@ -72,6 +72,18 @@ export interface NextEpisodeInter extends EpisodeBoxInter{
     containerTitle: string;
 }
 
+export interface Episode {
+  eid: string;
+  episodeName: string;
+  description: string;
+  contentTx: string;
+  size: number;
+  type: string;
+  uploader: string;
+  uploadedAt: number;
+  isVisible: boolean;
+}
+
 // 2. Stylings
 export const episodeIconStyling = "mr-2 w-4 h-4"
 export const creatorTagDivStyling = "flex flex-row space-x-3"
