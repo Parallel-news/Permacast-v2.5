@@ -14,9 +14,9 @@ import { formatStringByLen } from "../../utils/reusables";
 
 export default function PodcastId({data, status}) {
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
-    console.log("Data: ", data)
-    //State Calls Here
+    
     if(data) {
+        //State Calls Here
         const color = "#818cf8"
         const imgSrc = ARWEAVE_READ_LINK+data.obj?.cover
         const title = data.obj?.podcastName
