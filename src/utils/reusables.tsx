@@ -43,7 +43,7 @@ export function findObjectById(arr, pid, key) {
  * @param {number} endLength - The number of characters to show at the end.
  * @returns {string} The formatted string.
  */
-function formatString(str, beginLength, endLength) {
+export function formatStringByLen(str, beginLength, endLength) {
     const strLength = str.length;
     const beginStr = str.substr(0, beginLength);
     const endStr = str.substr(strLength - endLength, strLength);

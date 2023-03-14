@@ -10,21 +10,22 @@ import {
  } from "../../../../component/episode/eidTools";
 import { EXM_READ_LINK, ARWEAVE_READ_LINK } from "../../../../constants";
 import { getContractVariables } from "../../../../utils/contract";
-import { findObjectById } from "../../../../utils/reusables";
+import { findObjectById, formatStringByLen } from "../../../../utils/reusables";
 
 export default function EpisodeId({data}) {
     console.log("DATA: ", data)
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
     const ts = new Date(data?.obj.uploadedAt);
     const formattedDate = ts.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-    //State Calls Here
+    //Serverside Results
     const desc = data?.obj.description
     const title = data?.obj.episodeName
     const imgSrc = ARWEAVE_READ_LINK+data?.cover
     const color = "#818cf8"
     const episodeNum = data?.index+1
     const date = formattedDate
-    const creator = "@martonlederer"
+    const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
+    const creatorPfp = ""
     const episodeTitle = "American Rhetoric"
 
     useEffect(() => {
@@ -48,7 +49,7 @@ export default function EpisodeId({data}) {
             {/*Next Episode*/}
             <NextEpisode 
                 description={desc} 
-                imgSrc={imgSrc}
+                imgSrc={""}
                 creator={creator}
                 color={color}
                 title={episodeTitle}
