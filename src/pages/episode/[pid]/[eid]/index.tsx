@@ -14,7 +14,7 @@ import { findObjectById, formatStringByLen } from "../../../../utils/reusables";
 
 export default function EpisodeId({data}) {
 
-    const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
+    const [, setBackgroundColor_] = useRecoilState(backgroundColor);
     const ts = new Date(data?.obj.uploadedAt);
     const formattedDate = ts.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 

@@ -2,50 +2,65 @@ import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { backgroundColor } from "../../atoms";
 import { 
-    EpisodeBanner,
-    EpisodeDescription,
-    NextEpisode,
     podcastIdStyling,
 } from "../../component/episode/eidTools";
+import Image from "next/image";
 
 export default function PodcastId() {
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
     //State Calls Here
-    const DummyDesc = `The All-American Rejects are an American rock band from Stillwater, Oklahoma, formed in 1999.[4] The band consists of lead vocalist and bassist Tyson Ritter, lead guitarist and backing vocalist Nick Wheeler, rhythm guitarist and backing vocalist Mike Kennerty, and drummer Chris Gaylor. Wheeler and Ritter serve as the band's songwriters; Wheeler is the primary composer and Ritter is the primary lyricist. Although Kennerty and Gaylor are not founding members, they have appeared in all of the band's music videos and on all studio releases except for the band's self-titled debut.`
-    const title = "All Core Devs: Meeting 9"
-    const imgSrc = "/aa.jpg"
-    const color = "#818cf8"
-    const episodeNum = "1"
-    const date = "May 10, 2022"
-    const creator = "@martonlederer"
-    const episodeTitle = "American Rhetoric"
-
-    useEffect(() => {
-        setBackgroundColor_(color)
-    }, [])
-
     return (
         <div className={podcastIdStyling}>
-            {/*Episode Cover & Info*/}
-            <EpisodeBanner 
-                title={title}
-                imgSrc={imgSrc}
-                color={color}
-                episodeNum={episodeNum}
-                date={date}
+            <PodcastBanner 
+                imgSrc="/aa.jpg"
+                title="Ethereum: All Core Devs Meetings"
+                description="This repository archives permanently the meetings of Ethereum core developers meetings."
             />
-            {/*Episode Description*/}
-            <EpisodeDescription
-                text={DummyDesc} 
+        </div>
+    )
+}
+
+interface PodcastInfoInter {
+    title: string;
+    imgSrc: string;
+    description: string;
+}
+
+interface PodcastBannerInter extends PodcastInfoInter {}
+
+export const podcastInfoDescStyling = "text-neutral-400 text-[12px]"
+export const podcastInfoStyling = "flex flex-row items-center space-x-16"
+export const podcastInfoTitleStyling = "text-white text-2xl font-semibold"
+export const podcastBannerStyling = "flex flex-row w-full justify-between px-12"
+export const podcastInfoTitleDivStyling = "flex flex-col justify-start w-[60%] space-y-2"
+
+export const PodcastBanner = (props: PodcastBannerInter) => {
+    return (
+        <div className={podcastBannerStyling}>
+            <PodcastInfo 
+                imgSrc={props.imgSrc}
+                title={props.title}
+                description={props.description}
             />
-            {/*Next Episode*/}
-            <NextEpisode 
-                description={DummyDesc} 
-                imgSrc={imgSrc}
-                creator={creator}
-                color={color}
-                title={episodeTitle}
+        </div>
+    )
+    //Hold Podcast Data and Podcast buttons
+}
+
+export const PodcastInfo = (props: PodcastInfoInter) => {
+    return (
+        <div className={podcastInfoStyling}>
+            <Image
+                src={props.imgSrc}
+                alt="Podcast Cover"
+                height={25}
+                width={150}
+                className="object-cover rounded-3xl"
             />
+            <div className={podcastInfoTitleDivStyling}>
+                <p className={podcastInfoTitleStyling}>{props.title}</p>
+                <p className={podcastInfoDescStyling}>{props.description}</p>
+            </div>
         </div>
     )
 }
