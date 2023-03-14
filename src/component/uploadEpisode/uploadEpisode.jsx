@@ -41,10 +41,6 @@ export default function UploadEpisode({ podcast }) {
     if (file) {
       setEpisodeFileName(file?.name);
       console.log(episodeFileName);
-      //const uploadPrice = await calculateStorageFee(file?.byteLength);
-      //const serviceFee = uploadPrice / EPISODE_UPLOAD_FEE_PERCENTAGE;
-      //const totalFee = uploadPrice + serviceFee
-      //setEpisodeUploadFee(totalFee)
     }
   }
 
