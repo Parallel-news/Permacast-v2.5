@@ -23,6 +23,7 @@ export default function PodcastId({data}) {
     const creator = data.obj?.owner.length > 15 ? formatStringByLen(data.obj?.owner, 4, 4) : data.obj?.owner
     const episodeTitle = "American Rhetoric"
     const nextEpisodeTitle = "Episodes"
+    const episodes = data.obj?.episodes
 
     return (
         <div className={podcastIdStyling}>
@@ -32,14 +33,12 @@ export default function PodcastId({data}) {
                 description={description}
                 color={color}
             />
-            {/*Next Episode*/}
+            {/*Episode Track*/}
             <Episodes
                 containerTitle={nextEpisodeTitle} 
-                description={descriptionLong} 
                 imgSrc={imgSrc}
-                creator={creator}
                 color={color}
-                title={episodeTitle}
+                episodes={episodes}
             />            
         </div>
     )

@@ -26,6 +26,7 @@ export default function EpisodeId({data}) {
     const episodeNum = data?.index+1
     const date = formattedDate
     const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
+    const episodes = data?.obj.episodes
     const creatorPfp = ""
     const episodeTitle = "American Rhetoric"
     const nextEpisodeTitle = "Next Episode"
@@ -51,11 +52,9 @@ export default function EpisodeId({data}) {
             {/*Next Episode*/}
             <Episodes
                 containerTitle={nextEpisodeTitle} 
-                description={desc} 
-                imgSrc={""}
-                creator={creator}
+                imgSrc={imgSrc}
                 color={color}
-                title={episodeTitle}
+                episodes={episodes}
             />
         </div>
     )

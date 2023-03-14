@@ -217,8 +217,9 @@ export const Episodes = (props: EpisodesInter) => {
         <div className={nextEpisodeStyling}>
             <p className={nextEpisodeTitleStyling}>{props.containerTitle}</p>
             {/*Loop Episodes*/}
-            {episodeList.map((item, ) => (
+            {episodeList.map((item, index) => (
                 <EpisodeBox
+                    key={index}
                     episode={item}
                     imgSrc={props.imgSrc}
                     color={props.color}
