@@ -5,7 +5,7 @@ import {
     PlusIcon,
     PlayIcon 
 } from '@heroicons/react/24/solid';
-import { episodeIconStyling, EpisodeInfoButtonsInter } from "../episode/eidTools";
+import { Episode, episodeIconStyling, EpisodeInfoButtonsInter } from "../episode/eidTools";
 
 export default function pidTools() {
     return false
@@ -21,6 +21,27 @@ export interface PodcastInfoInter {
 export interface PodcastBannerInter extends PodcastInfoInter {
     color: string;
 }
+
+interface Podcast {
+    pid: string;
+    label: string;
+    contentType: string;
+    createdAt: number;
+    index: number;
+    owner: string;
+    podcastName: string;
+    author: string;
+    email: string;
+    description: string;
+    language: string;
+    explicit: string;
+    categories: string[];
+    maintainers: string[];
+    cover: string;
+    isVisible: boolean;
+    episodes: Episode[];
+}
+
 // 2. Stylings
 export const podcastInfoDescStyling = "text-neutral-400 text-[12px]"
 export const podcastInfoStyling = "flex flex-row items-center space-x-16"
