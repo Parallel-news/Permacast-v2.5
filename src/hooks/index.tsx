@@ -5,7 +5,7 @@ import { currentPodcast, isFullscreen, isPlaying, isQueueVisible, queue } from '
 import { useEffect, useState } from 'react';
 import { showShikwasaPlayer } from '../utils/ui';
 import { showShikwasaPlayerArguments } from '../interfaces/playback';
-import { Episode } from '../interfaces';
+import { Episode, PodcastDev } from '../interfaces';
 
 export const useWalletAddresses = () => {
   const { address: EthAddress } = useAccount();
@@ -22,7 +22,7 @@ export const usePlayerConnector = () => {
   const [currentPodcast_, setCurrentPodcast_] = useRecoilState(currentPodcast);
   const [_queue, _setQueue] = useRecoilState(queue);
 
-  const launchPlayer = (args: showShikwasaPlayerArguments, podcast?: any, episodes?: Episode[]) => {
+  const launchPlayer = (args: showShikwasaPlayerArguments, podcast: PodcastDev, episodes?: Episode[]) => {
     const playerObject = showShikwasaPlayer(args);
     if (!playerObject) return;
     // setPlayer_(playerObject);

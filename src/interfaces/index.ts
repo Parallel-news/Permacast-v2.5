@@ -72,6 +72,11 @@ export interface Episode {
   isVisible:   boolean;
 }
 
+export interface FullEpisodeInfo {
+  episode: Episode,
+  podcast: PodcastDev,
+};
+
 export interface Ans {
   user:           string;
   currentLabel:   string;

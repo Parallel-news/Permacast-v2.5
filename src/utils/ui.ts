@@ -6,6 +6,17 @@ import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
 export const RGBobjectToString = (rgb: RGB) => `rgba(${rgb.r}, ${rgb.g}, ${rgb.b})`;
 export const RGBAobjectToString = (rgba: RGBA) => `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`;
 
+export const RGBstringToObject = (rgb: string): RGB => {
+  // Remove "rgba(" and ")" from the string, and split the values into an array
+  const values = rgb.replace('rgb(', '').replace(')', '').split(',');
+
+  const r = parseInt(values[0]);
+  const g = parseInt(values[1]);
+  const b = parseInt(values[2]);
+
+  return { r, g, b };
+};
+
 export const RGBAstringToObject = (rgba: string): RGBA => {
   // Remove "rgba(" and ")" from the string, and split the values into an array
   const values = rgba.replace('rgba(', '').replace(')', '').split(',');
@@ -16,7 +27,7 @@ export const RGBAstringToObject = (rgba: string): RGBA => {
   const a = parseFloat(values[3]);
 
   return { r, g, b, a };
-}
+};
 
 export const RGBobjectToArray = (rgb: RGB) => [rgb.r, rgb.g, rgb.b];
 
