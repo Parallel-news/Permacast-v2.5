@@ -10,8 +10,6 @@ import { PodcastBanner } from "../../component/podcast/pidTools";
 import { EXM_READ_LINK, ARWEAVE_READ_LINK, PAYLOAD_RECEIVED, NO_PODCAST_FOUND } from "../../constants";
 import { getContractVariables } from "../../utils/contract";
 import { findObjectById } from "../../utils/reusables";
-import { formatStringByLen } from "../../utils/reusables";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export default function PodcastId({data, status}) {
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
@@ -55,9 +53,11 @@ export default function PodcastId({data, status}) {
             />
         )
     }
+    
+
 }
 
-export async function getServerSideProps(context, locale) {
+export async function getServerSideProps(context) {
     // Fetch data from external API
     const { contractAddress } = getContractVariables();
     const { params } = context
@@ -91,11 +91,7 @@ export async function getServerSideProps(context, locale) {
     } else {
         const status = NO_PODCAST_FOUND
         const data = null
-        return { props: { 
-            data, 
-            status,
-        }}  
+        return { props: { data, status } }  
     }   
 }
-
 //Get ServerSide Props
