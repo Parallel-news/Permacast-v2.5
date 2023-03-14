@@ -10,13 +10,12 @@ import { PodcastBanner } from "../../component/podcast/pidTools";
 import { EXM_READ_LINK, ARWEAVE_READ_LINK, PAYLOAD_RECEIVED, NO_PODCAST_FOUND } from "../../constants";
 import { getContractVariables } from "../../utils/contract";
 import { findObjectById } from "../../utils/reusables";
-import { formatStringByLen } from "../../utils/reusables";
 
 export default function PodcastId({data, status}) {
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
-    console.log("Data: ", data)
-    //State Calls Here
+    
     if(data) {
+        //State Calls Here
         const color = "#818cf8"
         const imgSrc = ARWEAVE_READ_LINK+data.obj?.cover
         const title = data.obj?.podcastName
@@ -94,7 +93,5 @@ export async function getServerSideProps(context) {
         const data = null
         return { props: { data, status } }  
     }   
-
-
 }
 //Get ServerSide Props

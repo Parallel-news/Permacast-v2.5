@@ -97,6 +97,32 @@ export function Sidenav() {
     )
   }
 
+  const uploadDropdownStyling = "dropdown-content menu p-2 shadow bg-zinc-900 rounded-box w-36"
+
+  const UploadDropdown: FC = () => {
+    return (
+      <div className="dropdown dropdown-hover mb-[-6px]">
+        <button
+          tabIndex={0}
+          className={SIDENAV_BUTTON + " w-9 hover:text-zinc-200"}
+        >
+          <PlusIcon />
+        </button>
+        <ul
+          tabIndex={0}
+          className={uploadDropdownStyling}
+        >
+            <li key={1}>
+              <a href="/upload-podcast">Add Podcast</a>
+            </li>
+            <li key={2}>
+              <a href="/uploadEpisode">Add Episode</a>
+            </li>
+        </ul>
+      </div>
+    )
+  }
+
   return (
     <div className="h-full pt-[42px]">
       <div className="grid rows-5 gap-9 text-zinc-300">
@@ -109,7 +135,8 @@ export function Sidenav() {
           <RectangleStackIcon />
         </div>
         <LanguageDropdown />
-        <NavButton url={'/upload-podcast'} condition={isUploadPodcast} icon={<PlusIcon />} />
+        <UploadDropdown />
+        {/*<NavButton url={'/upload-podcast'} condition={isUploadPodcast} icon={<PlusIcon />} />*/}
         {/* <UploadCount /> */}
         <a
           target="_blank"
