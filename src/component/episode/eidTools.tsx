@@ -7,7 +7,7 @@ import {
     PlayIcon 
 } from '@heroicons/react/24/solid';
 import TextTruncate from "../TextTruncate";
-import { hexToRGB } from "../../utils/reusables";
+import { formatStringByLen, hexToRGB } from "../../utils/reusables";
 import { STR_LEN_EPISODE_BOX, STR_LEN_EPISODE_DESC } from "../../constants";
 
 export default function pidTools() {
@@ -230,12 +230,13 @@ export const Episodes = (props: EpisodesInter) => {
 }
 
 export const EpisodeBox = (props: EpisodeBoxInter) => {
+    const uploader = props.episode.uploader
     return  (
         <div className={episodeBoxStyling}>
             {/*Title Data*/}
             <EpisodeBoxTitleData 
                 imgSrc={props.imgSrc}
-                creator={props.episode.uploader}
+                creator={uploader.length > 15 ? formatStringByLen(uploader, 4, 4) : uploader}
                 color={props.color}
                 title={props.episode.episodeName}
             />
@@ -262,7 +263,7 @@ export const EpisodeBoxTitleData = (props: EpisodeBoxTitleData) => {
     return (
         <div className={episodeBoxTitleDataStyling}>
             <Image 
-                src="/aa.jpg"
+                src={props.imgSrc}
                 alt="Episode Cover"
                 height={30}
                 width={50}
