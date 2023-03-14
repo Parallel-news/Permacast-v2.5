@@ -13,7 +13,7 @@ import { getContractVariables } from "../../../../utils/contract";
 import { findObjectById, formatStringByLen } from "../../../../utils/reusables";
 
 export default function EpisodeId({data}) {
-
+    console.log("ep data: ", data)
     const [, setBackgroundColor_] = useRecoilState(backgroundColor);
     const ts = new Date(data?.obj.uploadedAt);
     const formattedDate = ts.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
@@ -54,7 +54,7 @@ export default function EpisodeId({data}) {
                 containerTitle={nextEpisodeTitle} 
                 imgSrc={imgSrc}
                 color={color}
-                episodes={episodes}
+                episodes={[]}
             />
         </div>
     )
