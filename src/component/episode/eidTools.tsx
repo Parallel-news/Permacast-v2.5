@@ -10,7 +10,7 @@ import TextTruncate from "../TextTruncate";
 import { formatStringByLen, hexToRGB } from "../../utils/reusables";
 import { STR_LEN_EPISODE_BOX, STR_LEN_EPISODE_DESC } from "../../constants";
 
-export default function pidTools() {
+export default function eidTools() {
     return false
 }
 
@@ -217,14 +217,18 @@ export const Episodes = (props: EpisodesInter) => {
         <div className={nextEpisodeStyling}>
             <p className={nextEpisodeTitleStyling}>{props.containerTitle}</p>
             {/*Loop Episodes*/}
-            {episodeList.map((item, index) => (
-                <EpisodeBox
-                    key={index}
-                    episode={item}
-                    imgSrc={props.imgSrc}
-                    color={props.color}
-                />
-            ))}
+            {episodeList.length > 0 ?
+                episodeList.map((item, index) => (
+                    <EpisodeBox
+                        key={index}
+                        episode={item}
+                        imgSrc={props.imgSrc}
+                        color={props.color}
+                    />
+                ))
+            :
+                <p className="text-neutral-400">None to show...</p>
+            }
         </div>
     )
 }

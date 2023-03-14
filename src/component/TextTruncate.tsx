@@ -14,7 +14,9 @@ const TextTruncate: React.FC<TextTruncateProps> = ({ text, limit, textClass, but
   const [showFullText, setShowFullText] = useState(false);
   const truncatedText = showFullText ? text : `${text.slice(0, limit)}${text.length < limit ? "" : "..."}`;
   const [isVisible, setIsVisible] = useState<boolean>(true)
+
   const { t } = useTranslation()
+
     const toggleShowFullText = () => {
     setIsVisible(false)
     const timeout = setTimeout(() => {
@@ -28,7 +30,7 @@ const TextTruncate: React.FC<TextTruncateProps> = ({ text, limit, textClass, but
       <p className={textClass+ " " +(isVisible ? "opacity-100" : (FADE_IN_STYLE))}>{truncatedText}</p>
       {text.length > limit && (
         <button onClick={toggleShowFullText} className={buttonClass}>
-          {showFullText ? t("navbar.home") : t("navbar.home")}
+          {showFullText ? <p>{t("navbar.home")}</p> : <p>{t("navbar.home")}</p>}
         </button>
       )}
     </div>
