@@ -8,20 +8,22 @@ import {
     NextEpisode,
     podcastIdStyling
  } from "../../../../component/episode/eidTools";
-import { EXM_READ_LINK } from "../../../../constants";
+import { EXM_READ_LINK, ARWEAVE_READ_LINK } from "../../../../constants";
 import { getContractVariables } from "../../../../utils/contract";
-import { findObjectByPidAndEid } from "../../../../utils/reusables";
+import { findObjectById } from "../../../../utils/reusables";
 
 export default function EpisodeId({data}) {
     console.log("DATA: ", data)
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
+    const ts = new Date(data?.obj.uploadedAt);
+    const formattedDate = ts.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     //State Calls Here
-    const DummyDesc = `The All-American Rejects are an American rock band from Stillwater, Oklahoma, formed in 1999.[4] The band consists of lead vocalist and bassist Tyson Ritter, lead guitarist and backing vocalist Nick Wheeler, rhythm guitarist and backing vocalist Mike Kennerty, and drummer Chris Gaylor. Wheeler and Ritter serve as the band's songwriters; Wheeler is the primary composer and Ritter is the primary lyricist. Although Kennerty and Gaylor are not founding members, they have appeared in all of the band's music videos and on all studio releases except for the band's self-titled debut.`
-    const title = "All Core Devs: Meeting 9"
-    const imgSrc = "/aa.jpg"
+    const desc = data?.obj.description
+    const title = data?.obj.episodeName
+    const imgSrc = ARWEAVE_READ_LINK+data?.cover
     const color = "#818cf8"
-    const episodeNum = "1"
-    const date = "May 10, 2022"
+    const episodeNum = data?.index+1
+    const date = formattedDate
     const creator = "@martonlederer"
     const episodeTitle = "American Rhetoric"
 
@@ -41,11 +43,11 @@ export default function EpisodeId({data}) {
             />
             {/*Episode Description*/}
             <EpisodeDescription
-                text={DummyDesc} 
+                text={desc} 
             />
             {/*Next Episode*/}
             <NextEpisode 
-                description={DummyDesc} 
+                description={desc} 
                 imgSrc={imgSrc}
                 creator={creator}
                 color={color}
@@ -63,8 +65,14 @@ export async function getServerSideProps(context) {
     const podcastId = params.pid
     const res = await axios.post(EXM_READ_LINK+contractAddress)
     const podcasts = res.data?.podcasts
-    const data = findObjectByPidAndEid(podcasts, podcastId, episodeId)
-    // Only grab data that contains the pid and eid 
-    // Pass data to the page via props
+    const foundPodcasts = findObjectById(podcasts, podcastId, "pid")
+    const podcastData = {
+        cover: foundPodcasts.obj.cover
+
+    }
+    const foundEpisode = findObjectById(foundPodcasts.obj.episodes, episodeId, "eid")
+    const data = { ...podcastData, ...foundEpisode }
+
+
     return { props: { data } }
-  }
+}

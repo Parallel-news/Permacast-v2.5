@@ -42,5 +42,6 @@ export const FADE_IN_STYLE = "opacity-0 transition-opacity duration-500 ease-in-
 export const STR_LEN_EPISODE_BOX = 100
 export const STR_LEN_EPISODE_DESC = 400
 
-// EXM
+// API
 export const EXM_READ_LINK = "https://api.exm.dev/read/"
+export const ARWEAVE_READ_LINK = "https://arweave.net/"
