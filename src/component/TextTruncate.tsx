@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { FADE_IN_STYLE } from "../constants";
 import { useTranslation } from "next-i18next";
 
-
 interface TextTruncateProps {
     text: string;
     limit: number;

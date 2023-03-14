@@ -2,15 +2,10 @@ import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { useTranslation } from 'next-i18next';
 import { FiFile } from 'react-icons/fi';
-
 import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
-import Modal from './reusables/modal';
-import {
-  processFile,
-} from '../utils/shorthands.js';
-
-import { useWalletAddresses } from "../hooks";
-import { globalModalOpen } from '../atoms';
+import Modal from '../reusables/modal';
+import { useWalletAddresses } from "../../hooks";
+import { globalModalOpen } from '../../atoms';
 
 
 // THIS IS A MODAL
@@ -71,7 +66,7 @@ export default function UploadEpisode({ podcast }) {
                 <input className="input input-secondary w-full py-3 px-5 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white" required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="episodeName" placeholder={t("uploadepisode.name")} />
               </div>
               <div className="mb-5">
-                <textarea className="input input-secondary resize-none w-full h-28 pb-12 py-3 px-5 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white" required pattern=".{1,5000}" title="Between 1 and 5000 characters" type="text" name="episodeShowNotes" placeholder={t("uploadepisode.description")}></textarea>
+              <textarea className="input input-secondary resize-none w-full h-28 pb-12 py-3 px-5 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white" required pattern=".{1,5000}" title="Between 1 and 5000 characters" type="text" name="episodeShowNotes" placeholder={t("uploadepisode.description")}></textarea>
               </div>
               <div className="mb-5 bg-zinc-800 rounded-xl cursor-pointer">
                 <input className="opacity-0 absolute z-[-1]" id="file" required type="file" onChange={(e) => onFileUpload(e.target.files?.[0])} name="episodeMedia" />
