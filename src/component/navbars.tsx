@@ -191,7 +191,7 @@ export function NavBarMobile() {
 
   return (
     <div className="text-white">
-      <div className="flex gap-x-8 justify-center">
+      <div className="flex gap-x-12 justify-center">
         <Disclosure as="nav" className="rounded-box w-full">
           {({ open }) => (
             <>

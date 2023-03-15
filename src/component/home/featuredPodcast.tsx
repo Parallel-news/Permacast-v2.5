@@ -62,7 +62,7 @@ interface PodcastDescriptionProps {
 
 // 2. Stylings
 
-const podcastOuterBackgroundStyling = `rounded-3xl text-white/30 relative overflow-hidden carousel-item hover-up-effect mx-2 max-w-[280px]`
+const podcastOuterBackgroundStyling = `rounded-3xl text-white/30 relative overflow-hidden carousel-item hover-up-effect max-w-[280px]`
 const podcastInnerBackgroundStyling = `w-full h-1/6 px-5 pb-2 cursor-pointer relative`
 const podcastCoverStyling = `w-full max-w-[250px] overflow-x-hidden mx-auto mb-2`
 const podcastEpisodeCountStyling = `pt-5 pb-3 text-xs font-semibold`
