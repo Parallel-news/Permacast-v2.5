@@ -71,8 +71,8 @@ export const sortByDate = (episodes: FullEpisodeInfo[], descending = false): Ful
 
 // 4. Reusable Components
 export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, address_color, size }) => {
-  const borderColor = isTooLight(hexToRGB(address_color), 0.6) ? "rgb(255, 255, 255)": "rgb(0, 0, 0,)";
-  const hex = isTooLight(hexToRGB(address_color), 0.6) ? "#000000": "#ffffff";
+  const borderColor = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "rgb(255, 255, 255)": "rgb(0, 0, 0,)";
+  const hex = address_color &&isTooLight(hexToRGB(address_color), 0.6) ? "#000000": "#ffffff";
   const imageSize = size || 120;
 
   return (
