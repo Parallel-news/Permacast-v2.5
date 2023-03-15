@@ -28,8 +28,10 @@
 		"episode": "Episode",
 		"episodes": "Episodes",
 		"recentlyadded": "Recently added",
-		"featuredcreators": "Featured creators"
-  	},
+		"featuredcreators": "Featured creators",
+		"add-podcast": "Add podcast",
+		"add-episode": "Add episode"
+  },
 	"search" : {
 		"placeholder": "Search for a podcast",
 		"loading": "Fetching titles...",

@@ -28,7 +28,9 @@
     "episodes": "Епізодів",
 		"episode": "Епізод",
 		"recentlyadded": "Нещодавно додано",
-		"featuredcreators": "Вибрані автори"
+		"featuredcreators": "Вибрані автори",
+		"add-podcast": "Додати подкаст",
+		"add-episode": "Додати епізод"
   },
   "search" : {
 		"placeholder": "Шукай будь-який подкаст...",
