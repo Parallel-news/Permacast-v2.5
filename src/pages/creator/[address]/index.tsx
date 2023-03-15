@@ -6,8 +6,8 @@ import TipButton from '../../../component/reusables/tip';
 import { Ans, Episode, EXMDevState, FullEpisodeInfo, PodcastDev } from '../../../interfaces';
 import { NextPage } from 'next';
 import Image from 'next/image';
-import { dimColorString, hexToRGB, isTooLight, RGBtoHex } from '../../../utils/ui';
-import { currentThemeColor } from '../../../atoms';
+import { dimColorString, hexToRGB, isTooLight, RGBobjectToString, RGBtoHex } from '../../../utils/ui';
+import { currentThemeColor, podcastColor } from '../../../atoms';
 import { useRecoilState } from 'recoil';
 import FeaturedPodcast from '../../../component/home/featuredPodcast';
 import Track from '../../../component/reusables/track';
@@ -167,12 +167,12 @@ const Creator404: FC<{ address: string }> = ({ address }) => {
 const Creator: NextPage<{ userInfo: Ans | null, address: string }> = ({ userInfo, address }) => {
   if (!userInfo) return <Creator404 {...{ address }} />
 
-  const { t } = useTranslation();
-
   const { user, avatar, currentLabel, address_color, nickname } = userInfo;
 
   const [podcasts, setPodcasts] = useState<PodcastDev[]>([]);
   const [episodes, setEpisodes] = useState<FullEpisodeInfo[]>([]);
+
+  const [podcastColor_, setPodcastColor_] = useRecoilState(podcastColor)
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -187,6 +187,11 @@ const Creator: NextPage<{ userInfo: Ans | null, address: string }> = ({ userInfo
     };
     fetchUserData();
   }, [address]);
+
+  useEffect(() => {
+    const color = RGBobjectToString(hexToRGB(address_color));
+    setPodcastColor_(color);
+  }, [address_color]);
 
   return (
     <div className="mt-12 h-full pb-40">
