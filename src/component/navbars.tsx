@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useRouter } from 'next/router'
 import { useTranslation } from "next-i18next";
 import { Disclosure } from "@headlessui/react";
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { SIDENAV_BUTTON } from '../styles/constants';
 
 import {
@@ -164,16 +163,8 @@ export function NavBar() {
           <div className="w-4/5">
             <Searchbar />
           </div>
-          <div className="ml-8 w-72 flex flex-col bg-zinc-900 dropdown rounded-full">
-            <label tabIndex={0} className="btn-default ">{t("navbar.wallets")}</label>
-            <ul tabIndex={0} className="w-full dropdown-content menu p-2 rounded-box mt-12 bg-zinc-800 overflow-hidden">
-              <li className="mt-2">
-                <ConnectButton showBalance={true} />
-              </li>
-              <li className="mt-2">
-                <ArConnect />
-              </li>
-            </ul>
+          <div className="ml-8 w-72">
+            <ArConnect />
           </div>
         </div>
       </div>
@@ -273,7 +264,6 @@ export function NavBarMobile() {
                   <Disclosure.Button as="div" className="block py-2 rounded-md">
                     <ArConnect />
                   </Disclosure.Button>
-                  <ConnectButton showBalance={true} />
                 </div>
               </Disclosure.Panel>
             </>

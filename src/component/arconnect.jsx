@@ -24,18 +24,20 @@ export default function ArConnect() {
   
       localStorage.setItem("userPubKey", arconnectPubKey);
     }
-    fetchData()
-  }, [address, walletConnected])
+    fetchData();
+  }, [address, walletConnected]);
+
+  const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
 
   return (
-    <>
+    <button 
+      className="w-full h-12 flex items-center btn-base-color flex px-3 justify-center mx-auto text-sm md:text-base normal-case focus:outline-white"
+      onClick={walletConnected ? arconnectDisconnect: connect}
+    >
       {(walletConnected && (
-        <button 
-          className="!w-full btn-base-color flex px-3 justify-center mx-auto text-sm md:text-base normal-case focus:outline-white"
-          onClick={arconnectDisconnect}
-        >
+        <>
           <span>
-            {ANS?.currentLabel ? `${ANS?.currentLabel}.ar` : shortenAddress(address)}
+            {ANS?.currentLabel ? `${ANS?.currentLabel}.ar` : shortenAddress(address, 12)}
           </span>
           {
             ANS?.avatar ? (
@@ -44,16 +46,14 @@ export default function ArConnect() {
               </div>
             ) : (
               <div className="rounded-full h-6 w-6 ml-2 btn-secondary" style={{ backgroundColor: ANS?.address_color }}></div>
-            )}
-        </button>
+            )
+          }
+        </>
       )) || (
-        <button
-          onClick={() => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO })}
-          className="btn-base-color text-center !w-full flex px-3 justify-center mx-auto text-sm md:text-base normal-case"
-        >
+        <>
           🦔 {t("connector.login")}
-        </button>
+        </>
       )}
-    </>
+    </button>
   )
 }
