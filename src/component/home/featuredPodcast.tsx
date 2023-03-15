@@ -94,7 +94,7 @@ const PocastCover: FC<PodcastCoverProps> = ({ cover, podcastName }) => {
         <Image
           height={240}
           width={240}
-          className="object-cover aspect-square"
+          className="aspect-square object-cover w-[240px] h-[240px]"
           src={"https://arweave.net/" + cover}
           alt={podcastName}
         />
