@@ -2,6 +2,7 @@ import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { FiFile } from 'react-icons/fi';
 import { FADE_IN_STYLE, FADE_OUT_STYLE } from '../../constants';
+import { Blur } from '../reusables/Blur';
 
 export default function uploadEpisode() {
     return false
@@ -77,10 +78,15 @@ export const SelectPodcast = () => {
     const [isVisible, setIsVisible] = useState<boolean>(false)
     return (
         <>
-            <button className={selectPodcastStyling} onClick={() => setIsVisible(prev => !prev)}>
+            <button className={selectPodcastStyling+ " relative"} onClick={() => setIsVisible(prev => !prev)}>
                 Select Podcast
             </button>
-            <p className={(isVisible ? FADE_OUT_STYLE : (FADE_IN_STYLE))+ " h-[2px] mt-0"}>Demo</p>   
+            {isVisible ?
+                <Blur /> 
+            :
+            ""
+            }
+             
         </>
     )
 }
@@ -96,5 +102,9 @@ export const PodcastSelectOption = () => {
             </button>
         </li>
     )
+}
+
+export const SelectPodcastModal = () => {
+
 }
 
