@@ -25,7 +25,7 @@ export const hexToRGB = (hex: string): RGB => {
 };
 
 export const RGBobjectToString = (rgb: RGB) => `rgba(${rgb.r}, ${rgb.g}, ${rgb.b})`;
-export const RGBAobjectToString = (rgba: RGBA) => `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`;
+export const RGBAobjectToString = (rgba: RGBA) => `rgb(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`;
 
 export const RGBstringToObject = (rgb: string): RGB => {
   // Remove "rgba(" and ")" from the string, and split the values into an array
