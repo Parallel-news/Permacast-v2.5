@@ -176,9 +176,9 @@ const FeaturedPodcast: FC<PodcastDev> = (podcastInfo) => {
           <PocastCover podcastName={podcastName} cover={cover} />
         </div>
         <div className={podcastBottomStyling}>
-          <a onClick={prevent}>
+          <div onClick={prevent}>
             <FeaturedPodcastPlayButton {...{ playerInfo, podcastInfo, episodes }} />
-          </a>
+          </div>
           <div className="ml-3 w-full" style={{color: textColor}}>
             <PodcastName podcastName={podcastName} />
             <PodcastDescription podcastDescription={description} />
