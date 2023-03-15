@@ -1,8 +1,7 @@
 import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { FiFile } from 'react-icons/fi';
 import { FADE_IN_STYLE, FADE_OUT_STYLE } from '../../constants';
-import { Blur } from '../reusables/Blur';
 
 export default function uploadEpisode() {
     return false
@@ -12,17 +11,19 @@ export default function uploadEpisode() {
 
 // 2. Styling
 export const trayIconStyling="h-5 w-5 mr-2"
+export const episodeTitleStyling = "text-white text-xl mt-4"
 export const inputEpisodeMediaStyling = "opacity-0 absolute z-[-1]"
 export const episodeFaFileStyling = "w-7 h-6 cursor-pointer rounded-lg mx-2"
 export const episodeMediaStyling = "bg-zinc-800 rounded-xl cursor-pointer w-full"
 export const episodeFormStyling = "w-[50%] flex flex-col justify-center items-center space-y-4"
-export const uploadEpisodeStyling = "flex flex-col justify-center items-center m-auto space-y-3"
+export const uploadEpisodeStyling = "flex flex-col justify-center items-center m-auto space-y-3 relative"
 export const uploadButtonStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8"
+export const selectPodcastStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8 w-full"
 export const episodeNameStyling = "input input-secondary w-full py-3 px-5 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
 export const labelEpisodeMediaStyling = "flex items-center text-zinc-400 transition duration-300 ease-in-out hover:text-white my-1 py-2 px-3 w-full cursor-pointer w-full"
 export const episodeDescStyling =  "input input-secondary resize-none w-full h-28 pb-12 py-3 px-5 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
 
-export const selectPodcastStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8 w-full"
+
 // 3. Custom Functions
 const onFileUpload = () => {
     return false
@@ -82,10 +83,15 @@ export const SelectPodcast = () => {
                 Select Podcast
             </button>
             {isVisible ?
-                <Blur /> 
+                <SelectPodcastModal 
+                    isVisible={isVisible}
+                    setVisible={setIsVisible}
+                />
             :
             ""
             }
+ 
+
              
         </>
     )
@@ -93,18 +99,40 @@ export const SelectPodcast = () => {
 
 export const PodcastSelectOption = () => {
     return (
-        <li>
-            <button type="button" className="inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">
-                <div className="inline-flex items-center">
-                    <svg aria-hidden="true" className="h-3.5 w-3.5 rounded-full mr-2" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" id="flag-icon-css-cn" viewBox="0 0 512 512"><defs><path id="a" fill="#ffde00" d="M1-.3L-.7.8 0-1 .6.8-1-.3z"/></defs><path fill="#de2910" d="M0 0h512v512H0z"/><use width="30" height="20" transform="matrix(76.8 0 0 76.8 128 128)" xlinkHref="#a"/><use width="30" height="20" transform="rotate(-121 142.6 -47) scale(25.5827)" xlinkHref="#a"/><use width="30" height="20" transform="rotate(-98.1 198 -82) scale(25.6)" xlinkHref="#a"/><use width="30" height="20" transform="rotate(-74 272.4 -114) scale(25.6137)" xlinkHref="#a"/><use width="30" height="20" transform="matrix(16 -19.968 19.968 16 256 230.4)" xlinkHref="#a"/></svg>
-                    China
-                </div>
-            </button>
-        </li>
+        <div>
+            <p>Option</p>
+        </div>
     )
 }
 
-export const SelectPodcastModal = () => {
+interface SelectPodcastModalInter {
+    isVisible: boolean;
+    setVisible: Dispatch<SetStateAction<boolean>>;
+}
 
+export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
+    const [showModal, setShowModal] = useState<boolean>(false)
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            setShowModal(prev => !prev);
+        }, 100);
+    
+        return () => {
+            clearTimeout(timeoutId);
+        };
+    }, [props.isVisible])
+    return(
+        <>
+        <div className="absolute inset-0 flex justify-center items-center">
+            <div className={`w-[50%] h-[100%] bg-zinc-800 rounded-3xl flex justify-center z-10 p-6 ${showModal ? FADE_IN_STYLE :FADE_OUT_STYLE}`}>
+                <div className="flex justify-between w-full">
+                    <div></div>
+                    <p className="text-white text-xl">Select Podcast</p>
+                    <p className="text-white text-xl cursor-pointer" onClick={() => props.setVisible(false)}>x</p>
+                </div>
+            </div>
+        </div>
+        </>
+    )
 }
 
