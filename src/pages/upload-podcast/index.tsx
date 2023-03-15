@@ -24,8 +24,9 @@ import {
   PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN, CONTENT_TYPE_VALUES,
   PODCAST_MINIFIED_COVER_MAX_SIZE
 } from '../../constants';
-import { useWalletAddresses } from "../../hooks";
-import useEthTransactionHook from "../../utils/ethereum";
+
+import { useArconnect } from 'react-arconnect';
+
 import { ValMsg, isValidEmail, reduceImageSize } from "../../component/reusables/formTools";
 import { convertFilesToBuffer } from "../../utils/arseed";
 
@@ -33,8 +34,7 @@ export default function UploadPodcast() {
   const { t } = useTranslation();
 
   // remove state from here
-  const [ethAddress, arAddress] = useWalletAddresses();
-  const [data, isLoading, isSuccess, sendTransaction, error] = useEthTransactionHook();
+  const { address } = useArconnect();
 
   const [contentType_, setContentType_] = useRecoilState(ContentType);
   const setPercent = useSetRecoilState(uploadPercent);
@@ -110,7 +110,7 @@ export default function UploadPodcast() {
   // for the sake of clarity, putting these two along each other
   const payEthAndUpload = async (e) => {
     e.preventDefault();
-    if (!(ethAddress && arAddress)) return;
+    if (!(address)) return;
     // if (!!formIsValid()) return;
     setIsUploading(true)
     uploadCover().then((covers) => {
@@ -140,7 +140,7 @@ export default function UploadPodcast() {
 
   // isSuccess property of the wagmi transaction
   useEffect(() => {
-    console.log(isSuccess)
+    // console.log(isSuccess)
     // @ts-ignore
     const signatureMethod = window?.arweaveWallet?.signature;
     // @ts-ignore
@@ -164,18 +164,18 @@ export default function UploadPodcast() {
       handleExm(signedBase);
     }
 
-    if (isSuccess) {
-      try {
-        fetchData()
-      } catch {
-        setIsUploading(false)
-      }
-    }
+    // if (isSuccess) {
+    //   try {
+    //     fetchData()
+    //   } catch {
+    //     setIsUploading(false)
+    //   }
+    // }
     setIsUploading(false);
-  }, [isSuccess, data, error, isLoading]);
+  }, []);
 
   const handleExm = async (signedBase: string) => {
-    if (!data) throw new Error("Tx failed");
+    // if (!data) throw new Error("Tx failed");
     const userSignature = signedBase;
     const arconnectPubKey = localStorage.getItem("userPubKey")
     if (!userSignature) throw new Error("ArConnect signature not found");
@@ -308,9 +308,6 @@ export default function UploadPodcast() {
       {/* <div className="w-[100px] h-[30px] bg-white/50 rounded-md cursor-pointer"
         onClick={() => payEthAndUpload()}
       /> */}
-      {isLoading && <div>ETH TX sent</div>}
-      {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
-      {error && <div>Error: {JSON.stringify(error)}</div>}
 
       <div className="form-control">
         <form onSubmit={(e) => {payEthAndUpload(e); return false}}>
@@ -480,9 +477,9 @@ export default function UploadPodcast() {
                       <button
                         type="submit"
                         className="btn btn-secondary" 
-                        disabled={!(ethAddress && arAddress)}
+                        disabled={!(address)}
                       >
-                        {((ethAddress && arAddress)) ? t("uploadshow.upload"): t("uploadshow.disabled")}
+                        {((address)) ? t("uploadshow.upload"): t("uploadshow.disabled")}
                         <BsArrowRightShort className="w-7 h-7" />
                       </button>
                     )}

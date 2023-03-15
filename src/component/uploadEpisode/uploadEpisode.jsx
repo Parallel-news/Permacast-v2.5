@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import { FiFile } from 'react-icons/fi';
 import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import Modal from '../reusables/modal';
-import { useWalletAddresses } from "../../hooks";
+import { useArconnect } from 'react-arconnect';
 import { globalModalOpen } from '../../atoms';
 
 
@@ -19,7 +19,7 @@ export default function UploadEpisode({ podcast }) {
   const [episodeUploading, setEpisodeUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(false)
   const [uploadPercentComplete, setUploadPercentComplete] = useState(0)
-  const [ethAddress, arAddress] = useWalletAddresses();
+  const { address } = useArconnect();
 
   const listEpisodeOnVerto = async (episodeId) => {
   }
@@ -102,11 +102,11 @@ export default function UploadEpisode({ podcast }) {
                 {!episodeUploading ?
                   <button
                     className="btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8"
-                    disabled={!(ethAddress && arAddress)}
+                    disabled={!(address)}
                     type="submit"
                   >
                     <ArrowUpTrayIcon className="h-5 w-5 mr-2" />
-                    {!(ethAddress && arAddress) ? t("uploadepisode.upload"): t("uploadshow.disabled")}
+                    {!(address) ? t("uploadepisode.upload"): t("uploadshow.disabled")}
                   </button>
                   :
                   <button
