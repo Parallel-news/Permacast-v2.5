@@ -139,7 +139,8 @@
 		"podcasts": "Podcasts",
 		"nopodcasts": "No podcasts found",
 		"address": "Address",
-		"notfound": "not found on ANS"
+		"notfound": "not found on ANS",
+		"latestepisodes": "Latest episodes"
 	},
 	"track": {
 		"by": "by"

@@ -139,7 +139,8 @@
 		"podcasts": "播客",
 		"nopodcasts": "未找到播客。",
 		"address": "地址",
-		"notfound": "在 ANS 上找不到"
+		"notfound": "在 ANS 上找不到",
+		"latestepisodes": "最新剧集"
 	},
 	"tip": "打赏",
 	"track": {
