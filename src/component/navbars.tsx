@@ -24,7 +24,7 @@ import { useRecoilState } from "recoil";
 import { isFullscreen } from "../atoms";
 
 export function Sidenav() {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation();
   const router = useRouter();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -112,16 +112,16 @@ export function Sidenav() {
           tabIndex={0}
           className={uploadDropdownStyling}
         >
-            <li key={1}>
-              <a href="/upload-podcast">Add Podcast</a>
-            </li>
-            <li key={2}>
-              <a href="/uploadEpisode">Add Episode</a>
-            </li>
+          <li key={1}>
+            <a href="/upload-podcast">{t("home.add-podcast")}</a>
+          </li>
+          <li key={2}>
+            <a href="/upload-episode">{t("home.add-episode")}</a>
+          </li>
         </ul>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div className="h-full pt-[42px]">
