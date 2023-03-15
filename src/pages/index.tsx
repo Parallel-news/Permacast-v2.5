@@ -78,7 +78,7 @@ const Home: NextPage = () => {
       ) : <Loading />} */}
 
       {podcasts_.length > 0 ? (
-        <div className="w-full mt-8 carousel gap-x-8 py-3">
+        <div className="w-full mt-8 carousel gap-x-12 py-3">
           {podcasts_.map((podcast: PodcastDev, index: number) => 
             <FeaturedPodcast {...podcast} key={index} />
           )}
