@@ -142,7 +142,7 @@ export function getButtonRGBs(rgb: RGB, textLightness=0.8, backgroundLightness=0
 export const fetchAverageColor = async (cover: string): Promise<FastAverageColorResult> => {
   if (!cover) return;
   const fac = new FastAverageColor();
-  const averageColor: FastAverageColorResult = await fac.getColorAsync('https://arweave.net/' + cover)
+  const averageColor: FastAverageColorResult = await fac.getColorAsync('https://arweave.net/' + cover, { algorithm: 'dominant' })
   return averageColor;
 };
 
