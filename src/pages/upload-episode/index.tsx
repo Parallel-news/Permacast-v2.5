@@ -1,5 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { EpisodeForm, uploadEpisodeStyling } from "../../component/uploadEpisode/uploadEpisodeTools"
 
 export default function UploadEpisode() {
