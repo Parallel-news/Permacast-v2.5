@@ -5,23 +5,9 @@ import { appWithTranslation } from 'next-i18next';
 import { RecoilRoot } from 'recoil';
 import { ArconnectProvider } from 'react-arconnect';
 
-import '@rainbow-me/rainbowkit/styles.css';
-import {
-  getDefaultWallets,
-  RainbowKitProvider,
-  darkTheme,
-} from '@rainbow-me/rainbowkit';
-import {
-  configureChains,
-  createClient,
-  WagmiConfig,
-} from 'wagmi';
-import { mainnet, goerli } from 'wagmi';
-import { publicProvider } from 'wagmi/providers/public';
 import Layout from '../component/layout';
 
 
-import '@rainbow-me/rainbowkit/styles.css';
 import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import '../styles/globals.css';
@@ -31,18 +17,6 @@ import '../styles/globals.css';
 
 
 function App({ Component, pageProps }) {
-  const { chains, provider } = configureChains(
-    [mainnet],
-    [publicProvider()]
-  );
-  const { connectors } = getDefaultWallets({appName: 'Permacast', chains});
-  
-  const wagmiClient = createClient({
-    autoConnect: true,
-    connectors,
-    provider
-  })
-  
   return (
     <RecoilRoot> 
       {/* <AnimatePresence exitBeforeEnter> */}
@@ -80,13 +54,9 @@ function App({ Component, pageProps }) {
               gtag('config', 'G-4XDV8F7VJB');
             `}
           </Script>
-          <WagmiConfig client={wagmiClient}>
-            <RainbowKitProvider chains={chains} theme={darkTheme({accentColor: "rgb(24,24,27)"})}>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </RainbowKitProvider>
-          </WagmiConfig>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </ArconnectProvider>
       {/* </AnimatePresence> */}
     </RecoilRoot>
