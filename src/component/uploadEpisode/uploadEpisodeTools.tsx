@@ -18,20 +18,26 @@ interface SelectPodcastModalInter {
 interface PodcastOptionInter {
     imgSrc: string;
     title: string;
+    disableClick: boolean;
 }
 
 // 2. Styling
 export const trayIconStyling="h-5 w-5 mr-2"
 export const episodeTitleStyling = "text-white text-xl mt-4"
 export const titleModalStyling = "flex justify-between w-full"
+export const podcastOptionsContainer = "w-full flex flex-col px-5"
 export const inputEpisodeMediaStyling = "opacity-0 absolute z-[-1]"
+export const hrPodcastStyling = "my-5 border-[1px] border-neutral-400/50"
 export const xBtnModalStyling = "text-neutral-400/75 text-xl cursor-pointer"
 export const episodeFaFileStyling = "w-7 h-6 cursor-pointer rounded-lg mx-2"
 export const episodeMediaStyling = "bg-zinc-800 rounded-xl cursor-pointer w-full"
+export const podcastSelectOptionsStyling = "h-[280px] w-full overflow-auto space-y-3"
+export const podcastOptionBaseStyling = "w-full flex justify-start items-center space-x-4"
 export const selectPodcastModalStyling = "absolute inset-0 flex justify-center items-center"
 export const episodeFormStyling = "w-[50%] flex flex-col justify-center items-center space-y-4"
 export const uploadEpisodeStyling = "flex flex-col justify-center items-center m-auto space-y-3 relative"
 export const containerPodcastModalStyling = "w-[50%] h-[100%] bg-zinc-800 rounded-3xl flex flex-col z-10 p-6"
+export const podcastOptionHoverStyling = "cursor-pointer hover:bg-zinc-600/30 transition duration-650 ease-in-out rounded-3xl p-3"
 export const xMarkStyling = "h-5 w-5 mt-1 cursor-pointer hover:text-red-400 hover:bg-red-400/10 transition duration-400 ease-in-out rounded-full"
 export const uploadButtonStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8"
 export const selectPodcastStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8 w-full"
@@ -112,30 +118,66 @@ export const SelectPodcast = () => {
 
 export const PodcastSelectOptions = () => {
     return (
-        <div className="h-[60%] w-full">
+        <div className={podcastSelectOptionsStyling}>
             <PodcastOption 
                 imgSrc="/aa.jpg"
                 title="American Rhetoric"
+                disableClick={false}
             />
+                        <PodcastOption 
+                imgSrc="/aa.jpg"
+                title="American Rhetoric"
+                disableClick={false}
+            />
+                        <PodcastOption 
+                imgSrc="/aa.jpg"
+                title="American Rhetoric"
+                disableClick={false}
+            />
+                        <PodcastOption 
+                imgSrc="/aa.jpg"
+                title="American Rhetoric"
+                disableClick={false}
+            />
+                        <PodcastOption 
+                imgSrc="/aa.jpg"
+                title="American Rhetoric"
+                disableClick={false}
+            />
+                        <PodcastOption 
+                imgSrc="/aa.jpg"
+                title="American Rhetoric"
+                disableClick={false}
+            />
+                        <PodcastOption 
+                imgSrc="/aa.jpg"
+                title="American Rhetoric"
+                disableClick={false}
+            />
+                        <PodcastOption 
+                imgSrc="/aa.jpg"
+                title="American Rhetoric"
+                disableClick={false}
+            />
+
         </div>
     )
 }
 
 export const PodcastOption = (props: PodcastOptionInter) => {
     return (
-        <div className="w-full flex justify-start items-center space-x-4 cursor-pointer hover:bg-zinc-600/30 transition duration-600 ease-in-out rounded-3xl p-3">
-            <Image 
+        <div className={`${podcastOptionBaseStyling}  ${props.disableClick ? "" : podcastOptionHoverStyling}`}>
+            <Image
                 src={props.imgSrc}
                 alt="Podcast Cover"
                 height={32}
                 width={60}
                 className="rounded-xl object-cover"
             />
-            <p className="text-lg text-neutral-400">{props.title}</p>
+            <p className="text-lg text-neutral-300">{props.title}</p>
         </div>
     )
 }   
-
 
 export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
 
@@ -159,10 +201,9 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
                     <p className="text-white text-xl">Select Podcast</p>
                     <XMarkIcon className={xMarkStyling} onClick={() => props.setVisible(false)} />
                 </div>
-                <hr className="my-5 border-[1px] border-neutral-400/50"/>
+                <hr className={hrPodcastStyling}/>
                 {/*Options*/}
-                {/*Build Map for this*/}
-                <div className="w-full flex flex-col px-5">
+                <div className={podcastOptionsContainer}>
                     <PodcastSelectOptions />
                 </div>
             </div>
