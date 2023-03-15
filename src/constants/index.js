@@ -29,6 +29,8 @@ export const PODCAST_MINIFIED_COVER_MAX_SIZE = 65535;
 export const IS_EXPLICIT_VALUES = ["yes", "no"];
 export const CONTENT_TYPE_VALUES = ["v", "a"];
 
+export const SPINNER_COLOR = "#e4e4e7" //zinc-200
+
 /**
  * FADE_IN_STYLE Instructions
  * 1. Call in parent most div or commonly changing components
