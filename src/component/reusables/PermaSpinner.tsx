@@ -1,4 +1,5 @@
 import MoonLoader from "react-spinners/MoonLoader"
+import { BeatLoader } from "react-spinners";
 
 interface PermaSpinnerInter {
     divClass?: string;
@@ -10,7 +11,7 @@ interface PermaSpinnerInter {
 export const PermaSpinner = (props: PermaSpinnerInter) => {
     return (
         <div className={props.divClass}>
-            <MoonLoader 
+            <BeatLoader 
                 color={props.spinnerColor}
                 className={props.spinnerClass}
                 size={props.size} 

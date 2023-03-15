@@ -100,6 +100,7 @@ export function Sidenav() {
   }
 
   const uploadDropdownStyling = "dropdown-content menu p-2 shadow bg-zinc-900 rounded-box w-36"
+  const spinnerClass = "w-full flex justify-center"
 
   const UploadDropdown: FC = () => {
     const [showClickLoad, setShowClickLoad] = useState<boolean>(false)
@@ -140,8 +141,8 @@ export function Sidenav() {
             {showClickLoad ?
             <PermaSpinner
               spinnerColor={SPINNER_COLOR}
-              size={20}
-              divClass={"w-full flex justify-center"}
+              size={10}
+              divClass={spinnerClass}
             />
             :
             <a href="/upload-podcast" onClick={()=>clickSwitch("show")}>{t("home.add-podcast")}</a>
@@ -151,8 +152,8 @@ export function Sidenav() {
             {episodeClickLoad ?
             <PermaSpinner
               spinnerColor={SPINNER_COLOR}
-              size={20}
-              divClass={"w-full flex justify-center"}
+              size={10}
+              divClass={spinnerClass}
             />
             :
             <a href="/upload-episode" onClick={()=>clickSwitch("episode")}>{t("home.add-episode")}</a>
