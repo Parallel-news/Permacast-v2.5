@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from 'next/router'
 import { useTranslation } from "next-i18next";
 import { Disclosure } from "@headlessui/react";
-import { SIDENAV_BUTTON } from '../styles/constants';
+import { SIDENAV_BUTTON, SIDENAV_BUTTON_BASE } from '../styles/constants';
 
 import {
   HomeIcon,
@@ -37,6 +37,7 @@ export function Sidenav() {
 
   const isHome = router.pathname === "/";
   const isUploadPodcast = router.pathname === "/upload-podcast";
+  const isUploadEpisode = router.pathname === "/upload-episode";
   const isFeed = router.pathname === "feed";
 
   interface INavButton {
@@ -101,12 +102,18 @@ export function Sidenav() {
   const UploadDropdown: FC = () => {
     return (
       <div className="dropdown dropdown-hover mb-[-6px]">
-        <button
-          tabIndex={0}
-          className={SIDENAV_BUTTON + " w-9 hover:text-zinc-200"}
-        >
-          <PlusIcon />
-        </button>
+        {!(isUploadEpisode || isUploadPodcast) ? (
+          <button
+            tabIndex={0}
+            className={SIDENAV_BUTTON + " w-9 hover:text-zinc-200 "}
+          >
+            <PlusIcon />
+          </button>
+        ): (
+          <button className={SIDENAV_BUTTON_BASE + " text-white"}>
+            <PlusIcon />
+          </button>
+        )}
         <ul
           tabIndex={0}
           className={uploadDropdownStyling}
