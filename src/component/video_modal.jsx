@@ -1,5 +1,3 @@
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRecoilState } from "recoil";
 import { videoSelection } from "../atoms";
 import { useEffect } from "react";
@@ -34,11 +32,11 @@ export default function VideoModal() {
               playerObj.currentTime = 0;
             }}
           >
-            <FontAwesomeIcon
+            {/* <FontAwesomeIcon
               icon={faArrowLeft}
               className={`relative bottom-[-0px] right-2`}
               onClick={() => {}}
-            />
+            /> */}
             <p className={`relative bottom-[0px]`} onClick={() => {}}>
               Back
             </p>

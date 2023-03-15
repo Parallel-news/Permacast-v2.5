@@ -120,7 +120,7 @@ const PodcastDescription: FC<PodcastDescriptionProps> = ({ podcastDescription })
 };
 
 
-const FeaturedPodcast: FC<PodcastDev> = (podcast) => {
+const FeaturedPodcast: FC<PodcastDev> = (podcastInfo) => {
 
   const {
     cover,
@@ -131,7 +131,7 @@ const FeaturedPodcast: FC<PodcastDev> = (podcast) => {
     author,
     label,
     description,
-  } = podcast;
+  } = podcastInfo;
 
   const [player, launchPlayer] = usePlayerConnector();
   const [themeColor, setThemeColor] = useState<string>('');
@@ -157,28 +157,35 @@ const FeaturedPodcast: FC<PodcastDev> = (podcast) => {
   }, []);
 
   const episode = episodes.length ? episodes[0]: undefined;
-  const playerInfoArgs = { themeColor, buttonColor: textColor, title: episode?.episodeName, artist: author, cover, src: episode?.contentTx };
+  const playerInfo = { themeColor, buttonColor: textColor, title: episode?.episodeName, artist: author, cover, src: episode?.contentTx };
+
+  const prevent = (event: any) => {
+    event.preventDefault();
+  };
 
   return (
-    <div className={podcastOuterBackgroundStyling} style={{ backgroundColor: themeColor }}>
+    <Link 
+      passHref
+      href={`/podcast/${pid}`}
+      className={podcastOuterBackgroundStyling}
+      style={{ backgroundColor: themeColor }}
+    >
       <div className={podcastInnerBackgroundStyling}>
-        <Link href={`/podcast/${pid}`}>
+        <div>
           <EpisodeCount count={episodes.length} textColor={textColor} />
           <PocastCover podcastName={podcastName} cover={cover} />
-        </Link>
+        </div>
         <div className={podcastBottomStyling}>
-          <FeaturedPodcastPlayButton
-            playerInfo={playerInfoArgs}
-            podcastInfo={podcast}
-            episodes={episodes}
-          />
-          <Link href={`/podcast/${pid}`} className="ml-3 w-full" style={{color: textColor}}>
+          <div onClick={prevent}>
+            <FeaturedPodcastPlayButton {...{ playerInfo, podcastInfo, episodes }} />
+          </div>
+          <div className="ml-3 w-full" style={{color: textColor}}>
             <PodcastName podcastName={podcastName} />
             <PodcastDescription podcastDescription={description} />
-          </Link>
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

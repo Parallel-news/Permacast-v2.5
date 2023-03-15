@@ -1,4 +1,3 @@
-import { useAccount } from 'wagmi';
 import { useArconnect } from 'react-arconnect';
 import { useRecoilState } from 'recoil';
 import { currentPodcast, isFullscreen, isPlaying, isQueueVisible, queue } from '../atoms';
@@ -7,12 +6,6 @@ import { showShikwasaPlayer } from '../utils/ui';
 import { showShikwasaPlayerArguments } from '../interfaces/playback';
 import { Episode, PodcastDev } from '../interfaces';
 
-export const useWalletAddresses = () => {
-  const { address: EthAddress } = useAccount();
-  const { address: ArConnectAddress } = useArconnect();
-
-  return [EthAddress, ArConnectAddress];
-};
 
 export const usePlayerConnector = () => {
 

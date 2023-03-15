@@ -14,7 +14,7 @@ import UploadEpisode from "../../component/uploadEpisode";
 import UploadVideo from "../../component/uploadVideo";
 import PodcastHeader from '../../component/podcastHeader';
 
-import { useWalletAddresses } from "../../hooks";
+import { useArconnect } from "react-arconnect";
 
 
 import {
@@ -40,7 +40,7 @@ const Podcast = (props) => {
   const [showEpisodeForm, setShowEpisodeForm] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const [_, arAddress] = useWalletAddresses();
+  const { address } = useArconnect();
 
   const loadEpisodes = async (podcast, episodes) => {
     const episodeList = [];
@@ -113,8 +113,8 @@ const Podcast = (props) => {
 
   const checkEpisodeForm = async (podObj) => {
     if (
-      arAddress === podObj.creatorAddress ||
-      podObj.superAdmins.includes(arAddress)
+      address === podObj.creatorAddress ||
+      podObj.superAdmins.includes(address)
     ) {
       setShowEpisodeForm(true);
       window.scrollTo(0, 0);
@@ -190,8 +190,8 @@ const Podcast = (props) => {
   }, [])
 
   const isOwner =
-    thePodcast?.creatorAddress === arAddress ||
-    thePodcast?.superAdmins?.includes(arAddress);
+    thePodcast?.creatorAddress === address ||
+    thePodcast?.superAdmins?.includes(address);
 
   return (
     <div className="flex flex-col items-center justify-center mb-20">

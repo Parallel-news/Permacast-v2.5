@@ -8,7 +8,6 @@ import { PlusIcon } from "@heroicons/react/24/solid";
 import UploadEpisode from "./uploadEpisode/uploadEpisode";
 import UploadVideo from "./uploadVideo";
 import { getButtonRGBs } from "../utils/ui";
-import { useWalletAddresses } from "../hooks";
 import { useRecoilState } from "recoil";
 
 import { globalModalOpen, switchFocus } from "../atoms";
