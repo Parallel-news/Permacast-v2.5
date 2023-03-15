@@ -37,7 +37,7 @@ export default function ArConnect() {
       {(walletConnected && (
         <>
           <span>
-            {ANS?.currentLabel ? `${ANS?.currentLabel}.ar` : shortenAddress(address, 12)}
+            {ANS?.currentLabel ? `${ANS?.currentLabel}.ar` : shortenAddress(address)}
           </span>
           {
             ANS?.avatar ? (
