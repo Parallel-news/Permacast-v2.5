@@ -36,9 +36,11 @@ export const SPINNER_COLOR = "#e4e4e7" //zinc-200
  * 1. Call in parent most div or commonly changing components
  * 2. const [isVis, setIsVis] 
  * 3. Call setIsVis in useEffect, set to true
- * 4. call isVis && opacity-100 in component classname
+ * 4. call between FADE_OUT_STYLE and FADE_IN_STYLE
+ * 5. Works for Modals and Components w Set Areas regardless of load status e.g. Account Balance
  */
-export const FADE_IN_STYLE = "opacity-0 transition-opacity duration-500 ease-in-out"
+export const FADE_OUT_STYLE = "opacity-0 transition-opacity duration-500 ease-in-out"
+export const FADE_IN_STYLE = "opacity-100 transition-opacity duration-500 ease-in-out"
 
 // TEXT TRUNCATE
 export const STR_LEN_EPISODE_BOX = 100
