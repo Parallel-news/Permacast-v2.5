@@ -15,6 +15,11 @@ interface SelectPodcastModalInter {
     setVisible: Dispatch<SetStateAction<boolean>>;
 }
 
+interface PodcastOptionInter {
+    imgSrc: string;
+    title: string;
+}
+
 // 2. Styling
 export const trayIconStyling="h-5 w-5 mr-2"
 export const episodeTitleStyling = "text-white text-xl mt-4"
@@ -107,18 +112,30 @@ export const SelectPodcast = () => {
 
 export const PodcastSelectOptions = () => {
     return (
-        <div className="w-full flex justify-start items-center space-x-4">
+        <div className="h-[60%] w-full">
+            <PodcastOption 
+                imgSrc="/aa.jpg"
+                title="American Rhetoric"
+            />
+        </div>
+    )
+}
+
+export const PodcastOption = (props: PodcastOptionInter) => {
+    return (
+        <div className="w-full flex justify-start items-center space-x-4 cursor-pointer hover:bg-zinc-600/30 transition duration-600 ease-in-out rounded-3xl p-3">
             <Image 
-                src={"/aa.jpg"}
+                src={props.imgSrc}
                 alt="Podcast Cover"
                 height={32}
                 width={60}
                 className="rounded-xl object-cover"
             />
-            <p className="text-lg text-neutral-400">American Rhetoric </p>
+            <p className="text-lg text-neutral-400">{props.title}</p>
         </div>
     )
-}
+}   
+
 
 export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
 
