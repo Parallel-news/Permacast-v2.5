@@ -7,5 +7,6 @@ export const getContractVariables = () => {
 
   const contractAddress = IS_PROD === 'true' ? PROD_CONTRACT : DEV_CONTRACT;
   const contractAPIToken = IS_PROD === 'true' ? PROD_TOKEN : DEV_TOKEN;
-  return { contractAddress, contractAPIToken };
+  const isProduction = IS_PROD === 'true' ? true : false;
+  return { contractAddress, contractAPIToken, isProduction };
 }
