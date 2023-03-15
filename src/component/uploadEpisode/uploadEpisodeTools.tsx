@@ -12,10 +12,14 @@ export default function uploadEpisode() {
 // 2. Styling
 export const trayIconStyling="h-5 w-5 mr-2"
 export const episodeTitleStyling = "text-white text-xl mt-4"
+export const titleModalStyling = "flex justify-between w-full"
 export const inputEpisodeMediaStyling = "opacity-0 absolute z-[-1]"
+export const xBtnModalStyling = "text-white text-xl cursor-pointer"
 export const episodeFaFileStyling = "w-7 h-6 cursor-pointer rounded-lg mx-2"
 export const episodeMediaStyling = "bg-zinc-800 rounded-xl cursor-pointer w-full"
+export const selectPodcastModalStyling = "absolute inset-0 flex justify-center items-center"
 export const episodeFormStyling = "w-[50%] flex flex-col justify-center items-center space-y-4"
+export const containerPodcastModalStyling = "w-[50%] h-[100%] bg-zinc-800 rounded-3xl flex justify-center z-10 p-6"
 export const uploadEpisodeStyling = "flex flex-col justify-center items-center m-auto space-y-3 relative"
 export const uploadButtonStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8"
 export const selectPodcastStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8 w-full"
@@ -90,9 +94,6 @@ export const SelectPodcast = () => {
             :
             ""
             }
- 
-
-             
         </>
     )
 }
@@ -111,6 +112,7 @@ interface SelectPodcastModalInter {
 }
 
 export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
+
     const [showModal, setShowModal] = useState<boolean>(false)
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -121,18 +123,20 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
             clearTimeout(timeoutId);
         };
     }, [props.isVisible])
+
     return(
-        <>
-        <div className="absolute inset-0 flex justify-center items-center">
-            <div className={`w-[50%] h-[100%] bg-zinc-800 rounded-3xl flex justify-center z-10 p-6 ${showModal ? FADE_IN_STYLE :FADE_OUT_STYLE}`}>
-                <div className="flex justify-between w-full">
+        <div className={selectPodcastModalStyling}>
+            <div className={`${containerPodcastModalStyling} ${showModal ? FADE_IN_STYLE :FADE_OUT_STYLE}`}>
+                <div className={titleModalStyling}>
                     <div></div>
                     <p className="text-white text-xl">Select Podcast</p>
-                    <p className="text-white text-xl cursor-pointer" onClick={() => props.setVisible(false)}>x</p>
+                    <p className={xBtnModalStyling} onClick={() => props.setVisible(false)}>x</p>
                 </div>
             </div>
         </div>
-        </>
     )
 }
+
+
+
 
