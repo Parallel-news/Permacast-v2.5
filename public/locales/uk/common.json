@@ -153,7 +153,8 @@
 		"podcasts": "Подкасти",
 		"nopodcasts": "Немає подкастів",
 		"address": "Адрес",
-		"notfound": "не знайдено на ANS"
+		"notfound": "не знайдено на ANS",
+		"latestepisodes": "Останні епізоди"
 	},
   "tip": "Підтримати",
 	"track": {

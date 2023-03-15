@@ -3,7 +3,28 @@ import { HSL, replaceColorsInterface, RGB, RGBA, RGBtoHSLInterface } from '../in
 import { ShowShikwasaPlayerInterface } from '../interfaces/playback';
 import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
 
-export const RGBobjectToString = (rgb: RGB) => `rgba(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+
+export const RGBtoHex = (rgb: RGB): string => {
+  const hexNum = (c: number) => {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+  };
+
+  const { r, g, b } = rgb;
+
+  return "#" + hexNum(r) + hexNum(g) + hexNum(b);
+};
+
+export const hexToRGB = (hex: string): RGB => {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  };
+};
+
+export const RGBobjectToString = (rgb: RGB) => `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
 export const RGBAobjectToString = (rgba: RGBA) => `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`;
 
 export const RGBstringToObject = (rgb: string): RGB => {
@@ -118,12 +139,12 @@ export const replaceLightColorsRGB: replaceColorsInterface = (rgba: RGBA) => {
   return { r, g, b };
 };
 
-export const isTooDark = (rgba: RGBA, lightness = 0.25): boolean => {
+export const isTooDark = (rgba: RGB | RGBA, lightness = 0.25): boolean => {
   let hsl = RGBtoHSL(rgba);
   return hsl.l < lightness;
 };
 
-export const isTooLight = (rgba: RGBA, lightness = 0.8): boolean => {
+export const isTooLight = (rgba: RGB | RGBA, lightness = 0.8): boolean => {
   let hsl = RGBtoHSL(rgba);
   return hsl.l > lightness;
 };

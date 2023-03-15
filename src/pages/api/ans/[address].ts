@@ -11,8 +11,8 @@ export default async function handler(
   res: NextApiResponse<ResponseData>
 ) {
   try {
-    const { user } = req.query;
-    const data = await axios.get(`https://ans-resolver.herokuapp.com/resolve-as-arpage/${user}`);
+    const { address } = req.query;
+    const data = await axios.get(`https://ans-resolver.herokuapp.com/resolve-as-arpage/${address}`);
     res.status(200).json(data.data);
   } catch (error) {
     console.error(error)

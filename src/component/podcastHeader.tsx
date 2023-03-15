@@ -63,7 +63,7 @@ const PodcastHeader:FC<PodcastHeaderInterface> = ({
               </button>
               {!isOwner && (
                 <div className="ml-4">
-                  <TipButton />
+                  <TipButton address={""} />
                 </div>
               )}
               {/* {secondaryData_ && isOwner && (

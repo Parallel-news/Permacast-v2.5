@@ -1,6 +1,6 @@
 import axios from "axios"
 import { NextApiRequest, NextApiResponse } from "next"
-import { getContractVariables } from "../../../utils/contract"
+import { getContractVariables } from "../../../server/contract"
 
 interface ResponseData {
   
