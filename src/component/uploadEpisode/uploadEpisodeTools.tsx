@@ -4,7 +4,6 @@ import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { FADE_IN_STYLE, FADE_OUT_STYLE } from '../../constants';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
-
 export default function uploadEpisode() {
     return false
 }

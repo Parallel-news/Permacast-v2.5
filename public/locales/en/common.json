@@ -113,7 +113,7 @@
 			}
 		},
 		"feetext": "Uploading the episode will cost: ",
-		"title": "Add new episode",
+		"title": "Add Episode",
 		"name": "Episode name",
 		"description": "Episode description",
 		"file": "Episode media",
