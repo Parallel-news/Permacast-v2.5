@@ -15,10 +15,13 @@ interface ImgCoverInter {
 // 2. Stylings
 export const imgStyling = "h-48 w-48 text-slate-400"
 export const photoIconStyling = "h-11 w-11 text-zinc-400"
+export const selectDropdownRowStyling = "flex flex-row w-full justify-between"
 export const emptyCoverIconTextStyling = "text-lg tracking-wider pt-2 text-zinc-400"
 export const showFormStyling = "w-full flex flex-col justify-center items-center space-y-4"
+export const uploadShowStyling = "w-full flex flex-col justify-center items-center space-y-3"
 export const coverContainerInputStyling = "opacity-0 z-index-[-1] absolute pointer-events-none"
 export const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
+export const selectDropdownStyling="select select-secondary w-[49%] py-2 px-5 text-base font-normal input-styling bg-zinc-800"
 export const coverContainerLabelStyling = "cursor-pointer transition duration-300 ease-in-out text-zinc-600 hover:text-white flex md:block md:h-full w-48"
 export const emptyCoverIconStyling = "input input-secondary flex flex-col items-center justify-center cursor-pointer bg-zinc-800 h-48 w-48 rounded-[20px] outline-none focus:ring-2 focus:ring-inset focus:ring-white hover:bg-zinc-600"
 
@@ -44,6 +47,8 @@ export const ShowForm = () => {
                     <input className={episodeNameStyling} required pattern=".{3,500}" title="Email" type="text" name="showName" placeholder={"Email"} />
                     {/*Genre and Language*/}
                     <SelectDropdownRow />
+                    {/*Explicit and Audio/Video Selector*/}
+                    <MiscRow />
                 </div>
                 <div className="w-[25%]"></div>
             </div>
@@ -56,8 +61,6 @@ export const CoverContainer = () => {
     const podcastCoverRef = useRef();
     const [img, setImg] = useState("");
     const [coverActive, setCoverActive] = useState<boolean>(false)
-
-    console.log("ref: ", podcastCoverRef)
     
     return (
         <>
@@ -104,8 +107,6 @@ export const ImgCover = (props: ImgCoverInter) => {
     )
 }
 
-export const selectDropdownStyling="select select-secondary w-[49%] py-2 px-5 text-base font-normal input-styling bg-zinc-800"
-export const selectDropdownRowStyling = "flex flex-row w-full justify-between"
 export const SelectDropdownRow = () => {
     return (
         <div className={selectDropdownRowStyling}>
@@ -134,5 +135,32 @@ export const SelectDropdownRow = () => {
                 <option>Chinese</option>
             </select>
         </div>
+    )
+}
+
+export const MiscRow = () => {
+    return (
+        <div className={selectDropdownRowStyling}>
+            <ExplicitInput />
+        </div>
+    )
+}
+
+export const ExplicitInput = () => {
+    return (
+    <label className="flex items-center mr-5">
+        <input
+            id="podcastExplicit"
+            type="checkbox"
+            className="checkbox mr-2 border-2 border-zinc-600"
+            onChange={() => {
+                return false
+                //setPodcastExplicit_(!podcastExplicit_)
+            }}
+        />
+        <span className="label-text cursor-pointer text-zinc-400 font-semibold">
+            Contains Explicit Content
+        </span>
+    </label>
     )
 }
