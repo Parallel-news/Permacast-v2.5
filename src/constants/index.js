@@ -40,7 +40,7 @@ export const SPINNER_COLOR = "#e4e4e7" //zinc-200
  * 5. Works for Modals and Components w Set Areas regardless of load status e.g. Account Balance
  */
 export const FADE_OUT_STYLE = "opacity-0 transition-opacity duration-500 ease-in-out"
-export const FADE_IN_STYLE = "opacity-100 transition-opacity duration-500 ease-in-out"
+export const FADE_IN_STYLE = "opacity-100 transition-opacity duration-5git00 ease-in-out"
 
 // TEXT TRUNCATE
 export const STR_LEN_EPISODE_BOX = 100

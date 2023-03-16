@@ -53,7 +53,7 @@
 		"label": "You'll add episodes to the show next.",
 		"name": "Show name",
 		"description": "Show description",
-		"image": "Cover image",
+		"image": "Cover Image",
 		"author": "Author",
 		"email": "Email",
 		"language": "Podcast language",
