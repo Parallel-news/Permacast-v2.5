@@ -84,10 +84,14 @@ export const EpisodeMedia = () => {
     )
 }
 
-export const UploadButton = () => {
+interface UploadButtonInter {
+    width?: string;
+}
+
+export const UploadButton = (props: UploadButtonInter) => {
     return (
         <button
-            className={uploadButtonStyling}
+            className={`${uploadButtonStyling} ${props.width}`}
             type="submit"
         >
             <ArrowUpTrayIcon className={trayIconStyling} />

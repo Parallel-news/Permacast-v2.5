@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { PhotoIcon } from "@heroicons/react/24/outline";
-import { episodeDescStyling, episodeNameStyling } from "../uploadEpisode/uploadEpisodeTools";
+import { episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
 import { LanguageOptions, CategoryOptions } from "../../utils/languages";
 
 export default function uploadShowTools() {
@@ -13,6 +13,7 @@ interface ImgCoverInter {
 }
 
 // 2. Stylings
+export const showTitleStyling = "text-white text-xl"
 export const imgStyling = "h-48 w-48 text-slate-400"
 export const photoIconStyling = "h-11 w-11 text-zinc-400"
 export const selectDropdownRowStyling = "flex flex-row w-full justify-between"
@@ -49,6 +50,12 @@ export const ShowForm = () => {
                     <SelectDropdownRow />
                     {/*Explicit and Audio/Video Selector*/}
                     <MiscRow />
+                    {/*Upload*/}
+                    <div className="w-full flex justify-center">
+                        <UploadButton 
+                            width="w-[50%]"
+                        />
+                    </div>
                 </div>
                 <div className="w-[25%]"></div>
             </div>
@@ -142,6 +149,7 @@ export const MiscRow = () => {
     return (
         <div className={selectDropdownRowStyling}>
             <ExplicitInput />
+            <MediaSwitcher />
         </div>
     )
 }
@@ -162,5 +170,26 @@ export const ExplicitInput = () => {
             Contains Explicit Content
         </span>
     </label>
+    )
+}
+
+export const MediaSwitcher = () => {
+    const [contentType_, setContentType_] = useState<string>("")
+    return (
+        <label className="flex items-center label">
+            <div className="mr-2 cursor-pointer label-text text-zinc-400 font-semibold">
+                Video
+            </div>
+            <input type="checkbox" className="toggle" checked={contentType_ === "a" ? true: false}
+                onChange={(e) => {
+                    console.log(e)
+                    setContentType_(contentType_ === "a" ? "v": "a")
+                }}
+            />
+            {/* // onChange={() => contentType_ === "a" ? "v": "a"}> */}
+            <div className="ml-2 cursor-pointer label-text text-zinc-400 font-semibold">
+                Audio
+            </div>
+        </label>
     )
 }
