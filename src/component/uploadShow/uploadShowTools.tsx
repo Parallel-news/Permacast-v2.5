@@ -6,9 +6,18 @@ export default function uploadShowTools() {
 }
 
 // 1. Interfaces
+interface ImgCoverInter {
+    img: any;
+}
 
 // 2. Stylings
-export const showFormStyling = "w-[90%] flex flex-col justify-center items-center space-y-4"
+export const imgStyling = "h-48 w-48 text-slate-400"
+export const photoIconStyling = "h-11 w-11 text-zinc-400"
+export const emptyCoverIconTextStyling = "text-lg tracking-wider pt-2 text-zinc-400"
+export const showFormStyling = "w-full flex flex-col justify-center items-center space-y-4"
+export const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
+export const emptyCoverIconStyling = "input input-secondary flex flex-col items-center justify-center cursor-pointer bg-zinc-800 h-48 w-48 rounded-[20px] outline-none focus:ring-2 focus:ring-inset focus:ring-white hover:bg-zinc-600"
+
 // 3. Custom Functions
 
 // 4. Components
@@ -46,11 +55,11 @@ export const CoverContainer = () => {
       >
         {/*@ts-ignore*/}
         {podcastCoverRef.current?.files?.[0] ? (
-          <div className="cursor-pointer bg-slate-400 h-48 w-48 rounded-[20px] flex items-center justify-center">
-            <img src={img} className="h-48 w-48 text-slate-400" />
-          </div>
+            <ImgCover 
+                img={img}
+            />
         ) : (
-            <EmptyCoverIcon />
+            <EmptyCover />
         )}
       </label>
       </>
@@ -58,18 +67,23 @@ export const CoverContainer = () => {
     //handleChangeImage(e)
 }
 
-export const emptyCoverIconTextStyling = "text-lg tracking-wider pt-2 text-zinc-400"
-export const emptyCoverIconStyling = "input input-secondary flex flex-col items-center justify-center cursor-pointer bg-zinc-800 h-48 w-48 rounded-[20px] outline-none focus:ring-2 focus:ring-inset focus:ring-white hover:bg-zinc-600"
-
-export const EmptyCoverIcon = () => {
+export const EmptyCover = () => {
     return (
         <div className={emptyCoverIconStyling}>
           {/*Image Logo*/}
-            <PhotoIcon className="h-11 w-11 text-zinc-400" />
+            <PhotoIcon className={photoIconStyling} />
           {/*Cover Image Text*/}
             <div className={emptyCoverIconTextStyling}>
               Cover Image
             </div>
+        </div>
+    )
+}
+
+export const ImgCover = (props: ImgCoverInter) => {
+    return (
+        <div className={imgCoverStyling}>
+            <img src={props.img} className={imgStyling} />
         </div>
     )
 }
