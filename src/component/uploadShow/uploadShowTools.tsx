@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from "react"
+import { MouseEventHandler, useCallback, useEffect, useRef, useState } from "react"
 import { PhotoIcon } from "@heroicons/react/24/outline";
 import { episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
 import { LanguageOptions, CategoryOptions } from "../../utils/languages";
+import Cropper, { Area } from "react-easy-crop";
+import getCroppedImg from "../../utils/croppedImage";
 
 export default function uploadShowTools() {
     return false
@@ -67,17 +69,79 @@ export const ShowForm = () => {
 export const CoverContainer = () => {
     const podcastCoverRef = useRef();
     const [img, setImg] = useState("");
+    /*Addition*/
     const [coverActive, setCoverActive] = useState<boolean>(false)
+    const [podcastCover_, setPodcastCover_] = useState(null);
+    const [inputImg, setInputImg] = useState("");
+    const [showCrop, setShowCrop] = useState(false);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+    const [rotation, setRotation] = useState(0);
+    const [croppedImage, setCroppedImage] = useState(null);
+
+    const handleChangeImage = async (e) => {
+        isPodcastCoverSquared(e);
+        setPodcastCover_(e.target.files[0])
+    };
+    
+    const isPodcastCoverSquared = (event) => {
+        if (event.target.files.length !== 0) {
+          const podcastCoverImage = new Image();
+          podcastCoverImage.src = window.URL.createObjectURL(event.target.files[0]);
+          podcastCoverImage.onload = () => {
+            if (podcastCoverImage.width !== podcastCoverImage.height) {
+              setInputImg(URL.createObjectURL(event.target.files[0]));
+              setShowCrop(true);
+            } else {
+              setImg(URL.createObjectURL(event.target.files[0]));
+            }
+          };
+        }
+    };
+
+    const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
+        setCroppedAreaPixels(croppedAreaPixels);
+    }, []);
+
+    const showCroppedImage = useCallback(async () => {
+        try {
+          const croppedImage = await getCroppedImg(
+            inputImg,
+            croppedAreaPixels,
+            rotation
+          );
+          // console.log("donee", { croppedImage });
+          setCroppedImage(croppedImage);
+          setImg(croppedImage);
+        } catch (e) {
+          console.error(e);
+        }
+      }, [croppedAreaPixels, rotation]);
+
+    const finalizeCropResp = () => {
+        showCroppedImage();
+        setShowCrop(false);
+    }
+
+    /*End*/
     
     return (
         <>
+        {showCrop && (
+            <CropScreen 
+                inputImg={inputImg}
+                onCropComplete={onCropComplete}
+                onClickResp={() => finalizeCropResp()}
+                rotation={rotation}
+                setRotation={setRotation}
+            />
+        )}
         <input
             required
             type="file"
             accept="image/*"
             className={coverContainerInputStyling}
             ref={podcastCoverRef}
-            onChange={(e) => ""}
+            onChange={(e) => handleChangeImage(e)}
             name="podcastCover"
             id="podcastCover"
         />
@@ -85,6 +149,7 @@ export const CoverContainer = () => {
             htmlFor="podcastCover"
             className={coverContainerLabelStyling}
         >
+            {/*Show Selected Image or Empty Cover*/}
             {/*@ts-ignore*/}
             {podcastCoverRef.current?.files?.[0] ? <ImgCover img={img} /> : <EmptyCover />}
       </label>
@@ -191,5 +256,43 @@ export const MediaSwitcher = () => {
                 Audio
             </div>
         </label>
+    )
+}
+
+interface CropScreenInter {
+    inputImg: string;
+    onCropComplete: (croppedArea: Area, croppedAreaPixels: Area) => void;
+    onClickResp: MouseEventHandler<HTMLDivElement>;
+    rotation: number;
+    setRotation: (rotation: number) => void;
+}
+
+export const CropScreen = (props: CropScreenInter) => {
+    const [crop, setCrop] = useState({ x: 0, y: 0 });
+    const [zoom, setZoom] = useState(1);
+    return (
+        <div className={`absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center backdrop-blur-md`}>
+            <div className={`relative w-[800px] h-[400px] rounded-[6px] overflow-hidden`}>
+                <Cropper
+                    image={props.inputImg}
+                    crop={crop}
+                    rotation={props.rotation}
+                    zoom={zoom}
+                    aspect={1}
+                    onCropChange={(setCrop)}
+                    onRotationChange={props.setRotation}
+                    onCropComplete={props.onCropComplete}
+                    onZoomChange={setZoom}
+                />
+            </div>
+            <div
+            className={`min-w-[50px] min-h-[10px] rounded-[4px] bg-black/10 hover:bg-black/20 border-[1px] border-solid border-white/10 m-2 p-1 px-2 cursor-pointer flex flex-col justify-center items-center`}
+            onClick={props.onClickResp}
+            >
+            <p className={`flex flex-col justify-center items-center text-white/60`}>
+                Crop Selection
+            </p>
+            </div>
+        </div>
     )
 }
