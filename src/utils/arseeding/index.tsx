@@ -5,48 +5,32 @@ export default function ArseedingTools() {
     return false
 }
 
-// 1. Interfaces
-interface UploadDescriptionInter {
-    description: string;
-}
 
-interface CheckContentTypeInter {
-    url: string;
-}
-
-interface Upload3DMediaInter {
-    file: File;
-    mediaType: string;
-}
-
-// 2. Stylings
-
-// 3. Custom Functions
-// 3a. Upload Media Functions
+// a. Upload Media Functions
 // Text
-export const upload2DMedia = async (props: UploadDescriptionInter) => {
+export const upload2DMedia = async (description: string) => {
     const instance = await genArweaveAPI(window.arweaveWallet)
     console.log("Instance: ", instance)
-    const data = Buffer.from(props.description)
+    const data = Buffer.from(description)
     const res = await instance.sendAndPay(ARSEED_URL, data, ARSEED_CURRENCY, TEXTMARKDOWN)
     console.log(res)
 }
 
 // Image, Audio and Video Uploads
-export const upload3DMedia = async (props: Upload3DMediaInter) => {
-    if (!props.file) {
+export const upload3DMedia = async (file: File, mediaType: string) => {
+    if (!file) {
         console.log("No file selected");
         return;
     }
     try {
         // Convert Data to Array Buffer
-        const arrayBuffer = await readFileAsArrayBuffer(props.file);
+        const arrayBuffer = await readFileAsArrayBuffer(file);
         const dataBuffer = Buffer.from(arrayBuffer);
     
         const instance = await genArweaveAPI(window.arweaveWallet);
         console.log("Instance: ", instance);
         const ops = {
-        tags: [{ name: "Content-Type", value: props.mediaType }], // Adjust the MIME type based on your audio file type
+        tags: [{ name: "Content-Type", value: mediaType }], // Adjust the MIME type based on your audio file type
         };
         const res = await instance.sendAndPay(ARSEED_URL, dataBuffer, ARSEED_CURRENCY, ops);
     
@@ -74,9 +58,9 @@ export const readFileAsArrayBuffer = (file: File): Promise<ArrayBuffer> => {
     });
 };
 
-export const checkContentType = async (props: CheckContentTypeInter) => {
+export const checkContentTypeFromUrl = async (url: string) => {
     try {
-      const response = await fetch(props.url, { method: 'HEAD' });
+      const response = await fetch(url, { method: 'HEAD' });
       const ct = response.headers.get('content-type');
       return ct
     } catch (error) {
@@ -84,10 +68,7 @@ export const checkContentType = async (props: CheckContentTypeInter) => {
     }
 };
 
-export const inspectEventContentType = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("File type:", event.target.files[0]);
-    return event.target.files[0];
-}
+export const inspectEventContentType = (event: React.ChangeEvent<HTMLInputElement>) => event.target.files[0].type;
 
 export const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("e: ", event.target)
