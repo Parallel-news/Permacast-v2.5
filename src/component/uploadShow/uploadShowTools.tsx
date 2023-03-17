@@ -25,7 +25,7 @@ export const uploadShowStyling = "w-full flex flex-col justify-center items-cent
 export const coverContainerInputStyling = "opacity-0 z-index-[-1] absolute pointer-events-none"
 export const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
 export const selectDropdownStyling="select select-secondary w-[49%] py-2 px-5 text-base font-normal input-styling bg-zinc-800"
-export const coverContainerLabelStyling = "cursor-pointer transition duration-300 ease-in-out text-zinc-600 hover:text-white flex md:block md:h-full w-48"
+export const coverContainerLabelStyling = "cursor-pointer transition duration-300 ease-in-out text-zinc-600 hover:text-white flex md:block h-fit w-48"
 export const emptyCoverIconStyling = "input input-secondary flex flex-col items-center justify-center cursor-pointer bg-zinc-800 h-48 w-48 rounded-[20px] outline-none focus:ring-2 focus:ring-inset focus:ring-white hover:bg-zinc-600"
 
 // 3. Custom Functions
@@ -149,7 +149,6 @@ export const CoverContainer = () => {
       </label>
       </>
     )
-    //handleChangeImage(e)
 }
 
 export const EmptyCover = () => {
