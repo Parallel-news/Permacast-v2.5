@@ -4,6 +4,8 @@ import { episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadE
 import { LanguageOptions, CategoryOptions } from "../../utils/languages";
 import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
+import { PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN } from "../../constants";
+import { isValidEmail, ValMsg } from "../reusables/formTools";
 
 export default function uploadShowTools() {
     return false
@@ -14,24 +16,115 @@ interface ImgCoverInter {
     img: any;
 }
 
+interface SelectDropdownRowInter {
+    setLanguage: (v: any) => void;
+    setCategory: (v: any) => void;
+}
+
+interface ExplicitInputInter {
+    setExplicit: (v: any) => void;
+    explicit: boolean;
+}
+
 // 2. Stylings
 export const showTitleStyling = "text-white text-xl"
 export const photoIconStyling = "h-11 w-11 text-zinc-400"
+export const explicitLabelStyling = "flex items-center mr-5"
 export const imgStyling = "h-48 w-48 text-slate-400 rounded-[20px]"
 export const selectDropdownRowStyling = "flex flex-row w-full justify-between"
+export const explicitCheckBoxStyling = "checkbox mr-2 border-2 border-zinc-600"
 export const emptyCoverIconTextStyling = "text-lg tracking-wider pt-2 text-zinc-400"
+export const explicitTextStyling = "label-text cursor-pointer text-zinc-400 font-semibold"
 export const showFormStyling = "w-full flex flex-col justify-center items-center space-y-4"
-export const uploadShowStyling = "w-full flex flex-col justify-center items-center space-y-3"
 export const coverContainerInputStyling = "opacity-0 z-index-[-1] absolute pointer-events-none"
 export const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
+export const uploadShowStyling = "w-full flex flex-col justify-center items-center space-y-3 pb-[200px]"
 export const selectDropdownStyling="select select-secondary w-[49%] py-2 px-5 text-base font-normal input-styling bg-zinc-800"
 export const coverContainerLabelStyling = "cursor-pointer transition duration-300 ease-in-out text-zinc-600 hover:text-white flex md:block h-fit w-48"
 export const emptyCoverIconStyling = "input input-secondary flex flex-col items-center justify-center cursor-pointer bg-zinc-800 h-48 w-48 rounded-[20px] outline-none focus:ring-2 focus:ring-inset focus:ring-white hover:bg-zinc-600"
 
 // 3. Custom Functions
+/**
+ * Determines whether validation message should be placed within input field
+ * @param {string|number - input from form} input 
+ * @param {string - form type} type 
+ * @returns Validation message || ""
+ */
+const handleValMsg = (input: string, type: string) => {
+    switch(type) {
+        case 'podName':
+        if((input.length > PODCAST_NAME_MAX_LEN || input.length < PODCAST_NAME_MIN_LEN)) {
+            return `Name must be between ${PODCAST_NAME_MIN_LEN} and ${PODCAST_NAME_MAX_LEN} characters`;
+        } else {
+            return "";
+        }
+        case 'podDesc':
+        if((input.length > PODCAST_DESC_MAX_LEN || input.length < PODCAST_DESC_MIN_LEN)) {
+            return `Description must be between ${PODCAST_DESC_MIN_LEN} and ${PODCAST_DESC_MAX_LEN} characters`;
+        } else {
+            return "";
+        }
+        case 'podAuthor':
+        if((input.length > PODCAST_AUTHOR_MAX_LEN || input.length < PODCAST_AUTHOR_MIN_LEN)) {
+            return `Author must be between ${PODCAST_AUTHOR_MIN_LEN} and ${PODCAST_AUTHOR_MAX_LEN}`;
+        } else {
+            return "";
+        }
+        case 'podEmail':
+        if(isValidEmail(input)) {
+            return "";
+        } else {
+            return `Enter a valid email`
+        }
+    }
+}
 
+/**
+ * Checks dictionary object for populated keys. If populated, dont submit
+ * @param fieldsObj 
+ * @returns boolean
+ */
+const allFieldsFilled = (fieldsObj: any) => {
+    for (const key in fieldsObj) {
+        if(Object.hasOwnProperty.call(fieldsObj, key)) {
+            if(!fieldsObj[key]) {
+                return false
+            }
+        }   
+    }
+    return true
+}
+  
 // 4. Components
 export const ShowForm = () => {
+
+  // inputs
+  const [podcastDescription_, setPodcastDescription_] = useState("");
+  const [podcastAuthor_, setPodcastAuthor_] = useState("");
+  const [podcastEmail_, setPodcastEmail_] = useState("");
+  const [podcastCategory_, setPodcastCategory_] = useState("True Crime");
+  const [podcastName_, setPodcastName_] = useState("");
+  const [podcastCover_, setPodcastCover_] = useState(null);
+  const [podcastLanguage_, setPodcastLanguage_] = useState('en');
+  const [podcastExplicit_, setPodcastExplicit_] = useState(false);
+
+  // Validations
+  const [podNameMsg, setPodNameMsg] = useState("");
+  const [podDescMsg, setPodDescMsg] = useState("");
+  const [podAuthMsg, setPodAuthMsg] = useState("");
+  const [podEmailMsg, setPodEmailMsg] = useState("");
+  const validationObject = {
+    "nameError": podNameMsg.length === 0,
+    "descError": podDescMsg.length === 0,
+    "authError": podAuthMsg.length === 0,
+    "emailError": podEmailMsg.length === 0,
+    "name": podcastName_.length > 0,
+    "desc": podcastDescription_.length > 0,
+    "auth": podcastAuthor_.length > 0,
+    "email": podcastEmail_.length > 0
+  }
+  console.log("VO: ", validationObject)
+  console.log("F: ", allFieldsFilled(validationObject))
     return (
         <div className={showFormStyling}>
             {/*First Row*/}
@@ -40,22 +133,70 @@ export const ShowForm = () => {
                     <CoverContainer />
                 </div>
                 <div className="flex flex-col w-[50%] space-y-3">
-                    {/*Episode Name*/}
-                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="showName" placeholder={"Show Name"} />
-                    {/*Episode Description*/}
-                    <textarea className={episodeDescStyling + " h-32"} required title="Between 1 and 5000 characters" name="showShowNotes" placeholder={"Description"}></textarea>
-                    {/*Author*/}
-                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Author" type="text" name="showName" placeholder={"Author"} />
-                    {/*Email*/}
-                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Email" type="text" name="showName" placeholder={"Email"} />
-                    {/*Genre and Language*/}
-                    <SelectDropdownRow />
-                    {/*Explicit and Audio/Video Selector*/}
-                    <MiscRow />
-                    {/*Upload*/}
+
+                    {/*
+                        Episode Name
+                    */}
+                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="showName" placeholder={"Show Name"}                     
+                    onChange={(e) => {
+                      setPodNameMsg(handleValMsg(e.target.value, "podName"));
+                      setPodcastName_(e.target.value);
+                    }}/>
+                    <ValMsg valMsg={podNameMsg} className="pl-2" />
+
+                    {/*
+                        Episode Description
+                    */}
+                    <textarea className={episodeDescStyling + " h-32"} required title="Between 1 and 5000 characters" name="showShowNotes" placeholder={"Description"}                     
+                    onChange={(e) => {
+                      setPodDescMsg(handleValMsg(e.target.value, "podDesc"));
+                      setPodcastDescription_(e.target.value);
+                    }}></textarea>
+                    <ValMsg valMsg={podDescMsg} className="pl-2" />
+
+                    {/*
+                        Author
+                    */}
+                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Author" type="text" name="showName" placeholder={"Author"}                   
+                    onChange={(e) => {
+                        setPodAuthMsg(handleValMsg(e.target.value, "podAuthor"));
+                        setPodcastAuthor_(e.target.value);
+                    }} />
+                    <ValMsg valMsg={podAuthMsg} className="pl-2" />
+
+                    {/*
+                        Email
+                    */}
+                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Email" type="text" name="showName" placeholder={"Email"}                   
+                    onChange={(e) => {
+                        setPodEmailMsg(handleValMsg(e.target.value, "podEmail"));
+                        setPodcastEmail_(e.target.value);
+                    }}/>
+                    <ValMsg valMsg={podEmailMsg} className="pl-2" />
+
+                    {/*
+                        Genre and Language
+                    */}
+                    <SelectDropdownRow 
+                        setLanguage={setPodcastLanguage_}
+                        setCategory={setPodcastCategory_}
+                    />
+
+                    {/*
+                        Explicit and Audio/Video Selector
+                    */}
+                    <ExplicitInput 
+                        setExplicit={setPodcastExplicit_}
+                        explicit={podcastExplicit_}
+                    />
+
+                    {/*
+                        Upload
+                    */}
                     <div className="w-full flex justify-center">
                         <UploadButton 
                             width="w-[50%]"
+                            disable={!allFieldsFilled(validationObject)}
                         />
                     </div>
                 </div>
@@ -172,17 +313,14 @@ export const ImgCover = (props: ImgCoverInter) => {
     )
 }
 
-export const SelectDropdownRow = () => {
+export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
     return (
         <div className={selectDropdownRowStyling}>
             <select
                 className={`${selectDropdownStyling} mr-[2%]`}
                 id="podcastCategory"
                 name="category"
-                onChange={(e) => {  
-                    console.log(e.target.value)
-                    //setPodcastCategory_(e.target.value);
-                }}
+                onChange={(e) => props.setCategory(e.target.value)}
             >
                 <option>Arts</option>
                 <option>Business</option>
@@ -191,10 +329,7 @@ export const SelectDropdownRow = () => {
                 className={selectDropdownStyling}
                 id="podcastLanguage"
                 name="language"
-                onChange={(e) => {
-                    console.log(e)
-                    //setPodcastLanguage_(e.target.value);
-                }}
+                onChange={(e) => props.setLanguage(e.target.value)}
             >
                 <option>English</option>
                 <option>Chinese</option>
@@ -203,28 +338,16 @@ export const SelectDropdownRow = () => {
     )
 }
 
-export const MiscRow = () => {
+export const ExplicitInput = (props: ExplicitInputInter) => {
     return (
-        <div className={selectDropdownRowStyling}>
-            <ExplicitInput />
-            <MediaSwitcher />
-        </div>
-    )
-}
-
-export const ExplicitInput = () => {
-    return (
-    <label className="flex items-center mr-5">
+    <label className={explicitLabelStyling}>
         <input
             id="podcastExplicit"
             type="checkbox"
-            className="checkbox mr-2 border-2 border-zinc-600"
-            onChange={() => {
-                return false
-                //setPodcastExplicit_(!podcastExplicit_)
-            }}
+            className={explicitCheckBoxStyling}
+            onChange={() => props.setExplicit(!props.explicit)}
         />
-        <span className="label-text cursor-pointer text-zinc-400 font-semibold">
+        <span className={explicitTextStyling}>
             Contains Explicit Content
         </span>
     </label>
@@ -244,7 +367,6 @@ export const MediaSwitcher = () => {
                     setContentType_(contentType_ === "a" ? "v": "a")
                 }}
             />
-            {/* // onChange={() => contentType_ === "a" ? "v": "a"}> */}
             <div className="ml-2 cursor-pointer label-text text-zinc-400 font-semibold">
                 Audio
             </div>

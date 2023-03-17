@@ -20,6 +20,11 @@ interface PodcastOptionInter {
     disableClick: boolean;
 }
 
+interface UploadButtonInter {
+    width?: string;
+    disable: boolean
+}
+
 // 2. Styling
 export const trayIconStyling="h-5 w-5 mr-2"
 export const episodeTitleStyling = "text-white text-xl mt-4"
@@ -67,7 +72,9 @@ export const EpisodeForm = () => {
             {/*Episode Media*/}
             <EpisodeMedia />
             {/*Upload Button*/}
-            <UploadButton />
+            <UploadButton 
+                disable={false}
+            />
         </div>
     )
 }
@@ -86,15 +93,14 @@ export const EpisodeMedia = () => {
     )
 }
 
-interface UploadButtonInter {
-    width?: string;
-}
+
 
 export const UploadButton = (props: UploadButtonInter) => {
     return (
         <button
             className={`${uploadButtonStyling} ${props.width}`}
             type="submit"
+            disabled={props.disable}
         >
             <ArrowUpTrayIcon className={trayIconStyling} />
             Upload
