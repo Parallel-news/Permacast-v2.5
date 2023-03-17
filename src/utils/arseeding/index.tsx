@@ -92,3 +92,28 @@ export async function getMimeTypeFromBlobUrl(blobUrl) {
   }
 }
 
+export async function createFileFromBlobUrl(blobUrl, fileName) {
+  try {
+    // Fetch the Blob from the URL
+    const response = await fetch(blobUrl);
+
+    // Check if the response is OK
+    if (!response.ok) {
+      throw new Error('Failed to fetch the Blob');
+    }
+
+    // Get the Blob from the response
+    const blob = await response.blob();
+
+    // Get the MIME type from the Blob
+    const mimeType = blob.type;
+
+    // Create a File instance from the Blob
+    const file = new File([blob], fileName, { type: mimeType });
+
+    return file;
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
+}

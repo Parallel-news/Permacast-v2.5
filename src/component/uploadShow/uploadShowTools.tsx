@@ -6,7 +6,7 @@ import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
 import { PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN } from "../../constants";
 import { isValidEmail, ValMsg } from "../reusables/formTools";
-import { checkContentTypeFromUrl, getMimeTypeFromBlobUrl } from "../../utils/arseeding";
+import { checkContentTypeFromUrl, createFileFromBlobUrl, getMimeTypeFromBlobUrl, upload3DMedia } from "../../utils/arseeding";
 
 export default function uploadShowTools() {
     return false
@@ -139,12 +139,14 @@ export const ShowForm = () => {
         "cat": podcastCategory_.length > 0
     }
 
+    //Format to allow 
     async function inspect() {
         console.log("PODCAST COVER:", podcastCover_)
         const type = await getMimeTypeFromBlobUrl(podcastCover_)
-        console.log("type : ", type )
-        const convertedFile = new File([podcastCover_], 'cover.txt', {type: "image/jpeg"})
+        console.log("type : ", type)
+        const convertedFile = await createFileFromBlobUrl(podcastCover_, "cov.txt")
         console.log("convertedFiled: ", convertedFile)
+        upload3DMedia(convertedFile, type)
     }
 
     inspect()
@@ -431,3 +433,22 @@ export const CropScreen = (props: CropScreenInter) => {
         </div>
     )
 }
+
+/*
+{
+    "everHash": "0xab56df38218eb49c023a2c683cdcffafba386676ccb0bd688701fc210ca65b33",
+    "order": {
+        "itemId": "LDwYbqD_TIffjZ54n8TLKgPErXINwuyQ1dshr7gtjWI",
+        "size": 122096,
+        "bundler": "uDA8ZblC-lyEFfsYXKewpwaX-kkNDDw8az3IW9bDL68",
+        "currency": "AR",
+        "decimals": 12,
+        "fee": "210160368",
+        "paymentExpiredTime": 1679177716,
+        "expectedBlock": 1140009
+    }
+}
+
+
+
+*/
