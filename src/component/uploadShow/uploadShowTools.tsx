@@ -67,15 +67,14 @@ export const ShowForm = () => {
 }
 
 export const CoverContainer = () => {
-    const podcastCoverRef = useRef();
+
+    const podcastCoverRef = useRef<HTMLInputElement | null>(null);
     const [img, setImg] = useState("");
-    /*Addition*/
-    const [podcastCover_, setPodcastCover_] = useState(null);
+    const [, setPodcastCover_] = useState(null);
     const [inputImg, setInputImg] = useState("");
     const [showCrop, setShowCrop] = useState(false);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [rotation, setRotation] = useState(0);
-    const [croppedImage, setCroppedImage] = useState(null);
 
     const handleChangeImage = async (e) => {
         isPodcastCoverSquared(e);
@@ -108,8 +107,7 @@ export const CoverContainer = () => {
             croppedAreaPixels,
             rotation
           );
-          // console.log("donee", { croppedImage });
-          setCroppedImage(croppedImage);
+
           setImg(croppedImage);
         } catch (e) {
           console.error(e);
@@ -121,8 +119,6 @@ export const CoverContainer = () => {
         setShowCrop(false);
     }
 
-    /*End*/
-    
     return (
         <>
         {showCrop && (
@@ -149,8 +145,7 @@ export const CoverContainer = () => {
             className={coverContainerLabelStyling}
         >
             {/*Show Selected Image or Empty Cover*/}
-            {/*@ts-ignore*/}
-            {podcastCoverRef.current?.files?.[0] ? <ImgCover img={img} /> : <EmptyCover />}
+            {podcastCoverRef?.current?.files?.[0] ? <ImgCover img={img} /> : <EmptyCover />}
       </label>
       </>
     )
