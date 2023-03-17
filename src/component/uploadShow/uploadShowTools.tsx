@@ -16,7 +16,7 @@ interface ImgCoverInter {
 
 // 2. Stylings
 export const showTitleStyling = "text-white text-xl"
-export const imgStyling = "h-48 w-48 text-slate-400"
+export const imgStyling = "h-48 w-48 text-slate-400 rounded-[20px]"
 export const photoIconStyling = "h-11 w-11 text-zinc-400"
 export const selectDropdownRowStyling = "flex flex-row w-full justify-between"
 export const emptyCoverIconTextStyling = "text-lg tracking-wider pt-2 text-zinc-400"
