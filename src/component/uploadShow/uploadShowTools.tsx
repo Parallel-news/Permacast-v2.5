@@ -1,4 +1,4 @@
-import { MouseEventHandler, useCallback, useEffect, useRef, useState } from "react"
+import { MouseEventHandler, useCallback, useRef, useState } from "react"
 import { PhotoIcon } from "@heroicons/react/24/outline";
 import { episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
 import { LanguageOptions, CategoryOptions } from "../../utils/languages";
@@ -6,6 +6,7 @@ import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
 import { PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN } from "../../constants";
 import { isValidEmail, ValMsg } from "../reusables/formTools";
+import { checkContentTypeFromUrl, getMimeTypeFromBlobUrl } from "../../utils/arseeding";
 
 export default function uploadShowTools() {
     return false
@@ -24,6 +25,18 @@ interface SelectDropdownRowInter {
 interface ExplicitInputInter {
     setExplicit: (v: any) => void;
     explicit: boolean;
+}
+
+interface CropScreenInter {
+    inputImg: string;
+    onCropComplete: (croppedArea: Area, croppedAreaPixels: Area) => void;
+    onClickResp: MouseEventHandler<HTMLDivElement>;
+    rotation: number;
+    setRotation: (rotation: number) => void;
+}
+
+interface CoverContainerInter {
+    setCover: (v: any) => void
 }
 
 // 2. Stylings
@@ -81,10 +94,10 @@ const handleValMsg = (input: string, type: string) => {
 
 /**
  * Checks dictionary object for populated keys. If populated, dont submit
- * @param fieldsObj 
+ * @param fieldsObj obj containing conditions. If true, qualified for submission
  * @returns boolean
  */
-const allFieldsFilled = (fieldsObj: any) => {
+export const allFieldsFilled = (fieldsObj: any) => {
     for (const key in fieldsObj) {
         if(Object.hasOwnProperty.call(fieldsObj, key)) {
             if(!fieldsObj[key]) {
@@ -98,39 +111,55 @@ const allFieldsFilled = (fieldsObj: any) => {
 // 4. Components
 export const ShowForm = () => {
 
-  // inputs
-  const [podcastDescription_, setPodcastDescription_] = useState("");
-  const [podcastAuthor_, setPodcastAuthor_] = useState("");
-  const [podcastEmail_, setPodcastEmail_] = useState("");
-  const [podcastCategory_, setPodcastCategory_] = useState("True Crime");
-  const [podcastName_, setPodcastName_] = useState("");
-  const [podcastCover_, setPodcastCover_] = useState(null);
-  const [podcastLanguage_, setPodcastLanguage_] = useState('en');
-  const [podcastExplicit_, setPodcastExplicit_] = useState(false);
+    // inputs
+    const [podcastDescription_, setPodcastDescription_] = useState("");
+    const [podcastAuthor_, setPodcastAuthor_] = useState("");
+    const [podcastEmail_, setPodcastEmail_] = useState("");
+    const [podcastCategory_, setPodcastCategory_] = useState("");
+    const [podcastName_, setPodcastName_] = useState("");
+    const [podcastCover_, setPodcastCover_] = useState(null);
+    const [podcastLanguage_, setPodcastLanguage_] = useState('en');
+    const [podcastExplicit_, setPodcastExplicit_] = useState(false);
 
-  // Validations
-  const [podNameMsg, setPodNameMsg] = useState("");
-  const [podDescMsg, setPodDescMsg] = useState("");
-  const [podAuthMsg, setPodAuthMsg] = useState("");
-  const [podEmailMsg, setPodEmailMsg] = useState("");
-  const validationObject = {
-    "nameError": podNameMsg.length === 0,
-    "descError": podDescMsg.length === 0,
-    "authError": podAuthMsg.length === 0,
-    "emailError": podEmailMsg.length === 0,
-    "name": podcastName_.length > 0,
-    "desc": podcastDescription_.length > 0,
-    "auth": podcastAuthor_.length > 0,
-    "email": podcastEmail_.length > 0
-  }
-  console.log("VO: ", validationObject)
-  console.log("F: ", allFieldsFilled(validationObject))
+    // Validations
+    const [podNameMsg, setPodNameMsg] = useState("");
+    const [podDescMsg, setPodDescMsg] = useState("");
+    const [podAuthMsg, setPodAuthMsg] = useState("");
+    const [podEmailMsg, setPodEmailMsg] = useState("");
+    const validationObject = {
+        "nameError": podNameMsg.length === 0,
+        "descError": podDescMsg.length === 0,
+        "authError": podAuthMsg.length === 0,
+        "emailError": podEmailMsg.length === 0,
+        "name": podcastName_.length > 0,
+        "desc": podcastDescription_.length > 0,
+        "auth": podcastAuthor_.length > 0,
+        "email": podcastEmail_.length > 0,
+        "lang": podcastLanguage_.length > 0,
+        "cat": podcastCategory_.length > 0
+    }
+
+    async function inspect() {
+        console.log("PODCAST COVER:", podcastCover_)
+        const type = await getMimeTypeFromBlobUrl(podcastCover_)
+        console.log("type : ", type )
+        const convertedFile = new File([podcastCover_], 'cover.txt', {type: "image/jpeg"})
+        console.log("convertedFiled: ", convertedFile)
+    }
+
+    inspect()
+
     return (
         <div className={showFormStyling}>
             {/*First Row*/}
             <div className="flex flex-row w-full">
+                {/*
+                    Cover
+                */}
                 <div className="w-[25%] flex justify-center">
-                    <CoverContainer />
+                    <CoverContainer 
+                        setCover={setPodcastCover_}
+                    />
                 </div>
                 <div className="flex flex-col w-[50%] space-y-3">
 
@@ -202,24 +231,21 @@ export const ShowForm = () => {
                 </div>
                 <div className="w-[25%]"></div>
             </div>
-            
         </div>
     )
 }
 
-export const CoverContainer = () => {
+export const CoverContainer = (props: CoverContainerInter) => {
 
     const podcastCoverRef = useRef<HTMLInputElement | null>(null);
     const [img, setImg] = useState("");
-    const [, setPodcastCover_] = useState(null);
     const [inputImg, setInputImg] = useState("");
     const [showCrop, setShowCrop] = useState(false);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [rotation, setRotation] = useState(0);
 
-    const handleChangeImage = async (e) => {
+    const handleChangeImage = async (e: any) => {
         isPodcastCoverSquared(e);
-        setPodcastCover_(e.target.files[0])
     };
     
     const isPodcastCoverSquared = (event) => {
@@ -250,6 +276,7 @@ export const CoverContainer = () => {
           );
 
           setImg(croppedImage);
+          props.setCover(croppedImage)
         } catch (e) {
           console.error(e);
         }
@@ -258,6 +285,7 @@ export const CoverContainer = () => {
     const finalizeCropResp = () => {
         showCroppedImage();
         setShowCrop(false);
+        
     }
 
     return (
@@ -372,14 +400,6 @@ export const MediaSwitcher = () => {
             </div>
         </label>
     )
-}
-
-interface CropScreenInter {
-    inputImg: string;
-    onCropComplete: (croppedArea: Area, croppedAreaPixels: Area) => void;
-    onClickResp: MouseEventHandler<HTMLDivElement>;
-    rotation: number;
-    setRotation: (rotation: number) => void;
 }
 
 export const CropScreen = (props: CropScreenInter) => {

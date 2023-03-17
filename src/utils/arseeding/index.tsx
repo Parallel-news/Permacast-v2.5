@@ -74,3 +74,21 @@ export const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => 
     console.log("e: ", event.target)
     return event.target.files ? event.target.files[0] : null;
 };
+
+export async function getMimeTypeFromBlobUrl(blobUrl) {
+  try {
+    const response = await fetch(blobUrl);
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch the Blob');
+    }
+
+    const blob = await response.blob();
+    const mimeType = blob.type;
+    return mimeType
+
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
