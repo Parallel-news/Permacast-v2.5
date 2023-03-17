@@ -56,3 +56,10 @@ export const NO_EPISODE_FOUND = "No Episode Found."
 
 // SUCCESS
 export const PAYLOAD_RECEIVED = "Received"
+
+// ARSEEDING
+export const CURRENCY = "ar"
+export const ARSEED_URL = "https://arseed.web3infra.dev"
+export const TEXTMARKDOWN = {
+    tags: [{name: "Content-Type", value:'text/markdown'}]
+}
