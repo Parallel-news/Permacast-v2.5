@@ -22,7 +22,8 @@ interface PodcastOptionInter {
 
 interface UploadButtonInter {
     width?: string;
-    disable: boolean
+    disable: boolean;
+    click?: () => void
 }
 
 // 2. Styling
@@ -101,6 +102,7 @@ export const UploadButton = (props: UploadButtonInter) => {
             className={`${uploadButtonStyling} ${props.width}`}
             type="submit"
             disabled={props.disable}
+            onClick={props.click}
         >
             <ArrowUpTrayIcon className={trayIconStyling} />
             Upload

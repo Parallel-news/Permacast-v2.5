@@ -1,3 +1,6 @@
+import toast from "react-hot-toast";
+import { CONNECT_WALLET } from "../constants";
+
 interface hexToRgbInter {
     hex: string
     alpha: number
@@ -49,3 +52,18 @@ export function formatStringByLen(str, beginLength, endLength) {
     const endStr = str.substr(strLength - endLength, strLength);
     return `${beginStr}...${endStr}`;
 }
+
+/**
+ * Puts the object with a specific domain property to the first in order in the array.
+ * @param {Array<any>} array - The array of objects to search and sort.
+ * @param {string} needle - The domain property of the object to be moved to the first index.
+ * @returns {Array<any>} - The updated array with the specified object moved to the first index.
+ */
+export const checkConnection = (arAddress: string) => {
+    if (arAddress === undefined) {
+      toast.error(CONNECT_WALLET)
+      return false
+    } else {
+      return true
+    }
+  }

@@ -4,10 +4,14 @@ import { episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadE
 import { LanguageOptions, CategoryOptions } from "../../utils/languages";
 import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
-import { PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN } from "../../constants";
+import { PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, USER_SIG_MESSAGES } from "../../constants";
 import { isValidEmail, ValMsg } from "../reusables/formTools";
-import { upload3DMedia } from "../../utils/arseeding";
-import { checkContentTypeFromUrl, getMimeTypeFromBlobUrl, createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
+import { upload2DMedia, upload3DMedia } from "../../utils/arseeding";
+import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
+import { defaultSignatureParams, useArconnect } from 'react-arconnect';
+import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
+import { checkConnection } from "../../utils/reusables";
+
 
 export default function uploadShowTools() {
     return false
@@ -50,14 +54,14 @@ export const selectDropdownRowStyling = "flex flex-row w-full justify-between"
 export const explicitCheckBoxStyling = "checkbox mr-2 border-2 border-zinc-600"
 export const emptyCoverIconTextStyling = "text-lg tracking-wider pt-2 text-zinc-400"
 export const explicitTextStyling = "label-text cursor-pointer text-zinc-400 font-semibold"
-export const showFormStyling = "w-full flex flex-col justify-center items-center space-y-4"
+export const showFormStyling = "w-full flex flex-col justify-center items-center space-y-2"
 export const coverContainerInputStyling = "opacity-0 z-index-[-1] absolute pointer-events-none"
 export const cropScreenDivStyling = "relative w-[800px] h-[400px] rounded-[6px] overflow-hidden"
 export const cropSelectionTextStyling = "flex flex-col justify-center items-center text-white/60"
 export const mediaSwitcherVideoStyling = "mr-2 cursor-pointer label-text text-zinc-400 font-semibold"
 export const mediaSwitchedAudioStyling = "ml-2 cursor-pointer label-text text-zinc-400 font-semibold"
 export const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
-export const uploadShowStyling = "w-full flex flex-col justify-center items-center space-y-3 pb-[200px]"
+export const uploadShowStyling = "w-full flex flex-col justify-center items-center space-y-1 pb-[200px]"
 export const selectDropdownStyling="select select-secondary w-[49%] py-2 px-5 text-base font-normal input-styling bg-zinc-800"
 export const cropScreenStyling = "absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center backdrop-blur-md"
 export const coverContainerLabelStyling = "cursor-pointer transition duration-300 ease-in-out text-zinc-600 hover:text-white flex md:block h-fit w-48"
@@ -149,22 +153,47 @@ export const ShowForm = () => {
     }
 
     //EXM 
-    const createPodcastPayload = {
+    const createShowPayload = {
         "function": "createPodcast",
         "name": podcastName_,
-        "desc": "W7QPm-aS5gE_gU5ROc3Lefuef9ctf4wCqTc6mhV3yFA",
+        "desc": "",
         "author": podcastAuthor_,
         "lang": podcastLanguage_,
         "isExplicit": podcastExplicit_ ? "yes" : "no",
         "categories": podcastCategory_,
         "email": podcastEmail_,
         "contentType": "a",
-        "cover": "pvpBjp-Z3po5M6C9HvYewf2dmH5Snw2waiwbOTYDhiM",
-        "minifiedCover": "VoxGkElx4d85J51EAQTt9F_ndHtMiLBqOv7RF6humiQ",
-        "label": "null1",
-        "jwk_n": "g5n_k1L_P4u3omopmd2X4dOZ48IKZyxSfIXDh6zTBIr1VwuZvy7DDT--YJ-9Io03VaC8VqImIy0V6_BA9YIYcGBh0XIcPtxqod3dkrxJyOj6K1kGWja-cI9hdwoZRqlTUROLPbkgD46LGF-fvAYDXiapVzTT2hZFqNdYVhTIW7MT_Aegmdj9_QBX6mA9H40y99ZMEsHtdnwMunCl4h4vA2W1UvJ5xcac9CZOROLItU45LOmThV4VD1wU4XtLqxjbvwTRFxKc_xrFi481aYL0PRi9rwJkH6369l4TwJUtL_xFdUTH6gZfU6oPXaL47TGOsA2oL80I57AxHaueCm_ksmY-kpNAvw2n4GGj6HY2Xcg02Q6LfiZsdvG1da8VJtC9bG4edBxF-CWmLxZRHy7_XDyTQWbZuqob83nYS-zpUVV6ZCZFJht8QT7w4USUqbFv6zAR7ZqifOK4Xmy9NO8Ai8phAk7d9GNd9jcZqqwRNmAY_ESidkWFQ86RRh4YuUqohOwOUw_q2vDTFner-TfEwg8MPKDHjkpVezK4OU8AcacaRf7o2pd-0-HPUy1fUDvg98dsq9xpXNtIp23OaQZkgPd1cDgkkeci2yCofNFjiTnAsMsHELkWbuo1wkadn4_wQ-sdG1cNdo7bzmJG2Wm95b5A0QjOLOcyXINLb7SHg8M",
+        "cover": "",
+        "minifiedCover": "",
+        "label": "",
+        "jwk_n": "",
         "txid": "0x8b2a51ca88ebfb07b2931028dc714b85a8deb8d4d69d8d83cdc23bc866b69e94",
-        "sig": "LPUoIFw05w5ebKii9rIVBca1TjOA/dlm/yTFVnaQtlLGa3F5r3csZgcaiDCAaYYpx+IYgxPWhO1IgqcRLPrpyNU6sJTlBneBTjlLNIyZFAHzoTgsNcHQsjYAx0AYltRL4kyXhgcM8rHXSqBwrtX6ZV/E4hQP1FGLAjde996gDvsEQjhYBx3YGdCPyEQy5dQEW9Q4Ovg3lGqPjRxfncz2uQ/xusseKhbzhAO4jCXNmoPgJbuJAQ4EZBah4+ngyEFYeSSLBdeD2DFQLs112s9Jjxftvnu1JT/04j7uhn/21xuwYnYOtPejkYLcwsyMl6RFTVCqFnbW+avJRXqw+8rMLeDgEXm3ajCzsE3BMurQDjmIY6VYNH6+RbDNL4oTNL4HdJyx83OVTT/tGukbfXiOE5T6TdEa7bbH9Er3w4c+IDgIuqGaMFBsS6ndzb7977zV8TjLyFP+BNsOaV5Qqn/6r6RXnrGHhpaFeJqg2phkz/eY0Ssv5OD8yCIzZgVwyq7ckOU6IQbKX/i1bYXy/3/XlTP820b9J/115sNbJzaX6duauH4DTPKKr9QeKrAJOFsMYCGqbfSsMgIa6iXdvwh+vAOGnkN9kCuk32zB9w6vECwCEyYzlH45AdDl2pzjJ/7x7F9qTUbYbYyxTDXeBpfdfncxA8zAtye7gw0BcdOQVs8="
+        "sig": ""
+    }
+
+    const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
+    const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
+
+    async function submitShow(payloadObj: any) {
+        await connect()
+        const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
+        console.log("check check")
+
+        //Package EXM Call
+        payloadObj["sig"] = await createSignature(data, defaultSignatureParams, "base64");
+        payloadObj["jwk_n"] = await getPublicKey()
+        //const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
+        //payloadObj["label"] = "null1"
+        
+        //const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
+        //const cover = await upload3DMedia(convertedCover, convertedCover.type); payloadObj["cover"] = cover?.order?.itemId
+
+        //const minCover = await minifyPodcastCover(podcastCover_); const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
+        //const miniCover = await upload3DMedia(fileMini, fileMini.type); payloadObj["minifiedCover"] = miniCover?.order?.itemId
+        // Inspect 
+        console.log("Payload: ", createShowPayload)
+
+
     }
 
     //Format to allow 
@@ -253,12 +282,12 @@ export const ShowForm = () => {
                     {/*
                         Upload
                     */}
-                    <div className="w-full flex justify-center flex-col">
+                    <div className="w-full flex justify-center">
                         <UploadButton 
                             width="w-[50%]"
                             disable={!allFieldsFilled(validationObject)}
+                            click={() =>submitShow(createShowPayload)}
                         />
-                        <button onClick={() => inspect()}>Send Pictures</button>
                     </div>
                 </div>
                 <div className="w-[25%]"></div>

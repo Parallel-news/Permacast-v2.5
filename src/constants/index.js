@@ -53,6 +53,7 @@ export const ARWEAVE_READ_LINK = "https://arweave.net/"
 // ERRORS
 export const NO_PODCAST_FOUND = "No Podcast Found."
 export const NO_EPISODE_FOUND = "No Episode Found."
+export const CONNECT_WALLET = "Must connect wallet to continue."
 
 // SUCCESS
 export const PAYLOAD_RECEIVED = "Received"
@@ -63,3 +64,6 @@ export const ARSEED_URL = "https://arseed.web3infra.dev"
 export const TEXTMARKDOWN = {
     tags: [{name: "Content-Type", value:'text/markdown'}]
 }
+
+// PK
+export const USER_SIG_MESSAGES = ["my Arweave PK for Permacast is "]
