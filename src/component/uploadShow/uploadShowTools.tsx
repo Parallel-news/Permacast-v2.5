@@ -6,7 +6,8 @@ import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
 import { PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN } from "../../constants";
 import { isValidEmail, ValMsg } from "../reusables/formTools";
-import { checkContentTypeFromUrl, createFileFromBlobUrl, getMimeTypeFromBlobUrl, upload3DMedia } from "../../utils/arseeding";
+import { upload3DMedia } from "../../utils/arseeding";
+import { checkContentTypeFromUrl, getMimeTypeFromBlobUrl, createFileFromBlobUrl } from "../../utils/fileTools";
 
 export default function uploadShowTools() {
     return false
@@ -122,7 +123,7 @@ export const ShowForm = () => {
     const [podcastDescription_, setPodcastDescription_] = useState("");
     const [podcastAuthor_, setPodcastAuthor_] = useState("");
     const [podcastEmail_, setPodcastEmail_] = useState("");
-    const [podcastCategory_, setPodcastCategory_] = useState("");
+    const [podcastCategory_, setPodcastCategory_] = useState("art");
     const [podcastName_, setPodcastName_] = useState("");
     const [podcastCover_, setPodcastCover_] = useState(null);
     const [podcastLanguage_, setPodcastLanguage_] = useState('en');
@@ -143,21 +144,20 @@ export const ShowForm = () => {
         "auth": podcastAuthor_.length > 0,
         "email": podcastEmail_.length > 0,
         "lang": podcastLanguage_.length > 0,
-        "cat": podcastCategory_.length > 0
+        "cat": podcastCategory_.length > 0,
+        "cover": podcastCover_ !== null
     }
 
     //Format to allow 
     async function inspect() {
         console.log("PODCAST COVER:", podcastCover_)
-        const type = await getMimeTypeFromBlobUrl(podcastCover_)
-        console.log("type : ", type)
         const convertedFile = await createFileFromBlobUrl(podcastCover_, "cov.txt")
-        console.log("convertedFiled: ", convertedFile)
-        upload3DMedia(convertedFile, type)
+        console.log("convertedFiled 11: ", convertedFile)
+        //upload3DMedia(convertedFile, type)
     }
 
     inspect()
-
+    console.log("VO: ", validationObject)
     return (
         <div className={showFormStyling}>
             {/*First Row*/}
@@ -171,7 +171,6 @@ export const ShowForm = () => {
                     />
                 </div>
                 <div className="flex flex-col w-[50%] space-y-3">
-
                     {/*
                         Episode Name
                     */}
@@ -221,7 +220,7 @@ export const ShowForm = () => {
                     />
 
                     {/*
-                        Explicit and Audio/Video Selector
+                        Explicit
                     */}
                     <ExplicitInput 
                         setExplicit={setPodcastExplicit_}
@@ -336,7 +335,7 @@ export const EmptyCover = () => {
             <PhotoIcon className={photoIconStyling} />
           {/*Cover Image Text*/}
             <div className={emptyCoverIconTextStyling}>
-              Cover Image
+              Image Required
             </div>
         </div>
     )
