@@ -7,7 +7,7 @@ import getCroppedImg from "../../utils/croppedImage";
 import { PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN } from "../../constants";
 import { isValidEmail, ValMsg } from "../reusables/formTools";
 import { upload3DMedia } from "../../utils/arseeding";
-import { checkContentTypeFromUrl, getMimeTypeFromBlobUrl, createFileFromBlobUrl } from "../../utils/fileTools";
+import { checkContentTypeFromUrl, getMimeTypeFromBlobUrl, createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
 
 export default function uploadShowTools() {
     return false
@@ -148,16 +148,39 @@ export const ShowForm = () => {
         "cover": podcastCover_ !== null
     }
 
+    //EXM 
+    const createPodcastPayload = {
+        "function": "createPodcast",
+        "name": podcastName_,
+        "desc": "W7QPm-aS5gE_gU5ROc3Lefuef9ctf4wCqTc6mhV3yFA",
+        "author": podcastAuthor_,
+        "lang": podcastLanguage_,
+        "isExplicit": podcastExplicit_ ? "yes" : "no",
+        "categories": podcastCategory_,
+        "email": podcastEmail_,
+        "contentType": "a",
+        "cover": "pvpBjp-Z3po5M6C9HvYewf2dmH5Snw2waiwbOTYDhiM",
+        "minifiedCover": "VoxGkElx4d85J51EAQTt9F_ndHtMiLBqOv7RF6humiQ",
+        "label": "null1",
+        "jwk_n": "g5n_k1L_P4u3omopmd2X4dOZ48IKZyxSfIXDh6zTBIr1VwuZvy7DDT--YJ-9Io03VaC8VqImIy0V6_BA9YIYcGBh0XIcPtxqod3dkrxJyOj6K1kGWja-cI9hdwoZRqlTUROLPbkgD46LGF-fvAYDXiapVzTT2hZFqNdYVhTIW7MT_Aegmdj9_QBX6mA9H40y99ZMEsHtdnwMunCl4h4vA2W1UvJ5xcac9CZOROLItU45LOmThV4VD1wU4XtLqxjbvwTRFxKc_xrFi481aYL0PRi9rwJkH6369l4TwJUtL_xFdUTH6gZfU6oPXaL47TGOsA2oL80I57AxHaueCm_ksmY-kpNAvw2n4GGj6HY2Xcg02Q6LfiZsdvG1da8VJtC9bG4edBxF-CWmLxZRHy7_XDyTQWbZuqob83nYS-zpUVV6ZCZFJht8QT7w4USUqbFv6zAR7ZqifOK4Xmy9NO8Ai8phAk7d9GNd9jcZqqwRNmAY_ESidkWFQ86RRh4YuUqohOwOUw_q2vDTFner-TfEwg8MPKDHjkpVezK4OU8AcacaRf7o2pd-0-HPUy1fUDvg98dsq9xpXNtIp23OaQZkgPd1cDgkkeci2yCofNFjiTnAsMsHELkWbuo1wkadn4_wQ-sdG1cNdo7bzmJG2Wm95b5A0QjOLOcyXINLb7SHg8M",
+        "txid": "0x8b2a51ca88ebfb07b2931028dc714b85a8deb8d4d69d8d83cdc23bc866b69e94",
+        "sig": "LPUoIFw05w5ebKii9rIVBca1TjOA/dlm/yTFVnaQtlLGa3F5r3csZgcaiDCAaYYpx+IYgxPWhO1IgqcRLPrpyNU6sJTlBneBTjlLNIyZFAHzoTgsNcHQsjYAx0AYltRL4kyXhgcM8rHXSqBwrtX6ZV/E4hQP1FGLAjde996gDvsEQjhYBx3YGdCPyEQy5dQEW9Q4Ovg3lGqPjRxfncz2uQ/xusseKhbzhAO4jCXNmoPgJbuJAQ4EZBah4+ngyEFYeSSLBdeD2DFQLs112s9Jjxftvnu1JT/04j7uhn/21xuwYnYOtPejkYLcwsyMl6RFTVCqFnbW+avJRXqw+8rMLeDgEXm3ajCzsE3BMurQDjmIY6VYNH6+RbDNL4oTNL4HdJyx83OVTT/tGukbfXiOE5T6TdEa7bbH9Er3w4c+IDgIuqGaMFBsS6ndzb7977zV8TjLyFP+BNsOaV5Qqn/6r6RXnrGHhpaFeJqg2phkz/eY0Ssv5OD8yCIzZgVwyq7ckOU6IQbKX/i1bYXy/3/XlTP820b9J/115sNbJzaX6duauH4DTPKKr9QeKrAJOFsMYCGqbfSsMgIa6iXdvwh+vAOGnkN9kCuk32zB9w6vECwCEyYzlH45AdDl2pzjJ/7x7F9qTUbYbYyxTDXeBpfdfncxA8zAtye7gw0BcdOQVs8="
+    }
+
     //Format to allow 
     async function inspect() {
         console.log("PODCAST COVER:", podcastCover_)
         const convertedFile = await createFileFromBlobUrl(podcastCover_, "cov.txt")
-        console.log("convertedFiled 11: ", convertedFile)
-        //upload3DMedia(convertedFile, type)
+        console.log("convertedFiled: ", convertedFile)
+
+        const res = await minifyPodcastCover(podcastCover_)
+        console.log("mini res: ", res)
+        const fileMini = createFileFromBlob(res, "miniCov.jpeg");
+        console.log(fileMini)
+        await upload3DMedia(convertedFile, convertedFile.type)
+        await upload3DMedia(fileMini, fileMini.type)
     }
 
-    inspect()
-    console.log("VO: ", validationObject)
     return (
         <div className={showFormStyling}>
             {/*First Row*/}
@@ -230,11 +253,12 @@ export const ShowForm = () => {
                     {/*
                         Upload
                     */}
-                    <div className="w-full flex justify-center">
+                    <div className="w-full flex justify-center flex-col">
                         <UploadButton 
                             width="w-[50%]"
                             disable={!allFieldsFilled(validationObject)}
                         />
+                        <button onClick={() => inspect()}>Send Pictures</button>
                     </div>
                 </div>
                 <div className="w-[25%]"></div>
