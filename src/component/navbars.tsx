@@ -20,9 +20,10 @@ import { Searchbar } from "./searchbar";
 import LANGUAGES from "../utils/languages";
 import { UploadCount } from "./upload_count";
 import { useRecoilState } from "recoil";
-import { isFullscreen } from "../atoms";
+import { arweaveAddress, isFullscreen } from "../atoms";
 import { PermaSpinner } from "./reusables/PermaSpinner";
 import { SPINNER_COLOR } from "../constants";
+import { EverPayBalance } from "../utils/everpay/EverPayBalance";
 
 export function Sidenav() {
   const { t } = useTranslation();
@@ -194,7 +195,8 @@ export function Sidenav() {
 
 export function NavBar() {
   const { t } = useTranslation();
-
+  const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
+  const everPayStyling = "flex justify-center items-center text-sm text-white wallet-button font-semibold bg-black rounded-full w-[12%] mx-2"
   return (
     <>
       <div className="md:hidden">
@@ -205,9 +207,14 @@ export function NavBar() {
           <div className="w-4/5">
             <Searchbar />
           </div>
-          <div className="ml-8 w-72">
+          <div className="ml-8 w-64">
             <ArConnect />
           </div>
+          {arweaveAddress_ && arweaveAddress_.length > 0 && (
+          <EverPayBalance
+            textClassname={everPayStyling}
+          />
+          )}
         </div>
       </div>
     </>

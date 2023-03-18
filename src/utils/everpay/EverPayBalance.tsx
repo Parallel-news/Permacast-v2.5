@@ -2,8 +2,7 @@ import { arweaveAddress, calculateEverPayBalance, everPayBalance } from "../../a
 import { useEffect, useState } from "react"
 import { useRecoilState } from "recoil"
 import Everpay from "everpay";
-import { PermaSpinner } from "../../component/reusables/PermaSpinner";
-import { SPINNER_COLOR } from "../../constants";
+import { MoonLoader } from "react-spinners";
 
 interface everpayBalanceInterface {
     textClassname?: string;
@@ -17,7 +16,8 @@ export const EverPayBalance = (props: everpayBalanceInterface) => {
     const [balanceError, setBalanceError] = useState<boolean>(false)
     const [balanceLoading, setBalanceLoading] = useState<boolean>(true)
 
-
+    const LOADER_COLOR="#d4e5e1"
+    const LOADER_SIZE=20
     // When everpay recalculation requested, perform hook
     useEffect(() => {
 
@@ -52,13 +52,12 @@ export const EverPayBalance = (props: everpayBalanceInterface) => {
 
     return (
         (balanceError ?
-            <a href="https://app.everpay.io/" className="underline text-black font-semibold">balance</a>
+            <a href="https://app.everpay.io/" className="underline text-white font-semibold">balance</a>
             : balanceLoading ?
-                <div className={`${textClassname} w-16 flex justify-center`}>
-                    <PermaSpinner 
-                        divClass='spinner w-4 h-4 mx-1 text-white'
-                        spinnerColor={SPINNER_COLOR}
-                        size={10}
+                <div className={`${textClassname} flex justify-center items-center`}>
+                    <MoonLoader 
+                        size={LOADER_SIZE}
+                        color={LOADER_COLOR}
                     />
                 </div>
                 : <a href="https://app.everpay.io/" target="_blank" rel="noreferrer" className={`${textClassname}`}>{Number(_everPayBalance).toFixed(2) + ' AR'}</a>

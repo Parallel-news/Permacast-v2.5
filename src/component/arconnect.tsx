@@ -2,9 +2,14 @@ import { useEffect } from 'react'
 import { useArconnect } from 'react-arconnect';
 import { useTranslation } from 'next-i18next';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../constants/arconnect';
+import { useRecoilState } from 'recoil';
+import { arweaveAddress } from '../atoms';
+
 
 export default function ArConnect() {
   const { t } = useTranslation();
+
+  const [, setArweaveAddress_] = useRecoilState(arweaveAddress)
 
   const {
     walletConnected,
@@ -25,6 +30,8 @@ export default function ArConnect() {
       localStorage.setItem("userPubKey", arconnectPubKey);
     }
     fetchData();
+    if (address && address.length > 0) setArweaveAddress_(address)
+    console.log("address: ", address)
   }, [address, walletConnected]);
 
   const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
