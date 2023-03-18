@@ -43,6 +43,7 @@ interface CoverContainerInter {
 export const showTitleStyling = "text-white text-xl"
 export const photoIconStyling = "h-11 w-11 text-zinc-400"
 export const explicitLabelStyling = "flex items-center mr-5"
+export const mediaSwitcherLabelStyling = "flex items-center label"
 export const imgStyling = "h-48 w-48 text-slate-400 rounded-[20px]"
 export const selectDropdownRowStyling = "flex flex-row w-full justify-between"
 export const explicitCheckBoxStyling = "checkbox mr-2 border-2 border-zinc-600"
@@ -50,10 +51,16 @@ export const emptyCoverIconTextStyling = "text-lg tracking-wider pt-2 text-zinc-
 export const explicitTextStyling = "label-text cursor-pointer text-zinc-400 font-semibold"
 export const showFormStyling = "w-full flex flex-col justify-center items-center space-y-4"
 export const coverContainerInputStyling = "opacity-0 z-index-[-1] absolute pointer-events-none"
+export const cropScreenDivStyling = "relative w-[800px] h-[400px] rounded-[6px] overflow-hidden"
+export const cropSelectionTextStyling = "flex flex-col justify-center items-center text-white/60"
+export const mediaSwitcherVideoStyling = "mr-2 cursor-pointer label-text text-zinc-400 font-semibold"
+export const mediaSwitchedAudioStyling = "ml-2 cursor-pointer label-text text-zinc-400 font-semibold"
 export const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
 export const uploadShowStyling = "w-full flex flex-col justify-center items-center space-y-3 pb-[200px]"
 export const selectDropdownStyling="select select-secondary w-[49%] py-2 px-5 text-base font-normal input-styling bg-zinc-800"
+export const cropScreenStyling = "absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center backdrop-blur-md"
 export const coverContainerLabelStyling = "cursor-pointer transition duration-300 ease-in-out text-zinc-600 hover:text-white flex md:block h-fit w-48"
+export const cropSelectionDivStyling = "min-w-[50px] min-h-[10px] rounded-[4px] bg-black/10 hover:bg-black/20 border-[1px] border-solid border-white/10 m-2 p-1 px-2 cursor-pointer flex flex-col justify-center items-center"
 export const emptyCoverIconStyling = "input input-secondary flex flex-col items-center justify-center cursor-pointer bg-zinc-800 h-48 w-48 rounded-[20px] outline-none focus:ring-2 focus:ring-inset focus:ring-white hover:bg-zinc-600"
 
 // 3. Custom Functions
@@ -387,8 +394,8 @@ export const ExplicitInput = (props: ExplicitInputInter) => {
 export const MediaSwitcher = () => {
     const [contentType_, setContentType_] = useState<string>("")
     return (
-        <label className="flex items-center label">
-            <div className="mr-2 cursor-pointer label-text text-zinc-400 font-semibold">
+        <label className={mediaSwitcherLabelStyling}>
+            <div className={mediaSwitcherVideoStyling}>
                 Video
             </div>
             <input type="checkbox" className="toggle" checked={contentType_ === "a" ? true: false}
@@ -397,7 +404,7 @@ export const MediaSwitcher = () => {
                     setContentType_(contentType_ === "a" ? "v": "a")
                 }}
             />
-            <div className="ml-2 cursor-pointer label-text text-zinc-400 font-semibold">
+            <div className={mediaSwitchedAudioStyling}>
                 Audio
             </div>
         </label>
@@ -408,8 +415,8 @@ export const CropScreen = (props: CropScreenInter) => {
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     return (
-        <div className={`absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center backdrop-blur-md`}>
-            <div className={`relative w-[800px] h-[400px] rounded-[6px] overflow-hidden`}>
+        <div className={cropScreenStyling}>
+            <div className={cropScreenDivStyling}>
                 <Cropper
                     image={props.inputImg}
                     crop={crop}
@@ -423,10 +430,10 @@ export const CropScreen = (props: CropScreenInter) => {
                 />
             </div>
             <div
-            className={`min-w-[50px] min-h-[10px] rounded-[4px] bg-black/10 hover:bg-black/20 border-[1px] border-solid border-white/10 m-2 p-1 px-2 cursor-pointer flex flex-col justify-center items-center`}
+            className={cropSelectionDivStyling}
             onClick={props.onClickResp}
             >
-            <p className={`flex flex-col justify-center items-center text-white/60`}>
+            <p className={cropSelectionTextStyling}>
                 Crop Selection
             </p>
             </div>
