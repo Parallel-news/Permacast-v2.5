@@ -3883,8 +3883,8 @@ quick-lru@^5.1.1:
   integrity sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==
 
 react-arconnect@decentldotland/react-arconnect:
-  version "0.2.1"
-  resolved "https://codeload.github.com/decentldotland/react-arconnect/tar.gz/fbb3065d974df866b0c13acfee54347a6b5a329e"
+  version "0.2.2"
+  resolved "https://codeload.github.com/decentldotland/react-arconnect/tar.gz/50549b8a2132e0868528baa8fe11dcd0a3cccf14"
   dependencies:
     "@babel/preset-env" "^7.18.2"
     "@babel/preset-react" "^7.17.12"
