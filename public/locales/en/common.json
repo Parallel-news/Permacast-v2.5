@@ -53,7 +53,7 @@
 		"label": "You'll add episodes to the show next.",
 		"name": "Show name",
 		"description": "Show description",
-		"image": "Cover image",
+		"image": "Cover Image",
 		"author": "Author",
 		"email": "Email",
 		"language": "Podcast language",
@@ -113,7 +113,7 @@
 			}
 		},
 		"feetext": "Uploading the episode will cost: ",
-		"title": "Add new episode",
+		"title": "Add Episode",
 		"name": "Episode name",
 		"description": "Episode description",
 		"file": "Episode media",

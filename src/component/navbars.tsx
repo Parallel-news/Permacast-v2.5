@@ -20,7 +20,10 @@ import { Searchbar } from "./searchbar";
 import LANGUAGES from "../utils/languages";
 import { UploadCount } from "./upload_count";
 import { useRecoilState } from "recoil";
-import { isFullscreen } from "../atoms";
+import { arweaveAddress, isFullscreen } from "../atoms";
+import { PermaSpinner } from "./reusables/PermaSpinner";
+import { SPINNER_COLOR } from "../constants";
+import { EverPayBalance } from "../utils/everpay/EverPayBalance";
 
 export function Sidenav() {
   const { t } = useTranslation();
@@ -98,8 +101,25 @@ export function Sidenav() {
   }
 
   const uploadDropdownStyling = "dropdown-content menu p-2 shadow bg-zinc-900 rounded-box w-36"
+  const spinnerClass = "w-full flex justify-center"
 
   const UploadDropdown: FC = () => {
+    const [showClickLoad, setShowClickLoad] = useState<boolean>(false)
+    const [episodeClickLoad, setEpisodeClickLoad] = useState<boolean>(false)
+
+    const clickSwitch = (type: string) => {
+      if(!showClickLoad && !episodeClickLoad) {
+        if (type === "show") setShowClickLoad(true) 
+        if (type === "episode") setEpisodeClickLoad(true) 
+      } else if(showClickLoad) {
+        setShowClickLoad(false)
+        setEpisodeClickLoad(true)
+      } else if(episodeClickLoad) {
+        setShowClickLoad(true)
+        setEpisodeClickLoad(false)
+      }
+    }
+
     return (
       <div className="dropdown dropdown-hover mb-[-6px]">
         {!(isUploadEpisode || isUploadPodcast) ? (
@@ -119,10 +139,26 @@ export function Sidenav() {
           className={uploadDropdownStyling}
         >
           <li key={1}>
-            <a href="/upload-podcast">{t("home.add-podcast")}</a>
+            {showClickLoad ?
+            <PermaSpinner
+              spinnerColor={SPINNER_COLOR}
+              size={10}
+              divClass={spinnerClass}
+            />
+            :
+            <a href="/upload-podcast" onClick={()=>clickSwitch("show")}>{t("home.add-podcast")}</a>
+            }
           </li>
           <li key={2}>
-            <a href="/upload-episode">{t("home.add-episode")}</a>
+            {episodeClickLoad ?
+            <PermaSpinner
+              spinnerColor={SPINNER_COLOR}
+              size={10}
+              divClass={spinnerClass}
+            />
+            :
+            <a href="/upload-episode" onClick={()=>clickSwitch("episode")}>{t("home.add-episode")}</a>
+            }
           </li>
         </ul>
       </div>
@@ -159,7 +195,8 @@ export function Sidenav() {
 
 export function NavBar() {
   const { t } = useTranslation();
-
+  const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
+  const everPayStyling = "flex justify-center items-center text-sm text-white wallet-button font-semibold bg-black rounded-full w-[12%] mx-2"
   return (
     <>
       <div className="md:hidden">
@@ -170,9 +207,14 @@ export function NavBar() {
           <div className="w-4/5">
             <Searchbar />
           </div>
-          <div className="ml-8 w-72">
+          <div className="ml-8 w-64">
             <ArConnect />
           </div>
+          {arweaveAddress_ && arweaveAddress_.length > 0 && (
+          <EverPayBalance
+            textClassname={everPayStyling}
+          />
+          )}
         </div>
       </div>
     </>

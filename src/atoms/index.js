@@ -144,4 +144,20 @@ export const podcastColor = atom ({
     default: 'rgb(0, 0, 0)'
 })
 
+// Everpay
+export const everPayBalance = atom({
+    key: 'everpayBalance',
+    default: 0
+  })
+  
+  export const calculateEverPayBalance = atom({
+    key: 'calculateEverpayBalance',
+    default: 0
+  })
+
+// ARWEAVE
+export const arweaveAddress = atom({
+  key: 'arweaveAddress',
+  default: ""
+});
 // *** ------- ***
