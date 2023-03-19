@@ -71,7 +71,7 @@ export const USER_SIG_MESSAGES = ["my Arweave PK for Permacast is "]
 // EVERPAY
 export const EVERPAY_EOA = '0x197f818c1313DC58b32D88078ecdfB40EA822614';
 export const EVERPAY_AR_TAG = 'arweave,ethereum-ar-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,0x4fadc7a98f2dc96510e42dd1a74141eeae0c1543';
-export const MIN_UPLOAD_PAYMENT = 1000000 // winston
+export const MIN_UPLOAD_PAYMENT = .000001  // 1000000 winston
 
 // TOAST
 export const TOAST_POSITION = "top-center"

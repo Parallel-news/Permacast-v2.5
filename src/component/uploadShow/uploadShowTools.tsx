@@ -211,15 +211,16 @@ export const ShowForm = () => {
             arJWK: 'use_wallet',
         });
 
-        everpay.transfer({
+        const transaction = await everpay.transfer({
             tag: EVERPAY_AR_TAG,
-            amount: String(0.01),
+            amount: String(MIN_UPLOAD_PAYMENT),
             to: EVERPAY_EOA,
             data: {
               action: "createPodcast",
               name: podcastName_,
             }
-        }).then((res) => console.log(res))
+        })
+        console.log("transaction: ", transaction)
 
         // Inspect 
         console.log("Payload: ", createShowPayload)
