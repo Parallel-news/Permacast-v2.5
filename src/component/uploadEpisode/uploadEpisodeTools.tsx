@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { FiFile } from 'react-icons/fi';
-import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { ArrowUpTrayIcon, XMarkIcon, WalletIcon } from '@heroicons/react/24/outline';
 import { FADE_IN_STYLE, FADE_OUT_STYLE } from '../../constants';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
@@ -100,12 +100,24 @@ export const UploadButton = (props: UploadButtonInter) => {
     return (
         <button
             className={`${uploadButtonStyling} ${props.width}`}
-            type="submit"
             disabled={props.disable}
             onClick={props.click}
         >
             <ArrowUpTrayIcon className={trayIconStyling} />
             Upload
+      </button>
+    )
+}
+
+export const ConnectButton = (props: UploadButtonInter) => {
+    return (
+        <button
+            className={`${uploadButtonStyling} ${props.width}`}
+            disabled={props.disable}
+            onClick={props.click}
+        >
+            <WalletIcon className={trayIconStyling} />
+            Connect Wallet
       </button>
     )
 }

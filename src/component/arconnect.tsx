@@ -31,7 +31,6 @@ export default function ArConnect() {
     }
     fetchData();
     if (address && address.length > 0) setArweaveAddress_(address)
-    console.log("address: ", address)
   }, [address, walletConnected]);
 
   const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });

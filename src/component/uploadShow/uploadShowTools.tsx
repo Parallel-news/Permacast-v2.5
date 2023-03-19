@@ -1,16 +1,20 @@
 import { MouseEventHandler, useCallback, useRef, useState } from "react"
 import { PhotoIcon } from "@heroicons/react/24/outline";
-import { episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
+import { ConnectButton, episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
 import { LanguageOptions, CategoryOptions } from "../../utils/languages";
 import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
-import { PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, USER_SIG_MESSAGES } from "../../constants";
+import { CONNECT_WALLET, EVERPAY_AR_TAG, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, USER_SIG_MESSAGES } from "../../constants";
 import { isValidEmail, ValMsg } from "../reusables/formTools";
 import { upload2DMedia, upload3DMedia } from "../../utils/arseeding";
 import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { checkConnection } from "../../utils/reusables";
+import Everpay, { ChainType } from "everpay";
+import toast from "react-hot-toast";
+import { useRecoilState } from "recoil";
+import { arweaveAddress } from "../../atoms";
 
 
 export default function uploadShowTools() {
@@ -123,6 +127,11 @@ export const allFieldsFilled = (fieldsObj: any) => {
 // 4. Components
 export const ShowForm = () => {
 
+    // hooks
+    const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
+    const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
+    const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
+
     // inputs
     const [podcastDescription_, setPodcastDescription_] = useState("");
     const [podcastAuthor_, setPodcastAuthor_] = useState("");
@@ -171,17 +180,19 @@ export const ShowForm = () => {
         "sig": ""
     }
 
-    const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
-    const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
-
     async function submitShow(payloadObj: any) {
-        await connect()
-        const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
-        console.log("check check")
+        // Check Connection
+        console.log("addy: ", address)
+        if (!checkConnection(arweaveAddress_)) {
+            toast.error(CONNECT_WALLET)
+            return false
+        }
 
         //Package EXM Call
+        const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
         payloadObj["sig"] = await createSignature(data, defaultSignatureParams, "base64");
         payloadObj["jwk_n"] = await getPublicKey()
+        
         //const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
         //payloadObj["label"] = "null1"
         
@@ -190,9 +201,28 @@ export const ShowForm = () => {
 
         //const minCover = await minifyPodcastCover(podcastCover_); const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
         //const miniCover = await upload3DMedia(fileMini, fileMini.type); payloadObj["minifiedCover"] = miniCover?.order?.itemId
+
+        //Pay Fee with EverPay
+
+        const everpay = new Everpay({
+            account: address,
+            //@ts-ignore
+            chainType: "arweave",
+            arJWK: 'use_wallet',
+        });
+
+        everpay.transfer({
+            tag: EVERPAY_AR_TAG,
+            amount: String(0.01),
+            to: EVERPAY_EOA,
+            data: {
+              action: "createPodcast",
+              name: podcastName_,
+            }
+        }).then((res) => console.log(res))
+
         // Inspect 
         console.log("Payload: ", createShowPayload)
-
 
     }
 
@@ -283,11 +313,19 @@ export const ShowForm = () => {
                         Upload
                     */}
                     <div className="w-full flex justify-center">
+                        {address && address.length > 0 ?
                         <UploadButton 
                             width="w-[50%]"
                             disable={!allFieldsFilled(validationObject)}
                             click={() =>submitShow(createShowPayload)}
                         />
+                        :
+                        <ConnectButton 
+                            width="w-[50%]"
+                            disable={false}
+                            click={() => connect()}
+                        />
+                        }
                     </div>
                 </div>
                 <div className="w-[25%]"></div>
