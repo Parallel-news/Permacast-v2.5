@@ -67,3 +67,11 @@ export const checkConnection = (arAddress: string) => {
       return true
     }
 }
+
+/**
+ * Displays number of bytes for a string
+ * @param str String to measure number of bytes
+ * @returns number
+ */
+export const byteSize = (str:string) => new Blob([str]).size;
+

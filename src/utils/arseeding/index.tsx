@@ -1,4 +1,4 @@
-import { genArweaveAPI } from 'arseeding-js'
+import { genArweaveAPI, getBundleFee } from 'arseeding-js'
 import { readFileAsArrayBuffer } from '../fileTools';
 import { ARSEED_URL, TEXTMARKDOWN, ARSEED_CURRENCY } from '../../constants';
 
@@ -37,4 +37,8 @@ export const upload3DMedia = async (file: File, mediaType: string) => {
     }
 };
 
+export const getBundleArFee = async (size: string) => {
+    const res = await getBundleFee(ARSEED_URL, size, ARSEED_CURRENCY)
+    return res?.finalFee
+}
 

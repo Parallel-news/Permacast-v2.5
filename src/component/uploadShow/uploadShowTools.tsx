@@ -1,21 +1,22 @@
-import { MouseEventHandler, useCallback, useRef, useState } from "react"
+import { MouseEventHandler, useCallback, useEffect, useRef, useState } from "react"
 import { PhotoIcon } from "@heroicons/react/24/outline";
 import { ConnectButton, episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
 import { LanguageOptions, CategoryOptions } from "../../utils/languages";
 import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
-import { CONNECT_WALLET, COVER_UPLOAD_ERROR, DESCRIPTION_UPLOAD_ERROR, EVERPAY_AR_TAG, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, USER_SIG_MESSAGES } from "../../constants";
+import { AR_DECIMALS, CONNECT_WALLET, COVER_UPLOAD_ERROR, DESCRIPTION_UPLOAD_ERROR, EVERPAY_AR_TAG, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SHOW_UPLOAD_SUCCESS, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
 import { isValidEmail, ValMsg } from "../reusables/formTools";
-import { upload2DMedia, upload3DMedia } from "../../utils/arseeding";
+import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
 import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
-import { checkConnection } from "../../utils/reusables";
+import { byteSize, checkConnection } from "../../utils/reusables";
 import Everpay, { ChainType } from "everpay";
 import toast from "react-hot-toast";
 import { useRecoilState } from "recoil";
 import { arweaveAddress } from "../../atoms";
 import { PermaSpinner } from "../reusables/PermaSpinner";
+import axios from "axios";
 
 
 export default function uploadShowTools() {
@@ -133,6 +134,7 @@ export const ShowForm = () => {
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
     const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
     const [submittingShow, setSubmittingShow] = useState<boolean>(false)
+    const [uploadCost, setUploadCost] = useState<Number>(0)
 
     // inputs
     const [podcastDescription_, setPodcastDescription_] = useState("");
@@ -162,6 +164,32 @@ export const ShowForm = () => {
         "cat": podcastCategory_.length > 0,
         "cover": podcastCover_ !== null
     }
+    // Hook Calculating Upload Cost
+    useEffect(() => {
+        setUploadCost(0)
+        
+        async function calculateTotal() {
+            let runningTotal = 0
+            const descBytes = byteSize(podcastDescription_)
+            const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
+            const minCover = await minifyPodcastCover(podcastCover_); 
+            const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
+
+            const descFee = await getBundleArFee(String(descBytes))
+            const coverFee = await getBundleArFee(String(convertedCover.size))
+            const miniFee = await getBundleArFee(String(fileMini.size))
+
+            return Number(descFee) + Number(coverFee) + Number(miniFee)
+        }
+        if(podcastDescription_.length > 0 && podcastCover_ !== null) {
+            calculateTotal().then(async total => {
+                const formattedTotal = total / AR_DECIMALS
+                setUploadCost(formattedTotal)
+            })
+        } else {
+            setUploadCost(0)
+        }
+    }, [podcastDescription_, podcastCover_])
 
     //EXM 
     const createShowPayload = {
@@ -173,7 +201,6 @@ export const ShowForm = () => {
         "isExplicit": podcastExplicit_ ? "yes" : "no",
         "categories": podcastCategory_,
         "email": podcastEmail_,
-        "contentType": "a",
         "cover": "",
         "minifiedCover": "",
         "label": "",
@@ -185,7 +212,7 @@ export const ShowForm = () => {
     async function submitShow(payloadObj: any) {
         // Check Connection
         if (!checkConnection(arweaveAddress_)) {
-            toast.error(CONNECT_WALLET)
+            toast.error(CONNECT_WALLET, {style: TOAST_DARK})
             return false
         }
         setSubmittingShow(true)
@@ -195,13 +222,13 @@ export const ShowForm = () => {
         payloadObj["sig"] = await createSignature(data, defaultSignatureParams, "base64");
         payloadObj["jwk_n"] = await getPublicKey()
         
-        // Description to Arseeding
+        // Name && Description to Arseeding
         try {
             const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
-            payloadObj["label"] = "null1"
+            //const name = await upload2DMedia(podcastName_); payloadObj["name"] = name?.order?.itemId
+            payloadObj["label"] = "null10"
         } catch (e) {
-            console.log(e)
-            handleError(DESCRIPTION_UPLOAD_ERROR, setSubmittingShow)
+            console.log(e); handleError(DESCRIPTION_UPLOAD_ERROR, setSubmittingShow); return;
         }
 
         // Covers to Arseeding
@@ -211,8 +238,7 @@ export const ShowForm = () => {
             const minCover = await minifyPodcastCover(podcastCover_); const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
             const miniCover = await upload3DMedia(fileMini, fileMini.type); payloadObj["minifiedCover"] = miniCover?.order?.itemId
         } catch (e) {
-            console.log(e)
-            handleError(COVER_UPLOAD_ERROR, setSubmittingShow)
+            console.log(e); handleError(COVER_UPLOAD_ERROR, setSubmittingShow); return;
         }
 
         // Fee to Everpay
@@ -226,15 +252,18 @@ export const ShowForm = () => {
             })
             payloadObj["txid"] = transaction?.everHash
         } catch (e) {
-            console.log(e)
-            handleError(EVERPAY_BALANCE_ERROR, setSubmittingShow)
+            console.log(e); handleError(EVERPAY_BALANCE_ERROR, setSubmittingShow); return;
         }
         console.log("Payload: ", createShowPayload)
+        const result = await axios.post('/api/exm/write', createShowPayload);
+        console.log("exm res: ", result)
         setSubmittingShow(false)
+        //EXM call, set timeout, then redirect. 
+        toast.success(SHOW_UPLOAD_SUCCESS, {style: TOAST_DARK})
     }
 
     function handleError (errorMessage: string, loadingSetter: (v: boolean) => void) {
-        toast.error(errorMessage)
+        toast.error(errorMessage, {style: TOAST_DARK})
         loadingSetter(false)
     }
     const spinnerClass = "w-full flex justify-center"
@@ -311,7 +340,7 @@ export const ShowForm = () => {
                     {/*
                         Upload
                     */}
-                    <div className="w-full flex justify-center">
+                    <div className="w-full flex justify-center items-center flex-col">
                         {/*Show Upload Btn, Spinner, or Connect Btn*/}
                         {address && address.length > 0 && !submittingShow && (
                         <UploadButton 
@@ -334,6 +363,7 @@ export const ShowForm = () => {
                                 click={() => connect()}
                             />
                         )}
+                        {uploadCost === 0 ? "" : <p className="mt-2 text-neutral-400">{"Upload Cost: "+(Number(uploadCost)).toFixed(6) +" AR"}</p>}
                     </div>
                 </div>
                 <div className="w-[25%]"></div>
