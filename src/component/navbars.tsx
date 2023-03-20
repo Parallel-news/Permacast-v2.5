@@ -100,9 +100,9 @@ export function Sidenav() {
     )
   }
 
-  const uploadDropdownStyling = "dropdown-content menu p-2 shadow bg-zinc-900 rounded-box w-36"
   const spinnerClass = "w-full flex justify-center"
-
+  const uploadDropdownStyling = "dropdown-content menu p-2 shadow bg-zinc-900 rounded-box w-36"
+  
   const UploadDropdown: FC = () => {
     const [showClickLoad, setShowClickLoad] = useState<boolean>(false)
     const [episodeClickLoad, setEpisodeClickLoad] = useState<boolean>(false)

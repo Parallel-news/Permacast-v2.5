@@ -66,4 +66,4 @@ export const checkConnection = (arAddress: string) => {
     } else {
       return true
     }
-  }
+}

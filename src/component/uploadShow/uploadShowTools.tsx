@@ -4,7 +4,7 @@ import { ConnectButton, episodeDescStyling, episodeNameStyling, UploadButton } f
 import { LanguageOptions, CategoryOptions } from "../../utils/languages";
 import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
-import { CONNECT_WALLET, EVERPAY_AR_TAG, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, USER_SIG_MESSAGES } from "../../constants";
+import { CONNECT_WALLET, COVER_UPLOAD_ERROR, DESCRIPTION_UPLOAD_ERROR, EVERPAY_AR_TAG, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, USER_SIG_MESSAGES } from "../../constants";
 import { isValidEmail, ValMsg } from "../reusables/formTools";
 import { upload2DMedia, upload3DMedia } from "../../utils/arseeding";
 import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
@@ -15,6 +15,7 @@ import Everpay, { ChainType } from "everpay";
 import toast from "react-hot-toast";
 import { useRecoilState } from "recoil";
 import { arweaveAddress } from "../../atoms";
+import { PermaSpinner } from "../reusables/PermaSpinner";
 
 
 export default function uploadShowTools() {
@@ -131,6 +132,7 @@ export const ShowForm = () => {
     const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
     const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
+    const [submittingShow, setSubmittingShow] = useState<boolean>(false)
 
     // inputs
     const [podcastDescription_, setPodcastDescription_] = useState("");
@@ -176,70 +178,66 @@ export const ShowForm = () => {
         "minifiedCover": "",
         "label": "",
         "jwk_n": "",
-        "txid": "0x8b2a51ca88ebfb07b2931028dc714b85a8deb8d4d69d8d83cdc23bc866b69e94",
+        "txid": "",
         "sig": ""
     }
 
     async function submitShow(payloadObj: any) {
         // Check Connection
-        console.log("addy: ", address)
         if (!checkConnection(arweaveAddress_)) {
             toast.error(CONNECT_WALLET)
             return false
         }
+        setSubmittingShow(true)
 
-        //Package EXM Call
+        // Package EXM Call
         const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
         payloadObj["sig"] = await createSignature(data, defaultSignatureParams, "base64");
         payloadObj["jwk_n"] = await getPublicKey()
         
-        //const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
-        //payloadObj["label"] = "null1"
-        
-        //const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
-        //const cover = await upload3DMedia(convertedCover, convertedCover.type); payloadObj["cover"] = cover?.order?.itemId
+        // Description to Arseeding
+        try {
+            const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
+            payloadObj["label"] = "null1"
+        } catch (e) {
+            console.log(e)
+            handleError(DESCRIPTION_UPLOAD_ERROR, setSubmittingShow)
+        }
 
-        //const minCover = await minifyPodcastCover(podcastCover_); const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
-        //const miniCover = await upload3DMedia(fileMini, fileMini.type); payloadObj["minifiedCover"] = miniCover?.order?.itemId
+        // Covers to Arseeding
+        try {
+            const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
+            const cover = await upload3DMedia(convertedCover, convertedCover.type); payloadObj["cover"] = cover?.order?.itemId
+            const minCover = await minifyPodcastCover(podcastCover_); const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
+            const miniCover = await upload3DMedia(fileMini, fileMini.type); payloadObj["minifiedCover"] = miniCover?.order?.itemId
+        } catch (e) {
+            console.log(e)
+            handleError(COVER_UPLOAD_ERROR, setSubmittingShow)
+        }
 
-        //Pay Fee with EverPay
-
-        const everpay = new Everpay({
-            account: address,
-            //@ts-ignore
-            chainType: "arweave",
-            arJWK: 'use_wallet',
-        });
-
-        const transaction = await everpay.transfer({
-            tag: EVERPAY_AR_TAG,
-            amount: String(MIN_UPLOAD_PAYMENT),
-            to: EVERPAY_EOA,
-            data: {
-              action: "createPodcast",
-              name: podcastName_,
-            }
-        })
-        console.log("transaction: ", transaction)
-
-        // Inspect 
+        // Fee to Everpay
+        try {
+            const everpay = new Everpay({account: address, chainType: ChainType.arweave, arJWK: 'use_wallet',});
+            const transaction = await everpay.transfer({
+                tag: EVERPAY_AR_TAG,
+                amount: String(MIN_UPLOAD_PAYMENT),
+                to: EVERPAY_EOA,
+                data: {action: "createPodcast", name: podcastName_,}
+            })
+            payloadObj["txid"] = transaction?.everHash
+        } catch (e) {
+            console.log(e)
+            handleError(EVERPAY_BALANCE_ERROR, setSubmittingShow)
+        }
         console.log("Payload: ", createShowPayload)
-
+        setSubmittingShow(false)
     }
 
-    //Format to allow 
-    async function inspect() {
-        console.log("PODCAST COVER:", podcastCover_)
-        const convertedFile = await createFileFromBlobUrl(podcastCover_, "cov.txt")
-        console.log("convertedFiled: ", convertedFile)
-
-        const res = await minifyPodcastCover(podcastCover_)
-        console.log("mini res: ", res)
-        const fileMini = createFileFromBlob(res, "miniCov.jpeg");
-        console.log(fileMini)
-        await upload3DMedia(convertedFile, convertedFile.type)
-        await upload3DMedia(fileMini, fileMini.type)
+    function handleError (errorMessage: string, loadingSetter: (v: boolean) => void) {
+        toast.error(errorMessage)
+        loadingSetter(false)
     }
+    const spinnerClass = "w-full flex justify-center"
 
     return (
         <div className={showFormStyling}>
@@ -314,19 +312,28 @@ export const ShowForm = () => {
                         Upload
                     */}
                     <div className="w-full flex justify-center">
-                        {address && address.length > 0 ?
+                        {/*Show Upload Btn, Spinner, or Connect Btn*/}
+                        {address && address.length > 0 && !submittingShow && (
                         <UploadButton 
                             width="w-[50%]"
                             disable={!allFieldsFilled(validationObject)}
                             click={() =>submitShow(createShowPayload)}
                         />
-                        :
-                        <ConnectButton 
-                            width="w-[50%]"
-                            disable={false}
-                            click={() => connect()}
+                        )}
+                        {address && address.length > 0 && submittingShow && (
+                        <PermaSpinner 
+                            spinnerColor={SPINNER_COLOR}
+                            size={10}
+                            divClass={spinnerClass}
                         />
-                        }
+                        )}
+                        {!address && (
+                            <ConnectButton 
+                                width="w-[50%]"
+                                disable={false}
+                                click={() => connect()}
+                            />
+                        )}
                     </div>
                 </div>
                 <div className="w-[25%]"></div>

@@ -119,3 +119,23 @@ AUDIO MP3
         "expectedBlock": 1140484
     }
 }
+
+// Full Payload
+{
+    "function": "createPodcast",
+    "name": "New York City",
+    "desc": "2Lbw39dVwrdXqCpeUs7i4KvXj_FSJRYlFj-V-Tnz4eA",
+    "author": "JJ McGregs",
+    "lang": "en",
+    "isExplicit": "no",
+    "categories": "art",
+    "email": "G@G.com",
+    "contentType": "a",
+    "cover": "zDiY5HvYWP9jnXdugwL72BMQVQhYuJfMj-O9i1nOLto",
+    "minifiedCover": "jNsX2EscwPTup1_9OyEjRMli_PoOlRP5fAphdH_15QU",
+    "label": "null1",
+    "jwk_n": "vBxHYO9sFsPi2FsLpz5AGPC79TrsmBg6nh7x-8wUE3jRF6-km81nfN7-8e9z9xC8WbPQ9GgdpL8JyfcTZK4WCXo692TfYrZCl-nzK6535xVr_zRyVCquotN9dRdKrfteTahFCSnDqjR10CccF8BloJBogXXx9ygAHnySw6gDH_e0ih2KWCRYEBGz8kylQ7vsKFD_UrtcljHMoFv0P9W1kNHFcG1ONlDt-rOEkk-yboVo4safzKh9DaiW9n__vRNpvT7Zz2EG3bTp__NZ_CfzvOEkY2QOKtLOOOvGfDqaRpODMwjzd5gZTEk-et9Zm4FZ8yv05gOHu9zjagNUMJW86sooL3SD1GqWDGQL0meCxRz2YT8I-0ShrhLFR3NTGdgBApZz5VxvaQyN-e6auQY0zAXjvp7uSJ3G1hOAlaeKHbFdQc-k_VCbcj7tqlM004kfNlUdlI4xkN7wJHq4r34TA9GW3Xjl6pg1lqnNDBuCnxCHbkjCUSVubLNCaKrDb-0Bdq9AqXuN4IhCsLey35JD4mbFdkIeQPheAVsPj_XWu8HSn08GSX9SL-IRNVPP4gykL35LVQugcjHVN_UWMkORz3x6ER5k9GmnHKvriQgv_fJPt9AyrMj7KSjFufGD8iH0I-Qz5p-12piyPS9iep0i9c_IGU6SNGHvVmmueR7gNO8",
+    "txid": "",
+    "sig": "ewHPAtMPQNBj2V5E2yracuyCaz2TNOlnJ3eVs5WgNBzxlKAGVE3STf4ltrtGyVOoJ5oxCYyEdj2upBK0I7nVS5qXWG+2dnIFqarzRkh4mMlG5HWvCCSMYxdcfHtJRe+Xa32T+s4YDHn+8e8zSa9Vv9unfuw/KCcsSEwRWje8zL7CzuGStORrvbyY9BtL/KAgzxJSCFkILOrqP5WnxZHU8nV8ljIN8OflcnH7xc2wzoaUVgGCoy8ymvxw6xEKq6tqFflMwMYF1etcGYi8FqH7+h0GASmE+DfA3u1S0i108U9wP/tnJVa/hcCUNvB+IWxxh3s6gK1i39lwKy9Pp64hKGw7eBwww0tCNFnZLDPLryP8DkwwkIOveIZgrRe2QUf3DKWfiXca296d8i9iTOxyw8kW5mT8x/fpHbu9uR0juApWW3vsrOqEXvPLC8ZxaPV3EdEuLSyO/IhoX5nLXTTlw4Qv0wDrv4SrkPYUQT3gNGfJMmg52ssapuzUL5gq6fo4CIbNhQxEzohEfMP90KkhWDO1xwlHinG05gUoNsMNay5bcl7W1TH+tOf577G6ORTpj39ZEbQg+gYsI+BBkFb5UGxCP+FTVu8U68ZNwqGOpwIy+fXJ6KvaRtVnsH+3nACti1XLBPzsJREznNgKEXFtpcjMYPFhjIekUxNBKe5Ti0g=",
+    "tx-id": "0xbb90f85dfb04e1a22cd167f5ec297623fff1ffa13a6be06fcf93a19b5c4dbbfd"
+}
