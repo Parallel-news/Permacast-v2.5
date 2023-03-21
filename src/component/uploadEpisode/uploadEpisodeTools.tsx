@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { FiFile } from 'react-icons/fi';
 import { ArrowUpTrayIcon, XMarkIcon, WalletIcon } from '@heroicons/react/24/outline';
-import { EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, TOAST_DARK } from '../../constants';
+import { ARWEAVE_READ_LINK, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, TOAST_DARK } from '../../constants';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
 import { useArconnect } from 'react-arconnect';
@@ -61,13 +61,13 @@ export interface Podcast {
 export const trayIconStyling="h-5 w-5 mr-2"
 export const episodeTitleStyling = "text-white text-xl mt-4"
 export const titleModalStyling = "flex justify-between w-full"
-export const podcastOptionsContainer = "w-full flex flex-col px-5"
+export const podcastOptionsContainer = "w-full flex flex-col px-5 overflow-auto h-[80%]"
 export const inputEpisodeMediaStyling = "opacity-0 absolute z-[-1]"
 export const hrPodcastStyling = "my-5 border-[1px] border-neutral-400/50"
 export const xBtnModalStyling = "text-neutral-400/75 text-xl cursor-pointer"
 export const episodeFaFileStyling = "w-7 h-6 cursor-pointer rounded-lg mx-2"
 export const episodeMediaStyling = "bg-zinc-800 rounded-xl cursor-pointer w-full"
-export const podcastSelectOptionsStyling = "h-[280px] w-full overflow-auto space-y-3"
+export const podcastSelectOptionsStyling = "h-fit w-full space-y-3"
 export const podcastOptionBaseStyling = "w-full flex justify-start items-center space-x-4"
 export const selectPodcastModalStyling = "absolute inset-0 top-0 flex justify-center"
 export const episodeFormStyling = "w-[50%] flex flex-col justify-center items-center space-y-4"
@@ -219,7 +219,7 @@ export const PodcastSelectOptions = (props: PodcastSelectOptionsInter) => {
     return (
         <div className={podcastSelectOptionsStyling}>
             <PodcastOption 
-                imgSrc={props.imgSrc}
+                imgSrc={ARWEAVE_READ_LINK+props.imgSrc}
                 title={props.title}
                 disableClick={props.disable}
             />
