@@ -147,7 +147,6 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             <UploadButton 
                 disable={false}
             />
-            {pid}
         </div>
     )
 }
