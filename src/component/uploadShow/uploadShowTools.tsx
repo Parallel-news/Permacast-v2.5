@@ -218,6 +218,7 @@ export const ShowForm = () => {
         setSubmittingShow(true)
 
         // Package EXM Call
+        console.log("Inspect: ", USER_SIG_MESSAGES[0] + await getPublicKey())
         const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
         payloadObj["sig"] = await createSignature(data, defaultSignatureParams, "base64");
         payloadObj["jwk_n"] = await getPublicKey()
@@ -226,7 +227,7 @@ export const ShowForm = () => {
         try {
             const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
             //const name = await upload2DMedia(podcastName_); payloadObj["name"] = name?.order?.itemId
-            payloadObj["label"] = "null111"
+            payloadObj["label"] = "s14"
         } catch (e) {
             console.log(e); handleError(DESCRIPTION_UPLOAD_ERROR, setSubmittingShow); return;
         }
