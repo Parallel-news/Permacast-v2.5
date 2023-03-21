@@ -21,7 +21,7 @@ const TextTruncate: React.FC<TextTruncateProps> = ({ text, limit, textClass, but
     const timeout = setTimeout(() => {
       setIsVisible(true)
       setShowFullText(!showFullText);
-    }, 200);
+    }, 200); // react makes current text disappear, pause, then fade in
   };
 
   return (

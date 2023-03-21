@@ -17,6 +17,7 @@ import { useRecoilState } from "recoil";
 import { arweaveAddress } from "../../atoms";
 import { PermaSpinner } from "../reusables/PermaSpinner";
 import axios from "axios";
+import { FADE_IN_STYLE } from "../../constants";
 
 
 export default function uploadShowTools() {
@@ -169,7 +170,6 @@ export const ShowForm = () => {
         setUploadCost(0)
         
         async function calculateTotal() {
-            let runningTotal = 0
             const descBytes = byteSize(podcastDescription_)
             const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
             const minCover = await minifyPodcastCover(podcastCover_); 
@@ -184,7 +184,7 @@ export const ShowForm = () => {
         if(podcastDescription_.length > 0 && podcastCover_ !== null) {
             calculateTotal().then(async total => {
                 const formattedTotal = total / AR_DECIMALS
-                setUploadCost(formattedTotal)
+                setUploadCost(formattedTotal+MIN_UPLOAD_PAYMENT)
             })
         } else {
             setUploadCost(0)
@@ -226,7 +226,7 @@ export const ShowForm = () => {
         try {
             const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
             //const name = await upload2DMedia(podcastName_); payloadObj["name"] = name?.order?.itemId
-            payloadObj["label"] = "null10"
+            payloadObj["label"] = "null111"
         } catch (e) {
             console.log(e); handleError(DESCRIPTION_UPLOAD_ERROR, setSubmittingShow); return;
         }
@@ -363,7 +363,12 @@ export const ShowForm = () => {
                                 click={() => connect()}
                             />
                         )}
-                        {uploadCost === 0 ? "" : <p className="mt-2 text-neutral-400">{"Upload Cost: "+(Number(uploadCost)).toFixed(6) +" AR"}</p>}
+                        {uploadCost === 0 && podcastDescription_.length > 0 && podcastCover_ && (
+                        <p className="mt-2 text-neutral-400">Calculating Fee...</p> 
+                        )}
+                        {uploadCost !== 0 && podcastDescription_.length > 0 && podcastCover_ && (
+                        <p className="mt-2 text-neutral-400">{"Upload Cost: "+(Number(uploadCost)).toFixed(6) +" AR"}</p>
+                        )}
                     </div>
                 </div>
                 <div className="w-[25%]"></div>
@@ -568,22 +573,3 @@ export const CropScreen = (props: CropScreenInter) => {
         </div>
     )
 }
-
-/*
-{
-    "everHash": "0xab56df38218eb49c023a2c683cdcffafba386676ccb0bd688701fc210ca65b33",
-    "order": {
-        "itemId": "LDwYbqD_TIffjZ54n8TLKgPErXINwuyQ1dshr7gtjWI",
-        "size": 122096,
-        "bundler": "uDA8ZblC-lyEFfsYXKewpwaX-kkNDDw8az3IW9bDL68",
-        "currency": "AR",
-        "decimals": 12,
-        "fee": "210160368",
-        "paymentExpiredTime": 1679177716,
-        "expectedBlock": 1140009
-    }
-}
-
-
-
-*/
