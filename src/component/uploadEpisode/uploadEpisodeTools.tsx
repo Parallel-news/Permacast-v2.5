@@ -3,6 +3,10 @@ import { FiFile } from 'react-icons/fi';
 import { ArrowUpTrayIcon, XMarkIcon, WalletIcon } from '@heroicons/react/24/outline';
 import { FADE_IN_STYLE, FADE_OUT_STYLE } from '../../constants';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
+import { useArconnect } from 'react-arconnect';
+import { arweaveAddress } from '../../atoms';
+import { useRecoilState } from 'recoil';
 
 export default function uploadEpisode() {
     return false
@@ -62,6 +66,20 @@ const onFileUpload = () => {
 export const EpisodeForm = () => {
     const [file, setFile] = useState<File | null>(null);
     const [mediaType, setMediaType] = useState<string>("")
+    const [submittingEp, setSubmittingEp] = useState<boolean>(false)
+    const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
+    const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
+    const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
+    const [uploadCost, setUploadCost] = useState<Number>(0)
+
+    //Inputs
+    const [pid, setPid] = useState<string>("")
+    const [epName, setEpName] = useState<string>("")
+    const [epDesc, setDescName] = useState<string>("")
+    const [epMedia, setEpMedia] = useState(null)
+    //Validation
+
+    //Submit Episode Function
     return(
         <div className={episodeFormStyling}>
             {/*Select Podcast*/}
