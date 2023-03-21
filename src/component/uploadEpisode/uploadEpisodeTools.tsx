@@ -1,12 +1,13 @@
 import Image from 'next/image';
 import { FiFile } from 'react-icons/fi';
 import { ArrowUpTrayIcon, XMarkIcon, WalletIcon } from '@heroicons/react/24/outline';
-import { FADE_IN_STYLE, FADE_OUT_STYLE } from '../../constants';
+import { EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, TOAST_DARK } from '../../constants';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
 import { useArconnect } from 'react-arconnect';
 import { arweaveAddress } from '../../atoms';
 import { useRecoilState } from 'recoil';
+import toast from 'react-hot-toast';
 
 export default function uploadEpisode() {
     return false
@@ -17,6 +18,7 @@ interface SelectPodcastModalInter {
     isVisible: boolean;
     setVisible: Dispatch<SetStateAction<boolean>>;
     setPid: (v: any) => void;
+    shows: Podcast[];
 }
 
 interface PodcastOptionInter {
@@ -31,6 +33,30 @@ interface UploadButtonInter {
     click?: () => void
 }
 
+interface EpisodeFormInter {
+    shows: Podcast[]
+}
+
+export interface Podcast { 
+    pid: string;
+    label: string;
+    createdAt: number;
+    index: number;
+    owner: string;
+    podcastName: string;
+    author: string;
+    email: string;
+    description: string;
+    language: string;
+    explicit: string;
+    categories: string[];
+    maintainers: any[]; // Replace 'any' with a specific type if you have more information about the maintainers' structure
+    cover: string;
+    minifiedCover: string;
+    isVisible: boolean;
+    episodes: any[]; // Replace 'any' with a specific type if you have more information about the episodes' structure
+  }
+  
 // 2. Styling
 export const trayIconStyling="h-5 w-5 mr-2"
 export const episodeTitleStyling = "text-white text-xl mt-4"
@@ -43,10 +69,11 @@ export const episodeFaFileStyling = "w-7 h-6 cursor-pointer rounded-lg mx-2"
 export const episodeMediaStyling = "bg-zinc-800 rounded-xl cursor-pointer w-full"
 export const podcastSelectOptionsStyling = "h-[280px] w-full overflow-auto space-y-3"
 export const podcastOptionBaseStyling = "w-full flex justify-start items-center space-x-4"
-export const selectPodcastModalStyling = "absolute inset-0 flex justify-center items-center"
+export const selectPodcastModalStyling = "absolute inset-0 top-0 flex justify-center"
 export const episodeFormStyling = "w-[50%] flex flex-col justify-center items-center space-y-4"
+export const showErrorTag = "flex justify-center items-center m-auto text-white font-semibold text-xl"
+export const containerPodcastModalStyling = "w-[50%] h-[420px] bg-zinc-800 rounded-3xl flex flex-col z-10 p-6 mb-0"
 export const uploadEpisodeStyling = "flex flex-col justify-center items-center m-auto space-y-3 relative pb-[250px]"
-export const containerPodcastModalStyling = "w-[50%] h-[100%] bg-zinc-800 rounded-3xl flex flex-col z-10 p-6"
 export const podcastOptionHoverStyling = "cursor-pointer hover:bg-zinc-600/30 transition duration-650 ease-in-out rounded-3xl p-3"
 export const xMarkStyling = "h-5 w-5 mt-1 cursor-pointer hover:text-red-400 hover:bg-red-400/10 transition duration-400 ease-in-out rounded-full"
 export const uploadButtonStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8"
@@ -64,7 +91,7 @@ const onFileUpload = () => {
 
 
 // 4. Components
-export const EpisodeForm = () => {
+export const EpisodeForm = (props: EpisodeFormInter) => {
     const [file, setFile] = useState<File | null>(null);
     const [mediaType, setMediaType] = useState<string>("")
     const [submittingEp, setSubmittingEp] = useState<boolean>(false)
@@ -72,6 +99,7 @@ export const EpisodeForm = () => {
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
     const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
     const [uploadCost, setUploadCost] = useState<Number>(0)
+    const [yourShows, setYourShows] = useState<any>();
 
     //Inputs
     const [pid, setPid] = useState<string>("")
@@ -89,13 +117,14 @@ export const EpisodeForm = () => {
             {/*Select Podcast*/}
             <SelectPodcast 
                 setPid={setPid}
+                shows={props.shows}
             />
             {/*Episode Name*/}
             <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="episodeName" placeholder={"Episode Name"}
             onChange={(e) => {
                 //setPodNameMsg(handleValMsg(e.target.value, "podName"));
                 setEpName(e.target.value);
-                }}/>
+            }}/>
             {/*Episode Description*/}
             <textarea className={episodeDescStyling} required title="Between 1 and 5000 characters" name="episodeShowNotes" placeholder={"Description"}></textarea>
             {/*Episode Media*/}
@@ -152,10 +181,15 @@ export const ConnectButton = (props: UploadButtonInter) => {
 
 interface SelectPodcastInter {
     setPid: (v: any) => void
+    shows: Podcast[]; 
 }
 
 export const SelectPodcast = (props: SelectPodcastInter) => {
     const [isVisible, setIsVisible] = useState<boolean>(false)
+    //const [yourShows, setYourShows] = useState<any>()
+    const [_arweaveAddress, _setArweaveAddress] = useRecoilState(arweaveAddress)
+    const yourShows = props.shows.filter((item: Podcast) => item.owner === _arweaveAddress)
+    //useEffect call here  
     return (
         <>
             <button className={selectPodcastStyling+ " relative"} onClick={() => setIsVisible(prev => !prev)}>
@@ -166,6 +200,7 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
                     isVisible={isVisible}
                     setVisible={setIsVisible}
                     setPid={props.setPid}
+                    shows={yourShows}
                 />
             :
             ""
@@ -174,50 +209,20 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
     )
 }
 
-export const PodcastSelectOptions = () => {
+interface PodcastSelectOptionsInter {
+    imgSrc: string;
+    title: string;
+    disable: boolean;
+}
+
+export const PodcastSelectOptions = (props: PodcastSelectOptionsInter) => {
     return (
         <div className={podcastSelectOptionsStyling}>
             <PodcastOption 
-                imgSrc="/aa.jpg"
-                title="American Rhetoric"
-                disableClick={false}
+                imgSrc={props.imgSrc}
+                title={props.title}
+                disableClick={props.disable}
             />
-                        <PodcastOption 
-                imgSrc="/aa.jpg"
-                title="American Rhetoric"
-                disableClick={false}
-            />
-                        <PodcastOption 
-                imgSrc="/aa.jpg"
-                title="American Rhetoric"
-                disableClick={false}
-            />
-                        <PodcastOption 
-                imgSrc="/aa.jpg"
-                title="American Rhetoric"
-                disableClick={false}
-            />
-                        <PodcastOption 
-                imgSrc="/aa.jpg"
-                title="American Rhetoric"
-                disableClick={false}
-            />
-                        <PodcastOption 
-                imgSrc="/aa.jpg"
-                title="American Rhetoric"
-                disableClick={false}
-            />
-                        <PodcastOption 
-                imgSrc="/aa.jpg"
-                title="American Rhetoric"
-                disableClick={false}
-            />
-                        <PodcastOption 
-                imgSrc="/aa.jpg"
-                title="American Rhetoric"
-                disableClick={false}
-            />
-
         </div>
     )
 }
@@ -262,7 +267,14 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
                 <hr className={hrPodcastStyling}/>
                 {/*Options*/}
                 <div className={podcastOptionsContainer}>
-                    <PodcastSelectOptions />
+                    {props.shows.map((item) => (
+                        <PodcastSelectOptions 
+                            imgSrc={item.minifiedCover}
+                            title={item.podcastName}
+                            disable={false}
+                        />
+                    ))}
+                    
                 </div>
             </div>
         </div>

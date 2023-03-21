@@ -88,6 +88,7 @@ export const TOAST_DARK = {
 export const EVERPAY_BALANCE_ERROR = "There was an issue with your Everpay Balance/Connection"
 export const COVER_UPLOAD_ERROR = "There was an issue uploading your cover. Try Again."
 export const DESCRIPTION_UPLOAD_ERROR = "There was an issue uploading description. Try Again."
+export const NO_SHOW = "Unable to fetch shows. Refresh and try again."
 
 // API SUCCESS
 export const SHOW_UPLOAD_SUCCESS = "Show Uploaded. Redirecting."
