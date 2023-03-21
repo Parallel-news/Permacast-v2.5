@@ -17,7 +17,6 @@ import { useRecoilState } from "recoil";
 import { arweaveAddress } from "../../atoms";
 import { PermaSpinner } from "../reusables/PermaSpinner";
 import axios from "axios";
-import { FADE_IN_STYLE } from "../../constants";
 
 
 export default function uploadShowTools() {

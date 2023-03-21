@@ -73,6 +73,11 @@ interface SelectPodcastInter {
     setPid: (v: any) => void
     shows: Podcast[]; 
 }
+
+interface EpisodeMediaInter {
+    media: File | null;
+    setMedia: (v: any) => void
+}
   
 // 2. Styling
 export const trayIconStyling="h-5 w-5 mr-2"
@@ -123,6 +128,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     const [epName, setEpName] = useState<string>("")
     const [epDesc, setEpDesc] = useState<string>("")
     const [epMedia, setEpMedia] = useState(null)
+    console.log("epMedia: ", epMedia)
     //Validation
     const [epNameMsg, setEpNameMsg] = useState<string>("")
     const [epDescMsg, setEpDescMsg] = useState<string>("")
@@ -187,7 +193,10 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             }}/>
             {epNameMsg.length > 0 && <ValMsg valMsg={epDescMsg} className="pl-2" />}
             {/*Episode Media*/}
-            <EpisodeMedia />
+            <EpisodeMedia
+                media={epMedia} 
+                setMedia={setEpMedia}
+            />
             {/*Upload Button*/}
             <div className="w-full flex justify-center items-center flex-col">
                 {/*Show Upload Btn, Spinner, or Connect Btn*/}
@@ -223,14 +232,14 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     )
 }
 
-export const EpisodeMedia = () => {
+export const EpisodeMedia = (props: EpisodeMediaInter) => {
     return (
         <div className={episodeMediaStyling}>
-            <input className={inputEpisodeMediaStyling} id="file" required type="file" onChange={(e) => onFileUpload()} name="episodeMedia" />
+            <input className={inputEpisodeMediaStyling} id="file" required type="file" onChange={(e) => props.setMedia(e.target.files?.[0])} name="episodeMedia" />
             <label htmlFor="file" className={labelEpisodeMediaStyling}>
                 <FiFile className={episodeFaFileStyling} />
                 <div>
-                    Episode Media
+                    {props.media ? props.media.name : "Episode Media"}
                 </div>
             </label>
         </div>
