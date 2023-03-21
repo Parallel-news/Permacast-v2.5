@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useTranslation } from 'next-i18next';
 import { EXM_READ_LINK, NO_SHOW } from '../../constants';
-import { getContractVariables } from '../../server/contract';
+import { getContractVariables } from '../../utils/contract';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { EpisodeForm, episodeTitleStyling, showErrorTag, uploadEpisodeStyling } from "../../component/uploadEpisode/uploadEpisodeTools"
 

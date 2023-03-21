@@ -211,7 +211,7 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
         <>
             {props.pid.length === 0 ? 
             <button className={selectPodcastStyling+ " relative"} onClick={() => setIsVisible(prev => !prev)}>
-                Select Podcast
+                Select Show
             </button>
             :
             <div onClick={() => setIsVisible(true)}>
