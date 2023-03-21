@@ -16,6 +16,7 @@ export default function uploadEpisode() {
 interface SelectPodcastModalInter {
     isVisible: boolean;
     setVisible: Dispatch<SetStateAction<boolean>>;
+    setPid: (v: any) => void;
 }
 
 interface PodcastOptionInter {
@@ -78,14 +79,23 @@ export const EpisodeForm = () => {
     const [epDesc, setDescName] = useState<string>("")
     const [epMedia, setEpMedia] = useState(null)
     //Validation
-
+    const [pidMsg, setPidMsg] = useState<string>("")
+    const [epNameMsg, setEpNameMsg] = useState<string>("")
+    const [epDescMsg, setEpDescMsg] = useState<string>("")
+    const [epMediaMsg, setEpMediaMsg] = useState<string>("")
     //Submit Episode Function
     return(
         <div className={episodeFormStyling}>
             {/*Select Podcast*/}
-            <SelectPodcast />
+            <SelectPodcast 
+                setPid={setPid}
+            />
             {/*Episode Name*/}
-            <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="episodeName" placeholder={"Episode Name"} />
+            <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="episodeName" placeholder={"Episode Name"}
+            onChange={(e) => {
+                //setPodNameMsg(handleValMsg(e.target.value, "podName"));
+                setEpName(e.target.value);
+                }}/>
             {/*Episode Description*/}
             <textarea className={episodeDescStyling} required title="Between 1 and 5000 characters" name="episodeShowNotes" placeholder={"Description"}></textarea>
             {/*Episode Media*/}
@@ -140,7 +150,11 @@ export const ConnectButton = (props: UploadButtonInter) => {
     )
 }
 
-export const SelectPodcast = () => {
+interface SelectPodcastInter {
+    setPid: (v: any) => void
+}
+
+export const SelectPodcast = (props: SelectPodcastInter) => {
     const [isVisible, setIsVisible] = useState<boolean>(false)
     return (
         <>
@@ -151,6 +165,7 @@ export const SelectPodcast = () => {
                 <SelectPodcastModal 
                     isVisible={isVisible}
                     setVisible={setIsVisible}
+                    setPid={props.setPid}
                 />
             :
             ""
