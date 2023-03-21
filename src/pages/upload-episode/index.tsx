@@ -8,7 +8,6 @@ import { EpisodeForm, episodeTitleStyling, showErrorTag, uploadEpisodeStyling } 
 export default function UploadEpisode({yourShows, error}) {
     
     const { t } = useTranslation();
-    console.log(yourShows)
     if(error.length > 0) {
       return (
         <p className={showErrorTag}>{error}</p>

@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { CONNECT_WALLET } from "../constants";
+import { CONNECT_WALLET, TOAST_DARK } from "../constants";
 
 interface hexToRgbInter {
     hex: string
@@ -91,4 +91,11 @@ export const allFieldsFilled = (fieldsObj: any) => {
   }
   return true
 }
+
+export function handleError (errorMessage: string, loadingSetter: (v: boolean) => void) {
+  toast.error(errorMessage, {style: TOAST_DARK})
+  loadingSetter(false)
+}
+
+export const determineMediaType = (mime: string) => mime.match(/^(audio\/|video\/)/)[0];
 

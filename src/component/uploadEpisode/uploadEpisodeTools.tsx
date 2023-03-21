@@ -1,17 +1,19 @@
 import Image from 'next/image';
 import { FiFile } from 'react-icons/fi';
 import { ArrowUpTrayIcon, XMarkIcon, WalletIcon } from '@heroicons/react/24/outline';
-import { ARWEAVE_READ_LINK, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, SPINNER_COLOR, TOAST_DARK } from '../../constants';
+import { ARWEAVE_READ_LINK, AR_DECIMALS, CONNECT_WALLET, DESCRIPTION_UPLOAD_ERROR, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EP_UPLOAD_SUCCESS, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, MEDIA_UPLOAD_ERROR, MIN_UPLOAD_PAYMENT, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from '../../constants';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
-import { useArconnect } from 'react-arconnect';
+import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { arweaveAddress } from '../../atoms';
 import { useRecoilState } from 'recoil';
 import toast from 'react-hot-toast';
 import { ValMsg } from '../reusables/formTools';
-import { allFieldsFilled } from '../../utils/reusables';
+import { allFieldsFilled, byteSize, checkConnection, determineMediaType, handleError } from '../../utils/reusables';
 import { PermaSpinner } from '../reusables/PermaSpinner';
 import { spinnerClass } from '../uploadShow/uploadShowTools';
+import { getBundleArFee, upload2DMedia, upload3DMedia } from '../../utils/arseeding';
+import axios from 'axios';
 
 export default function uploadEpisode() {
     return false
@@ -83,15 +85,16 @@ interface EpisodeMediaInter {
 export const trayIconStyling="h-5 w-5 mr-2"
 export const episodeTitleStyling = "text-white text-xl mt-4"
 export const titleModalStyling = "flex justify-between w-full"
-export const podcastOptionsContainer = "w-full flex flex-col px-5 overflow-auto h-[80%]"
+export const podcastSelectOptionsStyling = "h-fit w-full space-y-3"
 export const inputEpisodeMediaStyling = "opacity-0 absolute z-[-1]"
 export const hrPodcastStyling = "my-5 border-[1px] border-neutral-400/50"
 export const xBtnModalStyling = "text-neutral-400/75 text-xl cursor-pointer"
 export const episodeFaFileStyling = "w-7 h-6 cursor-pointer rounded-lg mx-2"
 export const episodeMediaStyling = "bg-zinc-800 rounded-xl cursor-pointer w-full"
-export const podcastSelectOptionsStyling = "h-fit w-full space-y-3"
-export const podcastOptionBaseStyling = "w-full flex justify-start items-center space-x-4"
+export const buttonColStyling = "w-full flex justify-center items-center flex-col"
 export const selectPodcastModalStyling = "absolute inset-0 top-0 flex justify-center"
+export const podcastOptionsContainer = "w-full flex flex-col px-5 overflow-auto h-[80%]"
+export const podcastOptionBaseStyling = "w-full flex justify-start items-center space-x-4"
 export const episodeFormStyling = "w-[50%] flex flex-col justify-center items-center space-y-4"
 export const showErrorTag = "flex justify-center items-center m-auto text-white font-semibold text-xl"
 export const containerPodcastModalStyling = "w-[50%] h-[420px] bg-zinc-800 rounded-3xl flex flex-col z-10 p-6 mb-0"
@@ -106,29 +109,20 @@ export const episodeDescStyling =  "input input-secondary resize-none w-full h-2
 
 
 // 3. Custom Functions
-const onFileUpload = () => {
-    return false
-    //params e.target.files?.[0]
-}
-
 
 // 4. Components
 export const EpisodeForm = (props: EpisodeFormInter) => {
-    const [file, setFile] = useState<File | null>(null);
-    const [mediaType, setMediaType] = useState<string>("")
     const [submittingEp, setSubmittingEp] = useState<boolean>(false)
     const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
     const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
     const [uploadCost, setUploadCost] = useState<Number>(0)
-    const [yourShows, setYourShows] = useState<any>();
 
     //Inputs
     const [pid, setPid] = useState<string>("")
     const [epName, setEpName] = useState<string>("")
     const [epDesc, setEpDesc] = useState<string>("")
     const [epMedia, setEpMedia] = useState(null)
-    console.log("epMedia: ", epMedia)
     //Validation
     const [epNameMsg, setEpNameMsg] = useState<string>("")
     const [epDescMsg, setEpDescMsg] = useState<string>("")
@@ -140,6 +134,27 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         "media": epMedia !== null,
         "pid": pid.length > 0,
     }
+
+    // Hook Calculating Upload Cost
+    useEffect(() => {
+        setUploadCost(0)
+        
+        async function calculateTotal() {
+            const descBytes = byteSize(epDesc)
+            const descFee = await getBundleArFee(String(descBytes))
+            const mediaFee = await getBundleArFee(String(epMedia.size))
+            return Number(descFee) + Number(mediaFee)
+        }
+
+        if(epDesc.length > 0 && epMedia !== null) {
+            calculateTotal().then(async total => {
+                const formattedTotal = total / AR_DECIMALS
+                setUploadCost(formattedTotal+MIN_UPLOAD_PAYMENT)
+            })
+        } else {
+            setUploadCost(0)
+        }
+    }, [epDesc, epMedia])
 
     /**
      * Determines whether validation message should be placed within input field
@@ -164,10 +179,51 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         }
     }
 
-    const createEpPayload = {}
+    const createEpPayload = {
+        "function": "addEpisode",
+        "jwk_n": "",
+        "pid": pid,
+        "name": epName,
+        "desc": "",
+        "content": "",
+        "mimeType": "",
+        "sig": ""
+    }
 
-    const submitEpisode = (epPayload: any) => {
-        return false
+    const submitEpisode = async (epPayload: any) => {
+        // Check Connection
+        if (!checkConnection(arweaveAddress_)) {
+            toast.error(CONNECT_WALLET, {style: TOAST_DARK})
+            return false
+        }
+        setSubmittingEp(true)
+        const handleErr = handleError
+        // Package EXM Call
+        const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
+        epPayload["sig"] = await createSignature(data, defaultSignatureParams, "base64");
+        epPayload["jwk_n"] = await getPublicKey()
+
+        // Description to Arseeding
+        try {
+            const description = await upload2DMedia(epDesc); epPayload["desc"] = description?.order?.itemId
+        } catch (e) {
+            console.log(e); handleErr(DESCRIPTION_UPLOAD_ERROR, setSubmittingEp); return;
+        }
+        
+        // Media to Arseeding
+        try {
+            const media = await upload3DMedia(epMedia, epMedia.type); epPayload["content"] = media?.order?.itemId
+            epPayload["mimeType"] = determineMediaType(epMedia.type)
+        } catch (e) {
+            console.log(e); handleErr(MEDIA_UPLOAD_ERROR, setSubmittingEp); return;
+        }
+        console.log("EP PAYLOAD: ", createEpPayload)
+        // EXM REDIRECT AND ERROR HANDLING NEEDED
+        const result = await axios.post('/api/exm/write', createEpPayload);
+        console.log("exm res: ", result)
+        setSubmittingEp(false)
+        //EXM call, set timeout, then redirect. 
+        toast.success(EP_UPLOAD_SUCCESS, {style: TOAST_DARK})
     }
     //Submit Episode Function
     return(
@@ -198,7 +254,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                 setMedia={setEpMedia}
             />
             {/*Upload Button*/}
-            <div className="w-full flex justify-center items-center flex-col">
+            <div className={buttonColStyling}>
                 {/*Show Upload Btn, Spinner, or Connect Btn*/}
                 {address && address.length > 0 && !submittingEp && (
                 <UploadButton 
@@ -280,7 +336,6 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
     let selectedShow;
     if(props.pid.length > 0) {
         selectedShow = yourShows.filter((item: Podcast) => item.pid === props.pid)
-        console.log("selectedShow: ", selectedShow)
     }
 
     useEffect(() => {
