@@ -10,14 +10,13 @@ import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseed
 import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
-import { byteSize, checkConnection } from "../../utils/reusables";
+import { allFieldsFilled, byteSize, checkConnection, handleError} from "../../utils/reusables";
 import Everpay, { ChainType } from "everpay";
 import toast from "react-hot-toast";
 import { useRecoilState } from "recoil";
 import { arweaveAddress } from "../../atoms";
 import { PermaSpinner } from "../reusables/PermaSpinner";
 import axios from "axios";
-import { FADE_IN_STYLE } from "../../constants";
 
 
 export default function uploadShowTools() {
@@ -53,6 +52,7 @@ interface CoverContainerInter {
 
 // 2. Stylings
 export const showTitleStyling = "text-white text-xl"
+export const spinnerClass = "w-full flex justify-center mt-4"
 export const photoIconStyling = "h-11 w-11 text-zinc-400"
 export const explicitLabelStyling = "flex items-center mr-5"
 export const mediaSwitcherLabelStyling = "flex items-center label"
@@ -109,22 +109,6 @@ const handleValMsg = (input: string, type: string) => {
             return `Enter a valid email`
         }
     }
-}
-
-/**
- * Checks dictionary object for populated keys. If populated, dont submit
- * @param fieldsObj obj containing conditions. If true, qualified for submission
- * @returns boolean
- */
-export const allFieldsFilled = (fieldsObj: any) => {
-    for (const key in fieldsObj) {
-        if(Object.hasOwnProperty.call(fieldsObj, key)) {
-            if(!fieldsObj[key]) {
-                return false
-            }
-        }   
-    }
-    return true
 }
   
 // 4. Components
@@ -216,20 +200,19 @@ export const ShowForm = () => {
             return false
         }
         setSubmittingShow(true)
-
+        const handleErr = handleError
         // Package EXM Call
-        console.log("Inspect: ", USER_SIG_MESSAGES[0] + await getPublicKey())
         const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
         payloadObj["sig"] = await createSignature(data, defaultSignatureParams, "base64");
         payloadObj["jwk_n"] = await getPublicKey()
         
-        // Name && Description to Arseeding
+        // Description to Arseeding
         try {
             const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
             //const name = await upload2DMedia(podcastName_); payloadObj["name"] = name?.order?.itemId
-            payloadObj["label"] = "s14"
+            payloadObj["label"] = "s15"
         } catch (e) {
-            console.log(e); handleError(DESCRIPTION_UPLOAD_ERROR, setSubmittingShow); return;
+            console.log(e); handleErr(DESCRIPTION_UPLOAD_ERROR, setSubmittingShow); return;
         }
 
         // Covers to Arseeding
@@ -239,7 +222,7 @@ export const ShowForm = () => {
             const minCover = await minifyPodcastCover(podcastCover_); const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
             const miniCover = await upload3DMedia(fileMini, fileMini.type); payloadObj["minifiedCover"] = miniCover?.order?.itemId
         } catch (e) {
-            console.log(e); handleError(COVER_UPLOAD_ERROR, setSubmittingShow); return;
+            console.log(e); handleErr(COVER_UPLOAD_ERROR, setSubmittingShow); return;
         }
 
         // Fee to Everpay
@@ -253,21 +236,16 @@ export const ShowForm = () => {
             })
             payloadObj["txid"] = transaction?.everHash
         } catch (e) {
-            console.log(e); handleError(EVERPAY_BALANCE_ERROR, setSubmittingShow); return;
+            console.log(e); handleErr(EVERPAY_BALANCE_ERROR, setSubmittingShow); return;
         }
         console.log("Payload: ", createShowPayload)
+        //Error handling and timeout needed for this to complete redirect
         const result = await axios.post('/api/exm/write', createShowPayload);
         console.log("exm res: ", result)
         setSubmittingShow(false)
         //EXM call, set timeout, then redirect. 
         toast.success(SHOW_UPLOAD_SUCCESS, {style: TOAST_DARK})
     }
-
-    function handleError (errorMessage: string, loadingSetter: (v: boolean) => void) {
-        toast.error(errorMessage, {style: TOAST_DARK})
-        loadingSetter(false)
-    }
-    const spinnerClass = "w-full flex justify-center"
 
     return (
         <div className={showFormStyling}>

@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { CONNECT_WALLET } from "../constants";
+import { CONNECT_WALLET, TOAST_DARK } from "../constants";
 
 interface hexToRgbInter {
     hex: string
@@ -74,4 +74,28 @@ export const checkConnection = (arAddress: string) => {
  * @returns number
  */
 export const byteSize = (str:string) => new Blob([str]).size;
+
+
+/**
+ * Checks dictionary object for populated keys. If populated, dont submit
+ * @param fieldsObj obj containing conditions. If true, qualified for submission
+ * @returns boolean
+ */
+export const allFieldsFilled = (fieldsObj: any) => {
+  for (const key in fieldsObj) {
+      if(Object.hasOwnProperty.call(fieldsObj, key)) {
+          if(!fieldsObj[key]) {
+              return false
+          }
+      }   
+  }
+  return true
+}
+
+export function handleError (errorMessage: string, loadingSetter: (v: boolean) => void) {
+  toast.error(errorMessage, {style: TOAST_DARK})
+  loadingSetter(false)
+}
+
+export const determineMediaType = (mime: string) => mime.match(/^(audio\/|video\/)/)[0];
 
