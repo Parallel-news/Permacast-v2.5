@@ -55,7 +55,20 @@ export interface Podcast {
     minifiedCover: string;
     isVisible: boolean;
     episodes: any[]; // Replace 'any' with a specific type if you have more information about the episodes' structure
-  }
+}
+interface PodcastSelectOptionsInter {
+    imgSrc: string;
+    title: string;
+    disable: boolean;
+    pid: string;
+    setPid: (v: any) => void;
+}
+
+interface SelectPodcastInter {
+    pid: string;
+    setPid: (v: any) => void
+    shows: Podcast[]; 
+}
   
 // 2. Styling
 export const trayIconStyling="h-5 w-5 mr-2"
@@ -115,7 +128,8 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     return(
         <div className={episodeFormStyling}>
             {/*Select Podcast*/}
-            <SelectPodcast 
+            <SelectPodcast
+                pid={pid} 
                 setPid={setPid}
                 shows={props.shows}
             />
@@ -133,6 +147,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             <UploadButton 
                 disable={false}
             />
+            {pid}
         </div>
     )
 }
@@ -150,8 +165,6 @@ export const EpisodeMedia = () => {
         </div>
     )
 }
-
-
 
 export const UploadButton = (props: UploadButtonInter) => {
     return (
@@ -179,22 +192,37 @@ export const ConnectButton = (props: UploadButtonInter) => {
     )
 }
 
-interface SelectPodcastInter {
-    setPid: (v: any) => void
-    shows: Podcast[]; 
-}
-
 export const SelectPodcast = (props: SelectPodcastInter) => {
     const [isVisible, setIsVisible] = useState<boolean>(false)
-    //const [yourShows, setYourShows] = useState<any>()
     const [_arweaveAddress, _setArweaveAddress] = useRecoilState(arweaveAddress)
     const yourShows = props.shows.filter((item: Podcast) => item.owner === _arweaveAddress)
-    //useEffect call here  
+
+    let selectedShow;
+    if(props.pid.length > 0) {
+        selectedShow = yourShows.filter((item: Podcast) => item.pid === props.pid)
+        console.log("selectedShow: ", selectedShow)
+    }
+
+    useEffect(() => {
+        setIsVisible(false)
+    }, [props.pid])
+
     return (
         <>
+            {props.pid.length === 0 ? 
             <button className={selectPodcastStyling+ " relative"} onClick={() => setIsVisible(prev => !prev)}>
                 Select Podcast
             </button>
+            :
+            <div onClick={() => setIsVisible(true)}>
+                <PodcastOption 
+                    imgSrc={ARWEAVE_READ_LINK+selectedShow[0].minifiedCover}
+                    title={selectedShow[0].podcastName}
+                    disableClick={false}
+                />
+            </div>
+
+            }
             {isVisible ?
                 <SelectPodcastModal 
                     isVisible={isVisible}
@@ -209,15 +237,9 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
     )
 }
 
-interface PodcastSelectOptionsInter {
-    imgSrc: string;
-    title: string;
-    disable: boolean;
-}
-
 export const PodcastSelectOptions = (props: PodcastSelectOptionsInter) => {
     return (
-        <div className={podcastSelectOptionsStyling}>
+        <div className={podcastSelectOptionsStyling} onClick={() => props.setPid(props.pid)}>
             <PodcastOption 
                 imgSrc={ARWEAVE_READ_LINK+props.imgSrc}
                 title={props.title}
@@ -245,6 +267,10 @@ export const PodcastOption = (props: PodcastOptionInter) => {
 export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
 
     const [showModal, setShowModal] = useState<boolean>(false)
+    const [_arweaveAddress, _setArweaveAddress] = useRecoilState(arweaveAddress)
+    const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
+    const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
+
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             setShowModal(prev => !prev);
@@ -267,14 +293,17 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
                 <hr className={hrPodcastStyling}/>
                 {/*Options*/}
                 <div className={podcastOptionsContainer}>
-                    {props.shows.map((item) => (
+                    {props.shows && props.shows.map((item) => (
                         <PodcastSelectOptions 
                             imgSrc={item.minifiedCover}
                             title={item.podcastName}
                             disable={false}
+                            setPid={props.setPid}
+                            pid={item.pid}
                         />
                     ))}
-                    
+                    {props.shows.length === 0 && <p className="text-white text-lg text-center">No Shows In Your Account</p>}
+                    {_arweaveAddress.length === 0 && <p className="text-blue-400 mt-2 text-lg text-center cursor-pointer" onClick={connect}>Connect Wallet</p>}
                 </div>
             </div>
         </div>
