@@ -75,3 +75,20 @@ export const checkConnection = (arAddress: string) => {
  */
 export const byteSize = (str:string) => new Blob([str]).size;
 
+
+/**
+ * Checks dictionary object for populated keys. If populated, dont submit
+ * @param fieldsObj obj containing conditions. If true, qualified for submission
+ * @returns boolean
+ */
+export const allFieldsFilled = (fieldsObj: any) => {
+  for (const key in fieldsObj) {
+      if(Object.hasOwnProperty.call(fieldsObj, key)) {
+          if(!fieldsObj[key]) {
+              return false
+          }
+      }   
+  }
+  return true
+}
+

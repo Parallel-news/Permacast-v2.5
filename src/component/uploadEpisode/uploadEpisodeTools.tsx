@@ -1,13 +1,17 @@
 import Image from 'next/image';
 import { FiFile } from 'react-icons/fi';
 import { ArrowUpTrayIcon, XMarkIcon, WalletIcon } from '@heroicons/react/24/outline';
-import { ARWEAVE_READ_LINK, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, TOAST_DARK } from '../../constants';
+import { ARWEAVE_READ_LINK, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, SPINNER_COLOR, TOAST_DARK } from '../../constants';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
 import { useArconnect } from 'react-arconnect';
 import { arweaveAddress } from '../../atoms';
 import { useRecoilState } from 'recoil';
 import toast from 'react-hot-toast';
+import { ValMsg } from '../reusables/formTools';
+import { allFieldsFilled } from '../../utils/reusables';
+import { PermaSpinner } from '../reusables/PermaSpinner';
+import { spinnerClass } from '../uploadShow/uploadShowTools';
 
 export default function uploadEpisode() {
     return false
@@ -117,13 +121,48 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     //Inputs
     const [pid, setPid] = useState<string>("")
     const [epName, setEpName] = useState<string>("")
-    const [epDesc, setDescName] = useState<string>("")
+    const [epDesc, setEpDesc] = useState<string>("")
     const [epMedia, setEpMedia] = useState(null)
     //Validation
-    const [pidMsg, setPidMsg] = useState<string>("")
     const [epNameMsg, setEpNameMsg] = useState<string>("")
     const [epDescMsg, setEpDescMsg] = useState<string>("")
-    const [epMediaMsg, setEpMediaMsg] = useState<string>("")
+    const validationObject = {
+        "nameError": epNameMsg.length === 0,
+        "descError": epDescMsg.length === 0,
+        "name": epName.length > 0,
+        "desc": epDesc.length > 0,
+        "media": epMedia !== null,
+        "pid": pid.length > 0,
+    }
+
+    /**
+     * Determines whether validation message should be placed within input field
+     * @param {string|number - input from form} input 
+     * @param {string - form type} type 
+     * @returns Validation message || ""
+     */
+    const handleValMsg = (input: string, type: string) => {
+        switch(type) {
+            case 'epName':
+            if((input.length > EPISODE_NAME_MAX_LEN || input.length < EPISODE_NAME_MIN_LEN)) {
+                return `Name must be between ${EPISODE_NAME_MIN_LEN} and ${EPISODE_NAME_MAX_LEN} characters`;
+            } else {
+                return "";
+            }
+            case 'epDesc':
+            if((input.length > EPISODE_DESC_MAX_LEN || input.length < EPISODE_DESC_MIN_LEN)) {
+                return `Description must be between ${EPISODE_DESC_MIN_LEN} and ${EPISODE_DESC_MAX_LEN} characters`;
+            } else {
+                return "";
+            }
+        }
+    }
+
+    const createEpPayload = {}
+
+    const submitEpisode = (epPayload: any) => {
+        return false
+    }
     //Submit Episode Function
     return(
         <div className={episodeFormStyling}>
@@ -136,18 +175,50 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             {/*Episode Name*/}
             <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="episodeName" placeholder={"Episode Name"}
             onChange={(e) => {
-                //setPodNameMsg(handleValMsg(e.target.value, "podName"));
+                setEpNameMsg(handleValMsg(e.target.value, "epName"));
                 setEpName(e.target.value);
             }}/>
+            {epNameMsg.length > 0 && <ValMsg valMsg={epNameMsg} className="pl-2" />}
             {/*Episode Description*/}
-            <textarea className={episodeDescStyling} required title="Between 1 and 5000 characters" name="episodeShowNotes" placeholder={"Description"}></textarea>
+            <textarea className={episodeDescStyling} required title="Between 1 and 5000 characters" name="episodeShowNotes" placeholder={"Description"} 
+            onChange={(e) => {
+                setEpDescMsg(handleValMsg(e.target.value, "epDesc"));
+                setEpDesc(e.target.value);
+            }}/>
+            {epNameMsg.length > 0 && <ValMsg valMsg={epDescMsg} className="pl-2" />}
             {/*Episode Media*/}
             <EpisodeMedia />
             {/*Upload Button*/}
-            <UploadButton 
-                disable={false}
-            />
-            {pid}
+            <div className="w-full flex justify-center items-center flex-col">
+                {/*Show Upload Btn, Spinner, or Connect Btn*/}
+                {address && address.length > 0 && !submittingEp && (
+                <UploadButton 
+                    width="w-[50%]"
+                    disable={!allFieldsFilled(validationObject)}
+                    click={() =>submitEpisode(createEpPayload)}
+                />
+                )}
+                {address && address.length > 0 && submittingEp && (
+                <PermaSpinner 
+                    spinnerColor={SPINNER_COLOR}
+                    size={10}
+                    divClass={spinnerClass}
+                />
+                )}
+                {!address && (
+                    <ConnectButton 
+                        width="w-[50%]"
+                        disable={false}
+                        click={() => connect()}
+                    />
+                )}
+                {uploadCost === 0 && epDesc.length > 0 && epMedia && (
+                <p className="mt-2 text-neutral-400">Calculating Fee...</p> 
+                )}
+                {uploadCost !== 0 && epDesc.length > 0 && epMedia && (
+                <p className="mt-2 text-neutral-400">{"Upload Cost: "+(Number(uploadCost)).toFixed(6) +" AR"}</p>
+                )}
+            </div>
         </div>
     )
 }

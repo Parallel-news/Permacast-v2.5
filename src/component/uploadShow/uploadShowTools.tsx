@@ -10,7 +10,7 @@ import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseed
 import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
-import { byteSize, checkConnection } from "../../utils/reusables";
+import { allFieldsFilled, byteSize, checkConnection } from "../../utils/reusables";
 import Everpay, { ChainType } from "everpay";
 import toast from "react-hot-toast";
 import { useRecoilState } from "recoil";
@@ -53,6 +53,7 @@ interface CoverContainerInter {
 
 // 2. Stylings
 export const showTitleStyling = "text-white text-xl"
+export const spinnerClass = "w-full flex justify-center mt-4"
 export const photoIconStyling = "h-11 w-11 text-zinc-400"
 export const explicitLabelStyling = "flex items-center mr-5"
 export const mediaSwitcherLabelStyling = "flex items-center label"
@@ -109,22 +110,6 @@ const handleValMsg = (input: string, type: string) => {
             return `Enter a valid email`
         }
     }
-}
-
-/**
- * Checks dictionary object for populated keys. If populated, dont submit
- * @param fieldsObj obj containing conditions. If true, qualified for submission
- * @returns boolean
- */
-export const allFieldsFilled = (fieldsObj: any) => {
-    for (const key in fieldsObj) {
-        if(Object.hasOwnProperty.call(fieldsObj, key)) {
-            if(!fieldsObj[key]) {
-                return false
-            }
-        }   
-    }
-    return true
 }
   
 // 4. Components
@@ -227,7 +212,7 @@ export const ShowForm = () => {
         try {
             const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
             //const name = await upload2DMedia(podcastName_); payloadObj["name"] = name?.order?.itemId
-            payloadObj["label"] = "s14"
+            payloadObj["label"] = "s15"
         } catch (e) {
             console.log(e); handleError(DESCRIPTION_UPLOAD_ERROR, setSubmittingShow); return;
         }
@@ -267,7 +252,6 @@ export const ShowForm = () => {
         toast.error(errorMessage, {style: TOAST_DARK})
         loadingSetter(false)
     }
-    const spinnerClass = "w-full flex justify-center"
 
     return (
         <div className={showFormStyling}>
