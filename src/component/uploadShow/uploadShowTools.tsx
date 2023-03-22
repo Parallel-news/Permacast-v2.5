@@ -10,7 +10,7 @@ import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseed
 import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
-import { allFieldsFilled, byteSize, checkConnection, handleError} from "../../utils/reusables";
+import { allFieldsFilled, byteSize, checkConnection, handleError, validateLabel} from "../../utils/reusables";
 import Everpay, { ChainType } from "everpay";
 import toast from "react-hot-toast";
 import { useRecoilState } from "recoil";
@@ -31,6 +31,9 @@ interface ImgCoverInter {
 interface SelectDropdownRowInter {
     setLanguage: (v: any) => void;
     setCategory: (v: any) => void;
+    setLabel: (v: any) => void;
+    setLabelMsg: (v: any) => void;
+    labelMsg: string;
 }
 
 interface ExplicitInputInter {
@@ -53,6 +56,7 @@ interface CoverContainerInter {
 interface LabelInputInter {
     setLabelMsg: (v: any) => void;
     setLabel: (v: any) => void;
+    labelMsg: string;
 }
 
 // 2. Stylings
@@ -113,6 +117,12 @@ const handleValMsg = (input: string, type: string) => {
         } else {
             return `Enter a valid email`
         }
+        case 'podLabel':
+        if(validateLabel(input, []).res) {
+            return "";
+        } else {
+            return validateLabel(input, []).msg
+        }   
     }
 }
   
@@ -135,17 +145,20 @@ export const ShowForm = () => {
     const [podcastCover_, setPodcastCover_] = useState(null);
     const [podcastLanguage_, setPodcastLanguage_] = useState('en');
     const [podcastExplicit_, setPodcastExplicit_] = useState(false);
+    const [podcastLabel_, setPodcastLabel_] = useState("");
 
     // Validations
     const [podNameMsg, setPodNameMsg] = useState("");
     const [podDescMsg, setPodDescMsg] = useState("");
     const [podAuthMsg, setPodAuthMsg] = useState("");
     const [podEmailMsg, setPodEmailMsg] = useState("");
+    const [labelMsg, setLabelMsg] = useState("");
     const validationObject = {
         "nameError": podNameMsg.length === 0,
         "descError": podDescMsg.length === 0,
         "authError": podAuthMsg.length === 0,
         "emailError": podEmailMsg.length === 0,
+        "labelError": labelMsg.length === 0,
         "name": podcastName_.length > 0,
         "desc": podcastDescription_.length > 0,
         "auth": podcastAuthor_.length > 0,
@@ -252,6 +265,8 @@ export const ShowForm = () => {
         toast.success(SHOW_UPLOAD_SUCCESS, {style: TOAST_DARK})
     }
 
+    console.log("podcastLabel_: ", podcastLabel_)
+
     return (
         <div className={showFormStyling}>
             {/*First Row*/}
@@ -311,8 +326,10 @@ export const ShowForm = () => {
                     <SelectDropdownRow 
                         setLanguage={setPodcastLanguage_}
                         setCategory={setPodcastCategory_}
+                        setLabel={setPodcastLabel_}
+                        setLabelMsg={setLabelMsg}
+                        labelMsg={labelMsg}
                     />
-
                     {/*
                         Explicit
                     */}
@@ -363,11 +380,16 @@ export const ShowForm = () => {
 
 export const LabelInput = (props: LabelInputInter) => {
     return (
-        <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="showName" placeholder={"Label (.pc.show)"}                     
-        onChange={(e) => {
-          props.setLabelMsg(handleValMsg(e.target.value, "podLabel"));
-          props.setLabel(e.target.value);
-        }}/>       
+        <>
+        <div className="flex-col">
+            <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 1 and 38 characters" type="text" name="showLabel" placeholder={"Label (.pc.show)"}                     
+            onChange={(e) => {
+            props.setLabelMsg(handleValMsg(e.target.value, "podLabel"));
+            props.setLabel(e.target.value);
+            }}/>
+            <ValMsg valMsg={props.labelMsg} className="pl-2" />
+        </div>
+        </>       
     )
 }
 
@@ -502,8 +524,9 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
             </select>
             {/*Label*/}
             <LabelInput 
-                setLabel={() => console.log("tt")}
-                setLabelMsg={() => console.log("ee")}
+                setLabel={props.setLabel}
+                setLabelMsg={props.setLabelMsg}
+                labelMsg={props.labelMsg}
             />
         </div>
     )
