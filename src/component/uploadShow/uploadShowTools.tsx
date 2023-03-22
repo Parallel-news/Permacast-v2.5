@@ -50,6 +50,11 @@ interface CoverContainerInter {
     setCover: (v: any) => void
 }
 
+interface LabelInputInter {
+    setLabelMsg: (v: any) => void;
+    setLabel: (v: any) => void;
+}
+
 // 2. Stylings
 export const showTitleStyling = "text-white text-xl"
 export const spinnerClass = "w-full flex justify-center mt-4"
@@ -69,7 +74,7 @@ export const mediaSwitcherVideoStyling = "mr-2 cursor-pointer label-text text-zi
 export const mediaSwitchedAudioStyling = "ml-2 cursor-pointer label-text text-zinc-400 font-semibold"
 export const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
 export const uploadShowStyling = "w-full flex flex-col justify-center items-center space-y-1 pb-[200px]"
-export const selectDropdownStyling="select select-secondary w-[49%] py-2 px-5 text-base font-normal input-styling bg-zinc-800"
+export const selectDropdownStyling="select select-secondary w-[30%] py-2 px-5 text-base font-normal input-styling bg-zinc-800"
 export const cropScreenStyling = "absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center backdrop-blur-md"
 export const coverContainerLabelStyling = "cursor-pointer transition duration-300 ease-in-out text-zinc-600 hover:text-white flex md:block h-fit w-48"
 export const cropSelectionDivStyling = "min-w-[50px] min-h-[10px] rounded-[4px] bg-black/10 hover:bg-black/20 border-[1px] border-solid border-white/10 m-2 p-1 px-2 cursor-pointer flex flex-col justify-center items-center"
@@ -356,6 +361,16 @@ export const ShowForm = () => {
     )
 }
 
+export const LabelInput = (props: LabelInputInter) => {
+    return (
+        <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="showName" placeholder={"Label (.pc.show)"}                     
+        onChange={(e) => {
+          props.setLabelMsg(handleValMsg(e.target.value, "podLabel"));
+          props.setLabel(e.target.value);
+        }}/>       
+    )
+}
+
 export const CoverContainer = (props: CoverContainerInter) => {
 
     const podcastCoverRef = useRef<HTMLInputElement | null>(null);
@@ -465,6 +480,7 @@ export const ImgCover = (props: ImgCoverInter) => {
 export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
     return (
         <div className={selectDropdownRowStyling}>
+            {/*Categories*/}
             <select
                 className={`${selectDropdownStyling} mr-[2%]`}
                 id="podcastCategory"
@@ -474,8 +490,9 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 <option>Arts</option>
                 <option>Business</option>
             </select>
+            {/*Languages*/}
             <select
-                className={selectDropdownStyling}
+                className={`${selectDropdownStyling} mr-[2%]`}
                 id="podcastLanguage"
                 name="language"
                 onChange={(e) => props.setLanguage(e.target.value)}
@@ -483,6 +500,11 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 <option>English</option>
                 <option>Chinese</option>
             </select>
+            {/*Label*/}
+            <LabelInput 
+                setLabel={() => console.log("tt")}
+                setLabelMsg={() => console.log("ee")}
+            />
         </div>
     )
 }
