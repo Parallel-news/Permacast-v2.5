@@ -114,6 +114,5 @@ export function validateLabel(label, podcasts: Podcast[]) {
   if (/^(?!-)[a-zA-Z0-9-]{1,35}(?<!-)$/.test(label)) {
     return {res: true, msg: label};
   }
-
 }
 
