@@ -1,6 +1,6 @@
 import { MouseEventHandler, useCallback, useEffect, useRef, useState } from "react"
 import { PhotoIcon } from "@heroicons/react/24/outline";
-import { ConnectButton, episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
+import { ConnectButton, episodeDescStyling, episodeNameStyling, Podcast, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
 import { LanguageOptions, CategoryOptions } from "../../utils/languages";
 import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
@@ -10,7 +10,7 @@ import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseed
 import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
-import { allFieldsFilled, byteSize, checkConnection, handleError} from "../../utils/reusables";
+import { allFieldsFilled, byteSize, checkConnection, handleError, validateLabel} from "../../utils/reusables";
 import Everpay, { ChainType } from "everpay";
 import toast from "react-hot-toast";
 import { useRecoilState } from "recoil";
@@ -31,6 +31,10 @@ interface ImgCoverInter {
 interface SelectDropdownRowInter {
     setLanguage: (v: any) => void;
     setCategory: (v: any) => void;
+    setLabel: (v: any) => void;
+    setLabelMsg: (v: any) => void;
+    labelMsg: string;
+    podcasts: Podcast[];
 }
 
 interface ExplicitInputInter {
@@ -48,6 +52,17 @@ interface CropScreenInter {
 
 interface CoverContainerInter {
     setCover: (v: any) => void
+}
+
+interface LabelInputInter {
+    setLabelMsg: (v: any) => void;
+    setLabel: (v: any) => void;
+    labelMsg: string;
+    podcasts: Podcast[];
+}
+
+interface ShowFormInter {
+    podcasts: Podcast[]
 }
 
 // 2. Stylings
@@ -69,7 +84,7 @@ export const mediaSwitcherVideoStyling = "mr-2 cursor-pointer label-text text-zi
 export const mediaSwitchedAudioStyling = "ml-2 cursor-pointer label-text text-zinc-400 font-semibold"
 export const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
 export const uploadShowStyling = "w-full flex flex-col justify-center items-center space-y-1 pb-[200px]"
-export const selectDropdownStyling="select select-secondary w-[49%] py-2 px-5 text-base font-normal input-styling bg-zinc-800"
+export const selectDropdownStyling="select select-secondary w-[30%] py-2 px-5 text-base font-normal input-styling bg-zinc-800"
 export const cropScreenStyling = "absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center backdrop-blur-md"
 export const coverContainerLabelStyling = "cursor-pointer transition duration-300 ease-in-out text-zinc-600 hover:text-white flex md:block h-fit w-48"
 export const cropSelectionDivStyling = "min-w-[50px] min-h-[10px] rounded-[4px] bg-black/10 hover:bg-black/20 border-[1px] border-solid border-white/10 m-2 p-1 px-2 cursor-pointer flex flex-col justify-center items-center"
@@ -82,7 +97,7 @@ export const emptyCoverIconStyling = "input input-secondary flex flex-col items-
  * @param {string - form type} type 
  * @returns Validation message || ""
  */
-const handleValMsg = (input: string, type: string) => {
+const handleValMsg = (input: string, type: string, input2: any ="") => {
     switch(type) {
         case 'podName':
         if((input.length > PODCAST_NAME_MAX_LEN || input.length < PODCAST_NAME_MIN_LEN)) {
@@ -108,12 +123,17 @@ const handleValMsg = (input: string, type: string) => {
         } else {
             return `Enter a valid email`
         }
+        case 'podLabel':
+        if(validateLabel(input, input2).res) {
+            return "";
+        } else {
+            return validateLabel(input, input2).msg
+        }   
     }
 }
   
 // 4. Components
-export const ShowForm = () => {
-
+export const ShowForm = (props: ShowFormInter) => {
     // hooks
     const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
@@ -130,17 +150,20 @@ export const ShowForm = () => {
     const [podcastCover_, setPodcastCover_] = useState(null);
     const [podcastLanguage_, setPodcastLanguage_] = useState('en');
     const [podcastExplicit_, setPodcastExplicit_] = useState(false);
+    const [podcastLabel_, setPodcastLabel_] = useState("");
 
     // Validations
     const [podNameMsg, setPodNameMsg] = useState("");
     const [podDescMsg, setPodDescMsg] = useState("");
     const [podAuthMsg, setPodAuthMsg] = useState("");
     const [podEmailMsg, setPodEmailMsg] = useState("");
+    const [labelMsg, setLabelMsg] = useState("");
     const validationObject = {
         "nameError": podNameMsg.length === 0,
         "descError": podDescMsg.length === 0,
         "authError": podAuthMsg.length === 0,
         "emailError": podEmailMsg.length === 0,
+        "labelError": labelMsg.length === 0,
         "name": podcastName_.length > 0,
         "desc": podcastDescription_.length > 0,
         "auth": podcastAuthor_.length > 0,
@@ -187,7 +210,7 @@ export const ShowForm = () => {
         "email": podcastEmail_,
         "cover": "",
         "minifiedCover": "",
-        "label": "",
+        "label": podcastLabel_,
         "jwk_n": "",
         "txid": "",
         "sig": ""
@@ -210,7 +233,6 @@ export const ShowForm = () => {
         try {
             const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
             //const name = await upload2DMedia(podcastName_); payloadObj["name"] = name?.order?.itemId
-            payloadObj["label"] = "s15"
         } catch (e) {
             console.log(e); handleErr(DESCRIPTION_UPLOAD_ERROR, setSubmittingShow); return;
         }
@@ -246,6 +268,8 @@ export const ShowForm = () => {
         //EXM call, set timeout, then redirect. 
         toast.success(SHOW_UPLOAD_SUCCESS, {style: TOAST_DARK})
     }
+
+    console.log("podcasts: ", props.podcasts)
 
     return (
         <div className={showFormStyling}>
@@ -306,8 +330,11 @@ export const ShowForm = () => {
                     <SelectDropdownRow 
                         setLanguage={setPodcastLanguage_}
                         setCategory={setPodcastCategory_}
+                        setLabel={setPodcastLabel_}
+                        setLabelMsg={setLabelMsg}
+                        labelMsg={labelMsg}
+                        podcasts={props.podcasts}
                     />
-
                     {/*
                         Explicit
                     */}
@@ -353,6 +380,21 @@ export const ShowForm = () => {
                 <div className="w-[25%]"></div>
             </div>
         </div>
+    )
+}
+
+export const LabelInput = (props: LabelInputInter) => {
+    return (
+        <>
+        <div className="flex-col">
+            <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 1 and 38 characters" type="text" name="showLabel" placeholder={"Label (.pc.show)"}                     
+            onChange={(e) => {
+            props.setLabelMsg(handleValMsg(e.target.value, "podLabel", props.podcasts));
+            props.setLabel(e.target.value);
+            }}/>
+            <ValMsg valMsg={props.labelMsg} className="pl-2" />
+        </div>
+        </>       
     )
 }
 
@@ -465,6 +507,7 @@ export const ImgCover = (props: ImgCoverInter) => {
 export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
     return (
         <div className={selectDropdownRowStyling}>
+            {/*Categories*/}
             <select
                 className={`${selectDropdownStyling} mr-[2%]`}
                 id="podcastCategory"
@@ -474,8 +517,9 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 <option>Arts</option>
                 <option>Business</option>
             </select>
+            {/*Languages*/}
             <select
-                className={selectDropdownStyling}
+                className={`${selectDropdownStyling} mr-[2%]`}
                 id="podcastLanguage"
                 name="language"
                 onChange={(e) => props.setLanguage(e.target.value)}
@@ -483,6 +527,13 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 <option>English</option>
                 <option>Chinese</option>
             </select>
+            {/*Label*/}
+            <LabelInput 
+                setLabel={props.setLabel}
+                setLabelMsg={props.setLabelMsg}
+                labelMsg={props.labelMsg}
+                podcasts={props.podcasts}
+            />
         </div>
     )
 }
