@@ -107,8 +107,8 @@ export function validateLabel(label, podcasts: Podcast[]) {
   if(label.length < 1 || label.length > 35) {
     return {res: false, msg: LABEL_CHAR_LIMIT}
   }
-  const existingLabels = podcasts.map((pod) => pod.label && !!pod.label); // only valid labels
-  if(!existingLabels.includes(label)) {
+  const existingLabels = podcasts.map((pod) => pod.label); // only valid labels
+  if(existingLabels.includes(label)) {
     return {res: false, msg: LABEL_IN_USE}
   }
   if (/^(?!-)[a-zA-Z0-9-]{1,35}(?<!-)$/.test(label)) {

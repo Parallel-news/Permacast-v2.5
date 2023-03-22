@@ -1,6 +1,6 @@
 import { MouseEventHandler, useCallback, useEffect, useRef, useState } from "react"
 import { PhotoIcon } from "@heroicons/react/24/outline";
-import { ConnectButton, episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
+import { ConnectButton, episodeDescStyling, episodeNameStyling, Podcast, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
 import { LanguageOptions, CategoryOptions } from "../../utils/languages";
 import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
@@ -34,6 +34,7 @@ interface SelectDropdownRowInter {
     setLabel: (v: any) => void;
     setLabelMsg: (v: any) => void;
     labelMsg: string;
+    podcasts: Podcast[];
 }
 
 interface ExplicitInputInter {
@@ -57,6 +58,11 @@ interface LabelInputInter {
     setLabelMsg: (v: any) => void;
     setLabel: (v: any) => void;
     labelMsg: string;
+    podcasts: Podcast[];
+}
+
+interface ShowFormInter {
+    podcasts: Podcast[]
 }
 
 // 2. Stylings
@@ -91,7 +97,7 @@ export const emptyCoverIconStyling = "input input-secondary flex flex-col items-
  * @param {string - form type} type 
  * @returns Validation message || ""
  */
-const handleValMsg = (input: string, type: string) => {
+const handleValMsg = (input: string, type: string, input2: any ="") => {
     switch(type) {
         case 'podName':
         if((input.length > PODCAST_NAME_MAX_LEN || input.length < PODCAST_NAME_MIN_LEN)) {
@@ -118,17 +124,16 @@ const handleValMsg = (input: string, type: string) => {
             return `Enter a valid email`
         }
         case 'podLabel':
-        if(validateLabel(input, []).res) {
+        if(validateLabel(input, input2).res) {
             return "";
         } else {
-            return validateLabel(input, []).msg
+            return validateLabel(input, input2).msg
         }   
     }
 }
   
 // 4. Components
-export const ShowForm = () => {
-
+export const ShowForm = (props: ShowFormInter) => {
     // hooks
     const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
@@ -205,7 +210,7 @@ export const ShowForm = () => {
         "email": podcastEmail_,
         "cover": "",
         "minifiedCover": "",
-        "label": "",
+        "label": podcastLabel_,
         "jwk_n": "",
         "txid": "",
         "sig": ""
@@ -228,7 +233,6 @@ export const ShowForm = () => {
         try {
             const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
             //const name = await upload2DMedia(podcastName_); payloadObj["name"] = name?.order?.itemId
-            payloadObj["label"] = "s15"
         } catch (e) {
             console.log(e); handleErr(DESCRIPTION_UPLOAD_ERROR, setSubmittingShow); return;
         }
@@ -265,7 +269,7 @@ export const ShowForm = () => {
         toast.success(SHOW_UPLOAD_SUCCESS, {style: TOAST_DARK})
     }
 
-    console.log("podcastLabel_: ", podcastLabel_)
+    console.log("podcasts: ", props.podcasts)
 
     return (
         <div className={showFormStyling}>
@@ -329,6 +333,7 @@ export const ShowForm = () => {
                         setLabel={setPodcastLabel_}
                         setLabelMsg={setLabelMsg}
                         labelMsg={labelMsg}
+                        podcasts={props.podcasts}
                     />
                     {/*
                         Explicit
@@ -384,7 +389,7 @@ export const LabelInput = (props: LabelInputInter) => {
         <div className="flex-col">
             <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 1 and 38 characters" type="text" name="showLabel" placeholder={"Label (.pc.show)"}                     
             onChange={(e) => {
-            props.setLabelMsg(handleValMsg(e.target.value, "podLabel"));
+            props.setLabelMsg(handleValMsg(e.target.value, "podLabel", props.podcasts));
             props.setLabel(e.target.value);
             }}/>
             <ValMsg valMsg={props.labelMsg} className="pl-2" />
@@ -527,6 +532,7 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 setLabel={props.setLabel}
                 setLabelMsg={props.setLabelMsg}
                 labelMsg={props.labelMsg}
+                podcasts={props.podcasts}
             />
         </div>
     )
