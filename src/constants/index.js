@@ -56,6 +56,8 @@ export const ARWEAVE_READ_LINK = "https://arweave.net/"
 export const NO_PODCAST_FOUND = "No Podcast Found."
 export const NO_EPISODE_FOUND = "No Episode Found."
 export const CONNECT_WALLET = "Must connect wallet to continue."
+export const LABEL_CHAR_LIMIT = "Label Length must be between 1 and 35 characters."
+export const LABEL_IN_USE = "Label already being used."
 
 // SUCCESS
 export const PAYLOAD_RECEIVED = "Received"
