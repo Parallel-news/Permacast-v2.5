@@ -6,6 +6,8 @@ import {
     PlayIcon 
 } from '@heroicons/react/24/solid';
 import { Episode, episodeIconStyling, EpisodeInfoButtonsInter } from "../episode/eidTools";
+import { useEffect, useState } from "react";
+import MarkdownRenderer from "../markdownRenderer";
 
 export default function pidTools() {
     return false
@@ -54,6 +56,20 @@ export const podcastInfoTitleDivStyling = "flex flex-col justify-start w-[60%] s
 
 //4. Custom Components
 export const PodcastInfo = (props: PodcastInfoInter) => {
+
+    const [markdownText, setMarkdownText] = useState('');
+
+    useEffect(() => {
+      const fetchMarkdown = async () => {
+        const url = props.description;
+        const response = await fetch(url);
+        const text = await response.text();
+        setMarkdownText(text);
+      };
+  
+      fetchMarkdown();
+    }, []);
+
     return (
         <div className={podcastInfoStyling}>
             <Image
@@ -65,7 +81,7 @@ export const PodcastInfo = (props: PodcastInfoInter) => {
             />
             <div className={podcastInfoTitleDivStyling}>
                 <p className={podcastInfoTitleStyling}>{props.title}</p>
-                <p className={podcastInfoDescStyling}>{props.description}</p>
+                <MarkdownRenderer markdownText={markdownText} />
             </div>
         </div>
     )

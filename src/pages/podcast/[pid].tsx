@@ -27,7 +27,7 @@ export default function PodcastId({data, status}) {
                 <PodcastBanner 
                     imgSrc={imgSrc}
                     title={title}
-                    description={description}
+                    description={ARWEAVE_READ_LINK+description}
                     color={color}
                 />
                 {/*Episode Track*/}
