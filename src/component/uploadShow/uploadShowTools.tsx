@@ -210,7 +210,7 @@ export const ShowForm = () => {
         try {
             const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
             //const name = await upload2DMedia(podcastName_); payloadObj["name"] = name?.order?.itemId
-            payloadObj["label"] = "s15"
+            payloadObj["label"] = "s17"
         } catch (e) {
             console.log(e); handleErr(DESCRIPTION_UPLOAD_ERROR, setSubmittingShow); return;
         }
