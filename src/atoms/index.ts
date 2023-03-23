@@ -1,4 +1,5 @@
 import { atom } from 'recoil';
+import { Podcast } from '../interfaces';
 
 export const uploadPercent = atom({
     key: 'uploadPercent',
@@ -90,9 +91,28 @@ export const queue = atom({
     default: []
 });
 
-export const currentPodcast = atom({
-    key: "currentPodcast",
-    default: {}
+export const currentPodcastAtom = atom<Podcast>({
+    key: 'currentPodcastAtom',
+    default: {
+        pid: '',
+        label: '',
+        contentType: '',
+        createdAt: 0,
+        index: 0,
+        owner: '',
+        podcastName: '',
+        author: '',
+        email: '',
+        description: '',
+        language: '',
+        explicit: '',
+        categories: [],
+        maintainers: [],
+        cover: '',
+        isVisible: false,
+        episodes: [],
+        minifiedCover: '',
+    },
 });
 
 export const currentEpisode = atom({
