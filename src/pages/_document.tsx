@@ -11,7 +11,21 @@ export default class _document extends Document {
     return (
       <Html lang={currentLocale}>
         <Head>
-          {/* <meta name="viewport" content="width=device-width, initial-scale=1" /> */}
+        <Head>
+            <title>Permacast</title>
+            <meta name="description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
+            <meta name="twitter:image" content={`https://permacast.dev/static/media/rss-icon.353236e5b03e0d4c9f24.png`} />
+            <meta name="twitter:title" content={`Permacast`} />
+            <meta name="twitter:url" content={`https://permacast.dev/`}></meta>
+            <meta name="twitter:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
+
+            <meta name="og:card" content="summary" />
+            <meta name="description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
+            <meta name="og:image" content={`https://permacast.dev/static/media/rss-icon.353236e5b03e0d4c9f24.png`} />
+            <meta name="og:title" content={`Permacast`} />
+            <meta name="og:url" content={`https://permacast.dev/`} />
+            <meta name="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} /> 
+          </Head>
         </Head>
         <body>
           <Main />
