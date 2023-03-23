@@ -1,34 +1,15 @@
 import React, { useState, useEffect, FC } from "react";
 import { useTranslation } from "next-i18next";
-import { useRecoilState } from "recoil";
-import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
 
 import {
-  isTooLight,
-  RGBAstringToObject,
-  RGBAobjectToString,
-  dimColorString,
-  showShikwasaPlayer,
-  RGBobjectToString,
   fetchAverageColor,
   getCoverColorScheme,
 } from "../../utils/ui";
 
-import { PlayButton } from "../reusables/icons";
-
-import {
-  switchFocus,
-  videoSelection,
-  queue,
-  isQueueVisible,
-} from "../../atoms";
-
-import { arweaveTX, Episode, PodcastDev } from "../../interfaces/index.js";
+import { arweaveTX, Podcast } from "../../interfaces/index";
 import Link from "next/link";
-import { RGB, RGBA } from "../../interfaces/ui";
-import FeaturedPodcastPlayButton, { FeaturedPodcastDummyPlayButton } from "./featuredPodcastPlayButton";
-import { PauseIcon } from "@heroicons/react/24/outline";
-import { usePlayerConnector } from "../../hooks";
+import FeaturedPodcastPlayButton from "./featuredPodcastPlayButton";
+
 import Image from "next/image";
 
 
@@ -67,8 +48,8 @@ const podcastInnerBackgroundStyling = `w-full h-1/6 px-5 pb-2 cursor-pointer rel
 const podcastCoverStyling = `w-full max-w-[250px] overflow-x-hidden mx-auto mb-2`
 const podcastEpisodeCountStyling = `pt-5 pb-3 text-xs font-semibold`
 const podcastBottomStyling = `h-16 flex items-center`
-const podcastNameStyling = `text-lg hover:underline font-medium line-clamp-1 cursor-pointer`
-const podcastDescriptionStyling = `text-xs line-clamp-2`
+const podcastNameStyling = `text-lg font-medium line-clamp-1`
+const podcastDescriptionStyling = `text-xs line-clamp-2 max-w-[95%] break-all`
 
 // 3. Custom Functions
 
@@ -120,7 +101,7 @@ const PodcastDescription: FC<PodcastDescriptionProps> = ({ podcastDescription })
 };
 
 
-const FeaturedPodcast: FC<PodcastDev> = (podcastInfo) => {
+const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
 
   const {
     cover,
@@ -133,16 +114,9 @@ const FeaturedPodcast: FC<PodcastDev> = (podcastInfo) => {
     description,
   } = podcastInfo;
 
-  const [player, launchPlayer] = usePlayerConnector();
   const [themeColor, setThemeColor] = useState<string>('');
   const [textColor, setTextColor] = useState<string>('');
 
-  const [_queue, _setQueue] = useRecoilState(queue);
-
-  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
-  const [vs_, setVS_] = useRecoilState(videoSelection);
-
-  const [_isQueueVisible, _setQueueVisible] = useRecoilState(isQueueVisible);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -157,7 +131,7 @@ const FeaturedPodcast: FC<PodcastDev> = (podcastInfo) => {
   }, []);
 
   const episode = episodes.length ? episodes[0]: undefined;
-  const playerInfo = { themeColor, buttonColor: textColor, title: episode?.episodeName, artist: author, cover, src: episode?.contentTx };
+  const playerInfo = { playerColorScheme: themeColor, buttonColor: themeColor, accentColor: textColor, title: episode?.episodeName, artist: author, cover, src: episode?.contentTx };
 
   const prevent = (event: any) => {
     event.preventDefault();

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { backgroundColor } from "../../../../atoms";
@@ -71,6 +72,10 @@ export default function EpisodeId({data, status}) {
 }
 
 export async function getServerSideProps(context) {
+    // translations
+    const { locale } = context;  
+    const translations = await serverSideTranslations(locale, ['common']);
+  
     // Fetch data from external API
     const { contractAddress } = getContractVariables();
     const { params } = context
@@ -95,12 +100,13 @@ export async function getServerSideProps(context) {
         } else {
             const data = null
             const status = NO_EPISODE_FOUND
-            return { props: { data, status } } 
+            return { props: { data, status, ...translations } } 
         }
     // Podcast Doesnt Exist
     } else {
         const data = null
         const status = NO_PODCAST_FOUND
-        return { props: { data, status } } 
+        return { props: { data, status, ...translations } } 
     }
 }
+

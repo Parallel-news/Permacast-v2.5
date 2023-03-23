@@ -14,7 +14,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@headlessui/react": "^1.6.5",
-    "@heroicons/react": "^2.0.0",
+    "@heroicons/react": "^2.0.16",
     "arseeding-js": "^0.0.23",
     "axios": "^1.2.4",
     "bignumber.js": "^9.1.1",

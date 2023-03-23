@@ -1,15 +1,13 @@
-import { useEffect, useCallback, FC, useState } from "react";
+import React, { useEffect, useCallback, FC, useState, useMemo } from "react";
 
-import { switchFocus } from "../../atoms";
-import { useRecoilState } from "recoil";
-import { FeaturedPodcastDummyPlayButton } from "../home/featuredPodcastPlayButton";
 import { FullEpisodeInfo } from "../../interfaces";
 import Image from "next/image";
 import Link from "next/link";
 import { fetchAverageColor, getButtonRGBs, getCoverColorScheme, RGBAstringToObject, RGBobjectToString, RGBstringToObject } from "../../utils/ui";
-import { Cooyub } from "./icons";
-import { t } from "i18next";
 import { useTranslation } from "react-i18next";
+import { useShikwasa } from "../../hooks";
+import { showShikwasaPlayerArguments } from "../../interfaces/playback";
+import PlayButton from "./playButton";
 
 /**
  * Index
@@ -22,6 +20,9 @@ import { useTranslation } from "react-i18next";
 
 // 1. Interface
 
+/**
+  * Track props
+*/
 export interface TrackProps {
   episode: FullEpisodeInfo;
   episodeNumber: number,
@@ -58,9 +59,25 @@ export interface TrackDescriptionProps {
 };
 
 export interface TrackPlayButtonProps {
+  playerInfo: showShikwasaPlayerArguments;
+  episode: FullEpisodeInfo;
   includePlayButton: boolean;
-  coverColor: string;
+  buttonColor: string;
+  accentColor: string;
 };
+
+export interface MemoizedComponentProps {
+  pid: string,
+  coverUsed: string,
+  podcastName: string,
+  eid: string,
+  episodeName: string,
+  uploader: string,
+  coverColor: string,
+  author: string,
+  includeDescription: boolean,
+  description?: string,
+}
 
 // 2. Stylings
 
@@ -69,7 +86,7 @@ const trackFlexCenterPaddedYStyling = `flex items-center p-3`;
 const trackFlexCenterBothStyling = `flex items-center justify-between border-zinc-600 border-2 rounded-2xl pr-4`;
 const trackEpisodeLinkableTitleStyling = `cursor-pointer line-clamp-1 pr-2 text-sm hover:underline`;
 const trackByStyling = `text-zinc-400 text-[10px] mr-2`;
-const trackBackgroundColorStyling = `rounded-full cursor-pointer flex items-center min-w-max text-[10px] gap-x-1 px-2 py-0.5`;
+const trackBackgroundColorStyling = `rounded-full cursor-pointer flex items-center min-w-max text-[10px] gap-x-1 px-2 py-0.5 hover:light hover:brightness-125 default-animation`;
 const trackDescriptionStyling = `mx-1.5 w-full line-clamp-1 text-xs`;
 
 // 3. Custom Functions
@@ -129,18 +146,34 @@ export const TrackDescription: FC<TrackDescriptionProps> = ({ includeDescription
   );
 };
 
-export const TrackPlayButton: FC<TrackPlayButtonProps> = ({ includePlayButton, coverColor }) => {
-  // TODO: WIP
-  // PLAY STATUS (PLAY / PAUSE)
-  // BACKGROUND COLOR
+export const TrackPlayButton: FC<TrackPlayButtonProps> = ({ playerInfo, episode, includePlayButton, buttonColor, accentColor }) => {
 
-  return (
-    <>
-      {!includePlayButton && (
-        <FeaturedPodcastDummyPlayButton buttonColor={coverColor} size={36} />
-      )}
-    </>
-  );
+  const { playerState, launchPlayer, togglePlay } = useShikwasa();
+
+  const { currentPodcast, currentEpisode, isPlaying } = playerState;
+  const { episode: episodeInfo, podcast: podcastInfo } = episode;
+
+
+  const handlePlay = () => {
+    if (!(currentEpisode.eid === episodeInfo.eid)) {
+      launchPlayer(playerInfo, podcastInfo, [episodeInfo]);
+    } else {
+      togglePlay();
+    };
+  };
+
+  const buttonStyleArgs = {
+    size: 36,
+    iconSize: 18,
+    buttonColor: accentColor,
+    accentColor: accentColor
+  };
+
+  if (!includePlayButton) return <></>;
+
+  console.log(buttonColor)
+
+  return <PlayButton isPlaying={isPlaying && (currentEpisode.eid === episodeInfo.eid)} onClick={handlePlay} {...buttonStyleArgs} />;
 };
 
 const Track: FC<TrackProps> = (props: TrackProps) => {
@@ -158,28 +191,29 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
   } = episode.podcast;
   const {
     episodeName,
+    contentTx,
     eid,
     uploader,
   } = episode.episode;
 
   const coverUsed = minifiedCover || cover;
 
-  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
   const [coverColor, setCoverColor] = useState<string>('');
   const [textColor, setTextColor] = useState<string>('');
   const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({backgroundColor: '', color: ''})
 
-  useEffect(() => {
+  useMemo(() => {
+    // this is a little expensive to run when there's a lot of tracks (well, not really)
+    // but in the future we can use a cache to store the average color
+    // or force this track component to accept colors as props
     const fetchData = async () => {
-      const coverToBeUsed = (minifiedCover || cover);
-      const averageColor = await fetchAverageColor(coverToBeUsed);
+      if (!coverUsed) return;
+      const averageColor = await fetchAverageColor(coverUsed);
       if (averageColor.error) return;
       const [coverColor, textColor] = getCoverColorScheme(averageColor.rgba);
       const { r, g, b } = RGBAstringToObject(coverColor);
       const RGBstring = RGBobjectToString({r, g, b});
-      console.log(RGBstring)
       const buttonStyles = getButtonRGBs(RGBstringToObject(RGBstring));
-      console.log(buttonStyles)
       setCoverColor(coverColor);
       setTextColor(textColor);
       setButtonStyles(buttonStyles);
@@ -187,8 +221,19 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     fetchData();
   }, []);
 
-  return (
-    <div className={trackFlexCenterBothStyling}>
+  const MemoizedTrackInfo: React.FC<MemoizedComponentProps> = React.memo(({
+    pid,
+    coverUsed,
+    podcastName,
+    eid,
+    episodeName,
+    uploader,
+    coverColor,
+    author,
+    includeDescription,
+    description,
+  }) => {
+    return (
       <div className={trackFlexCenterPaddedYStyling}>
         <PodcastCover {...{ pid, cover: coverUsed, alt: podcastName }} />
         <div className="ml-4 flex flex-col min-w-[100px]">
@@ -200,7 +245,23 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
         </div>
         <TrackDescription {...{ includeDescription, description }} />
       </div>
-      <TrackPlayButton {...{ includePlayButton, coverColor }} />
+    );
+  });
+
+  const playerInfo = {
+    playerColorScheme: coverColor,
+    buttonColor: textColor,
+    accentColor: textColor,
+    title: episodeName,
+    artist: author,
+    cover: coverUsed,
+    src: contentTx,
+  };
+
+  return (
+    <div className={trackFlexCenterBothStyling}>
+      <MemoizedTrackInfo {...{ pid, coverUsed, podcastName, eid, episodeName, uploader, coverColor, author, description, includeDescription }} />
+      <TrackPlayButton {...{ playerInfo, episode, includePlayButton, buttonColor: coverColor, accentColor: coverColor }} />
     </div>
   );
 };

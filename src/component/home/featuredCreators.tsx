@@ -2,19 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect, memo, FC } from "react";
 import { useTranslation } from "next-i18next";
 
-import {
-  replaceDarkColorsRGB,
-  isTooLight,
-  trimANSLabel,
-  RGBobjectToString,
-  dimColorString,
-} from "../../utils/ui";
-import { getCreator } from "../../utils/podcast";
-import { Cooyub, PlayButton, GlobalPlayButton } from "../reusables/icons";
-import { EyeIcon } from "@heroicons/react/24/outline";
-import { FaPlay } from "react-icons/fa";
-import { FiEye } from "react-icons/fi";
-import Track from "../track";
+import { dimColorString } from "../../utils/ui";
 import { useRecoilState } from "recoil";
 import {
   switchFocus,

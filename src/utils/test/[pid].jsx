@@ -8,7 +8,7 @@ import Shikwasa from "../../shikwasa-src/main.js";
 import { PlayIcon } from "@heroicons/react/24/outline";
 import { Cooyub } from "../../component/reusables/icons";
 
-import Track from "../../component/track";
+// import Track from "../../component/track";
 import TipButton from "../../component/reusables/tip";
 import UploadEpisode from "../../component/uploadEpisode";
 import UploadVideo from "../../component/uploadVideo";
@@ -240,11 +240,11 @@ const Podcast = (props) => {
                 key={i}
                 className="mb-6 p-2.5 border rounded-xl border-zinc-600"
               >
-                <Track
+                {/* <Track
                   episode={e}
                   includeDescription={true}
                   episodeNumber={i + 1}
-                />
+                /> */}
               </div>
             ))
           : videoShows_?.map((e, i) => {
