@@ -1,4 +1,5 @@
 import axios from "axios";
+import Head from "next/head";
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { backgroundColor } from "../../../../atoms";
@@ -33,27 +34,45 @@ export default function EpisodeId({data, status}) {
         const episodes = d.episodes
 
         return (
-            <div className={podcastIdStyling}>
-                {/*Episode Cover & Info*/}
-                <EpisodeBanner 
-                    title={d.episodeName}
-                    imgSrc={ARWEAVE_READ_LINK+data?.cover}
-                    color={color}
-                    episodeNum={data?.index+1}
-                    date={date}
-                />
-                {/*Episode Description*/}
-                <EpisodeDescription
-                    text={d.description} 
-                />
-                {/*Next Episode*/}
-                <Episodes
-                    containerTitle={nextEpisodeTitle} 
-                    imgSrc={ARWEAVE_READ_LINK+data?.cover}
-                    color={color}
-                    episodes={[]}
-                />
-            </div>
+            <>
+                <Head>
+                    <title>{`Episode | Permacast`}</title> 
+                    <meta name="description" content={`By ${data.podcastName}`} />
+                    <meta name="twitter:image" content={(data.obj.cover !== "") ? `https://arweave.net/${data.obj.cover}` : "https://ar.page/favicon.png"} />
+                    <meta name="twitter:title" content={`${data.obj.episodeName} | Permacast`} />
+                    <meta name="twitter:url" content={`https://permacast.dev/`}></meta>
+                    <meta name="twitter:description" content={`By ${data.podcastName}`} />
+
+                    <meta name="og:card" content="summary" />
+                    <meta name="description" content={`By ${data.podcastName}`} />
+                    <meta name="og:image" content={(data.obj.cover !== "") ? `https://arweave.net/${data.obj.cover}` : "https://ar.page/favicon.png"} />
+                    <meta name="og:title" content={`${data.obj.episodeName} | Permacast`} />
+                    <meta name="og:url" content={`https://permacast.dev/`} />
+                    <meta name="og:description" content={`By ${data.podcastName}`} /> 
+
+                </Head>
+                <div className={podcastIdStyling}>
+                    {/*Episode Cover & Info*/}
+                    <EpisodeBanner 
+                        title={d.episodeName}
+                        imgSrc={ARWEAVE_READ_LINK+data?.cover}
+                        color={color}
+                        episodeNum={data?.index+1}
+                        date={date}
+                    />
+                    {/*Episode Description*/}
+                    <EpisodeDescription
+                        text={d.description} 
+                    />
+                    {/*Next Episode*/}
+                    <Episodes
+                        containerTitle={nextEpisodeTitle} 
+                        imgSrc={ARWEAVE_READ_LINK+data?.cover}
+                        color={color}
+                        episodes={[]}
+                    />
+                </div>
+            </>
         )
     } else if(status === NO_PODCAST_FOUND || status === NO_EPISODE_FOUND) {
         return (
@@ -88,7 +107,8 @@ export async function getServerSideProps(context) {
         const foundEpisode = findObjectById(foundPodcasts.obj.episodes, episodeId, "eid")
         // Episode Exist
         if(foundEpisode) {
-            const data = { ...podcastData, ...foundEpisode }
+            const podcastName = foundPodcasts.obj.podcastName
+            const data = { ...podcastData, ...foundEpisode, podcastName}
             const status = PAYLOAD_RECEIVED
             return { props: { data, status } }
         // Episode Doesnt Exist
