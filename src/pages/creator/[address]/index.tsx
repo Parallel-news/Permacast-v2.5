@@ -13,8 +13,6 @@ import FeaturedPodcast from '../../../component/home/featuredPodcast';
 import Track from '../../../component/reusables/track';
 
 
-const arpage = (currentLabel: string) => `https://${currentLabel}.ar.page`
-
 /**
  * Index
  * 1. Interfaces
@@ -57,7 +55,11 @@ const creatorLabelStyling = `text-lg font-medium text-[#828282]`;
 const creatorTextHeaderTextStyling = `text-3xl font-bold text-white`;
 const podcastCarouselStyling = `w-full mt-8 carousel gap-x-12 py-3`;
 const flexCol = `flex flex-col`;
+
 // 3. Custom Functions
+
+export const resolveArDomainToArpage = (currentLabel: string) => `https://${currentLabel}.ar.page`
+
 
 export const sortByDate = (episodes: FullEpisodeInfo[], descending = false): FullEpisodeInfo[] => {
   return episodes.sort((a, b) => {
@@ -77,7 +79,7 @@ export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, addr
 
   return (
     <a
-      href={arpage(currentLabel)}
+      href={resolveArDomainToArpage(currentLabel)}
       style={{borderColor: borderColor, borderWidth: '4px', borderRadius: '999px'}}
     >
       {avatar && <Image width={imageSize} height={imageSize} alt={avatar} src={avatar} />}
@@ -148,9 +150,9 @@ const LatestEpisodes: FC<LatestEpisodesProps> = ({ episodes }) => {
     <div className="mt-12">
       <div className={creatorTextHeaderTextStyling}>{t("creator.latestepisodes")}</div>
       <div className="mt-6">
-        {episodes.length && episodes.map((episode: FullEpisodeInfo, episodeNumber: number) => (
+        {episodes.map((episode: FullEpisodeInfo, episodeNumber: number) => (
           <div className="mb-4" key={episodeNumber}>
-            <Track {...{ episode, episodeNumber, fullEpisodeInfo: true, includeDescription: true }} />
+            <Track {...{ episode, episodeNumber }} includeDescription includePlayButton />
           </div>
         ))}
       </div>
@@ -161,7 +163,7 @@ const LatestEpisodes: FC<LatestEpisodesProps> = ({ episodes }) => {
 const Creator404: FC<{ address: string }> = ({ address }) => {
   const { t } = useTranslation();
 
-  return <div>{address} PLACEHOLDER</div>
+  return <div>{address} PLACEHOLDER, will add loading here later as well</div>
 };
 
 const Creator: NextPage<{ userInfo: Ans | null, address: string }> = ({ userInfo, address }) => {
