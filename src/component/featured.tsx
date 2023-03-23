@@ -11,7 +11,6 @@ import { getCreator } from "../utils/podcast";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { FaPlay } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
-import Track from "./track";
 import { useRecoilState } from "recoil";
 import {
   switchFocus,
@@ -198,7 +197,7 @@ export function RecentlyAdded() {
             key={index}
             className="border border-zinc-800 rounded-3xl p-3 w-full"
           >
-            <Track episode={episode} includeDescription={true} />
+            {/* <Track episode={episode} includeDescription={true} /> */}
           </div>
         ))}
       </div>
