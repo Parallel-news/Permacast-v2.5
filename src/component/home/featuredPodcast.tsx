@@ -49,7 +49,7 @@ const podcastCoverStyling = `w-full max-w-[250px] overflow-x-hidden mx-auto mb-2
 const podcastEpisodeCountStyling = `pt-5 pb-3 text-xs font-semibold`
 const podcastBottomStyling = `h-16 flex items-center`
 const podcastNameStyling = `text-lg font-medium line-clamp-1`
-const podcastDescriptionStyling = `text-xs line-clamp-2`
+const podcastDescriptionStyling = `text-xs line-clamp-2 max-w-[95%] break-all`
 
 // 3. Custom Functions
 
