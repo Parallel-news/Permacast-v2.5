@@ -1,25 +1,15 @@
 import React, { useState, useEffect, FC } from "react";
 import { useTranslation } from "next-i18next";
-import { useRecoilState } from "recoil";
-import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
 
 import {
-  isTooLight,
-  RGBAstringToObject,
-  RGBAobjectToString,
-  dimColorString,
-  showShikwasaPlayer,
-  RGBobjectToString,
   fetchAverageColor,
   getCoverColorScheme,
 } from "../../utils/ui";
 
-import { arweaveTX, Episode, Podcast } from "../../interfaces/index";
+import { arweaveTX, Podcast } from "../../interfaces/index";
 import Link from "next/link";
-import { RGB, RGBA } from "../../interfaces/ui";
 import FeaturedPodcastPlayButton from "./featuredPodcastPlayButton";
-import { PauseIcon } from "@heroicons/react/24/outline";
-import { usePlayerConnector } from "../../hooks";
+
 import Image from "next/image";
 
 
