@@ -54,11 +54,11 @@ export interface Podcast {
   cover:       arweaveTX;
   isVisible:   boolean;
   episodes:    Episode[];
+  minifiedCover: arweaveTX;
 }
 
-export interface PodcastDev extends Podcast {
-  minifiedCover?: arweaveTX;
-}
+//! deprecated
+export interface PodcastDev extends Podcast {};
 
 export interface Episode {
   eid:         string;
