@@ -9,10 +9,10 @@ import { RGBorRGBAstring, RGBstring } from "../../interfaces/ui";
 
 interface PlayButtonProps {
   size: number;
-  iconSize: number;
-  buttonColor: RGBstring;
-  accentColor: RGBorRGBAstring;
-  isPlaying?: boolean;
+  iconSize: number; // the size of the play/pause icon
+  buttonColor: RGBstring; // the color of the background
+  accentColor: RGBorRGBAstring; // the color of the play/pause icon
+  isPlaying?: boolean; // pass the player playback state here
   onClick?: () => void;
 };
 
