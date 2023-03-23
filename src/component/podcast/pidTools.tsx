@@ -8,6 +8,7 @@ import {
 import { Episode, episodeIconStyling, EpisodeInfoButtonsInter } from "../episode/eidTools";
 import { useEffect, useState } from "react";
 import MarkdownRenderer from "../markdownRenderer";
+import Link from "next/link";
 
 export default function pidTools() {
     return false
@@ -101,11 +102,13 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
                 text={"Tip"}
                 color={color} 
             />
-            <DescriptionButton
-                icon={<PlusIcon className={episodeIconStyling} />} 
-                text={"Add Episode"}
-                color={color}
-            />
+            <Link href={`/upload-episode?pid=123`}>
+                <DescriptionButton
+                    icon={<PlusIcon className={episodeIconStyling} />} 
+                    text={"Add Episode"}
+                    color={color}
+                />
+            </Link>
         </div>
     )
 }

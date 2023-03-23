@@ -5,9 +5,10 @@ import { getContractVariables } from '../../utils/contract';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { EpisodeForm, episodeTitleStyling, showErrorTag, uploadEpisodeStyling } from "../../component/uploadEpisode/uploadEpisodeTools"
 
-export default function UploadEpisode({yourShows, error}) {
+export default function UploadEpisode({yourShows, error, pid}) {
     
     const { t } = useTranslation();
+    console.log("pid: ", pid)
     if(error.length > 0) {
       return (
         <p className={showErrorTag}>{error}</p>
@@ -24,8 +25,9 @@ export default function UploadEpisode({yourShows, error}) {
     }
 }
 
-export async function getStaticProps({ locale }) {
+export async function getServerSideProps({query, locale}) {
     const { contractAddress } = getContractVariables()
+    const pid = query.pid || '';
     let yourShows = null
     let error = "";
     try {
@@ -41,7 +43,8 @@ export async function getStaticProps({ locale }) {
           'common',
         ])),
         yourShows,
-        error
+        error,
+        pid
       },
     }
   }
