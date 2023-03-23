@@ -1,5 +1,5 @@
 import Shikwasa from '../shikwasa-src/main.js';
-import { HSL, replaceColorsInterface, RGB, RGBA, RGBtoHSLInterface } from '../interfaces/ui';
+import { HSL, replaceColorsInterface, RGB, RGBA, RGBstring, RGBtoHSLInterface } from '../interfaces/ui';
 import { ShowShikwasaPlayerInterface } from '../interfaces/playback';
 import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
 
@@ -149,7 +149,14 @@ export const isTooLight = (rgba: RGB | RGBA, lightness = 0.8): boolean => {
   return hsl.l > lightness;
 };
 
-export const dimColorString = (rgb: string, dimness: number) => rgb.replace(')', ','+dimness+')')
+export const dimColorString = (rgb: RGBstring, dimness: number) => {
+  let Rgb = rgb;
+  if (Rgb.includes('rgba')) {
+    const { r, g, b } = RGBAstringToObject(Rgb);
+    return `rgb(${r}, ${g}, ${b}, ${dimness})`;
+  };
+  return rgb.replace(')', ','+dimness+')');
+}
 
 export const dimColorObject = (rgb: RGB, dimness: number): RGBA => ({ r: rgb.r, g: rgb.g, b: rgb.b, a: dimness })
 
@@ -180,7 +187,7 @@ export const trimANSLabel = (label: string) => {
 };
 
 export const showShikwasaPlayer: ShowShikwasaPlayerInterface = ({
-  themeColor,
+  playerColorScheme,
   title,
   artist,
   cover,
@@ -188,7 +195,7 @@ export const showShikwasaPlayer: ShowShikwasaPlayerInterface = ({
 }) => {
   const player = new Shikwasa({
     container: () => document.getElementById('podcast-player'),
-    themeColor: themeColor,
+    themeColor: playerColorScheme,
     theme: `dark`,
     autoplay: true,
     audio: {
@@ -196,7 +203,7 @@ export const showShikwasaPlayer: ShowShikwasaPlayerInterface = ({
       artist: artist,
       cover: `https://arweave.net/${cover}`,
       src: `https://arweave.net/${src}`,
-      color: themeColor,
+      color: playerColorScheme,
     },
     download: true
   });
