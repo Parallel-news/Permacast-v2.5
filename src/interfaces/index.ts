@@ -22,7 +22,7 @@ export interface EXMState {
 }
 
 export interface EXMDevState {
-  podcasts:              PodcastDev[];
+  podcasts:              Podcast[];
   admins:                string[];
   isPaused:              boolean;
   user_sig_messages:     signature[];
@@ -74,7 +74,7 @@ export interface Episode {
 
 export interface FullEpisodeInfo {
   episode: Episode,
-  podcast: PodcastDev,
+  podcast: Podcast,
 };
 
 export interface Ans {
