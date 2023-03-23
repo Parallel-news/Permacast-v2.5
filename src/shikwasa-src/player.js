@@ -30,7 +30,7 @@ const addPassive = supportsPassive && isMobile
 class Player {
   constructor(options) {
     this.id = playerArr.length
-    playerArr.push(this)
+    playerArr.push(this) // TODO: consider prunning unused players
     this.comps = {}
     this._audio = {}
     this._hasMediaSession = false
