@@ -41,6 +41,7 @@ interface UploadButtonInter {
 
 interface EpisodeFormInter {
     shows: Podcast[]
+    pid: string;
 }
 
 export interface Podcast { 
@@ -134,6 +135,14 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         "media": epMedia !== null,
         "pid": pid.length > 0,
     }
+
+    //Pid Exist? 
+    useEffect(() => {
+        if(props.pid.length > 0) {
+            setPid(props.pid)
+        }
+    }, [])
+
 
     // Hook Calculating Upload Cost
     useEffect(() => {
@@ -229,11 +238,13 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     return(
         <div className={episodeFormStyling}>
             {/*Select Podcast*/}
-            <SelectPodcast
-                pid={pid} 
-                setPid={setPid}
-                shows={props.shows}
-            />
+            {address && (
+                <SelectPodcast
+                    pid={pid} 
+                    setPid={setPid}
+                    shows={props.shows}
+                />
+            )}
             {/*Episode Name*/}
             <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="episodeName" placeholder={"Episode Name"}
             onChange={(e) => {
@@ -335,7 +346,10 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
 
     let selectedShow;
     if(props.pid.length > 0) {
+        console.log("props.pid: ", props.pid)
+        console.log("yourShows: ", yourShows)
         selectedShow = yourShows.filter((item: Podcast) => item.pid === props.pid)
+        console.log("selectedShow: ", selectedShow)
     }
 
     useEffect(() => {

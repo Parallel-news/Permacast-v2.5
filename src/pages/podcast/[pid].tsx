@@ -1,4 +1,5 @@
 import axios from "axios";
+import Head from "next/head";
 import { useRecoilState } from "recoil";
 import { backgroundColor } from "../../atoms";
 import { 
@@ -23,21 +24,32 @@ export default function PodcastId({data, status}) {
         const nextEpisodeTitle = "Episodes"
         const episodes = data.obj?.episodes
         return (
-            <div className={podcastIdStyling}>
-                <PodcastBanner 
-                    imgSrc={imgSrc}
-                    title={title}
-                    description={ARWEAVE_READ_LINK+description}
-                    color={color}
-                />
-                {/*Episode Track*/}
-                <Episodes
-                    containerTitle={nextEpisodeTitle} 
-                    imgSrc={imgSrc}
-                    color={color}
-                    episodes={episodes}
-                />            
-            </div>
+            <>
+                <Head>
+                        <title>{`Show | Permacast`}</title> 
+                        <meta name="description" content={`${data.obj.podcastName}`} />
+                        <meta name="twitter:image" content={(data.obj.cover !== "") ? `https://arweave.net/${data.obj.cover}` : "https://ar.page/favicon.png"} />
+                        <meta name="twitter:title" content={`${data.obj.podcastName} | Permacast`} />
+                        <meta name="twitter:url" content={`https://permacast.dev/`}></meta>
+                        <meta name="twitter:description" content={`${data.obj.podcastName}`} />
+
+                </Head>
+                <div className={podcastIdStyling}>
+                    <PodcastBanner 
+                        imgSrc={imgSrc}
+                        title={title}
+                        description={ARWEAVE_READ_LINK+description}
+                        color={color}
+                    />
+                    {/*Episode Track*/}
+                    <Episodes
+                        containerTitle={nextEpisodeTitle} 
+                        imgSrc={imgSrc}
+                        color={color}
+                        episodes={episodes}
+                    />            
+                </div>
+            </>
         )
     } else if(status === NO_PODCAST_FOUND) {
         return(
@@ -78,3 +90,10 @@ export async function getServerSideProps(context) {
     }   
 }
 //Get ServerSide Props
+
+/*
+
+
+
+
+*/

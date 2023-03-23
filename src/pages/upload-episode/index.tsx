@@ -9,6 +9,8 @@ export default function UploadEpisode({yourShows, error, pid}) {
     
     const { t } = useTranslation();
     console.log("pid: ", pid)
+    console.log(typeof pid)
+    console.log("yourShows: ", yourShows)
     if(error.length > 0) {
       return (
         <p className={showErrorTag}>{error}</p>
@@ -19,6 +21,7 @@ export default function UploadEpisode({yourShows, error, pid}) {
             <p className={episodeTitleStyling}>{t("uploadepisode.title")}</p>
             <EpisodeForm 
               shows={yourShows}
+              pid={pid}
             />
         </div>
       )
