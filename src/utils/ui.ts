@@ -187,7 +187,7 @@ export const showShikwasaPlayer: ShowShikwasaPlayerInterface = ({
   src
 }) => {
   const player = new Shikwasa({
-    container: () => document.querySelector('.podcast-player'),
+    container: () => document.getElementById('podcast-player'),
     themeColor: themeColor,
     theme: `dark`,
     autoplay: true,
