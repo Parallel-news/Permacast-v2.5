@@ -1,3 +1,7 @@
+import toast from "react-hot-toast";
+import { Podcast } from "../component/uploadEpisode/uploadEpisodeTools";
+import { CONNECT_WALLET, LABEL_CHAR_LIMIT, LABEL_IN_USE, TOAST_DARK } from "../constants";
+
 interface hexToRgbInter {
     hex: string
     alpha: number
@@ -49,3 +53,66 @@ export function formatStringByLen(str, beginLength, endLength) {
     const endStr = str.substr(strLength - endLength, strLength);
     return `${beginStr}...${endStr}`;
 }
+
+/**
+ * Puts the object with a specific domain property to the first in order in the array.
+ * @param {Array<any>} array - The array of objects to search and sort.
+ * @param {string} needle - The domain property of the object to be moved to the first index.
+ * @returns {Array<any>} - The updated array with the specified object moved to the first index.
+ */
+export const checkConnection = (arAddress: string) => {
+    if (arAddress === undefined) {
+      toast.error(CONNECT_WALLET)
+      return false
+    } else {
+      return true
+    }
+}
+
+/**
+ * Displays number of bytes for a string
+ * @param str String to measure number of bytes
+ * @returns number
+ */
+export const byteSize = (str:string) => new Blob([str]).size;
+
+
+/**
+ * Checks dictionary object for populated keys. If populated, dont submit
+ * @param fieldsObj obj containing conditions. If true, qualified for submission
+ * @returns boolean
+ */
+export const allFieldsFilled = (fieldsObj: any) => {
+  for (const key in fieldsObj) {
+      if(Object.hasOwnProperty.call(fieldsObj, key)) {
+          if(!fieldsObj[key]) {
+              return false
+          }
+      }   
+  }
+  return true
+}
+
+export function handleError (errorMessage: string, loadingSetter: (v: boolean) => void) {
+  toast.error(errorMessage, {style: TOAST_DARK})
+  loadingSetter(false)
+}
+
+export const determineMediaType = (mime: string) => mime.match(/^(audio\/|video\/)/)[0];
+
+export function validateLabel(label, podcasts: Podcast[]) {
+  if (!label) {
+    return {res: false, msg: LABEL_CHAR_LIMIT}
+  };
+  if(label.length < 1 || label.length > 35) {
+    return {res: false, msg: LABEL_CHAR_LIMIT}
+  }
+  const existingLabels = podcasts.map((pod) => pod.label); // only valid labels
+  if(existingLabels.includes(label)) {
+    return {res: false, msg: LABEL_IN_USE}
+  }
+  if (/^(?!-)[a-zA-Z0-9-]{1,35}(?<!-)$/.test(label)) {
+    return {res: true, msg: label};
+  }
+}
+

@@ -1,4 +1,4 @@
-import { genArweaveAPI } from 'arseeding-js'
+import { genArweaveAPI, getBundleFee } from 'arseeding-js'
 import { readFileAsArrayBuffer } from '../fileTools';
 import { ARSEED_URL, TEXTMARKDOWN, ARSEED_CURRENCY } from '../../constants';
 
@@ -10,6 +10,7 @@ export const upload2DMedia = async (description: string) => {
     const data = Buffer.from(description)
     const res = await instance.sendAndPay(ARSEED_URL, data, ARSEED_CURRENCY, TEXTMARKDOWN)
     console.log(res)
+    return res
 }
 
 // Image, Audio and Video Uploads
@@ -29,12 +30,15 @@ export const upload3DMedia = async (file: File, mediaType: string) => {
         tags: [{ name: "Content-Type", value: mediaType }], // Adjust the MIME type based on your audio file type
         };
         const res = await instance.sendAndPay(ARSEED_URL, dataBuffer, ARSEED_CURRENCY, ops);
-    
-        // Handle the response
         console.log("Upload response:", res);
+        return res
     } catch (error) {
         console.error("Error reading file:", error);
     }
 };
 
+export const getBundleArFee = async (size: string) => {
+    const res = await getBundleFee(ARSEED_URL, size, ARSEED_CURRENCY)
+    return res?.finalFee
+}
 

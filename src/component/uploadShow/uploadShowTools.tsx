@@ -1,13 +1,23 @@
-import { MouseEventHandler, useCallback, useRef, useState } from "react"
+import { MouseEventHandler, useCallback, useEffect, useRef, useState } from "react"
 import { PhotoIcon } from "@heroicons/react/24/outline";
-import { episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
+import { ConnectButton, episodeDescStyling, episodeNameStyling, Podcast, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
 import { LanguageOptions, CategoryOptions } from "../../utils/languages";
 import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
-import { PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN } from "../../constants";
+import { AR_DECIMALS, CONNECT_WALLET, COVER_UPLOAD_ERROR, DESCRIPTION_UPLOAD_ERROR, EVERPAY_AR_TAG, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SHOW_UPLOAD_SUCCESS, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
 import { isValidEmail, ValMsg } from "../reusables/formTools";
-import { upload3DMedia } from "../../utils/arseeding";
-import { checkContentTypeFromUrl, getMimeTypeFromBlobUrl, createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
+import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
+import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
+import { defaultSignatureParams, useArconnect } from 'react-arconnect';
+import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
+import { allFieldsFilled, byteSize, checkConnection, handleError, validateLabel} from "../../utils/reusables";
+import Everpay, { ChainType } from "everpay";
+import toast from "react-hot-toast";
+import { useRecoilState } from "recoil";
+import { arweaveAddress } from "../../atoms";
+import { PermaSpinner } from "../reusables/PermaSpinner";
+import axios from "axios";
+
 
 export default function uploadShowTools() {
     return false
@@ -21,6 +31,10 @@ interface ImgCoverInter {
 interface SelectDropdownRowInter {
     setLanguage: (v: any) => void;
     setCategory: (v: any) => void;
+    setLabel: (v: any) => void;
+    setLabelMsg: (v: any) => void;
+    labelMsg: string;
+    podcasts: Podcast[];
 }
 
 interface ExplicitInputInter {
@@ -40,8 +54,20 @@ interface CoverContainerInter {
     setCover: (v: any) => void
 }
 
+interface LabelInputInter {
+    setLabelMsg: (v: any) => void;
+    setLabel: (v: any) => void;
+    labelMsg: string;
+    podcasts: Podcast[];
+}
+
+interface ShowFormInter {
+    podcasts: Podcast[]
+}
+
 // 2. Stylings
 export const showTitleStyling = "text-white text-xl"
+export const spinnerClass = "w-full flex justify-center mt-4"
 export const photoIconStyling = "h-11 w-11 text-zinc-400"
 export const explicitLabelStyling = "flex items-center mr-5"
 export const mediaSwitcherLabelStyling = "flex items-center label"
@@ -50,15 +76,15 @@ export const selectDropdownRowStyling = "flex flex-row w-full justify-between"
 export const explicitCheckBoxStyling = "checkbox mr-2 border-2 border-zinc-600"
 export const emptyCoverIconTextStyling = "text-lg tracking-wider pt-2 text-zinc-400"
 export const explicitTextStyling = "label-text cursor-pointer text-zinc-400 font-semibold"
-export const showFormStyling = "w-full flex flex-col justify-center items-center space-y-4"
+export const showFormStyling = "w-full flex flex-col justify-center items-center space-y-2"
 export const coverContainerInputStyling = "opacity-0 z-index-[-1] absolute pointer-events-none"
 export const cropScreenDivStyling = "relative w-[800px] h-[400px] rounded-[6px] overflow-hidden"
 export const cropSelectionTextStyling = "flex flex-col justify-center items-center text-white/60"
 export const mediaSwitcherVideoStyling = "mr-2 cursor-pointer label-text text-zinc-400 font-semibold"
 export const mediaSwitchedAudioStyling = "ml-2 cursor-pointer label-text text-zinc-400 font-semibold"
 export const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
-export const uploadShowStyling = "w-full flex flex-col justify-center items-center space-y-3 pb-[200px]"
-export const selectDropdownStyling="select select-secondary w-[49%] py-2 px-5 text-base font-normal input-styling bg-zinc-800"
+export const uploadShowStyling = "w-full flex flex-col justify-center items-center space-y-1 pb-[200px]"
+export const selectDropdownStyling="select select-secondary w-[30%] py-2 px-5 text-base font-normal input-styling bg-zinc-800"
 export const cropScreenStyling = "absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center backdrop-blur-md"
 export const coverContainerLabelStyling = "cursor-pointer transition duration-300 ease-in-out text-zinc-600 hover:text-white flex md:block h-fit w-48"
 export const cropSelectionDivStyling = "min-w-[50px] min-h-[10px] rounded-[4px] bg-black/10 hover:bg-black/20 border-[1px] border-solid border-white/10 m-2 p-1 px-2 cursor-pointer flex flex-col justify-center items-center"
@@ -71,7 +97,7 @@ export const emptyCoverIconStyling = "input input-secondary flex flex-col items-
  * @param {string - form type} type 
  * @returns Validation message || ""
  */
-const handleValMsg = (input: string, type: string) => {
+const handleValMsg = (input: string, type: string, input2: any ="") => {
     switch(type) {
         case 'podName':
         if((input.length > PODCAST_NAME_MAX_LEN || input.length < PODCAST_NAME_MIN_LEN)) {
@@ -97,27 +123,23 @@ const handleValMsg = (input: string, type: string) => {
         } else {
             return `Enter a valid email`
         }
-    }
-}
-
-/**
- * Checks dictionary object for populated keys. If populated, dont submit
- * @param fieldsObj obj containing conditions. If true, qualified for submission
- * @returns boolean
- */
-export const allFieldsFilled = (fieldsObj: any) => {
-    for (const key in fieldsObj) {
-        if(Object.hasOwnProperty.call(fieldsObj, key)) {
-            if(!fieldsObj[key]) {
-                return false
-            }
+        case 'podLabel':
+        if(validateLabel(input, input2).res) {
+            return "";
+        } else {
+            return validateLabel(input, input2).msg
         }   
     }
-    return true
 }
   
 // 4. Components
-export const ShowForm = () => {
+export const ShowForm = (props: ShowFormInter) => {
+    // hooks
+    const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
+    const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
+    const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
+    const [submittingShow, setSubmittingShow] = useState<boolean>(false)
+    const [uploadCost, setUploadCost] = useState<Number>(0)
 
     // inputs
     const [podcastDescription_, setPodcastDescription_] = useState("");
@@ -128,17 +150,20 @@ export const ShowForm = () => {
     const [podcastCover_, setPodcastCover_] = useState(null);
     const [podcastLanguage_, setPodcastLanguage_] = useState('en');
     const [podcastExplicit_, setPodcastExplicit_] = useState(false);
+    const [podcastLabel_, setPodcastLabel_] = useState("");
 
     // Validations
     const [podNameMsg, setPodNameMsg] = useState("");
     const [podDescMsg, setPodDescMsg] = useState("");
     const [podAuthMsg, setPodAuthMsg] = useState("");
     const [podEmailMsg, setPodEmailMsg] = useState("");
+    const [labelMsg, setLabelMsg] = useState("");
     const validationObject = {
         "nameError": podNameMsg.length === 0,
         "descError": podDescMsg.length === 0,
         "authError": podAuthMsg.length === 0,
         "emailError": podEmailMsg.length === 0,
+        "labelError": labelMsg.length === 0,
         "name": podcastName_.length > 0,
         "desc": podcastDescription_.length > 0,
         "auth": podcastAuthor_.length > 0,
@@ -147,39 +172,104 @@ export const ShowForm = () => {
         "cat": podcastCategory_.length > 0,
         "cover": podcastCover_ !== null
     }
+    // Hook Calculating Upload Cost
+    useEffect(() => {
+        setUploadCost(0)
+        
+        async function calculateTotal() {
+            const descBytes = byteSize(podcastDescription_)
+            const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
+            const minCover = await minifyPodcastCover(podcastCover_); 
+            const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
+
+            const descFee = await getBundleArFee(String(descBytes))
+            const coverFee = await getBundleArFee(String(convertedCover.size))
+            const miniFee = await getBundleArFee(String(fileMini.size))
+
+            return Number(descFee) + Number(coverFee) + Number(miniFee)
+        }
+        if(podcastDescription_.length > 0 && podcastCover_ !== null) {
+            calculateTotal().then(async total => {
+                const formattedTotal = total / AR_DECIMALS
+                setUploadCost(formattedTotal+MIN_UPLOAD_PAYMENT)
+            })
+        } else {
+            setUploadCost(0)
+        }
+    }, [podcastDescription_, podcastCover_])
 
     //EXM 
-    const createPodcastPayload = {
+    const createShowPayload = {
         "function": "createPodcast",
         "name": podcastName_,
-        "desc": "W7QPm-aS5gE_gU5ROc3Lefuef9ctf4wCqTc6mhV3yFA",
+        "desc": "",
         "author": podcastAuthor_,
         "lang": podcastLanguage_,
         "isExplicit": podcastExplicit_ ? "yes" : "no",
         "categories": podcastCategory_,
         "email": podcastEmail_,
-        "contentType": "a",
-        "cover": "pvpBjp-Z3po5M6C9HvYewf2dmH5Snw2waiwbOTYDhiM",
-        "minifiedCover": "VoxGkElx4d85J51EAQTt9F_ndHtMiLBqOv7RF6humiQ",
-        "label": "null1",
-        "jwk_n": "g5n_k1L_P4u3omopmd2X4dOZ48IKZyxSfIXDh6zTBIr1VwuZvy7DDT--YJ-9Io03VaC8VqImIy0V6_BA9YIYcGBh0XIcPtxqod3dkrxJyOj6K1kGWja-cI9hdwoZRqlTUROLPbkgD46LGF-fvAYDXiapVzTT2hZFqNdYVhTIW7MT_Aegmdj9_QBX6mA9H40y99ZMEsHtdnwMunCl4h4vA2W1UvJ5xcac9CZOROLItU45LOmThV4VD1wU4XtLqxjbvwTRFxKc_xrFi481aYL0PRi9rwJkH6369l4TwJUtL_xFdUTH6gZfU6oPXaL47TGOsA2oL80I57AxHaueCm_ksmY-kpNAvw2n4GGj6HY2Xcg02Q6LfiZsdvG1da8VJtC9bG4edBxF-CWmLxZRHy7_XDyTQWbZuqob83nYS-zpUVV6ZCZFJht8QT7w4USUqbFv6zAR7ZqifOK4Xmy9NO8Ai8phAk7d9GNd9jcZqqwRNmAY_ESidkWFQ86RRh4YuUqohOwOUw_q2vDTFner-TfEwg8MPKDHjkpVezK4OU8AcacaRf7o2pd-0-HPUy1fUDvg98dsq9xpXNtIp23OaQZkgPd1cDgkkeci2yCofNFjiTnAsMsHELkWbuo1wkadn4_wQ-sdG1cNdo7bzmJG2Wm95b5A0QjOLOcyXINLb7SHg8M",
-        "txid": "0x8b2a51ca88ebfb07b2931028dc714b85a8deb8d4d69d8d83cdc23bc866b69e94",
-        "sig": "LPUoIFw05w5ebKii9rIVBca1TjOA/dlm/yTFVnaQtlLGa3F5r3csZgcaiDCAaYYpx+IYgxPWhO1IgqcRLPrpyNU6sJTlBneBTjlLNIyZFAHzoTgsNcHQsjYAx0AYltRL4kyXhgcM8rHXSqBwrtX6ZV/E4hQP1FGLAjde996gDvsEQjhYBx3YGdCPyEQy5dQEW9Q4Ovg3lGqPjRxfncz2uQ/xusseKhbzhAO4jCXNmoPgJbuJAQ4EZBah4+ngyEFYeSSLBdeD2DFQLs112s9Jjxftvnu1JT/04j7uhn/21xuwYnYOtPejkYLcwsyMl6RFTVCqFnbW+avJRXqw+8rMLeDgEXm3ajCzsE3BMurQDjmIY6VYNH6+RbDNL4oTNL4HdJyx83OVTT/tGukbfXiOE5T6TdEa7bbH9Er3w4c+IDgIuqGaMFBsS6ndzb7977zV8TjLyFP+BNsOaV5Qqn/6r6RXnrGHhpaFeJqg2phkz/eY0Ssv5OD8yCIzZgVwyq7ckOU6IQbKX/i1bYXy/3/XlTP820b9J/115sNbJzaX6duauH4DTPKKr9QeKrAJOFsMYCGqbfSsMgIa6iXdvwh+vAOGnkN9kCuk32zB9w6vECwCEyYzlH45AdDl2pzjJ/7x7F9qTUbYbYyxTDXeBpfdfncxA8zAtye7gw0BcdOQVs8="
+        "cover": "",
+        "minifiedCover": "",
+        "label": podcastLabel_,
+        "jwk_n": "",
+        "txid": "",
+        "sig": ""
     }
 
-    //Format to allow 
-    async function inspect() {
-        console.log("PODCAST COVER:", podcastCover_)
-        const convertedFile = await createFileFromBlobUrl(podcastCover_, "cov.txt")
-        console.log("convertedFiled: ", convertedFile)
+    async function submitShow(payloadObj: any) {
+        // Check Connection
+        if (!checkConnection(arweaveAddress_)) {
+            toast.error(CONNECT_WALLET, {style: TOAST_DARK})
+            return false
+        }
+        setSubmittingShow(true)
+        const handleErr = handleError
+        // Package EXM Call
+        const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
+        payloadObj["sig"] = await createSignature(data, defaultSignatureParams, "base64");
+        payloadObj["jwk_n"] = await getPublicKey()
+        
+        // Description to Arseeding
+        try {
+            const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
+            //const name = await upload2DMedia(podcastName_); payloadObj["name"] = name?.order?.itemId
+        } catch (e) {
+            console.log(e); handleErr(DESCRIPTION_UPLOAD_ERROR, setSubmittingShow); return;
+        }
 
-        const res = await minifyPodcastCover(podcastCover_)
-        console.log("mini res: ", res)
-        const fileMini = createFileFromBlob(res, "miniCov.jpeg");
-        console.log(fileMini)
-        await upload3DMedia(convertedFile, convertedFile.type)
-        await upload3DMedia(fileMini, fileMini.type)
+        // Covers to Arseeding
+        try {
+            const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
+            const cover = await upload3DMedia(convertedCover, convertedCover.type); payloadObj["cover"] = cover?.order?.itemId
+            const minCover = await minifyPodcastCover(podcastCover_); const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
+            const miniCover = await upload3DMedia(fileMini, fileMini.type); payloadObj["minifiedCover"] = miniCover?.order?.itemId
+        } catch (e) {
+            console.log(e); handleErr(COVER_UPLOAD_ERROR, setSubmittingShow); return;
+        }
+
+        // Fee to Everpay
+        try {
+            const everpay = new Everpay({account: address, chainType: ChainType.arweave, arJWK: 'use_wallet',});
+            const transaction = await everpay.transfer({
+                tag: EVERPAY_AR_TAG,
+                amount: String(MIN_UPLOAD_PAYMENT),
+                to: EVERPAY_EOA,
+                data: {action: "createPodcast", name: podcastName_,}
+            })
+            payloadObj["txid"] = transaction?.everHash
+        } catch (e) {
+            console.log(e); handleErr(EVERPAY_BALANCE_ERROR, setSubmittingShow); return;
+        }
+        console.log("Payload: ", createShowPayload)
+        //Error handling and timeout needed for this to complete redirect
+        const result = await axios.post('/api/exm/write', createShowPayload);
+        console.log("exm res: ", result)
+        setSubmittingShow(false)
+        //EXM call, set timeout, then redirect. 
+        toast.success(SHOW_UPLOAD_SUCCESS, {style: TOAST_DARK})
     }
+
+    console.log("podcasts: ", props.podcasts)
 
     return (
         <div className={showFormStyling}>
@@ -240,8 +330,11 @@ export const ShowForm = () => {
                     <SelectDropdownRow 
                         setLanguage={setPodcastLanguage_}
                         setCategory={setPodcastCategory_}
+                        setLabel={setPodcastLabel_}
+                        setLabelMsg={setLabelMsg}
+                        labelMsg={labelMsg}
+                        podcasts={props.podcasts}
                     />
-
                     {/*
                         Explicit
                     */}
@@ -253,17 +346,55 @@ export const ShowForm = () => {
                     {/*
                         Upload
                     */}
-                    <div className="w-full flex justify-center flex-col">
+                    <div className="w-full flex justify-center items-center flex-col">
+                        {/*Show Upload Btn, Spinner, or Connect Btn*/}
+                        {address && address.length > 0 && !submittingShow && (
                         <UploadButton 
                             width="w-[50%]"
                             disable={!allFieldsFilled(validationObject)}
+                            click={() =>submitShow(createShowPayload)}
                         />
-                        <button onClick={() => inspect()}>Send Pictures</button>
+                        )}
+                        {address && address.length > 0 && submittingShow && (
+                        <PermaSpinner 
+                            spinnerColor={SPINNER_COLOR}
+                            size={10}
+                            divClass={spinnerClass}
+                        />
+                        )}
+                        {!address && (
+                            <ConnectButton 
+                                width="w-[50%]"
+                                disable={false}
+                                click={() => connect()}
+                            />
+                        )}
+                        {uploadCost === 0 && podcastDescription_.length > 0 && podcastCover_ && (
+                        <p className="mt-2 text-neutral-400">Calculating Fee...</p> 
+                        )}
+                        {uploadCost !== 0 && podcastDescription_.length > 0 && podcastCover_ && (
+                        <p className="mt-2 text-neutral-400">{"Upload Cost: "+(Number(uploadCost)).toFixed(6) +" AR"}</p>
+                        )}
                     </div>
                 </div>
                 <div className="w-[25%]"></div>
             </div>
         </div>
+    )
+}
+
+export const LabelInput = (props: LabelInputInter) => {
+    return (
+        <>
+        <div className="flex-col">
+            <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 1 and 38 characters" type="text" name="showLabel" placeholder={"Label (.pc.show)"}                     
+            onChange={(e) => {
+            props.setLabelMsg(handleValMsg(e.target.value, "podLabel", props.podcasts));
+            props.setLabel(e.target.value);
+            }}/>
+            <ValMsg valMsg={props.labelMsg} className="pl-2" />
+        </div>
+        </>       
     )
 }
 
@@ -376,6 +507,7 @@ export const ImgCover = (props: ImgCoverInter) => {
 export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
     return (
         <div className={selectDropdownRowStyling}>
+            {/*Categories*/}
             <select
                 className={`${selectDropdownStyling} mr-[2%]`}
                 id="podcastCategory"
@@ -385,8 +517,9 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 <option>Arts</option>
                 <option>Business</option>
             </select>
+            {/*Languages*/}
             <select
-                className={selectDropdownStyling}
+                className={`${selectDropdownStyling} mr-[2%]`}
                 id="podcastLanguage"
                 name="language"
                 onChange={(e) => props.setLanguage(e.target.value)}
@@ -394,6 +527,13 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 <option>English</option>
                 <option>Chinese</option>
             </select>
+            {/*Label*/}
+            <LabelInput 
+                setLabel={props.setLabel}
+                setLabelMsg={props.setLabelMsg}
+                labelMsg={props.labelMsg}
+                podcasts={props.podcasts}
+            />
         </div>
     )
 }
@@ -463,22 +603,3 @@ export const CropScreen = (props: CropScreenInter) => {
         </div>
     )
 }
-
-/*
-{
-    "everHash": "0xab56df38218eb49c023a2c683cdcffafba386676ccb0bd688701fc210ca65b33",
-    "order": {
-        "itemId": "LDwYbqD_TIffjZ54n8TLKgPErXINwuyQ1dshr7gtjWI",
-        "size": 122096,
-        "bundler": "uDA8ZblC-lyEFfsYXKewpwaX-kkNDDw8az3IW9bDL68",
-        "currency": "AR",
-        "decimals": 12,
-        "fee": "210160368",
-        "paymentExpiredTime": 1679177716,
-        "expectedBlock": 1140009
-    }
-}
-
-
-
-*/

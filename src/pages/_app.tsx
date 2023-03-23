@@ -11,6 +11,8 @@ import Layout from '../component/layout';
 import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import '../styles/globals.css';
+import { MINT_DURATION, TOAST_POSITION } from '../constants';
+import { Toaster } from 'react-hot-toast';
 
 // import { AnimatePresence } from "framer-motion";
 
@@ -55,6 +57,13 @@ function App({ Component, pageProps }) {
             `}
           </Script>
           <Layout>
+            <Toaster
+              position={TOAST_POSITION}
+              reverseOrder={false}
+              toastOptions={{
+                  duration: MINT_DURATION
+              }}
+            />
             <Component {...pageProps} />
           </Layout>
         </ArconnectProvider>

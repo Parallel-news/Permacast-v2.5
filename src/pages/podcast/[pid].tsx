@@ -13,7 +13,7 @@ import { findObjectById } from "../../utils/reusables";
 
 export default function PodcastId({data, status}) {
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
-    
+    console.log("data: ", data)
     if(data) {
         //State Calls Here
         const color = "#818cf8"
@@ -27,7 +27,7 @@ export default function PodcastId({data, status}) {
                 <PodcastBanner 
                     imgSrc={imgSrc}
                     title={title}
-                    description={description}
+                    description={ARWEAVE_READ_LINK+description}
                     color={color}
                 />
                 {/*Episode Track*/}
@@ -67,24 +67,7 @@ export async function getServerSideProps(context) {
     const foundPodcasts = findObjectById(podcasts, podcastId, "pid")
     // Podcast Found
     if(foundPodcasts) {
-        const dummyObj = {
-            "eid": "27a0a679f9222bc9dd7eda10d6577002716c90140665f5aff1bc2836fb734492e3632eb787236c9197273224a39607b005c38d8151c7dacc4a673a6dffa45627",
-            "episodeName": "The Payback",
-            "description": "init 777 where I would go and find myself a little lamb that I can cook later with some good seasoning and eat init 777 where I would go and find myself a little lamb that I can cook later with some good seasoning and eat",
-            "contentTx": "6DGL3pxXomRkcgbuUAKqXCdtFSgUuiXYcB9vM8OeFZc",
-            "size": 17445368,
-            "type": "video/mp4",
-            "uploader": "vZY2XY1RD9HIfWi8ift-1_DnHLDadZMWrufSh-_rKF0",
-            "uploadedAt": 1669794153000,
-            "isVisible": true
-        }
         const data = foundPodcasts
-        data.obj.episodes.push(dummyObj)
-        data.obj.episodes.push(dummyObj)
-        data.obj.episodes.push(dummyObj)
-        data.obj.episodes.push(dummyObj)
-        data.obj.episodes.push(dummyObj)
-        data.obj.episodes.push(dummyObj)
         const status = PAYLOAD_RECEIVED
         return { props: { data, status } }
     // Podcasts Not Found

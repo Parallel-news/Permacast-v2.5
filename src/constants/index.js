@@ -31,6 +31,8 @@ export const CONTENT_TYPE_VALUES = ["v", "a"];
 
 export const SPINNER_COLOR = "#e4e4e7" //zinc-200
 
+export const AR_DECIMALS = 1000000000000
+
 /**
  * FADE_IN_STYLE Instructions
  * 1. Call in parent most div or commonly changing components
@@ -53,6 +55,9 @@ export const ARWEAVE_READ_LINK = "https://arweave.net/"
 // ERRORS
 export const NO_PODCAST_FOUND = "No Podcast Found."
 export const NO_EPISODE_FOUND = "No Episode Found."
+export const CONNECT_WALLET = "Must connect wallet to continue."
+export const LABEL_CHAR_LIMIT = "Label Length must be between 1 and 35 characters."
+export const LABEL_IN_USE = "Label already being used."
 
 // SUCCESS
 export const PAYLOAD_RECEIVED = "Received"
@@ -63,3 +68,31 @@ export const ARSEED_URL = "https://arseed.web3infra.dev"
 export const TEXTMARKDOWN = {
     tags: [{name: "Content-Type", value:'text/markdown'}]
 }
+
+// PK
+export const USER_SIG_MESSAGES = ["my Arweave PK for Permacast is "]
+
+// EVERPAY
+export const EVERPAY_EOA = '0x197f818c1313DC58b32D88078ecdfB40EA822614';
+export const EVERPAY_AR_TAG = 'arweave,ethereum-ar-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,0x4fadc7a98f2dc96510e42dd1a74141eeae0c1543';
+export const MIN_UPLOAD_PAYMENT = .000001  // 1000000 winston
+
+// TOAST
+export const TOAST_POSITION = "top-center"
+export const MINT_DURATION = 5000
+export const TOAST_DARK = {
+    borderRadius: '10px',
+    background: '#333',
+    color: '#fff',
+}
+
+// API ERRORS
+export const EVERPAY_BALANCE_ERROR = "There was an issue with your Everpay Balance/Connection"
+export const COVER_UPLOAD_ERROR = "There was an issue uploading your cover. Try Again."
+export const MEDIA_UPLOAD_ERROR = "There was an issue uploading your media. Try Again."
+export const DESCRIPTION_UPLOAD_ERROR = "There was an issue uploading description. Try Again."
+export const NO_SHOW = "Unable to fetch shows. Refresh and try again."
+
+// API SUCCESS
+export const SHOW_UPLOAD_SUCCESS = "Show Uploaded. Redirecting."
+export const EP_UPLOAD_SUCCESS = "Episode Uploaded. Redirecting."

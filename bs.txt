@@ -119,3 +119,22 @@ AUDIO MP3
         "expectedBlock": 1140484
     }
 }
+
+// Full Payload
+{
+    "function": "createPodcast",
+    "name": "upfp3idkNkz32OBNxL5451JtectNI2AKBTBWA3Mn5yw",
+    "desc": "MUSPNH-XUgyyMewNWs7uLqNEm4m1D-Q6IWZ4u3zmP28",
+    "author": "Sebs Steele",
+    "lang": "en",
+    "isExplicit": "yes",
+    "categories": "art",
+    "email": "n@n.com",
+    "contentType": "a",
+    "cover": "VdO0G-y0EO1dZczhFQsO-Fh9U8ilNdSbufjHKAEEQ7c",
+    "minifiedCover": "uPvfJxsDVSedvNQn8CEe4MWhlk7_2PdAcBg_zdfTayo",
+    "label": "null1",
+    "jwk_n": "vBxHYO9sFsPi2FsLpz5AGPC79TrsmBg6nh7x-8wUE3jRF6-km81nfN7-8e9z9xC8WbPQ9GgdpL8JyfcTZK4WCXo692TfYrZCl-nzK6535xVr_zRyVCquotN9dRdKrfteTahFCSnDqjR10CccF8BloJBogXXx9ygAHnySw6gDH_e0ih2KWCRYEBGz8kylQ7vsKFD_UrtcljHMoFv0P9W1kNHFcG1ONlDt-rOEkk-yboVo4safzKh9DaiW9n__vRNpvT7Zz2EG3bTp__NZ_CfzvOEkY2QOKtLOOOvGfDqaRpODMwjzd5gZTEk-et9Zm4FZ8yv05gOHu9zjagNUMJW86sooL3SD1GqWDGQL0meCxRz2YT8I-0ShrhLFR3NTGdgBApZz5VxvaQyN-e6auQY0zAXjvp7uSJ3G1hOAlaeKHbFdQc-k_VCbcj7tqlM004kfNlUdlI4xkN7wJHq4r34TA9GW3Xjl6pg1lqnNDBuCnxCHbkjCUSVubLNCaKrDb-0Bdq9AqXuN4IhCsLey35JD4mbFdkIeQPheAVsPj_XWu8HSn08GSX9SL-IRNVPP4gykL35LVQugcjHVN_UWMkORz3x6ER5k9GmnHKvriQgv_fJPt9AyrMj7KSjFufGD8iH0I-Qz5p-12piyPS9iep0i9c_IGU6SNGHvVmmueR7gNO8",
+    "txid": "0x04a4e70d35ad8063ebc64d71dc6b66ef1ca0927767142bfd7d0e3dbbce00a20f",
+    "sig": "JxZjUEZMtMys02+RunPnHim1tVnzm1Rts2W18M4I8CgshK3Xeahv+p6IkfWfjP/z22ufJWTtd5i5ywLYlMN3T87nzmus/2+nLaV0k7XmEqlcq+EyzvHbbgvqSGBBpputEPVv6AAO2deG7VsrIAiDGHscYrscFxBLFn3ZNE8Xfnp4RZUK9f54GVUG4xXGduaHPTNPrNoKa+P3S9Tkbj05o9M3aDR+HVPdo4cyi38miA2TmGzL5pUR4a7//OJQ4ZbLqk4QL/w/aRS/g0aEXJI8tuKF1MVyDLnFhXFroc0RfkP+jer2JdUg4CU4DUpP1CbOMTF9AAwDwaytb6zsHoauBSwddmBsRX8hQCRDenS13wzmrakYJAB9Y8SOARSvMVzWOuLaTbXFqIRkj3mAXGRLLooqNZg8vPy0Ps4ajazkOREwr3Ux0Eqv4Vh6gdp47U0yOrS642TtUap/HJ8QN+BqmlqwpdT0KDz8iXl425g02bBR+02GpsVZ/YlrAw9pEjGaXOX3rkQu2BTqy2//6q8hKpRPHMLRlSdJyCf8zquIdt681uUXarxRtjDlUF/s5MSUass8PNlBWOypPiugLv9tidnvn2eY8TyzDLrKYlA/AqhXiLKbdHoBhwoK81DXE1lMBnj5o6gmQB8jtdbLf9UqnMztBZzoxkd+EXkK7ZsQ338="
+}

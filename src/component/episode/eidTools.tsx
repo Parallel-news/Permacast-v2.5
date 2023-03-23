@@ -8,7 +8,7 @@ import {
 } from '@heroicons/react/24/solid';
 import TextTruncate from "../TextTruncate";
 import { formatStringByLen, hexToRGB } from "../../utils/reusables";
-import { STR_LEN_EPISODE_BOX, STR_LEN_EPISODE_DESC } from "../../constants";
+import { ARWEAVE_READ_LINK, STR_LEN_EPISODE_BOX, STR_LEN_EPISODE_DESC } from "../../constants";
 
 export default function eidTools() {
     return false
@@ -109,7 +109,7 @@ export const episodeInfoStyling = "flex flex-col justify-center space-y-4"
 export const episodeInfoSubStyling = "flex flex-row items-center space-x-3"
 export const podcastIdStyling = "flex flex-col space-y-8 w-[95%] mb-[200px]"
 export const creatorTagStyling = "flex flex-row items-center p-1.5 rounded-3xl"
-export const episodeBoxTitleDataStyling = "flex flex-row items-center space-x-3"
+export const episodeBoxTitleDataStyling = "flex flex-row items-center space-x-3 w-[30%]"
 export const nextEpisodeTitleStyling = "text-2xl text-neutral-300/90 font-semibold"
 export const episodeNumberStyling = "rounded-2xl bg-gray-400/30 p-2 py-1 text-[11px]"
 export const episodeTitleStyling = "text-white text-[40px] font-medium pb-0 flex items-end"
@@ -253,10 +253,11 @@ export const EpisodeBox = (props: EpisodeBoxInter) => {
             {/*Episode Description*/}
             <div className="w-[50%]">
                 <TextTruncate 
-                    text={props.episode.description}
+                    text={ARWEAVE_READ_LINK+props.episode.description}
                     limit={STR_LEN_EPISODE_BOX}
                     textClass="text-neutral-400 text-[12px]"
                     buttonClass={textTruncateButtonStyling+" text-[13px]"}
+                    isMarkDown={true}
                 />
             </div>
             {/*Play Button*/}
