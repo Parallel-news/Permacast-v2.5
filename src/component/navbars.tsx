@@ -146,7 +146,7 @@ export function Sidenav() {
               divClass={spinnerClass}
             />
             :
-            <a href="/upload-podcast" onClick={()=>clickSwitch("show")}>{t("home.add-podcast")}</a>
+            <Link href="/upload-podcast" onClick={()=>clickSwitch("show")}>{t("home.add-podcast")}</Link>
             }
           </li>
           <li key={2}>
@@ -157,7 +157,7 @@ export function Sidenav() {
               divClass={spinnerClass}
             />
             :
-            <a href="/upload-episode" onClick={()=>clickSwitch("episode")}>{t("home.add-episode")}</a>
+            <Link href="/upload-episode" onClick={()=>clickSwitch("episode")}>{t("home.add-episode")}</Link>
             }
           </li>
         </ul>
