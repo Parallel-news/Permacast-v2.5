@@ -27,18 +27,18 @@ export default function PodcastId({data, status}) {
             <>
                 <Head>
                         <title>{`Show | Permacast`}</title> 
-                        <meta name="description" content={`${data.obj.podcastName}`} />
+                        <meta name="description" content={`By ${data.obj.author}`} />
                         <meta name="twitter:image" content={(data.obj.cover !== "") ? `https://arweave.net/${data.obj.cover}` : "https://ar.page/favicon.png"} />
                         <meta name="twitter:title" content={`${data.obj.podcastName} | Permacast`} />
                         <meta name="twitter:url" content={`https://permacast.dev/`}></meta>
-                        <meta name="twitter:description" content={`${data.obj.podcastName}`} />
+                        <meta name="twitter:description" content={`By ${data.obj.author}`} />
 
                         <meta name="og:card" content="summary" />
-                        <meta name="description" content={`${data.obj.podcastName}`} />
+                        <meta name="description" content={`By ${data.obj.author}`} />
                         <meta name="og:image" content={(data.obj.cover !== "") ? `https://arweave.net/${data.obj.cover}` : "https://ar.page/favicon.png"} />
                         <meta name="og:title" content={`${data.obj.podcastName} | Permacast`} />
                         <meta name="og:url" content={`https://permacast.dev/`} />
-                        <meta name="og:description" content={`${data.obj.podcastName}`} /> 
+                        <meta name="og:description" content={`By ${data.obj.author}`} /> 
 
                 </Head>
                 <div className={podcastIdStyling}>
