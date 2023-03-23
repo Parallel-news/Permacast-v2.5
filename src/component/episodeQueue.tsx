@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'next-i18next';
 import Track from './reusables/track';
 import { useRecoilState } from 'recoil';
@@ -54,7 +54,7 @@ const EpisodeQueue: FC = () => {
     <div>
       {queue.map((episode: Episode, index: number) => (
         <div key={index} className="mb-2 relative">
-          <Track episode={{episode: episode, podcast: currentPodcast}} episodeNumber={index + 1} />
+          <Track episode={{episode: episode, podcast: currentPodcast}} episodeNumber={index + 1} includePlayButton />
         </div>
       )) || <p className="text-zinc-400">{t("queue.emptyqueue")}</p>}
     </div>
