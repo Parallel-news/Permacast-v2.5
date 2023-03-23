@@ -1,4 +1,5 @@
 import axios from "axios";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { backgroundColor } from "../../../../atoms";
@@ -104,3 +105,15 @@ export async function getServerSideProps(context) {
         return { props: { data, status } } 
     }
 }
+
+
+export async function getStaticProps({ locale }) {
+    return {
+      props: {
+        ...(await serverSideTranslations(locale, [
+          'common',
+        ])),
+      },
+    }
+  }
+  
