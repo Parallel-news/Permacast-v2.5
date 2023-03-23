@@ -38,14 +38,14 @@ export default function EpisodeId({data, status}) {
                 <Head>
                     <title>{`Episode | Permacast`}</title> 
                     <meta name="description" content={`By ${data.podcastName}`} />
-                    <meta name="twitter:image" content={(data.obj.cover !== "") ? `https://arweave.net/${data.obj.cover}` : "https://ar.page/favicon.png"} />
+                    <meta name="twitter:image" content={(data.cover !== "") ? `https://arweave.net/${data.cover}` : "https://ar.page/favicon.png"} />
                     <meta name="twitter:title" content={`${data.obj.episodeName} | Permacast`} />
                     <meta name="twitter:url" content={`https://permacast.dev/`}></meta>
                     <meta name="twitter:description" content={`By ${data.podcastName}`} />
 
                     <meta name="og:card" content="summary" />
                     <meta name="description" content={`By ${data.podcastName}`} />
-                    <meta name="og:image" content={(data.obj.cover !== "") ? `https://arweave.net/${data.obj.cover}` : "https://ar.page/favicon.png"} />
+                    <meta name="og:image" content={(data.cover !== "") ? `https://arweave.net/${data.cover}` : "https://ar.page/favicon.png"} />
                     <meta name="og:title" content={`${data.obj.episodeName} | Permacast`} />
                     <meta name="og:url" content={`https://permacast.dev/`} />
                     <meta name="og:description" content={`By ${data.podcastName}`} /> 
