@@ -32,7 +32,7 @@ export default function EpisodeId({data, status}) {
         const date = formattedDate
         const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
         const episodes = d.episodes
-
+        console.log("Data Cover: ", data.cover)
         return (
             <>
                 <Head>
