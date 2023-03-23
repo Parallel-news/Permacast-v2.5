@@ -19,14 +19,14 @@ function App({ Component, pageProps }) {
           <Head>
             <title>Permacast</title>
             <meta name="description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
-            <meta name="twitter:image" content={`https://permacast.dev/static/media/rss-icon.353236e5b03e0d4c9f24.png`} />
+            <meta name="twitter:image" content={`/public/favicon.ico`} />
             <meta name="twitter:title" content={`Permacast`} />
             <meta name="twitter:url" content={`https://permacast.dev/`}></meta>
             <meta name="twitter:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
 
             <meta name="og:card" content="summary" />
             <meta name="description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
-            <meta name="og:image" content={`https://permacast.dev/static/media/rss-icon.353236e5b03e0d4c9f24.png`} />
+            <meta name="og:image" content={`/public/favicon.ico`} />
             <meta name="og:title" content={`Permacast`} />
             <meta name="og:url" content={`https://permacast.dev/`} />
             <meta name="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} /> 
