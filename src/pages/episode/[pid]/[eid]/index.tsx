@@ -72,6 +72,10 @@ export default function EpisodeId({data, status}) {
 }
 
 export async function getServerSideProps(context) {
+    // translations
+    const { locale } = context;  
+    const translations = await serverSideTranslations(locale, ['common']);
+  
     // Fetch data from external API
     const { contractAddress } = getContractVariables();
     const { params } = context
@@ -96,24 +100,13 @@ export async function getServerSideProps(context) {
         } else {
             const data = null
             const status = NO_EPISODE_FOUND
-            return { props: { data, status } } 
+            return { props: { data, status, ...translations } } 
         }
     // Podcast Doesnt Exist
     } else {
         const data = null
         const status = NO_PODCAST_FOUND
-        return { props: { data, status } } 
+        return { props: { data, status, ...translations } } 
     }
 }
 
-
-export async function getStaticProps({ locale }) {
-    return {
-      props: {
-        ...(await serverSideTranslations(locale, [
-          'common',
-        ])),
-      },
-    }
-  }
-  
