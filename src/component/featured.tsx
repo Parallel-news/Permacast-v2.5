@@ -8,7 +8,6 @@ import {
   RGBobjectToString,
 } from "../utils/ui";
 import { getCreator } from "../utils/podcast";
-import { Cooyub, PlayButton, GlobalPlayButton } from "./reusables/icons";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { FaPlay } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
