@@ -33,6 +33,13 @@ export default function PodcastId({data, status}) {
                         <meta name="twitter:url" content={`https://permacast.dev/`}></meta>
                         <meta name="twitter:description" content={`${data.obj.podcastName}`} />
 
+                        <meta name="og:card" content="summary" />
+                        <meta name="description" content={`${data.obj.podcastName}`} />
+                        <meta name="og:image" content={(data.obj.cover !== "") ? `https://arweave.net/${data.obj.cover}` : "https://ar.page/favicon.png"} />
+                        <meta name="og:title" content={`${data.obj.podcastName} | Permacast`} />
+                        <meta name="og:url" content={`https://permacast.dev/`} />
+                        <meta name="og:description" content={`${data.obj.podcastName}`} /> 
+
                 </Head>
                 <div className={podcastIdStyling}>
                     <PodcastBanner 
