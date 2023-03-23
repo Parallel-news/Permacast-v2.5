@@ -110,8 +110,8 @@ export const isPlaying = atom({
     default: false
 });
 
-export const isQueueVisible = atom({
-    key: "isQueueVisible",
+export const isQueueVisibleAtom = atom({
+    key: "isQueueVisibleAtom",
     default: false
 })
 
