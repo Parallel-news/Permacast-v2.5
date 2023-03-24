@@ -4,7 +4,7 @@ import { FullEpisodeInfo } from "../../interfaces";
 import Image from "next/image";
 import Link from "next/link";
 import { fetchAverageColor, getButtonRGBs, getCoverColorScheme, RGBAstringToObject, RGBobjectToString, RGBstringToObject } from "../../utils/ui";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { useShikwasa } from "../../hooks";
 import { showShikwasaPlayerArguments } from "../../interfaces/playback";
 import PlayButton from "./playButton";
