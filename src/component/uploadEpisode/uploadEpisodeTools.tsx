@@ -1,19 +1,19 @@
+import axios from 'axios';
 import Image from 'next/image';
-import { FiFile } from 'react-icons/fi';
-import { ArrowUpTrayIcon, XMarkIcon, WalletIcon } from '@heroicons/react/24/outline';
-import { ARWEAVE_READ_LINK, AR_DECIMALS, CONNECT_WALLET, DESCRIPTION_UPLOAD_ERROR, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EP_UPLOAD_SUCCESS, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, MEDIA_UPLOAD_ERROR, MIN_UPLOAD_PAYMENT, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from '../../constants';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
-import { defaultSignatureParams, useArconnect } from 'react-arconnect';
-import { arweaveAddress } from '../../atoms';
-import { useRecoilState } from 'recoil';
 import toast from 'react-hot-toast';
+import { FiFile } from 'react-icons/fi';
+import { useRecoilState } from 'recoil';
+import { arweaveAddress } from '../../atoms';
 import { ValMsg } from '../reusables/formTools';
-import { allFieldsFilled, byteSize, checkConnection, determineMediaType, handleError } from '../../utils/reusables';
 import { PermaSpinner } from '../reusables/PermaSpinner';
 import { spinnerClass } from '../uploadShow/uploadShowTools';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { defaultSignatureParams, useArconnect } from 'react-arconnect';
+import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
+import { ArrowUpTrayIcon, XMarkIcon, WalletIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
 import { getBundleArFee, upload2DMedia, upload3DMedia } from '../../utils/arseeding';
-import axios from 'axios';
+import { allFieldsFilled, byteSize, checkConnection, determineMediaType, handleError } from '../../utils/reusables';
+import { ARWEAVE_READ_LINK, AR_DECIMALS, CONNECT_WALLET, DESCRIPTION_UPLOAD_ERROR, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EP_UPLOAD_SUCCESS, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, MEDIA_UPLOAD_ERROR, MIN_UPLOAD_PAYMENT, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from '../../constants';
 
 export default function uploadEpisode() {
     return false
@@ -84,6 +84,7 @@ interface EpisodeMediaInter {
   
 // 2. Styling
 export const trayIconStyling="h-5 w-5 mr-2"
+export const dollarIconStyling="h-10 w-10 mr-2"
 export const episodeTitleStyling = "text-white text-xl mt-4"
 export const titleModalStyling = "flex justify-between w-full"
 export const podcastSelectOptionsStyling = "h-fit w-full space-y-3"
@@ -103,6 +104,7 @@ export const uploadEpisodeStyling = "flex flex-col justify-center items-center m
 export const podcastOptionHoverStyling = "cursor-pointer hover:bg-zinc-600/30 transition duration-650 ease-in-out rounded-3xl p-3"
 export const xMarkStyling = "h-5 w-5 mt-1 cursor-pointer hover:text-red-400 hover:bg-red-400/10 transition duration-400 ease-in-out rounded-full"
 export const uploadButtonStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8"
+export const submitModalStyling = "btn btn-secondary bg-zinc-800 transition duration-300 ease-in-out hover:text-white rounded-xl px-8 border-0 text-2xl"
 export const selectPodcastStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8 w-full"
 export const episodeNameStyling = "input input-secondary w-full py-3 px-5 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
 export const labelEpisodeMediaStyling = "flex items-center text-zinc-400 transition duration-300 ease-in-out hover:text-white my-1 py-2 px-3 w-full cursor-pointer w-full"
@@ -226,7 +228,6 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         } catch (e) {
             console.log(e); handleErr(MEDIA_UPLOAD_ERROR, setSubmittingEp); return;
         }
-        console.log("EP PAYLOAD: ", createEpPayload)
         // EXM REDIRECT AND ERROR HANDLING NEEDED
         const result = await axios.post('/api/exm/write', createEpPayload);
         console.log("exm res: ", result)
@@ -339,6 +340,19 @@ export const ConnectButton = (props: UploadButtonInter) => {
     )
 }
 
+export const SubmitTipButton = (props: UploadButtonInter) => {
+    return (
+        <button
+            className={`${submitModalStyling} ${props.width}`}
+            disabled={props.disable}
+            onClick={props.click}
+        >
+            <CurrencyDollarIcon className={dollarIconStyling} />
+            Submit Tip
+      </button>
+    )
+}
+
 export const SelectPodcast = (props: SelectPodcastInter) => {
     const [isVisible, setIsVisible] = useState<boolean>(false)
     const [_arweaveAddress, _setArweaveAddress] = useRecoilState(arweaveAddress)
@@ -346,10 +360,7 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
 
     let selectedShow;
     if(props.pid.length > 0) {
-        console.log("props.pid: ", props.pid)
-        console.log("yourShows: ", yourShows)
         selectedShow = yourShows.filter((item: Podcast) => item.pid === props.pid)
-        console.log("selectedShow: ", selectedShow)
     }
 
     useEffect(() => {

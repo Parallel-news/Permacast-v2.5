@@ -1,7 +1,7 @@
 import axios from "axios";
 import Head from "next/head";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { backgroundColor } from "../../../../atoms";
 import { 
@@ -14,11 +14,11 @@ import {
 import { EXM_READ_LINK, ARWEAVE_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND } from "../../../../constants";
 import { getContractVariables } from "../../../../utils/contract";
 import { findObjectById, formatStringByLen } from "../../../../utils/reusables";
+import { TipModal } from "../../../../component/tipModal";
 
 export default function EpisodeId({data, status}) {
-    console.log("ep data: ", data)
     const [, setBackgroundColor_] = useRecoilState(backgroundColor);
-    console.log("status: ", status)
+    const [loadModal, setLoadModal] = useState<boolean>(false)
 
     if(data) {
         useEffect(() => {
@@ -72,6 +72,14 @@ export default function EpisodeId({data, status}) {
                         color={color}
                         episodes={[]}
                     />
+                    {loadModal && (
+                        <TipModal 
+                            isVisible={loadModal}
+                            setVisible={setLoadModal}
+                        />
+                    )}
+
+                    <button onClick={() => setLoadModal(true)}>Turn Modal</button>
                 </div>
             </>
         )
