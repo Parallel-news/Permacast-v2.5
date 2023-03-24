@@ -1,5 +1,6 @@
 import axios from "axios";
 import Head from "next/head";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRecoilState } from "recoil";
 import { backgroundColor } from "../../atoms";
 import { 
@@ -77,6 +78,10 @@ export default function PodcastId({data, status}) {
 }
 
 export async function getServerSideProps(context) {
+    // translations
+    const { locale } = context;
+
+    const translations = await serverSideTranslations(locale, ['common']);
     // Fetch data from external API
     const { contractAddress } = getContractVariables();
     const { params } = context
@@ -88,11 +93,11 @@ export async function getServerSideProps(context) {
     if(foundPodcasts) {
         const data = foundPodcasts
         const status = PAYLOAD_RECEIVED
-        return { props: { data, status } }
+        return { props: { data, status, ...translations } }
     // Podcasts Not Found
     } else {
         const status = NO_PODCAST_FOUND
         const data = null
-        return { props: { data, status } }  
+        return { props: { data, status, ...translations } }  
     }   
 }

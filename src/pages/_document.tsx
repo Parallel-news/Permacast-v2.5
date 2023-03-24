@@ -28,6 +28,7 @@ export default class _document extends Document {
           <Main />
           <NextScript />
         </body>
+        <div className="absolute bottom-0 bg-zinc-900 w-screen rounded-t-xl z-50" id="podcast-player"></div>
       </Html>
     );
   };

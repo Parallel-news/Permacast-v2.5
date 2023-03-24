@@ -9,8 +9,8 @@ import '../shikwasa-src/css/chapter.css';
 import '../styles/globals.css';
 import { MINT_DURATION, TOAST_POSITION } from '../constants';
 import { Toaster } from 'react-hot-toast';
-import { Component } from 'react';
-import axios from 'axios';
+import { ShikwasaProvider } from '../hooks';
+
 
 function App({ Component, pageProps }) {
   return (
@@ -44,7 +44,8 @@ function App({ Component, pageProps }) {
               gtag('config', 'G-4XDV8F7VJB');
             `}
           </Script>
-          <Layout>
+          <ShikwasaProvider>
+
             <Toaster
               position={TOAST_POSITION}
               reverseOrder={false}
@@ -52,8 +53,11 @@ function App({ Component, pageProps }) {
                   duration: MINT_DURATION
               }}
             />
-            <Component {...pageProps} />
-          </Layout>
+
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </ShikwasaProvider>
         </ArconnectProvider>
     </RecoilRoot>
   )

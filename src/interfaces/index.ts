@@ -22,7 +22,7 @@ export interface EXMState {
 }
 
 export interface EXMDevState {
-  podcasts:              PodcastDev[];
+  podcasts:              Podcast[];
   admins:                string[];
   isPaused:              boolean;
   user_sig_messages:     signature[];
@@ -54,11 +54,11 @@ export interface Podcast {
   cover:       arweaveTX;
   isVisible:   boolean;
   episodes:    Episode[];
+  minifiedCover: arweaveTX;
 }
 
-export interface PodcastDev extends Podcast {
-  minifiedCover?: arweaveTX;
-}
+//! deprecated
+export interface PodcastDev extends Podcast {};
 
 export interface Episode {
   eid:         string;
@@ -74,7 +74,7 @@ export interface Episode {
 
 export interface FullEpisodeInfo {
   episode: Episode,
-  podcast: PodcastDev,
+  podcast: Podcast,
 };
 
 export interface Ans {

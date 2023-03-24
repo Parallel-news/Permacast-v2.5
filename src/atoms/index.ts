@@ -1,4 +1,5 @@
 import { atom } from 'recoil';
+import { Episode, Podcast } from '../interfaces';
 
 export const uploadPercent = atom({
     key: 'uploadPercent',
@@ -15,8 +16,8 @@ export const switchFocus = atom({
     default: true,
 });
 
-export const isFullscreen = atom({
-    key: 'isFullscreen',
+export const isFullscreenAtom = atom<boolean>({
+    key: 'isFullscreenAtom',
     default: false,
 });
 
@@ -85,19 +86,48 @@ export const creators = atom({
 
 // *** PLAYBACK ***
 
-export const queue = atom({
-    key: "queue",
+export const queueAtom = atom<Episode[]>({
+    key: "queueAtom",
     default: []
 });
 
-export const currentPodcast = atom({
-    key: "currentPodcast",
-    default: {}
+export const currentPodcastAtom = atom<Podcast>({
+    key: 'currentPodcastAtom',
+    default: {
+        pid: '',
+        label: '',
+        contentType: '',
+        createdAt: 0,
+        index: 0,
+        owner: '',
+        podcastName: '',
+        author: '',
+        email: '',
+        description: '',
+        language: '',
+        explicit: '',
+        categories: [],
+        maintainers: [],
+        cover: '',
+        isVisible: false,
+        episodes: [],
+        minifiedCover: '',
+    },
 });
 
-export const currentEpisode = atom({
-    key: "currentEpisode",
-    default: { contentTx: 'null', pid: 'null', eid: 'null', number: '1' }
+export const currentEpisodeAtom = atom<Episode>({
+    key: "currentEpisodeAtom",
+    default: {
+        eid: '',
+        episodeName: '',
+        description: '',
+        contentTx: '',
+        size: 0,
+        type: '',
+        uploader: '',
+        uploadedAt: 0,
+        isVisible: false,
+    }
 });
 
 export const queueHistory = atom({
@@ -105,13 +135,13 @@ export const queueHistory = atom({
     default: []
 })
 
-export const isPlaying = atom({
-    key: "isPlaying",
+export const isPlayingAtom = atom<boolean>({
+    key: "isPlayingAtom",
     default: false
 });
 
-export const isQueueVisible = atom({
-    key: "isQueueVisible",
+export const isQueueVisibleAtom = atom<boolean>({
+    key: "isQueueVisibleAtom",
     default: false
 })
 

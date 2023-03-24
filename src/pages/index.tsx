@@ -21,7 +21,7 @@ import {
   featuredPodcasts,
   latestEpisodes,
   switchFocus,
- } from "../atoms/index.js";
+ } from "../atoms/index";
 
 import { Episode, EXMDevState, PodcastDev } from '../interfaces';
 

@@ -20,7 +20,7 @@ import { Searchbar } from "./searchbar";
 import LANGUAGES from "../utils/languages";
 import { UploadCount } from "./upload_count";
 import { useRecoilState } from "recoil";
-import { arweaveAddress, isFullscreen } from "../atoms";
+import { arweaveAddress, isFullscreenAtom } from "../atoms";
 import { PermaSpinner } from "./reusables/PermaSpinner";
 import { SPINNER_COLOR } from "../constants";
 import { EverPayBalance } from "../utils/everpay/EverPayBalance";
@@ -36,7 +36,7 @@ export function Sidenav() {
   };
 
   const [showUploadOptions,setUploadOptions] = useState(false);
-  const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
+  const [isFullscreen, setIsFullscreen] = useRecoilState(isFullscreenAtom);
 
   const isHome = router.pathname === "/";
   const isUploadPodcast = router.pathname === "/upload-podcast";
@@ -61,7 +61,7 @@ export function Sidenav() {
             <button
               className={SIDENAV_BUTTON}
               onClick={() => {
-                setIsFullscreen_(false)
+                setIsFullscreen(false)
               }}
             >
               {icon}
@@ -89,7 +89,7 @@ export function Sidenav() {
             <li key={l.code}>
               <span 
                 onClick={() => {
-                  setIsFullscreen_(false)
+                  setIsFullscreen(false)
                   changeLanguage(l.code)
                 }}
               >{l.name}</span>
@@ -146,7 +146,7 @@ export function Sidenav() {
               divClass={spinnerClass}
             />
             :
-            <a href="/upload-podcast" onClick={()=>clickSwitch("show")}>{t("home.add-podcast")}</a>
+            <Link href="/upload-podcast" onClick={()=>clickSwitch("show")}>{t("home.add-podcast")}</Link>
             }
           </li>
           <li key={2}>
@@ -157,7 +157,7 @@ export function Sidenav() {
               divClass={spinnerClass}
             />
             :
-            <a href="/upload-episode" onClick={()=>clickSwitch("episode")}>{t("home.add-episode")}</a>
+            <Link href="/upload-episode" onClick={()=>clickSwitch("episode")}>{t("home.add-episode")}</Link>
             }
           </li>
         </ul>
