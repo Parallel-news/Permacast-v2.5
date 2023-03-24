@@ -8,7 +8,7 @@ import { useRecoilState } from 'recoil';
 import { getContractVariables } from '../../utils/contract';
 import axios from 'axios';
 import { ARWEAVE_READ_LINK, EXM_READ_LINK } from '../../constants';
-import { PodcastOption } from '../../component/uploadEpisode/uploadEpisodeTools';
+import { PodcastOption, podcastOptionHoverStyling } from '../../component/uploadEpisode/uploadEpisodeTools';
 
 export default function Search({podcasts}) {
 
@@ -16,11 +16,13 @@ export default function Search({podcasts}) {
   let mediaArr: any[] = []
   podcasts.forEach((podcast) => {
     podcast.name = podcast.podcastName
+    podcast.category = "Podcast"
     mediaArr.push(podcast)
     podcast.episodes.forEach((episode) => {
       episode.name = episode.episodeName
       episode.pid = podcast.pid
       episode.minifiedCover = podcast.minifiedCover
+      episode.category = "Episode"
       mediaArr.push(episode)
     })
   })
@@ -85,12 +87,13 @@ export default function Search({podcasts}) {
                 <div className="text-2xl text-white font-bold mb-6">Results</div>
                 {filteredPodcasts.length > 0 ?
                 filteredPodcasts.map((item, index) => (
-                  <div key={index} className="mb-6 w-[25%]">
+                  <div key={index} className={`mb-6 w-[25%] flex flex-row items-center ${podcastOptionHoverStyling}`}>
                     <PodcastOption 
                         imgSrc={ARWEAVE_READ_LINK+item.minifiedCover}
                         title={item.name}
-                        disableClick={false}
+                        disableClick={true}
                     />
+                    <p className='text-neutral-400'>{item.category}</p>
                   </div>
                 )) 
                 : (
