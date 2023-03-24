@@ -9,6 +9,8 @@ import {
 import TextTruncate from "../TextTruncate";
 import { formatStringByLen, hexToRGB } from "../../utils/reusables";
 import { ARWEAVE_READ_LINK, STR_LEN_EPISODE_BOX, STR_LEN_EPISODE_DESC } from "../../constants";
+import { useRecoilState } from "recoil";
+import { loadTipModal } from "../../atoms";
 
 export default function eidTools() {
     return false
@@ -170,6 +172,8 @@ export const EpisodeInfoSub = (props: EpisodeInfoSubInter) => {
 
 export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
     const { color } = props
+    const [_loadTipModal, setLoadTipModal] = useRecoilState(loadTipModal)
+
     return (
         <div className={episodeInfoButtonsStyling}>
             <DescriptionButton 
@@ -181,6 +185,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
                 icon={<HeartIcon className={episodeIconStyling} />} 
                 text={"Tip"}
                 color={color} 
+                onClick={() => setLoadTipModal(true)}
             />
             <DescriptionButton
                 icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 

@@ -3,7 +3,7 @@ import Head from "next/head";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { backgroundColor } from "../../../../atoms";
+import { backgroundColor, loadTipModal } from "../../../../atoms";
 import { 
     EpisodeBanner,
     EpisodeDescription,
@@ -18,7 +18,7 @@ import { TipModal } from "../../../../component/tipModal";
 
 export default function EpisodeId({data, status}) {
     const [, setBackgroundColor_] = useRecoilState(backgroundColor);
-    const [loadModal, setLoadModal] = useState<boolean>(false)
+    const [_loadTipModal, _setLoadTipModal] = useRecoilState<boolean>(loadTipModal)
 
     if(data) {
         useEffect(() => {
@@ -72,14 +72,12 @@ export default function EpisodeId({data, status}) {
                         color={color}
                         episodes={[]}
                     />
-                    {loadModal && (
+                    {_loadTipModal && (
                         <TipModal 
-                            isVisible={loadModal}
-                            setVisible={setLoadModal}
+                            isVisible={_loadTipModal}
+                            setVisible={_setLoadTipModal}
                         />
                     )}
-
-                    <button onClick={() => setLoadModal(true)}>Turn Modal</button>
                 </div>
             </>
         )

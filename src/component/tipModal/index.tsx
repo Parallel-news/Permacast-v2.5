@@ -50,11 +50,11 @@ export const TipModal = (props: TipModalInter) => {
                 </div>
                 {/*Tip Amount*/}
                 <div className={tipAmountDivStyling}> 
-                    <input className={tipInputStyling} required pattern=".{3,500}" type="number" name="tipAmount" placeholder={"Amount"}
+                    <input className={tipInputStyling} required pattern=".{3,500}" type="number" name="tipAmount" placeholder={"AR"}
                     onChange={(e) => {
                         setTipAmount(e.target.value);
                     }}/>
-                    <p className=" text-3xl">AR</p> 
+                    
                 </div>
                 {/*Submit Tip*/}
                 <SubmitTipButton 
