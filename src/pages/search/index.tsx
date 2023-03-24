@@ -5,8 +5,10 @@ import Track from '../../component/track';
 import { useTranslation } from 'next-i18next';
 import { titles, allPodcasts, selection, input } from '../../atoms';
 import { useRecoilState } from 'recoil';
+import { getContractVariables } from '../../utils/contract';
 
-export default function Search() {
+export default function Search({podcasts}) {
+  console.log("search podcasts: ", podcasts)
   const [titlesLoading, setTitlesLoading] = useState(false);
   const [error, setError] = useState("");
   const [_titles, _setTitles] = useRecoilState(titles);
@@ -50,7 +52,7 @@ export default function Search() {
 
   const filteredPodcasts = _titles ? 
   _titles.filter((p) => {
-    if (input === '') return;
+    if (_input === '') return;
     if (p.type === "eid") return;
     else return p.title.toLowerCase().includes(_input.toLowerCase());
   })
@@ -105,11 +107,23 @@ export default function Search() {
 
 // import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 export async function getStaticProps({ locale }) {
+  const { contractAddress } = getContractVariables();
+  const res = await axios.post(EXM_READ_LINK+contractAddress)
+  const podcasts = res.data?.podcasts
   return {
     props: {
       ...(await serverSideTranslations(locale, [
         'common',
       ])),
+      podcasts
     },
   }
 }
+/*
+  const { contractAddress } = getContractVariables();
+  const res = await axios.post(EXM_READ_LINK+contractAddress)
+  const podcasts = res.data?.podcasts
+
+*/
+
+
