@@ -1,5 +1,6 @@
 import axios from "axios";
 import Head from "next/head";
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
@@ -19,6 +20,7 @@ export default function EpisodeId({data, status}) {
     console.log("ep data: ", data)
     const [, setBackgroundColor_] = useRecoilState(backgroundColor);
     console.log("status: ", status)
+    const { t } = useTranslation();
 
     if(data) {
         useEffect(() => {
@@ -93,8 +95,8 @@ export default function EpisodeId({data, status}) {
 export async function getServerSideProps(context) {
     // translations
     const { locale } = context;  
-    const translations = await serverSideTranslations(locale, ['common']);
-  
+
+    console.log({...(await serverSideTranslations(locale, ['common']))})
     // Fetch data from external API
     const { contractAddress } = getContractVariables();
     const { params } = context
@@ -115,18 +117,18 @@ export async function getServerSideProps(context) {
             const podcastName = foundPodcasts.obj.podcastName
             const data = { ...podcastData, ...foundEpisode, podcastName}
             const status = PAYLOAD_RECEIVED
-            return { props: { data, status } }
+            return { props: { ...(await serverSideTranslations(locale, ['common'])), data, status } }
         // Episode Doesnt Exist
         } else {
             const data = null
             const status = NO_EPISODE_FOUND
-            return { props: { data, status, ...translations } } 
+            return { props: { ...(await serverSideTranslations(locale, ['common'])), data, status } } 
         }
     // Podcast Doesnt Exist
     } else {
         const data = null
         const status = NO_PODCAST_FOUND
-        return { props: { data, status, ...translations } } 
+        return { props: { ...(await serverSideTranslations(locale, ['common'])), data, status } } 
     }
 }
 

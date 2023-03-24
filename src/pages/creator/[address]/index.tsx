@@ -168,6 +168,7 @@ const Creator404: FC<{ address: string }> = ({ address }) => {
 
 export default function Creator ({ userInfo, address }) {
   // if (!userInfo) return <Creator404 {...{ address }} />
+  const { t } = useTranslation();
 
   const { user, avatar, currentLabel, address_color, nickname } = userInfo;
 
@@ -214,19 +215,22 @@ export default function Creator ({ userInfo, address }) {
 };
 
 
-export async function getServerSideProps({query, locale}) {
+export async function getServerSideProps({ query, locale }) {
   const { address } = query;
   let userInfo: Ans | null;
-  const translations = await serverSideTranslations(locale, ['common']);
-
+  console.log({...(await serverSideTranslations(locale, ['common'])),})
   if (address) {
-    const data = await axios.get(`https://ans-resolver.herokuapp.com/resolve-as-arpage/${address}`);
-    userInfo = data.data;
+    try {
+      const data = await axios.get(`https://ans-resolver.herokuapp.com/resolve-as-arpage/${address}`);
+      userInfo = data.data;  
+    } catch {
+      userInfo = null;
+    };
   };
 
   return {
     props: {
-      ...translations,
+      ...(await serverSideTranslations(locale, ['common'])),
       address,
       userInfo,
     },

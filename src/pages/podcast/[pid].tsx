@@ -1,5 +1,6 @@
 import axios from "axios";
 import Head from "next/head";
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRecoilState } from "recoil";
 import { backgroundColor } from "../../atoms";
@@ -14,6 +15,8 @@ import { getContractVariables } from "../../utils/contract";
 import { findObjectById } from "../../utils/reusables";
 
 export default function PodcastId({data, status}) {
+    const { t } = useTranslation();
+
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
     console.log("data: ", data)
     if(data) {
@@ -81,7 +84,7 @@ export async function getServerSideProps(context) {
     // translations
     const { locale } = context;
 
-    const translations = await serverSideTranslations(locale, ['common']);
+    console.log({...(await serverSideTranslations(locale, ['common']))});
     // Fetch data from external API
     const { contractAddress } = getContractVariables();
     const { params } = context
@@ -93,11 +96,11 @@ export async function getServerSideProps(context) {
     if(foundPodcasts) {
         const data = foundPodcasts
         const status = PAYLOAD_RECEIVED
-        return { props: { data, status, ...translations } }
+        return { props: { data, status, ...(await serverSideTranslations(locale, ['common'])) } }
     // Podcasts Not Found
     } else {
         const status = NO_PODCAST_FOUND
         const data = null
-        return { props: { data, status, ...translations } }  
+        return { props: { data, status, ...(await serverSideTranslations(locale, ['common'])) } }  
     }   
 }
