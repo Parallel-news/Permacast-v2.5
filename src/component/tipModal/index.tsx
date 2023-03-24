@@ -40,7 +40,7 @@ export const TipModal = (props: TipModalInter) => {
     }
 
     return (
-        <div className={selectPodcastModalStyling}>
+        <div className={selectPodcastModalStyling+" backdrop-blur-sm"}>
             <div className={`${containerPodcastModalStyling+ " justify-between p-10"} ${showModal ? FADE_IN_STYLE :FADE_OUT_STYLE}`}>
                 {/*Header*/}
                 <div className={titleModalStyling}>
