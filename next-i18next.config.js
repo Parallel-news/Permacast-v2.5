@@ -3,4 +3,5 @@ module.exports = {
     defaultLocale: 'en',
     locales: ['en', 'uk', 'zh'],
   },
+  reloadOnPrerender: process.env.IS_PROD !== 'true',
 }
