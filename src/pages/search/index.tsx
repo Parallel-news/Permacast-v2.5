@@ -12,7 +12,7 @@ import { PodcastOption, podcastOptionHoverStyling } from '../../component/upload
 import Link from 'next/link';
 
 export default function Search({podcasts}) {
-
+  console.log(podcasts)
   // Flatten and Modify Episodes/Podcasts into 1 Array
   let mediaArr: any[] = []
   podcasts.forEach((podcast) => {
@@ -30,7 +30,7 @@ export default function Search({podcasts}) {
     })
   })
 
-  console.log("MA: ", mediaArr)
+  
   const [titlesLoading, setTitlesLoading] = useState(false);
   const [error, setError] = useState("");
   const [_titles, _setTitles] = useRecoilState(titles);
@@ -39,7 +39,7 @@ export default function Search({podcasts}) {
   const [_input, ] = useRecoilState(input); 
   const { t } = useTranslation();
 
-  const filteredPodcasts = _input ? 
+  let filteredPodcasts = _input ? 
   mediaArr.filter((item) => {
     if (_input === '') return [];
     else return item.name.toLowerCase().includes(_input.toLowerCase());
@@ -47,6 +47,9 @@ export default function Search({podcasts}) {
   :
   [];
 
+  // Limit to mediaArr to 50 items
+  filteredPodcasts = filteredPodcasts.length > 50 ? filteredPodcasts.slice(0, 50) : filteredPodcasts
+  console.log("filteredPodcasts: ", filteredPodcasts)
   return (
     <div className="text-white h-full pb-80">
       {titlesLoading ? <div className="text-3xl text-white font-bold mb-6">{t("search.loading")}</div> : (
@@ -56,7 +59,7 @@ export default function Search({podcasts}) {
               <>
                 <div className="text-2xl text-white font-bold mb-6">Results</div>
                 {filteredPodcasts.length > 0 ?
-                filteredPodcasts.map((item, index) => (
+                filteredPodcasts.slice(0, 50).map((item, index) => (
                   <Link href={item.url}>
                     <div key={index} className={`mb-6 w-[25%] flex flex-row items-center ${podcastOptionHoverStyling}`}>
                       <PodcastOption 
@@ -90,7 +93,13 @@ export default function Search({podcasts}) {
 export async function getStaticProps({ locale }) {
   const { contractAddress } = getContractVariables();
   const res = await axios.post(EXM_READ_LINK+contractAddress)
-  const podcasts = res.data?.podcasts
+  let podcasts = res.data?.podcasts
+
+  podcasts = podcasts.concat(podcasts)
+  podcasts = podcasts.concat(podcasts)
+  podcasts = podcasts.concat(podcasts)
+  podcasts = podcasts.concat(podcasts)
+  podcasts = podcasts.concat(podcasts)
   return {
     props: {
       ...(await serverSideTranslations(locale, [
