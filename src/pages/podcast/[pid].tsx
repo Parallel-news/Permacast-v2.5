@@ -1,4 +1,5 @@
 import axios from "axios";
+import Head from "next/head";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRecoilState } from "recoil";
 import { backgroundColor } from "../../atoms";
@@ -24,21 +25,39 @@ export default function PodcastId({data, status}) {
         const nextEpisodeTitle = "Episodes"
         const episodes = data.obj?.episodes
         return (
-            <div className={podcastIdStyling}>
-                <PodcastBanner 
-                    imgSrc={imgSrc}
-                    title={title}
-                    description={ARWEAVE_READ_LINK+description}
-                    color={color}
-                />
-                {/*Episode Track*/}
-                <Episodes
-                    containerTitle={nextEpisodeTitle} 
-                    imgSrc={imgSrc}
-                    color={color}
-                    episodes={episodes}
-                />            
-            </div>
+            <>
+                <Head>
+                        <title>{`Show | Permacast`}</title> 
+                        <meta name="description" content={`By ${data.obj.author}`} />
+                        <meta name="twitter:image" content={(data.obj.cover !== "") ? `https://arweave.net/${data.obj.cover}` : "https://ar.page/favicon.png"} />
+                        <meta name="twitter:title" content={`${data.obj.podcastName} | Permacast`} />
+                        <meta name="twitter:url" content={`https://permacast.dev/`}></meta>
+                        <meta name="twitter:description" content={`By ${data.obj.author}`} />
+
+                        <meta name="og:card" content="summary" />
+                        <meta name="description" content={`By ${data.obj.author}`} />
+                        <meta name="og:image" content={(data.obj.cover !== "") ? `https://arweave.net/${data.obj.cover}` : "https://ar.page/favicon.png"} />
+                        <meta name="og:title" content={`${data.obj.podcastName} | Permacast`} />
+                        <meta name="og:url" content={`https://permacast.dev/`} />
+                        <meta name="og:description" content={`By ${data.obj.author}`} /> 
+
+                </Head>
+                <div className={podcastIdStyling}>
+                    <PodcastBanner 
+                        imgSrc={imgSrc}
+                        title={title}
+                        description={ARWEAVE_READ_LINK+description}
+                        color={color}
+                    />
+                    {/*Episode Track*/}
+                    <Episodes
+                        containerTitle={nextEpisodeTitle} 
+                        imgSrc={imgSrc}
+                        color={color}
+                        episodes={episodes}
+                    />            
+                </div>
+            </>
         )
     } else if(status === NO_PODCAST_FOUND) {
         return(

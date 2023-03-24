@@ -262,11 +262,13 @@ export const ShowForm = (props: ShowFormInter) => {
         }
         console.log("Payload: ", createShowPayload)
         //Error handling and timeout needed for this to complete redirect
-        const result = await axios.post('/api/exm/write', createShowPayload);
-        console.log("exm res: ", result)
-        setSubmittingShow(false)
-        //EXM call, set timeout, then redirect. 
-        toast.success(SHOW_UPLOAD_SUCCESS, {style: TOAST_DARK})
+        setTimeout(async function () {
+            const result = await axios.post('/api/exm/write', createShowPayload);
+            console.log("exm res: ", result)
+            setSubmittingShow(false)
+            //EXM call, set timeout, then redirect. 
+            toast.success(SHOW_UPLOAD_SUCCESS, {style: TOAST_DARK})
+        }, 5000)
     }
 
     console.log("podcasts: ", props.podcasts)
