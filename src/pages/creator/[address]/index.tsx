@@ -166,7 +166,7 @@ const Creator404: FC<{ address: string }> = ({ address }) => {
   return <div>{address} PLACEHOLDER, will add loading here later as well</div>
 };
 
-const Creator: NextPage<{ userInfo: Ans | null, address: string }> = ({ userInfo, address }) => {
+export default function Creator ({ userInfo, address }) {
   if (!userInfo) return <Creator404 {...{ address }} />
 
   const { user, avatar, currentLabel, address_color, nickname } = userInfo;
@@ -218,6 +218,7 @@ export async function getServerSideProps(context) {
   const { locale, params } = context;
   const { address } = params;
   let userInfo: Ans | null;
+  const translations = await serverSideTranslations(locale, ['common',]);
 
   if (address) {
     const data = await axios.get(`https://ans-resolver.herokuapp.com/resolve-as-arpage/${address}`);
@@ -226,13 +227,9 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      ...(await serverSideTranslations(locale, [
-        'common',
-      ])),
       address,
       userInfo,
+      ...translations
     },
   };
 };
-
-export default Creator;
