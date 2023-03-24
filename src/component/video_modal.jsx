@@ -6,12 +6,6 @@ export default function VideoModal() {
   // Recoil atom, stores focus data..
   const [vs_, setVS_] = useRecoilState(videoSelection);
 
-  
-  useEffect(() => {
-    const playerObj = document.getElementById("my-player");
-    playerObj.src = vs_[0]
-  }, [vs_])
-
   return (
     <div
       className={`w-full h-full fixed flex flex-col justify-center items-center bg-black/70 transition-all duration-200 z-[45] ${

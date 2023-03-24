@@ -11,8 +11,6 @@ export default class _document extends Document {
     return (
       <Html lang={currentLocale}>
         <Head>
-        <Head>
-            <title>Permacast</title>
             <meta name="description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
             <meta name="twitter:image" content={`https://permacast-v2-5.vercel.app/favicon.ico`} />
             <meta name="twitter:title" content={`Permacast`} />
@@ -26,7 +24,6 @@ export default class _document extends Document {
             <meta name="og:url" content={`https://permacast.dev/`} />
             <meta name="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} /> 
           </Head>
-        </Head>
         <body>
           <Main />
           <NextScript />
