@@ -21,7 +21,7 @@ const FeaturedCreators: FC = () => {
   const [currentThemeColor_, setCurrentThemeColor_] = useRecoilState(currentThemeColor);
 
   const wl = [
-    "kaYP9bJtpqON8Kyy3RbqnqdtDBDUsPTQTNUCvZtKiFI",
+    "1g5I8JHpfIS0plCV_EMBAJy6UgjPBsLOy5bhUN70Fak",
     "vZY2XY1RD9HIfWi8ift-1_DnHLDadZMWrufSh-_rKF0",
     "lIg5mdDMAAIj5Pn2BSYKI8SEo8hRIdh-Zrn_LSy_3Qg"
   ]

@@ -213,20 +213,8 @@ const Creator: NextPage<{ userInfo: Ans | null, address: string }> = ({ userInfo
   );
 };
 
-// pages/blog/[slug].js
-export async function getStaticPaths() {
-  return {
-    paths: [
-      // String variant:
-      '/creator/[address].tsx',
-      // Object variant:
-      // { params: { address } },
-    ],
-    fallback: true,
-  };
-};
 
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   const { locale, params } = context;
   const { address } = params;
   let userInfo: Ans | null;
