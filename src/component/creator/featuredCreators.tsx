@@ -34,14 +34,13 @@ export const ViewANSButton: FC<ViewANSButtonProps> = ({ currentLabel }) => {
   const [currentThemeColor] = useRecoilState(currentThemeColorAtom);
 
   return (
-    <div
-      className={viewANSButtonStyling}
-      style={{ backgroundColor: dimColorString(currentThemeColor, 0.1), color: currentThemeColor, }}
-    >
-      <Link href={`/creator/${currentLabel}`}>
+      <Link
+        className={viewANSButtonStyling}
+        style={{ backgroundColor: dimColorString(currentThemeColor, 0.1), color: currentThemeColor, }}
+        href={`/creator/${currentLabel}`}
+      >
         {t("view")}
       </Link>
-    </div>
   );
 };
 
