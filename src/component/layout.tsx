@@ -37,16 +37,18 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
         </div>
         {/* placeholder */}
         {_isFullscreen && <Fullscreen episode={''} id={1} />}
-        <Background>
-          <div className="ml-8 pr-8 pt-9">
-            <div className="mb-10">
+        <div className="w-screen overflow-scroll">
+          <Background />
+
+          <div className="ml-8 pr-8 pt-9 relative z-[3]">
+            <div className="mb-10 ">
               <NavBar />
             </div>
-            <div className="w-full overflow-hidden">
+            <div className="w-full overflow-hidden z-[3]">
               {children}
             </div>
           </div>
-        </Background>
+        </div>
       </div>
     </div>
   )
