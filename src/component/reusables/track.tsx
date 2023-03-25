@@ -3,7 +3,7 @@ import React, { useEffect, useCallback, FC, useState, useMemo } from "react";
 import { FullEpisodeInfo } from "../../interfaces";
 import Image from "next/image";
 import Link from "next/link";
-import { fetchAverageColor, getButtonRGBs, getCoverColorScheme, RGBAstringToObject, RGBobjectToString, RGBstringToObject } from "../../utils/ui";
+import { fetchDominantColor, getButtonRGBs, getCoverColorScheme, RGBAstringToObject, RGBobjectToString, RGBstringToObject } from "../../utils/ui";
 import { useTranslation } from "react-i18next";
 import { useShikwasa } from "../../hooks";
 import { showShikwasaPlayerArguments } from "../../interfaces/playback";
@@ -203,14 +203,11 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
   const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({backgroundColor: '', color: ''})
 
   useMemo(() => {
-    // this is a little expensive to run when there's a lot of tracks (well, not really)
-    // but in the future we can use a cache to store the average color
-    // or force this track component to accept colors as props
     const fetchData = async () => {
       if (!coverUsed) return;
-      const averageColor = await fetchAverageColor(coverUsed);
-      if (averageColor.error) return;
-      const [coverColor, textColor] = getCoverColorScheme(averageColor.rgba);
+      const dominantColor = await fetchDominantColor(coverUsed);
+      if (dominantColor.error) return;
+      const [coverColor, textColor] = getCoverColorScheme(dominantColor.rgba);
       const { r, g, b } = RGBAstringToObject(coverColor);
       const RGBstring = RGBobjectToString({r, g, b});
       const buttonStyles = getButtonRGBs(RGBstringToObject(RGBstring));
