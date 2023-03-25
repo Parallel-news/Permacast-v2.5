@@ -115,7 +115,7 @@ export async function getServerSideProps(context) {
             const podcastName = foundPodcasts.obj.podcastName
             const data = { ...podcastData, ...foundEpisode, podcastName}
             const status = PAYLOAD_RECEIVED
-            return { props: { data, status } }
+            return { props: { data, status, ...translations } }
         // Episode Doesnt Exist
         } else {
             const data = null
