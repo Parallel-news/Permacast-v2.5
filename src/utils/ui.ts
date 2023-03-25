@@ -1,5 +1,5 @@
 import Shikwasa from '../shikwasa-src/main.js';
-import { HSL, replaceColorsInterface, RGB, RGBA, RGBstring, RGBtoHSLInterface } from '../interfaces/ui';
+import { HSL, replaceColorsInterface, RGB, RGBA, RGBorRGBAstring, RGBstring, RGBtoHSLInterface } from '../interfaces/ui';
 import { ShowShikwasaPlayerInterface } from '../interfaces/playback';
 import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
 import { podcastCoverColorManager } from './localstorage';
@@ -40,8 +40,14 @@ export const RGBstringToObject = (rgb: string): RGB => {
 };
 
 export const RGBAstringToObject = (rgba: string): RGBA => {
+  let rgbaToBeConverted = rgba;
+  if (rgba.includes('rgb') && !rgba.includes('rgba')) {
+    const { r, g, b } = RGBstringToObject(rgba);
+    rgbaToBeConverted = `rgba(${r}, ${g}, ${b}, 1)`;
+  };
+
   // Remove "rgba(" and ")" from the string, and split the values into an array
-  const values = rgba.replace('rgba(', '').replace(')', '').split(',');
+  const values = rgbaToBeConverted.replace('rgba(', '').replace(')', '').split(',');
 
   const r = parseInt(values[0]);
   const g = parseInt(values[1]);
@@ -109,10 +115,7 @@ export const hue2rgb = (p: number, q: number, t: number) => {
 };
 
 
-export const replaceDarkColorsRGB: replaceColorsInterface = (rgba) => {
-
-  const lightness = rgba.a;
-
+export const replaceDarkColorsRGB: replaceColorsInterface = (rgba, lightness) => {
   // convert to HSL in order to shift lightness up
   let { h, s, l } = RGBtoHSL(rgba);
   if (l < lightness) l = lightness;
@@ -125,9 +128,7 @@ export const replaceDarkColorsRGB: replaceColorsInterface = (rgba) => {
 };
 
 
-export const replaceLightColorsRGB: replaceColorsInterface = (rgba: RGBA) => {
-
-  const lightness = rgba.a;
+export const replaceLightColorsRGB: replaceColorsInterface = (rgba: RGBA, lightness: number) => {
 
   // convert to HSL in order to shift lightness down
   let { h, s, l } = RGBtoHSL(rgba);
@@ -162,7 +163,7 @@ export const dimColorString = (rgb: RGBstring, dimness: number) => {
 export const dimColorObject = (rgb: RGB, dimness: number): RGBA => ({ r: rgb.r, g: rgb.g, b: rgb.b, a: dimness })
 
 export function getButtonRGBs(rgb: RGB, textLightness=0.8, backgroundLightness=0.15) {
-  const replacedRGB = RGBobjectToString(replaceDarkColorsRGB({...rgb, a: 0.45 }));
+  const replacedRGB = RGBobjectToString(replaceDarkColorsRGB({...rgb, a: 0.45 }, 0.45));
   const iconColor = replacedRGB?.replace('rgb', 'rgba')?.replace(')', `, ${textLightness})`);
   const background = replacedRGB?.replace('rgb', 'rgba')?.replace(')', `, ${backgroundLightness})`);
   return { backgroundColor: background, color: iconColor };
@@ -179,10 +180,10 @@ export const fetchDominantColor = async (cover: string): Promise<FastAverageColo
   return averageColor;
 };
 
-export const getCoverColorScheme = (RGBAstring: string): string[] => {
+export const getCoverColorScheme = (RGBAstring: RGBorRGBAstring): RGBorRGBAstring[] => {
   const rgba: RGBA = RGBAstringToObject(RGBAstring);
-  const coverColor = RGBAobjectToString(rgba);
-  const textColor = isTooLight(rgba, 0.6) ? "rgb(0, 0, 0)" : "rgb(255, 255, 255)";
+  const coverColor = isTooDark(rgba, 0.25) ? RGBobjectToString(replaceDarkColorsRGB(rgba, 0.5)): RGBAobjectToString(rgba);
+  const textColor = isTooLight(rgba, 0.8) ? "rgb(0, 0, 0)" : "rgb(255, 255, 255)";
   return [coverColor, textColor];
 };
 

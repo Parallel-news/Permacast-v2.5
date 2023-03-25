@@ -8,7 +8,7 @@ import { useRecoilState } from "recoil";
 import {
   switchFocus,
   videoSelection,
-  latestEpisodes
+  latestEpisodesAtom
 } from "../atoms";
 
 export function Greeting() {
@@ -153,8 +153,6 @@ export function FeaturedPodcastsMobile() {
 
 export function RecentlyAdded() {
   const { t } = useTranslation();
-  const [latestEpisodes_, setLatestEpisodes_] = useRecoilState(latestEpisodes);
-  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
 
   const [episodes, setEpisodes] = useState([]);
   const createdAt_ = (a, b) => {
