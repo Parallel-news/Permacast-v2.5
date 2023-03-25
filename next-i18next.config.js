@@ -8,6 +8,6 @@ module.exports = {
     locales: ['en', 'uk', 'zh'],
   },
   localePath,
-  debug: true,
+  debug: false,
   reloadOnPrerender: process.env.IS_PROD !== 'true',
 }
