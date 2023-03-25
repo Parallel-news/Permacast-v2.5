@@ -70,7 +70,7 @@ export default function Creator ({ userInfo, address }) {
 export async function getServerSideProps({ query, locale }) {
   const { address } = query;
   let userInfo: Ans | null;
-  console.log({...(await serverSideTranslations(locale, ['common'])),})
+  console.log("LOCALE AND QUERY", locale, query)
   if (address) {
     try {
       const data = await axios.get(`https://ans-resolver.herokuapp.com/resolve-as-arpage/${address}`);
