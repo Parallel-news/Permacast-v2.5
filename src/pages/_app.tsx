@@ -10,9 +10,16 @@ import '../styles/globals.css';
 import { MINT_DURATION, TOAST_POSITION } from '../constants';
 import { Toaster } from 'react-hot-toast';
 import { ShikwasaProvider } from '../hooks';
+import React, { useEffect } from 'react';
+import localStorageObjectManager, { PODCAST_COVER_COLORS_MANAGER } from '../utils/localstorage';
 
 
 function App({ Component, pageProps }) {
+
+  useEffect(() => {
+    new localStorageObjectManager(PODCAST_COVER_COLORS_MANAGER);
+  }, [])
+  
   return (
     <RecoilRoot>
           <Head>

@@ -2,7 +2,7 @@ import axios from "axios";
 import Head from "next/head";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRecoilState } from "recoil";
-import { backgroundColor } from "../../atoms";
+import { backgroundColorAtom } from "../../atoms";
 import { 
     Episodes,
     ErrorTag,
@@ -14,7 +14,7 @@ import { getContractVariables } from "../../utils/contract";
 import { findObjectById } from "../../utils/reusables";
 
 export default function PodcastId({data, status}) {
-    const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
+    const [backgroundColor, setBackgroundColor] = useRecoilState(backgroundColorAtom);
     console.log("data: ", data)
     if(data) {
         //State Calls Here

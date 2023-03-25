@@ -2,7 +2,7 @@ import Shikwasa from '../shikwasa-src/main.js';
 import { HSL, replaceColorsInterface, RGB, RGBA, RGBstring, RGBtoHSLInterface } from '../interfaces/ui';
 import { ShowShikwasaPlayerInterface } from '../interfaces/playback';
 import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
-
+import { podcastCoverColorManager } from './localstorage';
 
 export const RGBtoHex = (rgb: RGB): string => {
   const hexNum = (c: number) => {
@@ -26,6 +26,7 @@ export const hexToRGB = (hex: string): RGB => {
 
 export const RGBobjectToString = (rgb: RGB) => `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
 export const RGBAobjectToString = (rgba: RGBA) => `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`;
+export const RGBAobjectToArray = (rgba: RGBA): number[] => [rgba.r, rgba.g, rgba.b, rgba.a];
 
 export const RGBstringToObject = (rgb: string): RGB => {
   // Remove "rgba(" and ")" from the string, and split the values into an array
@@ -167,10 +168,14 @@ export function getButtonRGBs(rgb: RGB, textLightness=0.8, backgroundLightness=0
   return { backgroundColor: background, color: iconColor };
 };
 
-export const fetchAverageColor = async (cover: string): Promise<FastAverageColorResult> => {
+// Fetches the color, but also stores it in memory for later use.
+export const fetchDominantColor = async (cover: string): Promise<FastAverageColorResult> => {
   if (!cover) return;
+  const savedColor = podcastCoverColorManager.getValueFromObject(cover);
+  if (savedColor) return {rgb: '', rgba: savedColor, hex: '', isDark: false, isLight: false, hexa: '', value: [0,0,0,0]};
   const fac = new FastAverageColor();
   const averageColor: FastAverageColorResult = await fac.getColorAsync('https://arweave.net/' + cover, { algorithm: 'dominant' })
+  podcastCoverColorManager.addValueToObject(cover, averageColor.rgba); //? in the future, if this becomes too big, save first 10 chars.
   return averageColor;
 };
 

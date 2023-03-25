@@ -3,7 +3,7 @@ import React, { useEffect, useCallback, FC, useState, useMemo } from "react";
 import { FullEpisodeInfo } from "../../interfaces";
 import Image from "next/image";
 import Link from "next/link";
-import { fetchAverageColor, getButtonRGBs, getCoverColorScheme, RGBAstringToObject, RGBobjectToString, RGBstringToObject } from "../../utils/ui";
+import { fetchDominantColor, getButtonRGBs, getCoverColorScheme, RGBAstringToObject, RGBobjectToString, RGBstringToObject } from "../../utils/ui";
 import { useTranslation } from "react-i18next";
 import { useShikwasa } from "../../hooks";
 import { showShikwasaPlayerArguments } from "../../interfaces/playback";
@@ -86,7 +86,7 @@ const trackFlexCenterPaddedYStyling = `flex items-center p-3`;
 const trackFlexCenterBothStyling = `flex items-center justify-between border-zinc-600 border-2 rounded-2xl pr-4`;
 const trackEpisodeLinkableTitleStyling = `cursor-pointer line-clamp-1 pr-2 text-sm hover:underline`;
 const trackByStyling = `text-zinc-400 text-[10px] mr-2`;
-const trackBackgroundColorStyling = `rounded-full cursor-pointer flex items-center min-w-max text-[10px] gap-x-1 px-2 py-0.5 hover:light hover:brightness-125 default-animation`;
+const trackBackgroundColorStyling = `rounded-full cursor-pointer flex items-center min-w-max text-[10px] gap-x-1 px-2 py-0.5 hover:brightness-125 default-animation`;
 const trackDescriptionStyling = `mx-1.5 w-full line-clamp-1 text-xs`;
 
 // 3. Custom Functions
@@ -203,14 +203,11 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
   const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({backgroundColor: '', color: ''})
 
   useMemo(() => {
-    // this is a little expensive to run when there's a lot of tracks (well, not really)
-    // but in the future we can use a cache to store the average color
-    // or force this track component to accept colors as props
     const fetchData = async () => {
       if (!coverUsed) return;
-      const averageColor = await fetchAverageColor(coverUsed);
-      if (averageColor.error) return;
-      const [coverColor, textColor] = getCoverColorScheme(averageColor.rgba);
+      const dominantColor = await fetchDominantColor(coverUsed);
+      if (dominantColor.error) return;
+      const [coverColor, textColor] = getCoverColorScheme(dominantColor.rgba);
       const { r, g, b } = RGBAstringToObject(coverColor);
       const RGBstring = RGBobjectToString({r, g, b});
       const buttonStyles = getButtonRGBs(RGBstringToObject(RGBstring));

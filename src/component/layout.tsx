@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useEffect } from 'react';
+import React, { FC, ReactNode } from 'react';
 
 import { useRecoilState } from 'recoil';
 
@@ -10,25 +10,17 @@ import Background from './background';
 import EpisodeQueue from './episodeQueue';
 import Fullscreen from './fullscreen';
 
-import { isFullscreenAtom, currentThemeColor, isQueueVisibleAtom } from '../atoms/index';
-import { THEME_COLOR } from '../constants/ui';
+import { isFullscreenAtom, isQueueVisibleAtom } from '../atoms/index';
 
 interface LayoutInterface {
   children: ReactNode;
 }
 
 const Layout: FC<LayoutInterface> = ({ children }) => {
-  const { t } = useTranslation()
 
 
   const [_isFullscreen, _setIsFullscreen] = useRecoilState(isFullscreenAtom);
-  const [isQueueVisible, setQueueVisible] = useRecoilState(isQueueVisibleAtom);
-
-  const [currentThemeColor_, setCurrentThemeColor_] = useRecoilState(currentThemeColor);
-
-  useEffect(() => {
-    setCurrentThemeColor_(THEME_COLOR);
-  }, []);
+  const [isQueueVisible] = useRecoilState(isQueueVisibleAtom);
 
   return (
     <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
@@ -45,16 +37,18 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
         </div>
         {/* placeholder */}
         {_isFullscreen && <Fullscreen episode={''} id={1} />}
-        <Background>
-          <div className="ml-8 pr-8 pt-9">
-            <div className="mb-10">
+        <div className="w-screen overflow-scroll">
+          <Background />
+
+          <div className="ml-8 pr-8 pt-9 relative z-[3]">
+            <div className="mb-10 ">
               <NavBar />
             </div>
-            <div className="w-full overflow-hidden">
+            <div className="w-full overflow-hidden z-[3]">
               {children}
             </div>
           </div>
-        </Background>
+        </div>
       </div>
     </div>
   )

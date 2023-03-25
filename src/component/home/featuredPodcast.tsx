@@ -2,7 +2,7 @@ import React, { useState, useEffect, FC } from "react";
 import { useTranslation } from "next-i18next";
 
 import {
-  fetchAverageColor,
+  fetchDominantColor,
   getCoverColorScheme,
 } from "../../utils/ui";
 
@@ -121,9 +121,9 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
   useEffect(() => {
     const fetchData = async () => {
       const coverToBeUsed = (minifiedCover || cover);
-      const averageColor = await fetchAverageColor(coverToBeUsed);
-      if (averageColor.error) return;
-      const [coverColor, textColor] = getCoverColorScheme(averageColor.rgba);
+      const dominantColor = await fetchDominantColor(coverToBeUsed);
+      if (dominantColor.error) return;
+      const [coverColor, textColor] = getCoverColorScheme(dominantColor.rgba);
       setThemeColor(coverColor);
       setTextColor(textColor);
     };

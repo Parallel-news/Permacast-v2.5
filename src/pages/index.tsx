@@ -12,7 +12,7 @@ import {
   RecentlyAdded,
 } from "../component/featured";
 import FeaturedPodcast from '../component/home/featuredPodcast';
-import FeaturedCreators from '../component/home/featuredCreators';
+import FeaturedCreators from '../component/creator/featuredCreators';
 import Loading from '../component/reusables/loading';
 import {
   podcasts,
