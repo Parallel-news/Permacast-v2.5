@@ -25,6 +25,6 @@ export interface HSL {
 
 export type RGBtoHSLInterface = (rgb: RGB) => HSL;
 
-export type replaceColorsInterface = (rgba: RGBA) => RGB;
+export type replaceColorsInterface = (rgba: RGBA, lightness: number) => RGB;
 
 export type Classname = string;
