@@ -5,7 +5,7 @@ import TipButton from '../../../component/reusables/tip';
 import { Ans, EXMDevState, FullEpisodeInfo, PodcastDev } from '../../../interfaces';
 import { NextPage } from 'next';
 import { hexToRGB, RGBobjectToString } from '../../../utils/ui';
-import { podcastColor } from '../../../atoms';
+import { podcastColorAtom } from '../../../atoms';
 import { useRecoilState } from 'recoil';
 import { Creator404, creatorFlexCenteredStyling, creatorHeaderStyling, CreatorNames, FeaturedPodcasts, LatestEpisodes, ProfileImage, sortByDate, ViewANSButton } from '../../../component/creator';
 
@@ -51,7 +51,7 @@ const Creator: NextPage<{ userInfo: Ans | null, address: string }> = ({ userInfo
   const [podcasts, setPodcasts] = useState<PodcastDev[]>([]);
   const [episodes, setEpisodes] = useState<FullEpisodeInfo[]>([]);
 
-  const [podcastColor_, setPodcastColor_] = useRecoilState(podcastColor)
+  const [podcastColor, setpodcastColor] = useRecoilState(podcastColorAtom)
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -69,7 +69,7 @@ const Creator: NextPage<{ userInfo: Ans | null, address: string }> = ({ userInfo
 
   useEffect(() => {
     const color = RGBobjectToString(hexToRGB(address_color));
-    setPodcastColor_(color);
+    setpodcastColor(color);
   }, [address_color]);
 
   return (

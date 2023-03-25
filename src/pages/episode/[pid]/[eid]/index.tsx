@@ -3,7 +3,7 @@ import Head from "next/head";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { backgroundColor } from "../../../../atoms";
+import { backgroundColorAtom } from "../../../../atoms";
 import { 
     EpisodeBanner,
     EpisodeDescription,
@@ -17,12 +17,12 @@ import { findObjectById, formatStringByLen } from "../../../../utils/reusables";
 
 export default function EpisodeId({data, status}) {
     console.log("ep data: ", data)
-    const [, setBackgroundColor_] = useRecoilState(backgroundColor);
+    const [, setBackgroundColor] = useRecoilState(backgroundColorAtom);
     console.log("status: ", status)
 
     if(data) {
         useEffect(() => {
-            setBackgroundColor_(color)
+            setBackgroundColor(color)
         }, [])
         //Serverside Results
         const ts = new Date(data?.obj.uploadedAt);
