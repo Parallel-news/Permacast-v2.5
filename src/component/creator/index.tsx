@@ -25,6 +25,7 @@ interface ProfileImageProps {
   avatar: string;
   address_color: string;
   size?: number;
+  squared?: boolean;
   linkToArPage?: boolean;
 };
 
@@ -72,22 +73,24 @@ export const sortByDate = (episodes: FullEpisodeInfo[], descending = false): Ful
 };
 
 // 4. Reusable Components
-export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, address_color, size, linkToArPage }) => {
+export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, address_color, size, squared, linkToArPage }) => {
   const borderColor = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "rgb(0, 0, 0)" : "rgb(255, 255, 255)";
   const hex = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "#000000" : "#ffffff";
   const imageSize = size || 120;
+  const squaredOuterBorderRadius = squared ? '12px' : '999px';
+  const squaredInnerBorderRadius = squared ? '8px' : '999px';
 
   return (
     <Link
       href={linkToArPage ? resolveArDomainToArpage(currentLabel) : `/creator/${currentLabel}`}
-      style={{ borderColor: borderColor, borderWidth: '4px', borderRadius: '999px' }}
+      style={{ borderColor: borderColor, borderWidth: '4px', borderRadius: squaredOuterBorderRadius }}
     >
       {avatar && <Image width={imageSize} height={imageSize} alt={avatar} src={avatar} className="object-fit aspect-square" />}
       {!avatar && (
         <div style={{
           width: imageSize,
           height: imageSize,
-          borderRadius: '999px',
+          borderRadius: squaredInnerBorderRadius,
           background: `linear-gradient(225deg, ${hex} 10%, ${address_color} 30%)`,
         }}></div>
       )}
