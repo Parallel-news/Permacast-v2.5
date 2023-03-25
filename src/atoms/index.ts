@@ -1,4 +1,5 @@
 import { atom } from 'recoil';
+import { BACKGROUND_COLOR, THEME_COLOR } from '../constants/ui';
 import { Episode, Podcast } from '../interfaces';
 import { RGBAstring, RGBorRGBAstring } from '../interfaces/ui';
 
@@ -162,12 +163,12 @@ export const themeColor = atom ({
 
 export const currentThemeColorAtom = atom<RGBorRGBAstring>({
     key: "currentThemeColor",
-    default: 'rgb(255, 255, 0)' // good ol' yellow
+    default: THEME_COLOR
 })
 
 export const backgroundColor = atom ({
     key: "backgroundColor",
-    default: 'rgb(0, 0, 0)'
+    default: BACKGROUND_COLOR
 })
 
 export const podcastColor = atom ({
