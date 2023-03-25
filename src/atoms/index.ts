@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { BACKGROUND_COLOR, THEME_COLOR } from '../constants/ui';
+import { DEFAULT_BACKGROUND_COLOR, DEFAULT_PODCAST_COLOR, DEFAULT_THEME_COLOR } from '../constants/ui';
 import { Ans, Episode, Podcast } from '../interfaces';
 import { RGBorRGBAstring } from '../interfaces/ui';
 
@@ -156,24 +156,20 @@ export const globalModalOpen = atom({
 
 // *** THEMING ***
 
-export const themeColor = atom ({
-    key: "themeColor",
-    default: 'rgb(255, 255, 0)'
-})
 
 export const currentThemeColorAtom = atom<RGBorRGBAstring>({
     key: "currentThemeColorAtom",
-    default: THEME_COLOR
+    default: DEFAULT_THEME_COLOR
 })
 
-export const backgroundColor = atom ({
+export const backgroundColorAtom = atom ({
     key: "backgroundColorAtom",
-    default: BACKGROUND_COLOR
+    default: DEFAULT_BACKGROUND_COLOR
 })
 
-export const podcastColor = atom ({
-    key: "podcastColor",
-    default: 'rgb(0, 0, 0)'
+export const podcastColorAtom = atom ({
+    key: "podcastColorAtom",
+    default: DEFAULT_PODCAST_COLOR
 })
 
 // Everpay
