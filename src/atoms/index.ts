@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 import { DEFAULT_BACKGROUND_COLOR, DEFAULT_PODCAST_COLOR, DEFAULT_THEME_COLOR } from '../constants/ui';
-import { Ans, Episode, Podcast } from '../interfaces';
+import { Ans, Episode, FullEpisodeInfo, Podcast } from '../interfaces';
 import { RGBorRGBAstring } from '../interfaces/ui';
 
 export const uploadPercent = atom({
@@ -26,8 +26,8 @@ export const isFullscreenAtom = atom<boolean>({
 
 
 // *** DATA-FETCHING ***
-export const podcasts = atom({
-    key: "podcasts",
+export const podcastsAtom = atom<Podcast[]>({
+    key: "podcastsAtom",
     default: [],
 });
 
@@ -46,8 +46,8 @@ export const featuredPodcasts = atom({
     default: [],
 });
 
-export const latestEpisodes = atom({
-    key: "latestEpisodes",
+export const latestEpisodesAtom = atom<FullEpisodeInfo[]>({
+    key: "latestEpisodesAtom",
     default: [],
 });
 
