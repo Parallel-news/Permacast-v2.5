@@ -11,6 +11,7 @@ import { currentThemeColor, podcastColor } from '../../../atoms';
 import { useRecoilState } from 'recoil';
 import FeaturedPodcast from '../../../component/home/featuredPodcast';
 import Track from '../../../component/reusables/track';
+import Link from 'next/link';
 
 
 /**
@@ -28,9 +29,10 @@ interface ProfileImageProps {
   avatar: string;
   address_color: string;
   size?: number;
+  linkToArPage?: boolean;
 };
 
-interface NamingProps {
+interface CreatorNamesProps {
   nickname: string;
   currentLabel: string;
 };
@@ -50,15 +52,18 @@ interface LatestEpisodesProps {
 // 2. Stylings
 const creatorHeaderStyling = `flex flex-col md:flex-row items-center justify-between`;
 const creatorFlexCenteredStyling = `flex items-center gap-x-7`;
-const creatorNicknameStyling = `text-3xl font-medium tracking-wide text-white`;
-const creatorLabelStyling = `text-lg font-medium text-[#828282]`;
+const creatorNicknameStyling = `select-text text-3xl font-medium tracking-wide text-white`;
+const creatorLabelStyling = `select-text text-lg font-medium text-[#828282]`;
+const creatorNicknameSmallStyling = `select-text font-medium tracking-wide text-white`;
+const creatorLabelSmallStyling = `select-text text-sm font-medium text-[#828282]`;
+
 const creatorTextHeaderTextStyling = `text-3xl font-bold text-white`;
 const podcastCarouselStyling = `w-full mt-8 carousel gap-x-12 py-3`;
 const flexCol = `flex flex-col`;
 
 // 3. Custom Functions
 
-export const resolveArDomainToArpage = (currentLabel: string) => `https://${currentLabel}.ar.page`
+export const resolveArDomainToArpage = (currentLabel: string) => `https://${currentLabel}.ar.page`;
 
 
 export const sortByDate = (episodes: FullEpisodeInfo[], descending = false): FullEpisodeInfo[] => {
@@ -72,17 +77,17 @@ export const sortByDate = (episodes: FullEpisodeInfo[], descending = false): Ful
 };
 
 // 4. Reusable Components
-export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, address_color, size }) => {
-  const borderColor = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "rgb(255, 255, 255)": "rgb(0, 0, 0,)";
-  const hex = address_color &&isTooLight(hexToRGB(address_color), 0.6) ? "#000000": "#ffffff";
+export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, address_color, size, linkToArPage }) => {
+  const borderColor = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "rgb(0, 0, 0)": "rgb(255, 255, 255)";
+  const hex = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "#000000": "#ffffff";
   const imageSize = size || 120;
 
   return (
-    <a
-      href={resolveArDomainToArpage(currentLabel)}
+    <Link
+      href={linkToArPage ? resolveArDomainToArpage(currentLabel): `/creator/${currentLabel}`}
       style={{borderColor: borderColor, borderWidth: '4px', borderRadius: '999px'}}
     >
-      {avatar && <Image width={imageSize} height={imageSize} alt={avatar} src={avatar} />}
+      {avatar && <Image width={imageSize} height={imageSize} alt={avatar} src={avatar} className="object-fit aspect-square" />}
       {!avatar && (
         <div style={{
           width: imageSize,
@@ -91,11 +96,18 @@ export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, addr
           background: `linear-gradient(225deg, ${hex} 10%, ${address_color} 30%)`,
         }}></div>
       )}
-    </a>
+    </Link>
   );
 };
 
-export const Naming: FC<NamingProps> = ({ nickname, currentLabel }) => (
+export const CreatorNamesSmall: FC<CreatorNamesProps> = ({ nickname, currentLabel }) => (
+  <div className={flexCol}>
+    <div className={creatorNicknameSmallStyling }>{nickname}</div>
+    <div className={creatorLabelSmallStyling }>@{currentLabel}</div>
+  </div>
+);
+
+export const CreatorNames: FC<CreatorNamesProps> = ({ nickname, currentLabel }) => (
   <div className={flexCol}>
     <div className={creatorNicknameStyling}>{nickname}</div>
     <div className={creatorLabelStyling}>@{currentLabel}</div>
@@ -199,8 +211,8 @@ const Creator: NextPage<{ userInfo: Ans | null, address: string }> = ({ userInfo
     <div className="mt-12 h-full pb-40">
       <div className={creatorHeaderStyling}>
         <div className={creatorFlexCenteredStyling}>
-          <ProfileImage {...{ currentLabel, avatar, address_color }} />
-          <Naming {...{ nickname, currentLabel }} />
+          <ProfileImage {...{ currentLabel, avatar, address_color }} linkToArPage />
+          <CreatorNames {...{ nickname, currentLabel }} />
         </div>
         <div className={creatorFlexCenteredStyling + " mr-6"}>
           <ViewANSButton {...{ currentLabel }} />
