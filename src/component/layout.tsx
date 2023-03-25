@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useEffect } from 'react';
+import React, { FC, ReactNode } from 'react';
 
 import { useRecoilState } from 'recoil';
 
@@ -17,11 +17,10 @@ interface LayoutInterface {
 }
 
 const Layout: FC<LayoutInterface> = ({ children }) => {
-  const { t } = useTranslation()
 
 
   const [_isFullscreen, _setIsFullscreen] = useRecoilState(isFullscreenAtom);
-  const [isQueueVisible, setQueueVisible] = useRecoilState(isQueueVisibleAtom);
+  const [isQueueVisible] = useRecoilState(isQueueVisibleAtom);
 
   return (
     <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
