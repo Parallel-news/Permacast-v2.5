@@ -25,7 +25,6 @@ import PlayButton from "./playButton";
 */
 export interface TrackProps {
   episode: FullEpisodeInfo;
-  episodeNumber: number,
   includeDescription?: boolean,
   includePlayButton?: boolean,
 };
@@ -180,7 +179,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
 
   const { t } = useTranslation();
 
-  const { episode, episodeNumber, includeDescription, includePlayButton } = props;
+  const { episode, includeDescription, includePlayButton } = props;
   const {
     cover,
     minifiedCover,

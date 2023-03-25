@@ -54,7 +54,7 @@ const EpisodeQueue: FC = () => {
     <div>
       {queue.map((episode: Episode, index: number) => (
         <div key={index} className="mb-2 relative">
-          <Track episode={{episode: episode, podcast: currentPodcast}} episodeNumber={index + 1} includePlayButton />
+          <Track episode={{episode: episode, podcast: currentPodcast}} includePlayButton />
         </div>
       )) || <p className="text-zinc-400">{t("queue.emptyqueue")}</p>}
     </div>
