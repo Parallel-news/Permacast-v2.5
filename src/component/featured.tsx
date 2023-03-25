@@ -1,24 +1,15 @@
-import React, { useState, useContext, useEffect, memo, FC } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "next-i18next";
 import { useArconnect } from 'react-arconnect';
-import {
-  replaceDarkColorsRGB,
-  isTooLight,
-  trimANSLabel,
-  RGBobjectToString,
-} from "../utils/ui";
-import { getCreator } from "../utils/podcast";
-import { EyeIcon } from "@heroicons/react/24/outline";
+import { trimANSLabel } from "../utils/ui";
 import { FaPlay } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
 import { useRecoilState } from "recoil";
 import {
   switchFocus,
   videoSelection,
-  creators,
   latestEpisodes
 } from "../atoms";
-import { PodcastDev } from "../interfaces/index";
 
 export function Greeting() {
   const { t } = useTranslation();
