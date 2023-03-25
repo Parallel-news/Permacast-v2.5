@@ -12,7 +12,8 @@ export default class LocalStorageObjectManager {
         this.setObject({});
       }
     } catch (error) {
-      console.error(error);
+      // to avoid annoying console.logs
+      // console.error(error);
     }
   };
 
@@ -66,8 +67,13 @@ export default class LocalStorageObjectManager {
   };
 
   getValueFromObject(objectKey: string) {
-    const storedObject = this.getObject();  
-    return storedObject[objectKey];
+    try {
+      const storedObject = this.getObject();  
+      return storedObject[objectKey];
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   };
   
 };
