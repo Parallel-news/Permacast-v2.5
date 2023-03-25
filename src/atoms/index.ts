@@ -1,5 +1,6 @@
 import { atom } from 'recoil';
 import { Episode, Podcast } from '../interfaces';
+import { RGBAstring, RGBorRGBAstring } from '../interfaces/ui';
 
 export const uploadPercent = atom({
     key: 'uploadPercent',
@@ -159,9 +160,9 @@ export const themeColor = atom ({
     default: 'rgb(255, 255, 0)'
 })
 
-export const currentThemeColor = atom ({
+export const currentThemeColorAtom = atom<RGBorRGBAstring>({
     key: "currentThemeColor",
-    default: ''
+    default: 'rgb(255, 255, 0)' // good ol' yellow
 })
 
 export const backgroundColor = atom ({
