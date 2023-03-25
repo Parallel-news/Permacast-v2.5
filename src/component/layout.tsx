@@ -24,7 +24,7 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
 
   return (
     <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
-      <div className="flex h-screen">
+      <div className="flex h-screen overflow-x-hidden relative">
         <div className="hidden md:block z-50">
           <div className="w-[100px] z-50 flex justify-center">
             <Sidenav />
@@ -37,9 +37,8 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
         </div>
         {/* placeholder */}
         {_isFullscreen && <Fullscreen episode={''} id={1} />}
-        <div className="w-screen overflow-scroll">
+        <div className="w-screen overflow-y-scroll overflow-x-hidden">
           <Background />
-
           <div className="ml-8 pr-8 pt-9 relative z-[3]">
             <div className="mb-10 ">
               <NavBar />
