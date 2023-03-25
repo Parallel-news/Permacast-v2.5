@@ -85,7 +85,7 @@ const trackFlexCenterPaddedYStyling = `flex items-center p-3`;
 const trackFlexCenterBothStyling = `flex items-center justify-between border-zinc-600 border-2 rounded-2xl pr-4`;
 const trackEpisodeLinkableTitleStyling = `cursor-pointer line-clamp-1 pr-2 text-sm hover:underline`;
 const trackByStyling = `text-zinc-400 text-[10px] mr-2`;
-const trackBackgroundColorStyling = `rounded-full cursor-pointer flex items-center min-w-max text-[10px] gap-x-1 px-2 py-0.5 hover:brightness-125 default-animation`;
+const trackBackgroundColorStyling = `rounded-full cursor-pointer flex items-center min-w-max text-[10px] gap-x-1 px-2 py-0.5 focus:brightness-150 hover:brightness-125 default-animation`;
 const trackDescriptionStyling = `mx-1.5 w-full line-clamp-1 text-xs`;
 
 // 3. Custom Functions
