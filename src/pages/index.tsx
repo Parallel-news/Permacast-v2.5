@@ -8,7 +8,7 @@ import { useRecoilState } from "recoil";
 import {
   Greeting, RecentlyAdded
 } from "../component/featured";
-import FeaturedPodcast from '../component/home/featuredPodcast';
+import FeaturedPodcast, { featuredPocastCarouselStyling } from '../component/home/featuredPodcast';
 import FeaturedCreators from '../component/creator/featuredCreators';
 import Loading from '../component/reusables/loading';
 import {
@@ -58,7 +58,7 @@ const Home: NextPage = () => {
       <Greeting />
 
       {podcasts_.length > 0 ? (
-        <div className="w-full mt-8 carousel gap-x-12 py-3">
+        <div className={featuredPocastCarouselStyling}>
           {podcasts_.map((podcast: PodcastDev, index: number) =>
             <FeaturedPodcast {...podcast} key={index} />
           )}

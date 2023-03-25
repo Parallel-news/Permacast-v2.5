@@ -1,5 +1,5 @@
 {
-  "name": "permacast",
+  "name": "permacast-ui",
   "version": "1.0.0",
   "author": "parallel-news",
   "license": "MIT",
@@ -21,7 +21,6 @@
     "daisyui": "^2.47.0",
     "everpay": "^0.6.0",
     "fast-average-color": "^9.3.0",
-    "fuse.js": "^6.6.2",
     "i18next": "^22.4.9",
     "next": "latest",
     "next-i18next": "^13.0.3",
