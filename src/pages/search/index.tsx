@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { getContractVariables } from '../../utils/contract';
 import { EXM_READ_LINK } from '../../constants';
-import { titles, allPodcasts, selection, input } from '../../atoms';
+import { titles, allPodcasts, selection, searchInputAtom } from '../../atoms';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Episode, EXMDevState, FullEpisodeInfo, Podcast } from '../../interfaces';
 import Track from '../../component/reusables/track';
@@ -25,18 +25,18 @@ export default function Search({podcasts, episodes}) {
   const [_titles, _setTitles] = useRecoilState(titles);
   const [ , _setAllPodcasts] = useRecoilState(allPodcasts);
   const [_selection, ] = useRecoilState(selection);
-  const [_input, ] = useRecoilState(input); 
+  const [searchInput, _] = useRecoilState(searchInputAtom); 
 
-  let filteredPodcasts = _input && 
+  let filteredPodcasts = searchInput && 
   podcasts.filter((podcast: Podcast) => {
-      if (_input === '') return [];
-      else return podcast.podcastName.toLowerCase().includes(_input.toLowerCase());
+      if (searchInput === '') return [];
+      else return podcast.podcastName.toLowerCase().includes(searchInput.toLowerCase());
     });
   
-  let filteredEpisodes = _input &&
+  let filteredEpisodes = searchInput &&
   episodes.filter((episode: FullEpisodeInfo) => {
-      if (_input === '') return [];
-      else return episode.episode.episodeName.toLowerCase().includes(_input.toLowerCase());
+      if (searchInput === '') return [];
+      else return episode.episode.episodeName.toLowerCase().includes(searchInput.toLowerCase());
     });
 
   return (
@@ -46,7 +46,7 @@ export default function Search({podcasts, episodes}) {
       :
       (
         <div>
-          {_input.length === 0 ? <div className={startTypingStyling}>{t("search.starttyping")}</div>: (
+          {searchInput.length === 0 ? <div className={startTypingStyling}>{t("search.starttyping")}</div>: (
             <div>
               <div className={resultsStyling}>{t("search.podcasts")}</div>
               <div className={featuredPocastCarouselStyling}>

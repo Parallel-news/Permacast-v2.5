@@ -65,8 +65,8 @@ export const allPodcasts = atom({
     default: [],
 });
 
-export const input = atom({
-    key: "input",
+export const searchInputAtom = atom<string>({
+    key: "searchInputAtom",
     default: ""
 });
 
