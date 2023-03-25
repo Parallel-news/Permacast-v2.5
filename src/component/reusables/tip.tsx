@@ -14,6 +14,8 @@ const TipButton: FC<TipButtonProps> = (props) => {
   
   const { address } = props;
   const { t } = useTranslation();
+  console.log('tipbutton', t)
+  console.log('tipbutton text', t("creator:tip"))
   const [currentThemeColor_, setCurrentThemeColor_] = useRecoilState(currentThemeColor);
 
   const tipPrompt = () => {

@@ -125,8 +125,9 @@ export const ViewANSButton: FC<ViewANSButtonProps> = ({ currentLabel }) => {
 
 const FeaturedPodcasts: FC<FeaturedPodcastProps> = ({ podcasts }) => {
 
-  const { t } = useTranslation();
-
+  const { t } = useTranslation('common');
+  console.log(t);
+  console.log(t("creator.podcasts"))
   return (
     <div className="mt-8">
       <div className={creatorTextHeaderTextStyling + " mb-8"}>{t("creator.podcasts")}</div>
