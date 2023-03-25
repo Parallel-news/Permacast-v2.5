@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect, Suspense, FC } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import TipButton from './reusables/tip';
 import { Ans, Episode, EXMDevState, FullEpisodeInfo, PodcastDev } from '../interfaces';
@@ -129,7 +129,7 @@ export const FeaturedPodcasts: FC<FeaturedPodcastProps> = ({ podcasts }) => {
 
   return (
     <div className="mt-8">
-      <div className={creatorTextHeaderTextStyling + " mb-8"}>{t("creator:podcasts")}</div>
+      <div className={creatorTextHeaderTextStyling + " mb-8"}>{t("creator.podcasts")}</div>
       <div>
         {podcasts.length > 0 ? (
           <div className={podcastCarouselStyling}>
@@ -137,7 +137,7 @@ export const FeaturedPodcasts: FC<FeaturedPodcastProps> = ({ podcasts }) => {
               <FeaturedPodcast {...podcast} key={index} />
             )}
           </div>
-        ): <>{t("creator:nopodcasts")}</>}
+        ): <>{t("creator.nopodcasts")}</>}
       </div>
     </div>
   );
@@ -148,7 +148,7 @@ export const LatestEpisodes: FC<LatestEpisodesProps> = ({ episodes }) => {
 
   return (
     <div className="mt-12">
-      <div className={creatorTextHeaderTextStyling}>{t("creator:latestepisodes")}</div>
+      <div className={creatorTextHeaderTextStyling}>{t("creator.latestepisodes")}</div>
       <div className="mt-6">
         {episodes.map((episode: FullEpisodeInfo, episodeNumber: number) => (
           <div className="mb-4" key={episodeNumber}>
