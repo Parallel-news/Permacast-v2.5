@@ -28,7 +28,7 @@ export default function UploadEpisode({yourShows, error, pid}) {
     }
 }
 
-export async function getServerSideProps({query, locale}) {
+export async function getStaticProps({query, locale}) {
     const { contractAddress } = getContractVariables()
     const pid = query.pid || '';
     let yourShows = null
