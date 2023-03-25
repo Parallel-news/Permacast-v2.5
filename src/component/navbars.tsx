@@ -196,7 +196,7 @@ export function Sidenav() {
 export function NavBar() {
   const { t } = useTranslation();
   const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
-  const everPayStyling = "flex justify-center items-center text-sm text-white wallet-button font-semibold bg-black rounded-full w-[12%] mx-2"
+  const everPayStyling = "flex justify-center items-center text-sm text-white focus:outline-white wallet-button font-semibold bg-zinc-900 hover:bg-zinc-700 default-animation rounded-full w-[12%] mx-2";
   return (
     <>
       <div className="md:hidden">
@@ -210,6 +210,7 @@ export function NavBar() {
           <div className="ml-8 w-64">
             <ArConnect />
           </div>
+          {/* TODO: Re-write */}
           {arweaveAddress_ && arweaveAddress_.length > 0 && (
           <EverPayBalance
             textClassname={everPayStyling}
