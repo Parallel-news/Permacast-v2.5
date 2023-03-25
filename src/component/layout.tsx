@@ -10,7 +10,7 @@ import Background from './background';
 import EpisodeQueue from './episodeQueue';
 import Fullscreen from './fullscreen';
 
-import { isFullscreenAtom, currentThemeColor, isQueueVisibleAtom } from '../atoms/index';
+import { isFullscreenAtom, isQueueVisibleAtom } from '../atoms/index';
 import { THEME_COLOR } from '../constants/ui';
 
 interface LayoutInterface {
@@ -23,12 +23,6 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
 
   const [_isFullscreen, _setIsFullscreen] = useRecoilState(isFullscreenAtom);
   const [isQueueVisible, setQueueVisible] = useRecoilState(isQueueVisibleAtom);
-
-  const [currentThemeColor_, setCurrentThemeColor_] = useRecoilState(currentThemeColor);
-
-  useEffect(() => {
-    setCurrentThemeColor_(THEME_COLOR);
-  }, []);
 
   return (
     <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
