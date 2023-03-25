@@ -2,15 +2,15 @@ import axios from 'axios';
 import React, { useState, useEffect, Suspense, FC } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import TipButton from '../../../component/reusables/tip';
-import { Ans, Episode, EXMDevState, FullEpisodeInfo, PodcastDev } from '../../../interfaces';
+import TipButton from './reusables/tip';
+import { Ans, Episode, EXMDevState, FullEpisodeInfo, PodcastDev } from '../interfaces';
 import { NextPage } from 'next';
 import Image from 'next/image';
-import { dimColorString, hexToRGB, isTooLight, RGBobjectToString, RGBtoHex } from '../../../utils/ui';
-import { currentThemeColor, podcastColor } from '../../../atoms';
+import { dimColorString, hexToRGB, isTooLight, RGBobjectToString, RGBtoHex } from '../utils/ui';
+import { currentThemeColor, podcastColor } from '../atoms';
 import { useRecoilState } from 'recoil';
-import FeaturedPodcast from '../../../component/home/featuredPodcast';
-import Track from '../../../component/reusables/track';
+import FeaturedPodcast from './home/featuredPodcast';
+import Track from './reusables/track';
 
 
 /**
