@@ -16,7 +16,6 @@ import {
   switchFocus,
   videoSelection,
   creators,
-  currentThemeColor,
   latestEpisodes
 } from "../atoms";
 import { PodcastDev } from "../interfaces/index";
