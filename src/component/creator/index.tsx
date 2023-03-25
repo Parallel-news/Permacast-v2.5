@@ -1,12 +1,9 @@
-import axios from 'axios';
 import Image from 'next/image';
-import React, { useState, useEffect, Suspense, FC } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import TipButton from '../../component/reusables/tip';
-import { Ans, Episode, EXMDevState, FullEpisodeInfo, PodcastDev } from '../../interfaces';
-import { dimColorString, hexToRGB, isTooLight, RGBobjectToString, RGBtoHex } from '../../utils/ui';
-import { currentThemeColorAtom, podcastColor } from '../../atoms';
+import { FullEpisodeInfo, PodcastDev } from '../../interfaces';
+import { dimColorString, hexToRGB, isTooLight } from '../../utils/ui';
+import { currentThemeColorAtom } from '../../atoms';
 import { useRecoilState } from 'recoil';
 import FeaturedPodcast from '../home/featuredPodcast';
 import Track from '../reusables/track';
@@ -76,14 +73,14 @@ export const sortByDate = (episodes: FullEpisodeInfo[], descending = false): Ful
 
 // 4. Reusable Components
 export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, address_color, size, linkToArPage }) => {
-  const borderColor = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "rgb(0, 0, 0)": "rgb(255, 255, 255)";
-  const hex = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "#000000": "#ffffff";
+  const borderColor = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "rgb(0, 0, 0)" : "rgb(255, 255, 255)";
+  const hex = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "#000000" : "#ffffff";
   const imageSize = size || 120;
 
   return (
     <Link
-      href={linkToArPage ? resolveArDomainToArpage(currentLabel): `/creator/${currentLabel}`}
-      style={{borderColor: borderColor, borderWidth: '4px', borderRadius: '999px'}}
+      href={linkToArPage ? resolveArDomainToArpage(currentLabel) : `/creator/${currentLabel}`}
+      style={{ borderColor: borderColor, borderWidth: '4px', borderRadius: '999px' }}
     >
       {avatar && <Image width={imageSize} height={imageSize} alt={avatar} src={avatar} className="object-fit aspect-square" />}
       {!avatar && (
@@ -100,8 +97,8 @@ export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, addr
 
 export const CreatorNamesSmall: FC<CreatorNamesProps> = ({ nickname, currentLabel }) => (
   <div className={flexCol}>
-    <div className={creatorNicknameSmallStyling }>{nickname}</div>
-    <div className={creatorLabelSmallStyling }>@{currentLabel}</div>
+    <div className={creatorNicknameSmallStyling}>{nickname}</div>
+    <div className={creatorLabelSmallStyling}>@{currentLabel}</div>
   </div>
 );
 
@@ -143,11 +140,11 @@ export const FeaturedPodcasts: FC<FeaturedPodcastProps> = ({ podcasts }) => {
       <div>
         {podcasts.length > 0 ? (
           <div className={podcastCarouselStyling}>
-            {podcasts.map((podcast: PodcastDev, index: number) => 
+            {podcasts.map((podcast: PodcastDev, index: number) =>
               <FeaturedPodcast {...podcast} key={index} />
             )}
           </div>
-        ): <>{t("creator.nopodcasts")}</>}
+        ) : <>{t("creator.nopodcasts")}</>}
       </div>
     </div>
   );
