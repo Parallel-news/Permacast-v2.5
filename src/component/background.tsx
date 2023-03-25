@@ -34,7 +34,7 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
 
   return (
     <div className="w-screen h-2/4 absolute overflow-hidden default-animation-slow " style={{backgroundColor: backgroundColor, zIndex: 1}}>
-      <div className="absolute w-screen h-full z-[2]" style={styles}></div>
+      <div className="absolute w-full h-full z-[2]" style={styles}></div>
     </div>
   )
 }
