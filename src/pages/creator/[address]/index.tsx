@@ -11,7 +11,7 @@ import { currentThemeColor, podcastColor } from '../../../atoms';
 import { useRecoilState } from 'recoil';
 import FeaturedPodcast from '../../../component/home/featuredPodcast';
 import Track from '../../../component/reusables/track';
-import { FeaturedPodcasts, LatestEpisodes, Naming, ProfileImage, sortByDate, ViewANSButton } from '../../../component/components';
+import { FeaturedPodcasts, LatestEpisodes, Naming, ProfileImage, sortByDate, ViewANSButton } from '../../../component/creator';
 
 
 
