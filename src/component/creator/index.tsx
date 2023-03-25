@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import TipButton from '../../component/reusables/tip';
 import { Ans, Episode, EXMDevState, FullEpisodeInfo, PodcastDev } from '../../interfaces';
 import { dimColorString, hexToRGB, isTooLight, RGBobjectToString, RGBtoHex } from '../../utils/ui';
-import { currentThemeColor, podcastColor } from '../../atoms';
+import { currentThemeColorAtom, podcastColor } from '../../atoms';
 import { useRecoilState } from 'recoil';
 import FeaturedPodcast from '../home/featuredPodcast';
 import Track from '../reusables/track';
@@ -115,7 +115,7 @@ export const CreatorNames: FC<CreatorNamesProps> = ({ nickname, currentLabel }) 
 export const ViewANSButton: FC<ViewANSButtonProps> = ({ currentLabel }) => {
   const { t } = useTranslation();
 
-  const [currentThemeColor_, setCurrentThemeColor_] = useRecoilState(currentThemeColor);
+  const [currentThemeColor, setCurrentThemeColor] = useRecoilState(currentThemeColorAtom);
 
   return (
     <a
@@ -124,8 +124,8 @@ export const ViewANSButton: FC<ViewANSButtonProps> = ({ currentLabel }) => {
       target="_blank"
       rel="noopener noreferrer"
       style={{
-        backgroundColor: dimColorString(currentThemeColor_, 0.1),
-        color: currentThemeColor_,
+        backgroundColor: dimColorString(currentThemeColor, 0.1),
+        color: currentThemeColor,
       }}
     >
       {t('creator.ans')}
