@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import TipButton from '../../../component/reusables/tip';
-import { Ans, EXMDevState, FullEpisodeInfo, PodcastDev } from '../../../interfaces';
+import { Ans, EXMDevState, FullEpisodeInfo, Podcast } from '../../../interfaces';
 import { NextPage } from 'next';
 import { hexToRGB, RGBobjectToString } from '../../../utils/ui';
 import { podcastColorAtom } from '../../../atoms';
@@ -48,7 +48,7 @@ const Creator: NextPage<{ userInfo: Ans | null, address: string }> = ({ userInfo
 
   const { user, avatar, currentLabel, address_color, nickname } = userInfo;
 
-  const [podcasts, setPodcasts] = useState<PodcastDev[]>([]);
+  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [episodes, setEpisodes] = useState<FullEpisodeInfo[]>([]);
 
   const [podcastColor, setpodcastColor] = useRecoilState(podcastColorAtom)
@@ -58,9 +58,9 @@ const Creator: NextPage<{ userInfo: Ans | null, address: string }> = ({ userInfo
       const podcasts = await axios.get('/api/exm/read');
       const data: EXMDevState = podcasts.data;
       if (data?.podcasts) {
-        const usersPodcasts = data.podcasts.filter((podcast) => podcast.owner === address).map((podcast) => podcast);
+        const usersPodcasts = data.podcasts.filter((podcast) => podcast.owner === user).map((podcast) => podcast);
         setPodcasts(usersPodcasts);
-        const userEpisodes = usersPodcasts.map((podcast: PodcastDev) => podcast.episodes.map((episode) => ({episode, podcast}))).flat(1);
+        const userEpisodes = usersPodcasts.map((podcast: Podcast) => podcast.episodes.map((episode) => ({episode, podcast}))).flat(1);
         setEpisodes(sortByDate(userEpisodes));
       };
     };
