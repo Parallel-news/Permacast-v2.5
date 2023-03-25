@@ -11,7 +11,6 @@ import EpisodeQueue from './episodeQueue';
 import Fullscreen from './fullscreen';
 
 import { isFullscreenAtom, isQueueVisibleAtom } from '../atoms/index';
-import { THEME_COLOR } from '../constants/ui';
 
 interface LayoutInterface {
   children: ReactNode;
