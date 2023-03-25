@@ -70,6 +70,7 @@ export interface Episode {
   uploader:    string;
   uploadedAt:  number;
   isVisible:   boolean;
+  order?:      number; // UI only
 }
 
 export interface FullEpisodeInfo {
