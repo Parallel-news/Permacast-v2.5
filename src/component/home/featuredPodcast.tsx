@@ -43,13 +43,14 @@ interface PodcastDescriptionProps {
 
 // 2. Stylings
 
-const podcastOuterBackgroundStyling = `rounded-3xl text-white/30 relative overflow-hidden carousel-item hover-up-effect max-w-[280px]`
-const podcastInnerBackgroundStyling = `w-full h-1/6 px-5 pb-2 cursor-pointer relative`
-const podcastCoverStyling = `w-full max-w-[250px] overflow-x-hidden mx-auto mb-2`
-const podcastEpisodeCountStyling = `pt-5 pb-3 text-xs font-semibold`
-const podcastBottomStyling = `h-16 flex items-center`
-const podcastNameStyling = `text-lg font-medium line-clamp-1`
-const podcastDescriptionStyling = `text-xs line-clamp-2 max-w-[95%] break-all`
+export const featuredPocastCarouselStyling = `w-full mt-8 carousel gap-x-12 py-3`;
+export const podcastOuterBackgroundStyling = `rounded-3xl text-white/30 relative overflow-hidden carousel-item hover-up-effect max-w-[280px]`
+export const podcastInnerBackgroundStyling = `w-full h-1/6 px-5 pb-2 cursor-pointer relative`
+export const podcastCoverStyling = `w-full max-w-[250px] overflow-x-hidden mx-auto mb-2`
+export const podcastEpisodeCountStyling = `pt-5 pb-3 text-xs font-semibold`
+export const podcastBottomStyling = `h-16 flex items-center`
+export const podcastNameStyling = `text-lg font-medium line-clamp-1`
+export const podcastDescriptionStyling = `text-xs line-clamp-2 max-w-[95%] break-all`
 
 // 3. Custom Functions
 
