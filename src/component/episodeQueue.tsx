@@ -45,7 +45,7 @@ const EpisodeQueue: FC = () => {
 
   const TopText: FC = () => (
     <div className={topTextWrapperStyling}>
-      <div>{t("queue.currentlyplaying")}</div>
+      <div>{t("queue:currentlyplaying")}</div>
       <CrossIcon size={32} onClick={() => setIsQueueVisible(false)} />
     </div>
   );

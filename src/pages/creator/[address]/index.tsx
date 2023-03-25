@@ -118,7 +118,7 @@ export const ViewANSButton: FC<ViewANSButtonProps> = ({ currentLabel }) => {
         color: currentThemeColor_,
       }}
     >
-      {t('creator.ans')}
+      {t('creator:ans')}
     </a>
   );
 };
@@ -126,12 +126,10 @@ export const ViewANSButton: FC<ViewANSButtonProps> = ({ currentLabel }) => {
 const FeaturedPodcasts: FC<FeaturedPodcastProps> = ({ podcasts }) => {
 
   const { t } = useTranslation('common');
-  console.log(t);
-  console.log(t("creator.podcasts"))
-  console.log(t("creator:podcasts"))
+
   return (
     <div className="mt-8">
-      <div className={creatorTextHeaderTextStyling + " mb-8"}>{t("creator.podcasts")}</div>
+      <div className={creatorTextHeaderTextStyling + " mb-8"}>{t("creator:podcasts")}</div>
       <div>
         {podcasts.length > 0 ? (
           <div className={podcastCarouselStyling}>
@@ -139,7 +137,7 @@ const FeaturedPodcasts: FC<FeaturedPodcastProps> = ({ podcasts }) => {
               <FeaturedPodcast {...podcast} key={index} />
             )}
           </div>
-        ): <>{t("creator.nopodcasts")}</>}
+        ): <>{t("creator:nopodcasts")}</>}
       </div>
     </div>
   );
@@ -150,7 +148,7 @@ const LatestEpisodes: FC<LatestEpisodesProps> = ({ episodes }) => {
 
   return (
     <div className="mt-12">
-      <div className={creatorTextHeaderTextStyling}>{t("creator.latestepisodes")}</div>
+      <div className={creatorTextHeaderTextStyling}>{t("creator:latestepisodes")}</div>
       <div className="mt-6">
         {episodes.map((episode: FullEpisodeInfo, episodeNumber: number) => (
           <div className="mb-4" key={episodeNumber}>

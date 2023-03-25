@@ -57,7 +57,7 @@ export default function ArConnect() {
         </>
       )) || (
         <>
-          🦔 {t("connector.login")}
+          🦔 {t("connector:login")}
         </>
       )}
     </button>
