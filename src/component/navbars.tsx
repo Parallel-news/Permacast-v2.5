@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect, ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from 'next/router'
 import { useTranslation } from "next-i18next";
@@ -24,6 +24,18 @@ import { arweaveAddress, isFullscreenAtom } from "../atoms";
 import { PermaSpinner } from "./reusables/PermaSpinner";
 import { SPINNER_COLOR } from "../constants";
 import { EverPayBalance } from "../utils/everpay/EverPayBalance";
+import { BsDiscord, BsTelegram, BsTwitter } from "react-icons/bs";
+
+export const ForeignURL: FC<{ url: string, children: ReactNode }> = ({ url, children }) => (
+  <a
+    target="_blank"
+    rel="noreferrer"
+    href={url}
+    className="flex items-center gap-x-2"
+  >
+    {children}
+  </a>
+);
 
 export function Sidenav() {
   const { t } = useTranslation();
@@ -101,7 +113,7 @@ export function Sidenav() {
   }
 
   const spinnerClass = "w-full flex justify-center"
-  const uploadDropdownStyling = "dropdown-content menu p-2 shadow bg-zinc-900 rounded-box w-36"
+  const uploadDropdownStyling = "dropdown-content menu p-2 shadow bg-zinc-900 rounded-box min-w-[144px] max-w-[200px]"
   
   const UploadDropdown: FC = () => {
     const [showClickLoad, setShowClickLoad] = useState<boolean>(false)
@@ -165,6 +177,39 @@ export function Sidenav() {
     );
   };
 
+  const HelpDropdown = () => {
+    return (
+      <div className="dropdown dropdown-hover mb-[-6px]">
+        <button tabIndex={0} className={SIDENAV_BUTTON}>
+          <QuestionMarkCircleIcon />
+        </button>
+        <ul
+          tabIndex={0}
+          className={uploadDropdownStyling}
+        >
+          <li key={1}>
+            <ForeignURL url={"https://t.me/permacast"}>
+              <BsTelegram className="w-6 h-6" />
+              <p>Telegram</p>
+            </ForeignURL>
+          </li>
+          <li key={2}>
+            <ForeignURL url={"https://discord.gg/cQanQVCs7G"}>
+              <BsDiscord className="w-6 h-6" />
+              <p>Discord</p>
+            </ForeignURL>
+          </li>
+          <li key={3}>
+            <ForeignURL url={"https://twitter.com/permacastapp"}>
+              <BsTwitter className="w-6 h-6" />
+              <p>Twitter</p>
+            </ForeignURL>
+          </li>
+        </ul>
+      </div>
+    );
+  };
+
   return (
     <div className="h-full pt-[42px]">
       <div className="grid rows-5 gap-9 text-zinc-300">
@@ -178,20 +223,11 @@ export function Sidenav() {
         </div>
         <LanguageDropdown />
         <UploadDropdown />
-        {/*<NavButton url={'/upload-podcast'} condition={isUploadPodcast} icon={<PlusIcon />} />*/}
-        {/* <UploadCount /> */}
-        <a
-          target="_blank"
-          rel="noreferrer"
-          href="https://t.me/permacast"
-          className={SIDENAV_BUTTON}
-        >
-          <QuestionMarkCircleIcon />
-        </a>
+        <HelpDropdown />
       </div>
     </div>
   );
-}
+};
 
 export function NavBar() {
   const { t } = useTranslation();
