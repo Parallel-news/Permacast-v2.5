@@ -80,6 +80,7 @@ export interface FullEpisodeInfo {
 
 export interface Ans {
   ANSuserExists?: boolean; // only on UI
+  userIsAddress?: boolean; // only on UI
   user:           string;
   currentLabel:   string;
   ownedLabels:    OwnedLabel[];
