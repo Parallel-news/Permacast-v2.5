@@ -109,3 +109,5 @@ export const DUMMY_ANS = {
     subdomains: [],
     freeSubdomains: 0
 };
+
+export const EXM_ANS_CONTRACT_ADDRESS = "VGWeJLDLJ9ify3ezl9tW-9fhB0G-GIUd60FE-5Q-_VI";
