@@ -1,13 +1,13 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import TipButton from '../../../component/reusables/tip';
-import { Ans, EXMDevState, FullEpisodeInfo, Podcast } from '../../../interfaces';
+import { Ans, Episode, EXMDevState, FullEpisodeInfo, Podcast } from '../../../interfaces';
 import { NextPage } from 'next';
 import { hexToRGB, RGBobjectToString } from '../../../utils/ui';
 import { podcastColorAtom } from '../../../atoms';
 import { useRecoilState } from 'recoil';
-import { Creator404, creatorFlexCenteredStyling, creatorHeaderStyling, CreatorNames, FeaturedPodcasts, LatestEpisodes, ProfileImage, sortByDate, ViewANSButton } from '../../../component/creator';
+import { Creator404, CreatorPageComponent, sortByDate } from '../../../component/creator';
+import { DUMMY_ANS, EXM_ANS_CONTRACT_ADDRESS, EXM_READ_LINK } from '../../../constants';
 
 // pages/blog/[slug].js
 export async function getStaticPaths() {
@@ -25,11 +25,38 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
   const { locale, params } = context;
   const { address } = params;
-  let userInfo: Ans | null;
+  let userInfo: Ans = DUMMY_ANS;
+  userInfo.address_color = "#000000";
+  userInfo.user = address;
+  const isAddress = address.length === 43;
 
-  if (address) {
-    const data = await axios.get(`https://ans-resolver.herokuapp.com/resolve-as-arpage/${address}`);
-    userInfo = data.data;
+  try {
+    const info = (await axios.get(`https://ans-resolver.herokuapp.com/resolve-as-arpage/${address}`)).data;
+    if (info?.user) {
+      userInfo = info;
+      userInfo.ANSuserExists = true;
+    } else {
+      const EXM = (await axios.get(EXM_READ_LINK + EXM_ANS_CONTRACT_ADDRESS)).data;
+      const { balances } = EXM;
+      const allDomains = balances.map((balance) => balance.ownedDomains).flat();
+      const foundBalance = balances.find((balance) => balance.address === address);
+      const foundDomain = allDomains.find((domain) => domain.domain === address);
+
+      if (foundBalance || foundDomain) {
+        const source = foundBalance || foundDomain;
+        const { domain, color } = source;
+        userInfo.ANSuserExists = true;
+        userInfo.user = address;
+        userInfo.nickname = domain;
+        userInfo.address_color = color;
+        userInfo.currentLabel = domain;
+      } else {
+        userInfo.userIsAddress = isAddress ? true: false;
+        userInfo.ANSuserExists = false;
+      };
+    };
+  } catch (error) {
+    console.log(error);
   };
 
   return {
@@ -37,57 +64,47 @@ export async function getStaticProps(context) {
       ...(await serverSideTranslations(locale, [
         'common',
       ])),
-      address,
-      userInfo,
+      userInfo
     },
   };
 };
 
-const Creator: NextPage<{ userInfo: Ans | null, address: string }> = ({ userInfo, address }) => {
-  if (!userInfo) return <Creator404 {...{ address }} />
+const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
+  if (!userInfo?.ANSuserExists) return <Creator404 address={userInfo?.user || ''} />;
 
-  const { user, avatar, currentLabel, address_color, nickname } = userInfo;
+  const { user, address_color } = userInfo;
 
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [episodes, setEpisodes] = useState<FullEpisodeInfo[]>([]);
 
-  const [podcastColor, setpodcastColor] = useRecoilState(podcastColorAtom)
+  const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
 
   useEffect(() => {
+    const color = RGBobjectToString(hexToRGB(address_color || "#000000"));
+    setPodcastColor(color);
+
     const fetchUserData = async () => {
-      const podcasts = await axios.get('/api/exm/read');
-      const data: EXMDevState = podcasts.data;
-      if (data?.podcasts) {
-        const usersPodcasts = data.podcasts.filter((podcast) => podcast.owner === user).map((podcast) => podcast);
+      const state: EXMDevState = (await axios.get('/api/exm/read')).data;
+      if (state?.podcasts) {
+        const { podcasts } = state;
+        const usersPodcasts = podcasts.filter((podcast: Podcast) => podcast.owner === user).map((podcast) => podcast);
         setPodcasts(usersPodcasts);
-        const userEpisodes = usersPodcasts.map((podcast: Podcast) => podcast.episodes.map((episode) => ({episode, podcast}))).flat(1);
+        const userEpisodes = usersPodcasts.map((podcast: Podcast) => 
+          podcast.episodes.map((episode: Episode) => ({episode, podcast}))
+        ).flat(1);
         setEpisodes(sortByDate(userEpisodes));
       };
     };
     fetchUserData();
-  }, [address]);
+  }, [userInfo]);
 
-  useEffect(() => {
-    const color = RGBobjectToString(hexToRGB(address_color));
-    setpodcastColor(color);
-  }, [address_color]);
+  const creator = {
+    ...userInfo,
+    podcasts,
+    episodes,
+  };
 
-  return (
-    <div className="mt-12 h-full pb-40">
-      <div className={creatorHeaderStyling}>
-        <div className={creatorFlexCenteredStyling}>
-          <ProfileImage {...{ currentLabel, avatar, address_color }} linkToArPage />
-          <CreatorNames {...{ nickname, currentLabel }} />
-        </div>
-        <div className={creatorFlexCenteredStyling + " mr-6"}>
-          <ViewANSButton {...{ currentLabel }} />
-          <TipButton address={user} />
-        </div>
-      </div>
-      <FeaturedPodcasts {...{ podcasts }} />
-      <LatestEpisodes {...{ episodes }} />
-    </div>
-  );
+  return <CreatorPageComponent {...{ creator }} />;
 };
 
 
