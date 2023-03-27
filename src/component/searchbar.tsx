@@ -25,7 +25,7 @@ export function Searchbar() {
             router.push({ pathname: '/search', query: {} }, asPath, { locale: locale, shallow: true })
             console.log(asPath)
           }}
-          className="input input-secondary block pl-10 py-2.5 md:py-[14px] text-xs md:text-base w-full placeholder-zinc-600 focus:placeholder-white rounded-lg md:rounded-full bg-zinc-900 text-zinc-100 outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+          className="input input-secondary block pl-10 py-2.5 md:py-[14px] text-xs md:text-base w-full placeholder-zinc-600 focus:placeholder-white rounded-lg md:rounded-full bg-zinc-900 text-zinc-100 outline-none focus:ring-2 focus:ring-white"
           placeholder={t("search.placeholder")}
         />
       </form>
