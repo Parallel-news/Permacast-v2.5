@@ -96,3 +96,16 @@ export const NO_SHOW = "Unable to fetch shows. Refresh and try again."
 // API SUCCESS
 export const SHOW_UPLOAD_SUCCESS = "Show Uploaded. Redirecting."
 export const EP_UPLOAD_SUCCESS = "Episode Uploaded. Redirecting."
+
+export const DUMMY_ANS = {
+    user: '',
+    avatar: '',
+    currentLabel: '',
+    address_color: '',
+    nickname: '',
+    bio: null,
+    ownedLabels: [],
+    links: {},
+    subdomains: [],
+    freeSubdomains: 0
+};
