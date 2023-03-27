@@ -1,5 +1,5 @@
 import Shikwasa from '../shikwasa-src/main.js';
-import { HSL, replaceColorsInterface, RGB, RGBA, RGBorRGBAstring, RGBstring, RGBtoHSLInterface } from '../interfaces/ui';
+import { HexString, HSL, replaceColorsInterface, RGB, RGBA, RGBorRGBAstring, RGBstring, RGBtoHSLInterface } from '../interfaces/ui';
 import { ShowShikwasaPlayerInterface } from '../interfaces/playback';
 import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
 import { podcastCoverColorManager } from './localstorage';
@@ -182,7 +182,7 @@ export const fetchDominantColor = async (cover: string): Promise<FastAverageColo
 
 export const getCoverColorScheme = (RGBAstring: RGBorRGBAstring): RGBorRGBAstring[] => {
   const rgba: RGBA = RGBAstringToObject(RGBAstring);
-  const coverColor = isTooDark(rgba, 0.25) ? RGBobjectToString(replaceDarkColorsRGB(rgba, 0.5)): RGBAobjectToString(rgba);
+  const coverColor = isTooDark(rgba, 0.15) ? RGBobjectToString(replaceDarkColorsRGB(rgba, 0.5)): RGBAobjectToString(rgba);
   const textColor = isTooLight(rgba, 0.8) ? "rgb(0, 0, 0)" : "rgb(255, 255, 255)";
   return [coverColor, textColor];
 };
@@ -190,6 +190,22 @@ export const getCoverColorScheme = (RGBAstring: RGBorRGBAstring): RGBorRGBAstrin
 // capitalize first letter, remove ar from label
 export const trimANSLabel = (label: string) => {
   return label.replace(/\w/, c => c.toUpperCase()).replace('ar', '')
+};
+
+export const stringToHexColor = (str: string): HexString => {
+  // Truncate or pad the string to 3 characters
+  const truncatedString = str.slice(0, 3).padEnd(3, '0');
+
+  // Convert each character to its ASCII value
+  const asciiValues = truncatedString.split('').map(char => char.charCodeAt(0));
+
+  // Convert the ASCII values to hexadecimal and pad to 2 characters
+  const hexValues = asciiValues.map(num => num.toString(16).padStart(2, '0'));
+
+  // Combine the hexadecimal values and prepend a '#' symbol
+  const hexColor = '#' + hexValues.join('');
+
+  return hexColor;
 };
 
 export const showShikwasaPlayer: ShowShikwasaPlayerInterface = ({

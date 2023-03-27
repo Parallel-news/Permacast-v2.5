@@ -19,6 +19,7 @@ const TipButton: FC<TipButtonProps> = (props) => {
   const tipPrompt = () => {
     console.log(address);
   }
+  // add modal to exercise caution tipping to unverified creators
 
   return (
     <div className="tooltip" data-tip="Coming soon!">

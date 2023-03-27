@@ -79,6 +79,8 @@ export interface FullEpisodeInfo {
 };
 
 export interface Ans {
+  ANSuserExists?: boolean; // only on UI
+  userIsAddress?: boolean; // only on UI
   user:           string;
   currentLabel:   string;
   ownedLabels:    OwnedLabel[];
@@ -92,10 +94,10 @@ export interface Ans {
 }
 
 export interface Links {
-  github:    string;
-  twitter:   string;
-  customUrl: string;
-  instagram: string;
+  github?:    string;
+  twitter?:   string;
+  customUrl?: string;
+  instagram?: string;
 }
 
 export interface OwnedLabel {

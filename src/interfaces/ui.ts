@@ -1,3 +1,4 @@
+export type HexString = string;
 export type RGBstring = string;
 
 export interface RGB {

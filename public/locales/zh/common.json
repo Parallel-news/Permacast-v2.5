@@ -136,6 +136,16 @@
   },
 	"creator": {
 		"ans": "ANS 地址",
+		"verification": {
+			"verified": {
+				"text": "已验证",
+				"explanation": "此用户是 ANS 上经过验证的收件人"
+			},
+			"unverified": {
+				"text": "未验证",
+				"explanation": "该用户在 ANS 上不存在。请务必仔细检查您汇款给的人。"
+			}
+		},
 		"podcasts": "播客",
 		"nopodcasts": "未找到播客。",
 		"address": "地址",

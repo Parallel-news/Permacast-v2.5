@@ -1,13 +1,17 @@
 import Image from 'next/image';
 import { FC } from 'react';
 import { useTranslation } from 'next-i18next';
-import { FullEpisodeInfo, PodcastDev } from '../../interfaces';
-import { dimColorString, hexToRGB, isTooLight } from '../../utils/ui';
+import { FullEpisodeInfo, Podcast } from '../../interfaces';
+import { dimColorString, hexToRGB, isTooLight, stringToHexColor } from '../../utils/ui';
 import { currentThemeColorAtom } from '../../atoms';
 import { useRecoilState } from 'recoil';
 import FeaturedPodcast from '../home/featuredPodcast';
 import Track from '../reusables/track';
 import Link from 'next/link';
+import TipButton from '../reusables/tip';
+import { useArconnect } from 'react-arconnect';
+import { flexCenter } from './featuredCreators';
+import Verification from '../reusables/Verification';
 
 
 /**
@@ -32,19 +36,37 @@ interface ProfileImageProps {
 interface CreatorNamesProps {
   nickname: string;
   currentLabel: string;
+  ANSuserExists?: boolean;
 };
 
 interface ViewANSButtonProps {
   currentLabel: string;
+  ANSuserExists?: boolean;
 };
 
 interface FeaturedPodcastProps {
-  podcasts: PodcastDev[];
+  podcasts: Podcast[];
 };
 
 interface LatestEpisodesProps {
   episodes: FullEpisodeInfo[];
-}
+};
+
+interface CreatorPageComponentProps {
+  ANSuserExists?: boolean;
+  currentLabel: string;
+  avatar: string;
+  address_color: string;
+  nickname: string;
+  user: string;
+  podcasts: Podcast[];
+  episodes: FullEpisodeInfo[];
+};
+
+interface LinkButtonInterface {
+  text: string;
+  url: string;
+};
 
 // 2. Stylings
 export const creatorHeaderStyling = `flex flex-col md:flex-row items-center justify-between`;
@@ -56,6 +78,8 @@ export const creatorLabelSmallStyling = `select-text text-sm font-medium text-[#
 export const creatorTextHeaderTextStyling = `text-3xl font-bold text-white`;
 export const podcastCarouselStyling = `w-full mt-8 carousel gap-x-12 py-3`;
 export const flexCol = `flex flex-col`;
+export const CreatorPageStyling = "mt-12 h-full pb-40";
+export const hoverableLinkButton = "px-3 py-2 rounded-full text-sm ml-5 cursor-pointer hover:brightness-[3] default-animation";
 
 // 3. Custom Functions
 
@@ -105,22 +129,25 @@ export const CreatorNamesSmall: FC<CreatorNamesProps> = ({ nickname, currentLabe
   </div>
 );
 
-export const CreatorNames: FC<CreatorNamesProps> = ({ nickname, currentLabel }) => (
-  <div className={flexCol}>
-    <div className={creatorNicknameStyling}>{nickname}</div>
-    <div className={creatorLabelStyling}>@{currentLabel}</div>
+export const CreatorNames: FC<CreatorNamesProps> = ({ nickname, currentLabel, ANSuserExists }) => (
+  <div className={flexCenter}>
+    <div className={flexCol}>
+      <div className={creatorNicknameStyling}>{nickname}</div>
+      {currentLabel && (<div className={creatorLabelStyling}>@{currentLabel}</div>)}
+    </div>
+    <div className="ml-6">
+      <Verification {...{ANSuserExists}} includeText />
+    </div>
   </div>
 );
 
-export const ViewANSButton: FC<ViewANSButtonProps> = ({ currentLabel }) => {
-  const { t } = useTranslation();
-
+export const LinkButton: FC<LinkButtonInterface> = ({ url, text }) => {
   const [currentThemeColor, setCurrentThemeColor] = useRecoilState(currentThemeColorAtom);
 
   return (
     <a
-      className="px-3 py-2 rounded-full text-sm ml-5 cursor-pointer"
-      href={`https://${currentLabel}.ar.page`}
+      className={hoverableLinkButton}
+      href={url}
       target="_blank"
       rel="noopener noreferrer"
       style={{
@@ -128,9 +155,17 @@ export const ViewANSButton: FC<ViewANSButtonProps> = ({ currentLabel }) => {
         color: currentThemeColor,
       }}
     >
-      {t('creator.ans')}
+      {text}
     </a>
   );
+};
+
+export const ViewANSButton: FC<ViewANSButtonProps> = ({ currentLabel, ANSuserExists }) => {
+  const { t } = useTranslation();
+
+  if (!ANSuserExists) return (<></>)
+
+  return <LinkButton url={`https://${currentLabel}.ar.page`} text={t('creator.ans')} />
 };
 
 export const FeaturedPodcasts: FC<FeaturedPodcastProps> = ({ podcasts }) => {
@@ -141,9 +176,9 @@ export const FeaturedPodcasts: FC<FeaturedPodcastProps> = ({ podcasts }) => {
     <div className="mt-8">
       <div className={creatorTextHeaderTextStyling + " mb-8"}>{t("creator.podcasts")}</div>
       <div>
-        {podcasts.length > 0 ? (
+        {podcasts.length !== 0 ? (
           <div className={podcastCarouselStyling}>
-            {podcasts.map((podcast: PodcastDev, index: number) =>
+            {podcasts.map((podcast: Podcast, index: number) =>
               <FeaturedPodcast {...podcast} key={index} />
             )}
           </div>
@@ -160,9 +195,9 @@ export const LatestEpisodes: FC<LatestEpisodesProps> = ({ episodes }) => {
     <div className="mt-12">
       <div className={creatorTextHeaderTextStyling}>{t("creator.latestepisodes")}</div>
       <div className="mt-6">
-        {episodes.map((episode: FullEpisodeInfo, episodeNumber: number) => (
-          <div className="mb-4" key={episodeNumber}>
-            <Track {...{ episode, episodeNumber }} includeDescription includePlayButton />
+        {episodes.map((episode: FullEpisodeInfo, index: number) => (
+          <div className="mb-4" key={index}>
+            <Track {...{ episode }} includeDescription includePlayButton />
           </div>
         ))}
       </div>
@@ -170,8 +205,36 @@ export const LatestEpisodes: FC<LatestEpisodesProps> = ({ episodes }) => {
   );
 };
 
-export const Creator404: FC<{ address: string }> = ({ address }) => {
-  const { t } = useTranslation();
+export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = ({ creator }) => {
 
-  return <div>{address} PLACEHOLDER, will add loading here later as well</div>
+  const { ANSuserExists, currentLabel, avatar, address_color, nickname, user, podcasts, episodes } = creator;
+
+  return (
+    <div className={CreatorPageStyling}>
+      <div className={creatorHeaderStyling}>
+        <div className={creatorFlexCenteredStyling}>
+          <ProfileImage {...{ currentLabel, avatar, address_color }} linkToArPage={ANSuserExists} />
+          <CreatorNames {...{ nickname, currentLabel, ANSuserExists }} />
+        </div>
+        <div className={creatorFlexCenteredStyling + " mr-6"}>
+          <ViewANSButton {...{ currentLabel }} />
+          <TipButton address={user} />
+        </div>
+      </div>
+      <FeaturedPodcasts {...{ podcasts }} />
+      <LatestEpisodes {...{ episodes }} />
+    </div>
+  );
+};
+
+export const Creator404: FC<{ address: string }> = ({ address }) => {
+
+  const { shortenAddress } = useArconnect();
+  // @ts-ignore
+  const [user, currentLabel, nickname] = Array(3).fill(shortenAddress(address, 10));
+  const address_color = stringToHexColor(address || 'rgb');
+
+  const creator: CreatorPageComponentProps = {ANSuserExists: false, user, currentLabel, address_color, podcasts: [], episodes: [], avatar: '', nickname};
+
+  return <CreatorPageComponent {...{ creator }} />;
 };
