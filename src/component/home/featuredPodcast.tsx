@@ -1,16 +1,14 @@
 import React, { useState, useEffect, FC } from "react";
 import { useTranslation } from "next-i18next";
-
 import {
   fetchAverageColor,
   getCoverColorScheme,
 } from "../../utils/ui";
-
 import { arweaveTX, Podcast } from "../../interfaces/index";
 import Link from "next/link";
 import FeaturedPodcastPlayButton from "./featuredPodcastPlayButton";
-
 import Image from "next/image";
+import MarkdownRenderer from "../markdownRenderer";
 
 
 /**
@@ -116,7 +114,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
 
   const [themeColor, setThemeColor] = useState<string>('');
   const [textColor, setTextColor] = useState<string>('');
-
+  const [markdownText, setMarkdownText] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -128,6 +126,17 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
       setTextColor(textColor);
     };
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchMarkdown = async () => {
+      const url = `https://arweave.net/${description}`;
+      const response = await fetch(url);
+      const txt = await response.text();
+      setMarkdownText(txt);
+    };
+
+    fetchMarkdown();
   }, []);
 
   const episode = episodes.length ? episodes[0]: undefined;
@@ -155,7 +164,6 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
           </div>
           <div className="ml-3 w-full" style={{color: textColor}}>
             <PodcastName podcastName={podcastName} />
-            <PodcastDescription podcastDescription={description} />
           </div>
         </div>
       </div>
@@ -164,3 +172,5 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
 };
 
 export default FeaturedPodcast;
+//<PodcastDescription podcastDescription={description} />
+//<MarkdownRenderer markdownText={markdownText} />
