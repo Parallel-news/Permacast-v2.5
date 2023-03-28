@@ -46,7 +46,7 @@ export interface Podcast {
   podcastName: string;
   author:      string;
   email:       string;
-  description: string;
+  description: arweaveTX; // markdown file tx on arseeding
   language:    string;
   explicit:    string;
   categories:  string[];

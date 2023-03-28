@@ -75,7 +75,7 @@ export const creatorNicknameStyling = `select-text text-3xl font-medium tracking
 export const creatorLabelStyling = `select-text text-lg font-medium text-[#828282]`;
 export const creatorNicknameSmallStyling = `select-text font-medium tracking-wide text-white`;
 export const creatorLabelSmallStyling = `select-text text-sm font-medium text-[#828282]`;
-export const creatorTextHeaderTextStyling = `text-3xl font-bold text-white`;
+export const WhiteLargeFont = `text-3xl font-bold text-white `;
 export const podcastCarouselStyling = `w-full mt-8 carousel gap-x-12 py-3`;
 export const flexCol = `flex flex-col`;
 export const CreatorPageStyling = "mt-12 h-full pb-40";
@@ -174,7 +174,7 @@ export const FeaturedPodcasts: FC<FeaturedPodcastProps> = ({ podcasts }) => {
 
   return (
     <div className="mt-8">
-      <div className={creatorTextHeaderTextStyling + " mb-8"}>{t("creator.podcasts")}</div>
+      <div className={WhiteLargeFont + " mb-8"}>{t("creator.podcasts")}</div>
       <div>
         {podcasts.length !== 0 ? (
           <div className={podcastCarouselStyling}>
@@ -193,7 +193,7 @@ export const LatestEpisodes: FC<LatestEpisodesProps> = ({ episodes }) => {
 
   return (
     <div className="mt-12">
-      <div className={creatorTextHeaderTextStyling}>{t("creator.latestepisodes")}</div>
+      <div className={WhiteLargeFont}>{t("creator.latestepisodes")}</div>
       <div className="mt-6">
         {episodes.map((episode: FullEpisodeInfo, index: number) => (
           <div className="mb-4" key={index}>

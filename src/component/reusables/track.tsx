@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, FC, useState, useMemo } from "react";
 
-import { FullEpisodeInfo } from "../../interfaces";
+import { arweaveTX, FullEpisodeInfo } from "../../interfaces";
 import Image from "next/image";
 import Link from "next/link";
 import { fetchDominantColor, getButtonRGBs, getCoverColorScheme, RGBAstringToObject, RGBobjectToString, RGBstringToObject } from "../../utils/ui";
@@ -8,6 +8,8 @@ import { useTranslation } from "react-i18next";
 import { useShikwasa } from "../../hooks";
 import { showShikwasaPlayerArguments } from "../../interfaces/playback";
 import PlayButton from "./playButton";
+import MarkdownRenderer from "../markdownRenderer";
+import { queryMarkdownByTX } from "../../utils/markdown";
 
 /**
  * Index
@@ -41,6 +43,7 @@ export interface ButtonStyle {
 };
 
 export interface EpisodeLinkableTitleProps {
+  pid: string;
   eid: string;
   episodeName: string;
 };
@@ -75,7 +78,7 @@ export interface MemoizedComponentProps {
   coverColor: string,
   author: string,
   includeDescription: boolean,
-  description?: string,
+  description?: arweaveTX,
 }
 
 // 2. Stylings
@@ -110,10 +113,10 @@ export const PodcastCover: FC<PodcastCoverProps> = ({ pid, cover, alt }) => {
   );
 };
 
-export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ eid, episodeName }) => {
+export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ pid, eid, episodeName }) => {
   return (
     <Link
-      href={`/episode/${eid}`}
+      href={`/episode/${pid}/${eid}`}
       className={trackEpisodeLinkableTitleStyling}
     >
       {episodeName}
@@ -140,7 +143,7 @@ export const TrackCreatorLink: FC<TrackCreatorLinkProps> = ({ uploader, buttonSt
 export const TrackDescription: FC<TrackDescriptionProps> = ({ includeDescription, description }) => {
   if (includeDescription && description) return (
     <div className={trackDescriptionStyling}>
-      {description}
+      <MarkdownRenderer markdownText={description} />
     </div>
   );
 };
@@ -200,6 +203,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
   const [coverColor, setCoverColor] = useState<string>('');
   const [textColor, setTextColor] = useState<string>('');
   const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({backgroundColor: '', color: ''})
+  const [markdown, setMarkdown] = useState<string>('');
 
   useMemo(() => {
     const fetchData = async () => {
@@ -213,6 +217,8 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
       setCoverColor(coverColor);
       setTextColor(textColor);
       setButtonStyles(buttonStyles);
+      const markdown = (await queryMarkdownByTX(description));
+      setMarkdown(markdown)
     };
     fetchData();
   }, []);
@@ -233,13 +239,13 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
       <div className={trackFlexCenterPaddedYStyling}>
         <PodcastCover {...{ pid, cover: coverUsed, alt: podcastName }} />
         <div className="ml-4 flex flex-col min-w-[100px]">
-          <EpisodeLinkableTitle {...{ eid, episodeName }} />
+          <EpisodeLinkableTitle {...{ pid, eid, episodeName }} />
           <div className={trackFlexCenterYStyling}>
             <p className={trackByStyling}>{t("track.by")}</p>
             <TrackCreatorLink {...{ uploader, buttonStyles, coverColor, author }} />
           </div>
         </div>
-        <TrackDescription {...{ includeDescription, description }} />
+        <TrackDescription {...{ includeDescription, description: markdown }} />
       </div>
     );
   });

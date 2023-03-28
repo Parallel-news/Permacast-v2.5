@@ -11,6 +11,9 @@ import Link from "next/link";
 import FeaturedPodcastPlayButton from "./featuredPodcastPlayButton";
 
 import Image from "next/image";
+import { ARWEAVE_READ_LINK } from "../../constants";
+import MarkdownRenderer from "../markdownRenderer";
+import { queryMarkdownByTX } from "../../utils/markdown";
 
 
 /**
@@ -77,7 +80,7 @@ const PocastCover: FC<PodcastCoverProps> = ({ cover, podcastName }) => {
           height={240}
           width={240}
           className="aspect-square object-cover w-[240px] h-[240px]"
-          src={"https://arweave.net/" + cover}
+          src={ARWEAVE_READ_LINK + cover}
           alt={podcastName}
         />
       }
@@ -96,7 +99,7 @@ const PodcastName: FC<PodcastNameProps> = ({ podcastName }) => {
 const PodcastDescription: FC<PodcastDescriptionProps> = ({ podcastDescription }) => {
   return (
     <div className={podcastDescriptionStyling}>
-      {podcastDescription}
+      <MarkdownRenderer markdownText={podcastDescription} />
     </div>
   );
 };
@@ -117,9 +120,14 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
 
   const [themeColor, setThemeColor] = useState<string>('');
   const [textColor, setTextColor] = useState<string>('');
-
+  const [markdownText, setMarkdownText] = useState<string>('');
 
   useEffect(() => {
+    const fetchMarkdown = async (tx: arweaveTX) => {
+      const text = await queryMarkdownByTX(tx);
+      setMarkdownText(text);
+    };
+
     const fetchData = async () => {
       const coverToBeUsed = (minifiedCover || cover);
       const dominantColor = await fetchDominantColor(coverToBeUsed);
@@ -128,7 +136,13 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
       setThemeColor(coverColor);
       setTextColor(textColor);
     };
-    fetchData();
+
+    try {
+      fetchData();
+      fetchMarkdown(description);
+    } catch (error) {
+      console.log(error)
+    };
   }, []);
 
   const episode = episodes.length ? episodes[0]: undefined;
@@ -156,7 +170,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
           </div>
           <div className="ml-3 w-full" style={{color: textColor}}>
             <PodcastName podcastName={podcastName} />
-            <PodcastDescription podcastDescription={description} />
+            <PodcastDescription podcastDescription={markdownText} />
           </div>
         </div>
       </div>
