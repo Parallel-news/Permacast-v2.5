@@ -74,7 +74,7 @@ export const twitterObject = {
 }
 
 export const telegramObject = {
-    "name": "Twitter",
+    "name": "Telegram",
     "url": PERMACAST_TELEGRAM_URL,
     "icon": <FaTelegram className={iconStyling} />
 }
