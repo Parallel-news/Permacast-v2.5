@@ -3,9 +3,12 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useArconnect } from "react-arconnect";
 import { useRecoilState } from "recoil";
 import { arweaveAddress } from "../../atoms";
-import { FADE_IN_STYLE, FADE_OUT_STYLE } from "../../constants";
+import { FADE_IN_STYLE, FADE_OUT_STYLE, SPINNER_COLOR } from "../../constants";
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
+import { fetchARPriceInUSD } from "../../utils/redstone";
+import { PermaSpinner } from "../reusables/PermaSpinner";
 import { ConnectButton, containerPodcastModalStyling, SubmitTipButton, tipModalStyling, titleModalStyling} from "../uploadEpisode/uploadEpisodeTools";
+import { spinnerClass } from "../uploadShow/uploadShowTools";
 
 interface TipModalInter {
     to?: string;
@@ -24,6 +27,8 @@ export const TipModal = (props: TipModalInter) => {
     const [_arweaveAddress, _setArweaveAddress] = useRecoilState(arweaveAddress)
     const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const [tipAmount, setTipAmount] = useState<string>("0")
+    const [tipUSD, setTipUSD] = useState<Number>(0)
+    const [calculatingTip, setCalculatingTip] = useState<boolean>(false)
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
 
     useEffect(() => {
@@ -35,7 +40,17 @@ export const TipModal = (props: TipModalInter) => {
             clearTimeout(timeoutId);
         };
     }, [props.isVisible])
-    console.log("address: ", address)
+
+    useEffect(() => {
+        const calculateTipUSD = async () => {
+            setCalculatingTip(true)
+            setTipUSD(0)
+            const arPrice = await fetchARPriceInUSD()
+            setTipUSD(Number(tipAmount)*arPrice)
+            setCalculatingTip(false)
+        }
+        if(tipAmount.trim().length > 0) calculateTipUSD()
+    }, [tipAmount])
     const submitTip = () => {
         // check if enough money in balance
         
@@ -55,19 +70,28 @@ export const TipModal = (props: TipModalInter) => {
                 <XMarkIcon className={xMarkModalStyling} onClick={() => props.setVisible(false)} />   
 
                 {/*Tip Amount*/}
-                <div className="absolute inset-0 top-0 flex justify-center items-center">
-                    <input className={tipInputStyling} required pattern=".{3,500}" type="number" name="tipAmount" placeholder={"AR"}
+                <div className="absolute inset-0 top-0 flex justify-center items-center flex flex-col">
+                    <input className={tipInputStyling+" mb-2"} required pattern=".{3,500}" type="number" name="tipAmount" placeholder={"AR"}
                     onChange={(e) => {
                         setTipAmount(e.target.value);
-                    }}/>
+                    }}/> 
+                    {calculatingTip ? 
+                    <PermaSpinner
+                        spinnerColor={SPINNER_COLOR}
+                        size={8}
+                        divClass={"w-full flex justify-center pt-3"}     
+                    />
+                    : 
+                    <p className={`${tipAmount.trim().length > 0 ? "visible" : "invisible"}`}>{tipAmount+" AR = "+"$"+String(tipUSD.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}))}</p>
+                    }
                 </div>
                 {/*Submit Tip*/}
                 <div className="w-full h-[100px] bg-zinc-900 flex justify-center items-center absolute bottom-0">
                     {address.length > 0 ?
                         <SubmitTipButton 
-                            disable={false}
+                            disable={false} 
                         />
-                    :
+                    : 
                     <ConnectButton 
                         disable={false}
                         click={() => connect()}
