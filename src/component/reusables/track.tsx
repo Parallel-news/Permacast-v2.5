@@ -9,7 +9,7 @@ import { useShikwasa } from "../../hooks";
 import { showShikwasaPlayerArguments } from "../../interfaces/playback";
 import PlayButton from "./playButton";
 import MarkdownRenderer from "../markdownRenderer";
-import { queryMarkdown } from "../../utils/markdown";
+import { queryMarkdownByTX } from "../../utils/markdown";
 
 /**
  * Index
@@ -217,7 +217,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
       setCoverColor(coverColor);
       setTextColor(textColor);
       setButtonStyles(buttonStyles);
-      const markdown = (await queryMarkdown(description));
+      const markdown = (await queryMarkdownByTX(description));
       setMarkdown(markdown)
     };
     fetchData();

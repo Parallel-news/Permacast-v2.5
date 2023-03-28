@@ -11,10 +11,9 @@ import Link from "next/link";
 import FeaturedPodcastPlayButton from "./featuredPodcastPlayButton";
 
 import Image from "next/image";
-import { ARSEED_URL, ARWEAVE_READ_LINK } from "../../constants";
-import axios from "axios";
+import { ARWEAVE_READ_LINK } from "../../constants";
 import MarkdownRenderer from "../markdownRenderer";
-import { queryMarkdown } from "../../utils/markdown";
+import { queryMarkdownByTX } from "../../utils/markdown";
 
 
 /**
@@ -125,7 +124,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
 
   useEffect(() => {
     const fetchMarkdown = async (tx: arweaveTX) => {
-      const text = await queryMarkdown(tx)
+      const text = await queryMarkdownByTX(tx);
       setMarkdownText(text);
     };
 
