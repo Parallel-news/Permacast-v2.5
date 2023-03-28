@@ -28,7 +28,7 @@ export const benefactorBannerStyling = "absolute top-0 bg-zinc-900 w-full h-[100
 export const xMarkModalStyling = "h-7 w-7 mt-1 cursor-pointer hover:text-red-400 hover:bg-red-400/10 transition duration-400 ease-in-out rounded-full z-30 absolute top-2 right-2"
 export const tipInputStyling = "input input-secondary px-4 bg-zinc-700/80 border-0 rounded-lg outline-none focus:ring-2 focus:ring-inset focus:ring-white w-[200px] h-[100px] placeholder:text-5xl placeholder:font-bold text-5xl font-bold text-center" 
 export const tipAmountAbsStyling = "absolute inset-0 top-0 flex justify-center items-center flex flex-col"
-export const benefactorNameStyling = "text-white text-3xl font-light w-[85%] ml-[10%] text-center"
+export const benefactorNameStyling = "text-white text-3xl font-bold w-[85%] ml-[10%] text-center"
 export const submitTipDivStyling = "w-full h-[100px] bg-zinc-900 flex justify-center items-center absolute bottom-0"
 export const tipStyling = "text-white text-4xl transform -rotate-45 font-bold"
 
@@ -88,9 +88,7 @@ export const TipModal = (props: TipModalInter) => {
     return (
         <div className={tipModalStyling+" backdrop-blur-sm"}>
             <div className={`${containerPodcastModalStyling+ " justify-between relative overflow-hidden"} ${showModal ? FADE_IN_STYLE :FADE_OUT_STYLE}`}>
-                <div className={titleCornerStyling}>
-                    <p className={tipStyling}>Tip</p>
-                </div>
+
                 <div className={benefactorBannerStyling}>
                     <p className={benefactorNameStyling}>{props.to}</p> 
                 </div>
@@ -141,3 +139,9 @@ export const TipModal = (props: TipModalInter) => {
         </div>
     )
 }
+
+
+/*<div className={titleCornerStyling}>
+    <p className={tipStyling}>Tip</p>
+    </div>
+*/
