@@ -211,16 +211,15 @@ export const EpisodeDescription = (props: DescriptionContainerInter) => {
     return (
         <div className="w-full">
             <TextTruncate 
-                text={props.text}
+                text={ARWEAVE_READ_LINK+props.text}
                 limit={STR_LEN_EPISODE_DESC}
                 textClass={`text-neutral-400`}
                 buttonClass={textTruncateButtonStyling}
+                isMarkDown={true}
             />
         </div>
     )
 }
-
-
 
 export const Episodes = (props: EpisodesInter) => {
     const episodeList = props.episodes

@@ -9,12 +9,14 @@ import {
     EpisodeDescription,
     Episodes,
     ErrorTag,
-    podcastIdStyling
+    podcastIdStyling,
+    textTruncateButtonStyling
  } from "../../../../component/episode/eidTools";
-import { EXM_READ_LINK, ARWEAVE_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND } from "../../../../constants";
+import { EXM_READ_LINK, ARWEAVE_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND, STR_LEN_EPISODE_DESC } from "../../../../constants";
 import { getContractVariables } from "../../../../utils/contract";
 import { findObjectById, formatStringByLen } from "../../../../utils/reusables";
 import { TipModal } from "../../../../component/tipModal";
+import TextTruncate from "../../../../component/TextTruncate";
 
 export default function EpisodeId({data, status}) {
     const [, setBackgroundColor_] = useRecoilState(backgroundColor);
@@ -63,7 +65,7 @@ export default function EpisodeId({data, status}) {
                     />
                     {/*Episode Description*/}
                     <EpisodeDescription
-                        text={d.description} 
+                        text={d.description}
                     />
                     {/*Next Episode*/}
                     <Episodes
@@ -135,5 +137,3 @@ export async function getServerSideProps(context) {
         return { props: { data, status, ...translations } } 
     }
 }
-
-
