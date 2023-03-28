@@ -2,7 +2,7 @@ import axios from "axios";
 import Head from "next/head";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRecoilState } from "recoil";
-import { backgroundColor } from "../../atoms";
+import { backgroundColor, loadTipModal } from "../../atoms";
 import { 
     Episodes,
     ErrorTag,
@@ -12,9 +12,12 @@ import { PodcastBanner } from "../../component/podcast/pidTools";
 import { EXM_READ_LINK, ARWEAVE_READ_LINK, PAYLOAD_RECEIVED, NO_PODCAST_FOUND } from "../../constants";
 import { getContractVariables } from "../../utils/contract";
 import { findObjectById } from "../../utils/reusables";
+import { TipModal } from "../../component/tipModal";
+import { useState } from "react";
 
 export default function PodcastId({data, status}) {
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
+    const [loadTipModal, setLoadTipModal] = useState<boolean>(false)
     console.log("data: ", data)
     if(data) {
         //State Calls Here
@@ -33,7 +36,6 @@ export default function PodcastId({data, status}) {
                         <meta name="twitter:title" content={`${data.obj.podcastName} | Permacast`} />
                         <meta name="twitter:url" content={`https://permacast.dev/`}></meta>
                         <meta name="twitter:description" content={`By ${data.obj.author}`} />
-
                         <meta name="og:card" content="summary" />
                         <meta name="description" content={`By ${data.obj.author}`} />
                         <meta name="og:image" content={(data.obj.cover !== "") ? `https://arweave.net/${data.obj.cover}` : "https://ar.page/favicon.png"} />
@@ -48,6 +50,7 @@ export default function PodcastId({data, status}) {
                         title={title}
                         description={ARWEAVE_READ_LINK+description}
                         color={color}
+                        setLoadTipModal={() => setLoadTipModal(true)}
                     />
                     {/*Episode Track*/}
                     <Episodes
@@ -57,6 +60,14 @@ export default function PodcastId({data, status}) {
                         episodes={episodes}
                     />            
                 </div>
+                {loadTipModal && (
+                    <TipModal
+                        to={data?.obj.podcastName}
+                        toAddress={data?.obj.owner} 
+                        isVisible={loadTipModal}
+                        setVisible={setLoadTipModal}
+                    />
+                )}
             </>
         )
     } else if(status === NO_PODCAST_FOUND) {
@@ -73,8 +84,6 @@ export default function PodcastId({data, status}) {
             />
         )
     }
-    
-
 }
 
 export async function getServerSideProps(context) {

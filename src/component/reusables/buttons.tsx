@@ -1,12 +1,12 @@
 
 import { useTranslation } from 'next-i18next';
-import { ReactElement } from 'react';
+import { MouseEventHandler, ReactElement } from 'react';
 
 interface DescriptionButtonInter {
     icon: ReactElement<any, any>;
     text: string;
     color: string;
-    onClick?: (v: any) => void
+    onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
 export const DescriptionButton = (props: DescriptionButtonInter) => {
