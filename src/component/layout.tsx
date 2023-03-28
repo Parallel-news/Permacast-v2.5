@@ -14,37 +14,37 @@ import { isFullscreenAtom, isQueueVisibleAtom } from '../atoms/index';
 
 interface LayoutInterface {
   children: ReactNode;
-}
+};
+
+export const AppStyling = `select-none h-full bg-black overflow-hidden `;
+export const AppInnerStyling = `flex h-screen overflow-x-hidden relative `;
+export const BackgroundWrapperStyling = `w-screen overflow-y-scroll overflow-x-hidden `;
+export const InnerLayoutStyling = `ml-8 pr-8 pt-9 relative z-[3] `;
+export const ParentStyling = `w-full overflow-hidden z-[3] `;
 
 const Layout: FC<LayoutInterface> = ({ children }) => {
 
-
-  const [_isFullscreen, _setIsFullscreen] = useRecoilState(isFullscreenAtom);
+  const [isFullscreen] = useRecoilState(isFullscreenAtom);
   const [isQueueVisible] = useRecoilState(isQueueVisibleAtom);
 
   return (
-    <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
-      <div className="flex h-screen overflow-x-hidden relative">
+    <div className={AppStyling} data-theme="permacast">
+      <div className={AppInnerStyling}>
         <Sidenav />
-        <div className="absolute z-50 bottom-0 right-0">
-          {isQueueVisible && <EpisodeQueue />}
-        </div>
-        {/* placeholder */}
-        {_isFullscreen && <Fullscreen />}
-        <div className="w-screen overflow-y-scroll overflow-x-hidden">
+        {isQueueVisible && <EpisodeQueue />}
+        {isFullscreen && <Fullscreen />}
+        <div className={BackgroundWrapperStyling}>
           <Background />
-          <div className="ml-8 pr-8 pt-9 relative z-[3]">
-            <div className="mb-10 ">
-              <NavBar />
-            </div>
-            <div className="w-full overflow-hidden z-[3]">
+          <div className={InnerLayoutStyling}>
+            <NavBar />
+            <div className={ParentStyling}>
               {children}
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Layout;

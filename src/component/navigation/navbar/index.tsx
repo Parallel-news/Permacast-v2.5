@@ -18,7 +18,7 @@ export const NavBar: FC = () => {
   const [arweaveAddress_, ] = useRecoilState(arweaveAddress);
   const everPayStyling = "flex justify-center items-center text-sm text-white focus:outline-white wallet-button font-semibold bg-zinc-900 hover:bg-zinc-700 default-animation rounded-full w-[12%] mx-2";
   return (
-    <>
+    <div className="mb-10 ">
       <div className="md:hidden">
         <NavBarMobile />
       </div>
@@ -38,7 +38,7 @@ export const NavBar: FC = () => {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
