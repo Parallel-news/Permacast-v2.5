@@ -9,6 +9,8 @@ import { Episode, episodeIconStyling, EpisodeInfoButtonsInter } from "../episode
 import { useEffect, useState } from "react";
 import MarkdownRenderer from "../markdownRenderer";
 import Link from "next/link";
+import { useRecoilState } from "recoil";
+import { loadTipModal } from "../../atoms";
 
 export default function pidTools() {
     return false
@@ -23,6 +25,7 @@ export interface PodcastInfoInter {
 
 export interface PodcastBannerInter extends PodcastInfoInter {
     color: string;
+    setLoadTipModal: (v: any) => void
 }
 
 interface Podcast {
@@ -100,7 +103,8 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             <DescriptionButton
                 icon={<HeartIcon className={episodeIconStyling} />} 
                 text={"Tip"}
-                color={color} 
+                color={color}
+                onClick={props.setLoadTipModal} 
             />
             <Link href={`/upload-episode?pid=123`}>
                 <DescriptionButton
@@ -123,6 +127,7 @@ export const PodcastBanner = (props: PodcastBannerInter) => {
             />
             <PodcastButtons 
                 color={props.color}
+                setLoadTipModal={props.setLoadTipModal}
             />
         </div>
     )
