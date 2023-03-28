@@ -1,8 +1,9 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useArconnect } from "react-arconnect";
 import { useRecoilState } from "recoil";
-import { arweaveAddress } from "../../atoms";
+import { arweaveAddress, everPayBalance } from "../../atoms";
 import { FADE_IN_STYLE, FADE_OUT_STYLE, SPINNER_COLOR } from "../../constants";
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { fetchARPriceInUSD } from "../../utils/redstone";
@@ -30,6 +31,7 @@ export const TipModal = (props: TipModalInter) => {
     const [tipUSD, setTipUSD] = useState<Number>(0)
     const [calculatingTip, setCalculatingTip] = useState<boolean>(false)
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
+    const [_everPayBalance, _setEverPayBalance] = useRecoilState(everPayBalance)
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -71,10 +73,11 @@ export const TipModal = (props: TipModalInter) => {
 
                 {/*Tip Amount*/}
                 <div className="absolute inset-0 top-0 flex justify-center items-center flex flex-col">
-                    <input className={tipInputStyling+" mb-2"} required pattern=".{3,500}" type="number" name="tipAmount" placeholder={"AR"}
+                    <Link href="https://app.everpay.io/" target="_blank" rel="noreferrer">{"Balance: "+Number(_everPayBalance).toFixed(2) + ' AR'}</Link> 
+                    <input className={tipInputStyling+" mb-2 mt-2"} required pattern=".{3,500}" type="number" name="tipAmount" placeholder={"AR"}
                     onChange={(e) => {
                         setTipAmount(e.target.value);
-                    }}/> 
+                    }}/>  
                     {calculatingTip ? 
                     <PermaSpinner
                         spinnerColor={SPINNER_COLOR}
@@ -87,10 +90,13 @@ export const TipModal = (props: TipModalInter) => {
                 </div>
                 {/*Submit Tip*/}
                 <div className="w-full h-[100px] bg-zinc-900 flex justify-center items-center absolute bottom-0">
-                    {address.length > 0 ?
+                    {address && address.length > 0 ?
+                    <>
                         <SubmitTipButton 
                             disable={false} 
                         />
+                    </>
+                        
                     : 
                     <ConnectButton 
                         disable={false}
