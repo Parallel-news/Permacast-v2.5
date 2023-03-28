@@ -9,6 +9,8 @@ import { Episode, episodeIconStyling, EpisodeInfoButtonsInter } from "../episode
 import { useEffect, useState } from "react";
 import MarkdownRenderer from "../markdownRenderer";
 import Link from "next/link";
+import { useRecoilState } from "recoil";
+import { loadTipModal } from "../../atoms";
 
 export default function pidTools() {
     return false
@@ -90,6 +92,7 @@ export const PodcastInfo = (props: PodcastInfoInter) => {
 
 export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
     const { color } = props
+    const [_loadTipModal, _setLoadTipModal] = useRecoilState<boolean>(loadTipModal)
     return (
         <div className={podcastButtonsStyling}>
             <DescriptionButton 
@@ -100,7 +103,8 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             <DescriptionButton
                 icon={<HeartIcon className={episodeIconStyling} />} 
                 text={"Tip"}
-                color={color} 
+                color={color}
+                onClick={() => _setLoadTipModal(true)} 
             />
             <Link href={`/upload-episode?pid=123`}>
                 <DescriptionButton

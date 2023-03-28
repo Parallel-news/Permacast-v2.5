@@ -2,7 +2,7 @@ import axios from "axios";
 import Head from "next/head";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRecoilState } from "recoil";
-import { backgroundColor } from "../../atoms";
+import { backgroundColor, loadTipModal } from "../../atoms";
 import { 
     Episodes,
     ErrorTag,
@@ -12,9 +12,11 @@ import { PodcastBanner } from "../../component/podcast/pidTools";
 import { EXM_READ_LINK, ARWEAVE_READ_LINK, PAYLOAD_RECEIVED, NO_PODCAST_FOUND } from "../../constants";
 import { getContractVariables } from "../../utils/contract";
 import { findObjectById } from "../../utils/reusables";
+import { TipModal } from "../../component/tipModal";
 
 export default function PodcastId({data, status}) {
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
+    const [_loadTipModal, _setLoadTipModal] = useRecoilState<boolean>(loadTipModal)
     console.log("data: ", data)
     if(data) {
         //State Calls Here
@@ -57,6 +59,12 @@ export default function PodcastId({data, status}) {
                         episodes={episodes}
                     />            
                 </div>
+                {_loadTipModal && (
+                    <TipModal 
+                        isVisible={_loadTipModal}
+                        setVisible={_setLoadTipModal}
+                    />
+                )}
             </>
         )
     } else if(status === NO_PODCAST_FOUND) {

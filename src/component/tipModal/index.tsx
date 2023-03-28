@@ -5,7 +5,7 @@ import { useRecoilState } from "recoil";
 import { arweaveAddress } from "../../atoms";
 import { FADE_IN_STYLE, FADE_OUT_STYLE } from "../../constants";
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
-import { containerPodcastModalStyling, selectPodcastModalStyling, SubmitTipButton, titleModalStyling } from "../uploadEpisode/uploadEpisodeTools";
+import { containerPodcastModalStyling, SubmitTipButton, tipModalStyling, titleModalStyling } from "../uploadEpisode/uploadEpisodeTools";
 
 interface TipModalInter {
     isVisible: boolean;
@@ -40,7 +40,7 @@ export const TipModal = (props: TipModalInter) => {
     }
 
     return (
-        <div className={selectPodcastModalStyling+" backdrop-blur-sm"}>
+        <div className={tipModalStyling+" backdrop-blur-sm"}>
             <div className={`${containerPodcastModalStyling+ " justify-between p-10"} ${showModal ? FADE_IN_STYLE :FADE_OUT_STYLE}`}>
                 {/*Header*/}
                 <div className={titleModalStyling}>
@@ -59,7 +59,6 @@ export const TipModal = (props: TipModalInter) => {
                 {/*Submit Tip*/}
                 <SubmitTipButton 
                     disable={false}
-
                 />
             </div>
         </div>
