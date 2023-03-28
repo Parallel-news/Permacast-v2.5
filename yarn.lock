@@ -1948,6 +1948,13 @@
     "normalize-path" "^3.0.0"
     "picomatch" "^2.0.4"
 
+"ar-gql@^0.0.6":
+  "integrity" "sha512-eXKsXGQcx8uwxwlFJzBXA17Qsg+Gty6tcp85IB5SX1iop7NsXLQ/iH2WEz69NCz2/Zcb81C1QryIiNTgw0/4aA=="
+  "resolved" "https://registry.npmjs.org/ar-gql/-/ar-gql-0.0.6.tgz"
+  "version" "0.0.6"
+  dependencies:
+    "axios" "^0.21.1"
+
 "arconnect@^0.4.2":
   "integrity" "sha512-Jkpd4QL3TVqnd3U683gzXmZUVqBUy17DdJDuL/3D9rkysLgX6ymJ2e+sR+xyZF5Rh42CBqDXWNMmCjBXeP7Gbw=="
   "resolved" "https://registry.npmjs.org/arconnect/-/arconnect-0.4.2.tgz"
@@ -2046,6 +2053,14 @@
     "lodash" "^4.17.21"
     "mime-types" "^2.1.35"
 
+"arweave-multihost@^0.1.0":
+  "integrity" "sha512-biIkzQ3oc4RLV1MORQnqWz51IazP++K/8SsYMjUokK0cUfBLqom4pufKFCjTkGQIZMWWanXxnZqL66hHPgTCgA=="
+  "resolved" "https://registry.npmjs.org/arweave-multihost/-/arweave-multihost-0.1.0.tgz"
+  "version" "0.1.0"
+  dependencies:
+    "arweave" "^1.10.15"
+    "axios" "^0.21.1"
+
 "arweave-stream-tx@^1.1.0":
   "integrity" "sha512-bNt9rj0hbAEzoUZEF2s6WJbIz8nasZlZpxIw03Xm8fzb9gRiiZlZGW3lxQLjfc9Z0VRUWDzwtqoYeEoB/JDToQ=="
   "resolved" "https://registry.npmjs.org/arweave-stream-tx/-/arweave-stream-tx-1.2.2.tgz"
@@ -2053,7 +2068,7 @@
   dependencies:
     "exponential-backoff" "^3.1.0"
 
-"arweave@^1.10.0", "arweave@^1.10.13", "arweave@^1.10.16", "arweave@^1.11.4":
+"arweave@^1.10.0", "arweave@^1.10.13", "arweave@^1.10.15", "arweave@^1.10.16", "arweave@^1.11.4":
   "integrity" "sha512-W5z7hb9/ZP2vy6BiYC+2obfGMhlhz/DaCkEXpkj/4hjaecWYUnvlUX5aCI2i0+lCrzbBUFbz+maDihUpBrdZpg=="
   "resolved" "https://registry.npmjs.org/arweave/-/arweave-1.12.4.tgz"
   "version" "1.12.4"
@@ -2541,6 +2556,13 @@
   "integrity" "sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ=="
   "resolved" "https://registry.npmjs.org/deep-is/-/deep-is-0.1.4.tgz"
   "version" "0.1.4"
+
+"deep-sort-object@^1.0.2":
+  "integrity" "sha512-Ko2XVMhRhz5Mxyb+QhLX13SHgcK1vuxc6XEfOyTMlbRbv7bhSmMqUw4ywqRwKgV25W+FDIaZjPWQrdblHCTwdA=="
+  "resolved" "https://registry.npmjs.org/deep-sort-object/-/deep-sort-object-1.0.2.tgz"
+  "version" "1.0.2"
+  dependencies:
+    "is-plain-object" "^2.0.1"
 
 "define-properties@^1.1.3", "define-properties@^1.1.4":
   "integrity" "sha512-xvqAVKGfT1+UAvPwKTVw/njhdQ8ZhXK4lI0bCIuCMrp2up9nPnaDftrLtmpTazqd1o+UY4zgzU+avtMbDP+ldA=="
@@ -3499,6 +3521,13 @@
   "resolved" "https://registry.npmjs.org/is-plain-obj/-/is-plain-obj-4.1.0.tgz"
   "version" "4.1.0"
 
+"is-plain-object@^2.0.1":
+  "integrity" "sha512-h5PpgXkWitc38BBMYawTYMWJHFZJVnBquFE57xFpjB8pJFiF6gZ+bU+WyI/yqXiFR5mdLsgYNaPe8uao6Uv9Og=="
+  "resolved" "https://registry.npmjs.org/is-plain-object/-/is-plain-object-2.0.4.tgz"
+  "version" "2.0.4"
+  dependencies:
+    "isobject" "^3.0.1"
+
 "is-regex@^1.1.4":
   "integrity" "sha512-kvRdxDsxZjhzUX07ZnLydzS1TU/TJlTUHHY4YLL87e37oUA49DfkLqgy+VjFocowy29cKvcSiu+kIv728jTTVg=="
   "resolved" "https://registry.npmjs.org/is-regex/-/is-regex-1.1.4.tgz"
@@ -3550,6 +3579,11 @@
   "integrity" "sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw=="
   "resolved" "https://registry.npmjs.org/isexe/-/isexe-2.0.0.tgz"
   "version" "2.0.0"
+
+"isobject@^3.0.1":
+  "integrity" "sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg=="
+  "resolved" "https://registry.npmjs.org/isobject/-/isobject-3.0.1.tgz"
+  "version" "3.0.1"
 
 "isomorphic-ws@^4.0.1":
   "integrity" "sha512-BhBvN2MBpWTaSHdWRb/bwdZJ1WaehQ2L1KngkCkfLUGF0mAWAT1sQUQacEmQ0jXkFw/czDXPNQSL5u2/Krsz1w=="
@@ -4266,6 +4300,11 @@
   dependencies:
     "p-limit" "^3.0.2"
 
+"pako@^2.0.3":
+  "integrity" "sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug=="
+  "resolved" "https://registry.npmjs.org/pako/-/pako-2.1.0.tgz"
+  "version" "2.1.0"
+
 "parent-module@^1.0.0":
   "integrity" "sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g=="
   "resolved" "https://registry.npmjs.org/parent-module/-/parent-module-1.0.1.tgz"
@@ -4582,6 +4621,19 @@
   "version" "0.7.7"
   dependencies:
     "hamt_plus" "1.0.2"
+
+"redstone-api@^0.4.11":
+  "integrity" "sha512-X0gj7UU5aLQPmNjdnhBUCvi6tkj5SpQJ7heT6+TIPx7Od707n4oqKHoJa41V8QOGjudbxaM1BIv6+2+hp0wFGQ=="
+  "resolved" "https://registry.npmjs.org/redstone-api/-/redstone-api-0.4.11.tgz"
+  "version" "0.4.11"
+  dependencies:
+    "ar-gql" "^0.0.6"
+    "arweave" "^1.10.16"
+    "arweave-multihost" "^0.1.0"
+    "axios" "^0.21.1"
+    "deep-sort-object" "^1.0.2"
+    "lodash" "^4.17.21"
+    "pako" "^2.0.3"
 
 "regenerate-unicode-properties@^10.1.0":
   "integrity" "sha512-d1VudCLoIGitcU/hEg2QqvyGZQmdC0Lf8BqdOMXGFSvJP4bNV1+XqbPQeHHLD51Jh4QJJ225dlIFvY4Ly6MXmQ=="

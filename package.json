@@ -36,7 +36,8 @@
     "react-image-file-resizer": "^0.4.8",
     "react-markdown": "^8.0.6",
     "react-spinners": "^0.13.8",
-    "recoil": "^0.7.6"
+    "recoil": "^0.7.6",
+    "redstone-api": "^0.4.11"
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
