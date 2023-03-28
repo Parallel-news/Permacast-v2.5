@@ -1,29 +1,19 @@
-import React, { FC, useState, useEffect, ReactNode } from "react";
+import { FC, useState, useEffect, ReactNode } from "react";
 import Link from "next/link";
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 import { useTranslation } from "next-i18next";
-import { Disclosure } from "@headlessui/react";
 import { SIDENAV_BUTTON, SIDENAV_BUTTON_BASE } from '../../styles/constants';
 
 import {
-  HomeIcon,
-  RectangleStackIcon,
   LanguageIcon,
   PlusIcon,
-  QuestionMarkCircleIcon,
-  Bars3Icon,
-  XMarkIcon,
+  QuestionMarkCircleIcon
 } from "@heroicons/react/24/outline";
-import { Cooyub } from "../reusables/icons";
-import ArConnect from "../arconnect";
-import { Searchbar } from "../searchbar";
 import LANGUAGES from "../../utils/languages";
 import { useRecoilState } from "recoil";
-import { arweaveAddress, isFullscreenAtom } from "../../atoms";
+import { isFullscreenAtom } from "../../atoms";
 import { PermaSpinner } from "../reusables/PermaSpinner";
 import { HELP_LINKS, SPINNER_COLOR } from "../../constants";
-import { EverPayBalance } from "../../utils/everpay/EverPayBalance";
-import { BsDiscord, BsTelegram, BsTwitter } from "react-icons/bs";
 import { flexCenter } from "../creator/featuredCreators";
 
 
@@ -217,9 +207,7 @@ export const UploadDropdown: FC<UploadDropdownProps> = ({ routeMatches }) => {
         className={dropdownContentStyling}
       >
         <li>
-          <span>
-            <LinkWithProgress href="/upload-podcast" onClick={switchToPodcast} loading={podcastClickLoad} hrefText={t("home.add-podcast")} />
-          </span>
+          <LinkWithProgress href="/upload-podcast" onClick={switchToPodcast} loading={podcastClickLoad} hrefText={t("home.add-podcast")} />
         </li>
         <li>
           <LinkWithProgress href="/upload-episode" onClick={switchToEpisode} loading={podcastClickLoad} hrefText={t("home.add-episode")} />
