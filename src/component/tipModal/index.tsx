@@ -5,7 +5,7 @@ import { useRecoilState } from "recoil";
 import { arweaveAddress } from "../../atoms";
 import { FADE_IN_STYLE, FADE_OUT_STYLE } from "../../constants";
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
-import { containerPodcastModalStyling, SubmitTipButton, tipModalStyling, titleModalStyling} from "../uploadEpisode/uploadEpisodeTools";
+import { ConnectButton, containerPodcastModalStyling, SubmitTipButton, tipModalStyling, titleModalStyling} from "../uploadEpisode/uploadEpisodeTools";
 
 interface TipModalInter {
     to?: string;
@@ -35,7 +35,7 @@ export const TipModal = (props: TipModalInter) => {
             clearTimeout(timeoutId);
         };
     }, [props.isVisible])
-
+    console.log("address: ", address)
     const submitTip = () => {
         // check if enough money in balance
         
@@ -63,9 +63,17 @@ export const TipModal = (props: TipModalInter) => {
                 </div>
                 {/*Submit Tip*/}
                 <div className="w-full h-[100px] bg-zinc-900 flex justify-center items-center absolute bottom-0">
-                    <SubmitTipButton 
+                    {address.length > 0 ?
+                        <SubmitTipButton 
+                            disable={false}
+                        />
+                    :
+                    <ConnectButton 
                         disable={false}
+                        click={() => connect()}
                     />
+                    }
+
                 </div>
             </div>
         </div>
