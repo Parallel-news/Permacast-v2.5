@@ -36,7 +36,6 @@ export default function PodcastId({data, status}) {
                         <meta name="twitter:title" content={`${data.obj.podcastName} | Permacast`} />
                         <meta name="twitter:url" content={`https://permacast.dev/`}></meta>
                         <meta name="twitter:description" content={`By ${data.obj.author}`} />
-
                         <meta name="og:card" content="summary" />
                         <meta name="description" content={`By ${data.obj.author}`} />
                         <meta name="og:image" content={(data.obj.cover !== "") ? `https://arweave.net/${data.obj.cover}` : "https://ar.page/favicon.png"} />
@@ -63,7 +62,8 @@ export default function PodcastId({data, status}) {
                 </div>
                 {loadTipModal && (
                     <TipModal
-                        to={title} 
+                        to={data?.obj.podcastName}
+                        toAddress={data?.obj.owner} 
                         isVisible={loadTipModal}
                         setVisible={setLoadTipModal}
                     />
@@ -84,8 +84,6 @@ export default function PodcastId({data, status}) {
             />
         )
     }
-    
-
 }
 
 export async function getServerSideProps(context) {

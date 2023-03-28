@@ -32,6 +32,7 @@ export default function EpisodeId({data, status}) {
         const nextEpisodeTitle = "Next Episode"
         const date = formattedDate
         const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
+        const owner = data?.obj.owner
         const episodes = d.episodes
         console.log("Data Cover: ", data.cover)
         return (
@@ -76,6 +77,8 @@ export default function EpisodeId({data, status}) {
                         <TipModal 
                             isVisible={loadTipModal}
                             setVisible={setLoadTipModal}
+                            toAddress={owner}
+                            to={data?.obj.podcastName}
                         />
                     )}
                 </div>
