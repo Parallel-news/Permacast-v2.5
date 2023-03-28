@@ -6,7 +6,7 @@ import {
   XMarkIcon
 } from "@heroicons/react/24/outline";
 import ArConnect from "../../arconnect";
-import { Searchbar } from "../../searchbar";
+import Searchbar from "../../searchbar";
 import LANGUAGES from "../../../utils/languages";
 import { useRecoilState } from "recoil";
 import { arweaveAddress } from "../../../atoms";
