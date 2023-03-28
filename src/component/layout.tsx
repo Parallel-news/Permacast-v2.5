@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil';
 
 import { useTranslation } from 'next-i18next';
 
-import { Sidenav, NavBar } from './navbars';
+import { Sidenav, NavBar } from './navigation';
 import Background from './background';
 
 import EpisodeQueue from './episodeQueue';
@@ -25,15 +25,9 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
   return (
     <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
       <div className="flex h-screen overflow-x-hidden relative">
-        <div className="hidden md:block z-50">
-          <div className="w-[100px] z-50 flex justify-center">
-            <Sidenav />
-          </div>
-        </div>
-        <div className="z-50">
-          <div className="absolute z-50 bottom-0 right-0">
-            {isQueueVisible && <EpisodeQueue />}
-          </div>
+        <Sidenav />
+        <div className="absolute z-50 bottom-0 right-0">
+          {isQueueVisible && <EpisodeQueue />}
         </div>
         {/* placeholder */}
         {_isFullscreen && <Fullscreen />}

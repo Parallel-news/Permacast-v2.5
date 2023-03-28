@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from "next-i18next";
 import { Disclosure } from "@headlessui/react";
 import { SIDENAV_BUTTON, SIDENAV_BUTTON_BASE } from '../../styles/constants';
+import { Tooltip } from '@nextui-org/react';
 
 import {
   HomeIcon,
@@ -18,213 +19,43 @@ import { Cooyub } from "../reusables/icons";
 import ArConnect from "../arconnect";
 import { Searchbar } from "../searchbar";
 import LANGUAGES from "../../utils/languages";
-import { UploadCount } from "../upload_count";
 import { useRecoilState } from "recoil";
 import { arweaveAddress, isFullscreenAtom } from "../../atoms";
 import { PermaSpinner } from "../reusables/PermaSpinner";
 import { SPINNER_COLOR } from "../../constants";
 import { EverPayBalance } from "../../utils/everpay/EverPayBalance";
 import { BsDiscord, BsTelegram, BsTwitter } from "react-icons/bs";
+import { HelpDropdown, LanguageDropdown, NavButton, UploadDropdown } from "./sidenavButtons";
+import { ComingSoonTooltip } from "../reusables/tooltip";
+import { flexCenter } from "../creator/featuredCreators";
 
-export const ForeignURL: FC<{ url: string, children: ReactNode }> = ({ url, children }) => (
-  <a
-    target="_blank"
-    rel="noreferrer"
-    href={url}
-    className="flex items-center gap-x-2"
-  >
-    {children}
-  </a>
-);
 
-export function Sidenav() {
+export const IconSizeStyling = `w-9 h-9 `;
+export const SideNavStyling = `hidden md:${flexCenter} flex-col gap-y-9 h-full pt-10 w-[100px] text-zinc-400 `;
+
+export const Sidenav: FC = () => {
+
   const { t } = useTranslation();
   const router = useRouter();
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const changeLanguage = (newLocale: string) => {
-    const { pathname, asPath, query } = router;
-    router.push({ pathname, query }, asPath, { locale: newLocale })
-  };
-
-  const [showUploadOptions,setUploadOptions] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useRecoilState(isFullscreenAtom);
 
   const isHome = router.pathname === "/";
   const isUploadPodcast = router.pathname === "/upload-podcast";
   const isUploadEpisode = router.pathname === "/upload-episode";
-  const isFeed = router.pathname === "feed";
-
-  interface INavButton {
-    url:       string;
-    condition: boolean;
-    icon:      JSX.Element;
-  }
-
-  const NavButton: FC<INavButton> = ({url, condition, icon}) => {
-    return (
-      <>
-        {condition ? (
-          <button disabled className="text-white rounded-full">
-            {icon}
-          </button>
-        ): (
-          <Link href={url} className="w-9 h-9">
-            <button
-              className={SIDENAV_BUTTON}
-              onClick={() => {
-                setIsFullscreen(false)
-              }}
-            >
-              {icon}
-            </button>
-          </Link>
-        )}
-      </>
-    )
-  }
-
-  const LanguageDropdown: FC = () => {
-    return (
-      <div className="dropdown dropdown-hover mb-[-6px]">
-        <button
-          tabIndex={0}
-          className={SIDENAV_BUTTON + " w-9 hover:text-zinc-200"}
-        >
-          <LanguageIcon />
-        </button>
-        <ul
-          tabIndex={0}
-          className="dropdown-content menu p-2 shadow bg-zinc-900 rounded-box w-36"
-        >
-          {LANGUAGES.map((l) => (
-            <li key={l.code}>
-              <span 
-                onClick={() => {
-                  setIsFullscreen(false)
-                  changeLanguage(l.code)
-                }}
-              >{l.name}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    )
-  }
-
-  const spinnerClass = "w-full flex justify-center"
-  const uploadDropdownStyling = "dropdown-content menu p-2 shadow bg-zinc-900 rounded-box min-w-[144px] max-w-[200px]"
-  
-  const UploadDropdown: FC = () => {
-    const [showClickLoad, setShowClickLoad] = useState<boolean>(false)
-    const [episodeClickLoad, setEpisodeClickLoad] = useState<boolean>(false)
-
-    const clickSwitch = (type: string) => {
-      if(!showClickLoad && !episodeClickLoad) {
-        if (type === "show") setShowClickLoad(true) 
-        if (type === "episode") setEpisodeClickLoad(true) 
-      } else if(showClickLoad) {
-        setShowClickLoad(false)
-        setEpisodeClickLoad(true)
-      } else if(episodeClickLoad) {
-        setShowClickLoad(true)
-        setEpisodeClickLoad(false)
-      }
-    }
-
-    return (
-      <div className="dropdown dropdown-hover mb-[-6px]">
-        {!(isUploadEpisode || isUploadPodcast) ? (
-          <button
-            tabIndex={0}
-            className={SIDENAV_BUTTON + " w-9 hover:text-zinc-200 "}
-          >
-            <PlusIcon />
-          </button>
-        ): (
-          <button className={SIDENAV_BUTTON_BASE + " text-white"}>
-            <PlusIcon />
-          </button>
-        )}
-        <ul
-          tabIndex={0}
-          className={uploadDropdownStyling}
-        >
-          <li key={1}>
-            {showClickLoad ?
-            <PermaSpinner
-              spinnerColor={SPINNER_COLOR}
-              size={10}
-              divClass={spinnerClass}
-            />
-            :
-            <Link href="/upload-podcast" onClick={()=>clickSwitch("show")}>{t("home.add-podcast")}</Link>
-            }
-          </li>
-          <li key={2}>
-            {episodeClickLoad ?
-            <PermaSpinner
-              spinnerColor={SPINNER_COLOR}
-              size={10}
-              divClass={spinnerClass}
-            />
-            :
-            <Link href="/upload-episode" onClick={()=>clickSwitch("episode")}>{t("home.add-episode")}</Link>
-            }
-          </li>
-        </ul>
-      </div>
-    );
-  };
-
-  const HelpDropdown = () => {
-    return (
-      <div className="dropdown dropdown-hover mb-[-6px]">
-        <button tabIndex={0} className={SIDENAV_BUTTON}>
-          <QuestionMarkCircleIcon />
-        </button>
-        <ul
-          tabIndex={0}
-          className={uploadDropdownStyling}
-        >
-          <li key={1}>
-            <ForeignURL url={"https://t.me/permacast"}>
-              <BsTelegram className="w-6 h-6" />
-              <p>Telegram</p>
-            </ForeignURL>
-          </li>
-          <li key={2}>
-            <ForeignURL url={"https://discord.gg/cQanQVCs7G"}>
-              <BsDiscord className="w-6 h-6" />
-              <p>Discord</p>
-            </ForeignURL>
-          </li>
-          <li key={3}>
-            <ForeignURL url={"https://twitter.com/permacastapp"}>
-              <BsTwitter className="w-6 h-6" />
-              <p>Twitter</p>
-            </ForeignURL>
-          </li>
-        </ul>
-      </div>
-    );
-  };
+  const isUpload = isUploadPodcast || isUploadEpisode;
+  // const isFeed = router.pathname === "feed";
 
   return (
-    <div className="h-full pt-[42px]">
-      <div className="grid rows-5 gap-9 text-zinc-300">
-        <button className={SIDENAV_BUTTON}>
-          <Cooyub svgStyle="w-9 h-9" rectStyle="w-9 h-9" fill="#ffff00" />
-        </button>
-
-        <NavButton url="/" condition={isHome} icon={<HomeIcon />} />
-        <div className="tooltip text-zinc-700" data-tip="Coming soon!">
-          <RectangleStackIcon />
-        </div>
-        <LanguageDropdown />
-        <UploadDropdown />
-        <HelpDropdown />
-      </div>
+    <div className={SideNavStyling}>
+      <button className={SIDENAV_BUTTON}>
+        <Cooyub svgStyle={IconSizeStyling} rectStyle={IconSizeStyling} fill="#ffff00" />
+      </button>
+      <NavButton url="/" condition={isHome} icon={<HomeIcon />} />
+      <ComingSoonTooltip placement="right">
+        <RectangleStackIcon className={IconSizeStyling + "text-zinc-600 cursor-not-allowed"} />
+      </ComingSoonTooltip>
+      <LanguageDropdown />
+      <UploadDropdown routeMatches={isUpload} />
+      <HelpDropdown />
     </div>
   );
 };
