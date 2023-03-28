@@ -94,7 +94,7 @@ export const PAYLOAD_RECEIVED = "Received"
 
 // ARSEEDING
 export const ARSEED_CURRENCY = "ar"
-export const ARSEED_URL = "https://arseed.web3infra.dev"
+export const ARSEED_URL = "https://arseed.web3infra.dev/"
 export const TEXTMARKDOWN = {
     tags: [{name: "Content-Type", value:'text/markdown'}]
 }

@@ -11,14 +11,16 @@ import { MINT_DURATION, TOAST_POSITION } from '../constants';
 import { Toaster } from 'react-hot-toast';
 import { ShikwasaProvider } from '../hooks';
 import React, { useEffect } from 'react';
-import localStorageObjectManager, { PODCAST_COVER_COLORS_MANAGER } from '../utils/localstorage';
+import localStorageObjectManager, { PODCAST_COVER_COLORS_MANAGER, PODCAST_DESCRIPTION_MANAGER } from '../utils/localstorage';
 
 
 function App({ Component, pageProps }) {
 
   useEffect(() => {
+    // to ensure that the localStorageObjectManager is initialized
     new localStorageObjectManager(PODCAST_COVER_COLORS_MANAGER);
-  }, [])
+    new localStorageObjectManager(PODCAST_DESCRIPTION_MANAGER);
+  }, []);
   
   return (
     <RecoilRoot>

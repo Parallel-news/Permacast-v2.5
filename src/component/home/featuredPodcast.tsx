@@ -14,6 +14,7 @@ import Image from "next/image";
 import { ARSEED_URL, ARWEAVE_READ_LINK } from "../../constants";
 import axios from "axios";
 import MarkdownRenderer from "../markdownRenderer";
+import { queryMarkdown } from "../../utils/markdown";
 
 
 /**
@@ -124,7 +125,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
 
   useEffect(() => {
     const fetchMarkdown = async (tx: arweaveTX) => {
-      const text = (await axios.get(ARSEED_URL + tx)).data;
+      const text = await queryMarkdown(tx)
       setMarkdownText(text);
     };
 

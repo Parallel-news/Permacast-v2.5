@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, FC, useState, useMemo } from "react";
 
-import { FullEpisodeInfo } from "../../interfaces";
+import { arweaveTX, FullEpisodeInfo } from "../../interfaces";
 import Image from "next/image";
 import Link from "next/link";
 import { fetchDominantColor, getButtonRGBs, getCoverColorScheme, RGBAstringToObject, RGBobjectToString, RGBstringToObject } from "../../utils/ui";
@@ -8,6 +8,8 @@ import { useTranslation } from "react-i18next";
 import { useShikwasa } from "../../hooks";
 import { showShikwasaPlayerArguments } from "../../interfaces/playback";
 import PlayButton from "./playButton";
+import MarkdownRenderer from "../markdownRenderer";
+import { queryMarkdown } from "../../utils/markdown";
 
 /**
  * Index
@@ -75,7 +77,7 @@ export interface MemoizedComponentProps {
   coverColor: string,
   author: string,
   includeDescription: boolean,
-  description?: string,
+  description?: arweaveTX,
 }
 
 // 2. Stylings
@@ -140,7 +142,7 @@ export const TrackCreatorLink: FC<TrackCreatorLinkProps> = ({ uploader, buttonSt
 export const TrackDescription: FC<TrackDescriptionProps> = ({ includeDescription, description }) => {
   if (includeDescription && description) return (
     <div className={trackDescriptionStyling}>
-      {description}
+      <MarkdownRenderer markdownText={description} />
     </div>
   );
 };
@@ -200,6 +202,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
   const [coverColor, setCoverColor] = useState<string>('');
   const [textColor, setTextColor] = useState<string>('');
   const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({backgroundColor: '', color: ''})
+  const [markdown, setMarkdown] = useState<string>('');
 
   useMemo(() => {
     const fetchData = async () => {
@@ -213,6 +216,8 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
       setCoverColor(coverColor);
       setTextColor(textColor);
       setButtonStyles(buttonStyles);
+      const markdown = (await queryMarkdown(description));
+      setMarkdown(markdown)
     };
     fetchData();
   }, []);
@@ -239,7 +244,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
             <TrackCreatorLink {...{ uploader, buttonStyles, coverColor, author }} />
           </div>
         </div>
-        <TrackDescription {...{ includeDescription, description }} />
+        <TrackDescription {...{ includeDescription, description: markdown }} />
       </div>
     );
   });
