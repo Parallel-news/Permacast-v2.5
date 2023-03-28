@@ -36,6 +36,7 @@ export interface DescriptionContainerInter {
 
 export interface EpisodeInfoButtonsInter {
     color: string;
+    setLoadTipModal: (v: any) => void
 }
 
 export interface EpisodeInfoSubInter {
@@ -50,6 +51,7 @@ export interface EpisodeBannerInter extends EpisodeInfoInter {
 
 export interface EpisodeInfoInter extends EpisodeInfoSubInter {
     title: string;
+    setLoadTipModal: () => void
 }
 
 export interface CreatorTagInter {
@@ -137,6 +139,7 @@ export const EpisodeBanner = (props: EpisodeBannerInter) => {
                 color={props.color}
                 episodeNum={props.episodeNum}
                 date={props.date}
+                setLoadTipModal={props.setLoadTipModal}
             />
         </div>
     )
@@ -153,6 +156,7 @@ export const EpisodeInfo = (props: EpisodeInfoInter) => {
             />
             <EpisodeInfoButtons
                 color={props.color}
+                setLoadTipModal={props.setLoadTipModal}
             />
         </div>
     )
@@ -172,7 +176,6 @@ export const EpisodeInfoSub = (props: EpisodeInfoSubInter) => {
 
 export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
     const { color } = props
-    const [_loadTipModal, setLoadTipModal] = useRecoilState(loadTipModal)
 
     return (
         <div className={episodeInfoButtonsStyling}>
@@ -185,7 +188,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
                 icon={<HeartIcon className={episodeIconStyling} />} 
                 text={"Tip"}
                 color={color} 
-                onClick={() => setLoadTipModal(true)}
+                onClick={() => props.setLoadTipModal}
             />
             <DescriptionButton
                 icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 

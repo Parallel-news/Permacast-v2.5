@@ -8,6 +8,7 @@ import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { containerPodcastModalStyling, SubmitTipButton, tipModalStyling, titleModalStyling } from "../uploadEpisode/uploadEpisodeTools";
 
 interface TipModalInter {
+    to?: string;
     isVisible: boolean;
     setVisible: Dispatch<SetStateAction<boolean>>;
 }
@@ -45,7 +46,10 @@ export const TipModal = (props: TipModalInter) => {
                 {/*Header*/}
                 <div className={titleModalStyling}>
                     <div></div>
-                    <p className="text-white text-4xl font-semibold">Tip</p>
+                    <div className="flex flex-col justify-center items-center space-y-2">
+                        <p className="text-white text-4xl font-semibold">Tip</p>
+                        <p className="text-neutral-400 font-light text-[14px]">{props.to}</p>
+                    </div>
                     <XMarkIcon className={xMarkModalStyling} onClick={() => props.setVisible(false)} />
                 </div>
                 {/*Tip Amount*/}

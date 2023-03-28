@@ -13,10 +13,11 @@ import { EXM_READ_LINK, ARWEAVE_READ_LINK, PAYLOAD_RECEIVED, NO_PODCAST_FOUND } 
 import { getContractVariables } from "../../utils/contract";
 import { findObjectById } from "../../utils/reusables";
 import { TipModal } from "../../component/tipModal";
+import { useState } from "react";
 
 export default function PodcastId({data, status}) {
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
-    const [_loadTipModal, _setLoadTipModal] = useRecoilState<boolean>(loadTipModal)
+    const [loadTipModal, setLoadTipModal] = useState<boolean>(false)
     console.log("data: ", data)
     if(data) {
         //State Calls Here
@@ -50,6 +51,7 @@ export default function PodcastId({data, status}) {
                         title={title}
                         description={ARWEAVE_READ_LINK+description}
                         color={color}
+                        setLoadTipModal={() => setLoadTipModal(true)}
                     />
                     {/*Episode Track*/}
                     <Episodes
@@ -59,10 +61,11 @@ export default function PodcastId({data, status}) {
                         episodes={episodes}
                     />            
                 </div>
-                {_loadTipModal && (
-                    <TipModal 
-                        isVisible={_loadTipModal}
-                        setVisible={_setLoadTipModal}
+                {loadTipModal && (
+                    <TipModal
+                        to={title} 
+                        isVisible={loadTipModal}
+                        setVisible={setLoadTipModal}
                     />
                 )}
             </>

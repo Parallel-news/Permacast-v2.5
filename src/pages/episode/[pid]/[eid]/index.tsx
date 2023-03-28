@@ -18,7 +18,7 @@ import { TipModal } from "../../../../component/tipModal";
 
 export default function EpisodeId({data, status}) {
     const [, setBackgroundColor_] = useRecoilState(backgroundColor);
-    const [_loadTipModal, _setLoadTipModal] = useRecoilState<boolean>(loadTipModal)
+    const [loadTipModal, setLoadTipModal] = useState<boolean>(false)
 
     if(data) {
         useEffect(() => {
@@ -43,7 +43,6 @@ export default function EpisodeId({data, status}) {
                     <meta name="twitter:title" content={`${data.obj.episodeName} | Permacast`} />
                     <meta name="twitter:url" content={`https://permacast.dev/`}></meta>
                     <meta name="twitter:description" content={`By ${data.podcastName}`} />
-
                     <meta name="og:card" content="summary" />
                     <meta name="description" content={`By ${data.podcastName}`} />
                     <meta name="og:image" content={(data.cover !== "") ? `https://arweave.net/${data.cover}` : "https://ar.page/favicon.png"} />
@@ -60,6 +59,7 @@ export default function EpisodeId({data, status}) {
                         color={color}
                         episodeNum={data?.index+1}
                         date={date}
+                        setLoadTipModal={() => setLoadTipModal(true)}
                     />
                     {/*Episode Description*/}
                     <EpisodeDescription
@@ -72,10 +72,10 @@ export default function EpisodeId({data, status}) {
                         color={color}
                         episodes={[]}
                     />
-                    {_loadTipModal && (
+                    {loadTipModal && (
                         <TipModal 
-                            isVisible={_loadTipModal}
-                            setVisible={_setLoadTipModal}
+                            isVisible={loadTipModal}
+                            setVisible={setLoadTipModal}
                         />
                     )}
                 </div>

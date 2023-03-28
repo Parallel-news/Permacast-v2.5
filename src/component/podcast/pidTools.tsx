@@ -25,6 +25,7 @@ export interface PodcastInfoInter {
 
 export interface PodcastBannerInter extends PodcastInfoInter {
     color: string;
+    setLoadTipModal: (v: any) => void
 }
 
 interface Podcast {
@@ -92,7 +93,6 @@ export const PodcastInfo = (props: PodcastInfoInter) => {
 
 export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
     const { color } = props
-    const [_loadTipModal, _setLoadTipModal] = useRecoilState<boolean>(loadTipModal)
     return (
         <div className={podcastButtonsStyling}>
             <DescriptionButton 
@@ -104,7 +104,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
                 icon={<HeartIcon className={episodeIconStyling} />} 
                 text={"Tip"}
                 color={color}
-                onClick={() => _setLoadTipModal(true)} 
+                onClick={props.setLoadTipModal} 
             />
             <Link href={`/upload-episode?pid=123`}>
                 <DescriptionButton
@@ -127,6 +127,7 @@ export const PodcastBanner = (props: PodcastBannerInter) => {
             />
             <PodcastButtons 
                 color={props.color}
+                setLoadTipModal={props.setLoadTipModal}
             />
         </div>
     )
