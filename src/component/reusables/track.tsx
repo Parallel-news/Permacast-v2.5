@@ -43,6 +43,7 @@ export interface ButtonStyle {
 };
 
 export interface EpisodeLinkableTitleProps {
+  pid: string;
   eid: string;
   episodeName: string;
 };
@@ -112,10 +113,10 @@ export const PodcastCover: FC<PodcastCoverProps> = ({ pid, cover, alt }) => {
   );
 };
 
-export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ eid, episodeName }) => {
+export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ pid, eid, episodeName }) => {
   return (
     <Link
-      href={`/episode/${eid}`}
+      href={`/episode/${pid}/${eid}`}
       className={trackEpisodeLinkableTitleStyling}
     >
       {episodeName}
@@ -238,7 +239,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
       <div className={trackFlexCenterPaddedYStyling}>
         <PodcastCover {...{ pid, cover: coverUsed, alt: podcastName }} />
         <div className="ml-4 flex flex-col min-w-[100px]">
-          <EpisodeLinkableTitle {...{ eid, episodeName }} />
+          <EpisodeLinkableTitle {...{ pid, eid, episodeName }} />
           <div className={trackFlexCenterYStyling}>
             <p className={trackByStyling}>{t("track.by")}</p>
             <TrackCreatorLink {...{ uploader, buttonStyles, coverColor, author }} />
