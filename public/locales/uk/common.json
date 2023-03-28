@@ -1,5 +1,8 @@
 {
 	"language": "Мова",
+	"tooltip": {
+		"coming-soon": "Незабаром"
+	},
 	"navbar": {
 		"home": "Головна",
 		"help": "Отримати допомогу",

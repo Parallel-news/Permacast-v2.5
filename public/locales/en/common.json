@@ -1,5 +1,8 @@
 {
 	"language": "Language",
+	"tooltip": {
+		"coming-soon": "Coming soon"
+	},
 	"navbar": {
 		"home": "Home",
 		"help": "Get help",

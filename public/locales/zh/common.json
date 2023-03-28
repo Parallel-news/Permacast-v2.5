@@ -1,5 +1,8 @@
 {
 	"language": "语言",
+	"tooltip": {
+		"coming-soon": "即将推出"
+	},
 	"navbar": {
 		"home": "主页",
 		"help": "获取帮助",
