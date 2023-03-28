@@ -217,7 +217,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
           <CreatorNames {...{ nickname, currentLabel, ANSuserExists }} />
         </div>
         <div className={creatorFlexCenteredStyling + " mr-6"}>
-          <ViewANSButton {...{ currentLabel }} />
+          <ViewANSButton {...{ currentLabel, ANSuserExists }} />
           <TipButton address={user} />
         </div>
       </div>
