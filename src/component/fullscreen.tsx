@@ -12,7 +12,7 @@ interface BackgroundImageProps {
 };
 
 interface FullscreenStaticImageProps {
-  cover: string;
+  cover?: string;
   episodeName: string;
   currentEpisodeIndex: number;
 };
@@ -32,6 +32,19 @@ export const BackgroundImage: FC<BackgroundImageProps> = ({ cover, episodeName }
   />
 );
 
+export const FullscreenEpisodeText: FC<{ currentEpisodeIndex: number, episodeName: string }> = ({ currentEpisodeIndex, episodeName }) => {
+  const { t } = useTranslation();
+  
+  return (
+    <>
+      <div className={WhiteLargeFont + "mt-5"}>
+        {t("fullscreen.episode")} #{currentEpisodeIndex + 1}
+      </div>
+    <div className={LargeGrayTextStyling + "mt-5"}>{episodeName}</div>
+  </>
+  );
+};
+
 export const FullscreenStaticImage: FC<FullscreenStaticImageProps> = ({ cover, episodeName, currentEpisodeIndex}) => {
   const { t } = useTranslation();
   
@@ -44,17 +57,22 @@ export const FullscreenStaticImage: FC<FullscreenStaticImageProps> = ({ cover, e
         width={1000}
         height={1000}
       />
-      <div className={WhiteLargeFont + "mt-5"}>
-        {t("fullscreen.episode")} #{currentEpisodeIndex + 1}
-      </div>
-      <div className={LargeGrayTextStyling + "mt-5"}>{episodeName}</div>
+      <FullscreenEpisodeText {...{ currentEpisodeIndex, episodeName }} />
     </div>
   );
 };
 
-export const FullscreenVideo: FC = () => {
+export const FullscreenVideo: FC<FullscreenStaticImageProps> = ({ episodeName, currentEpisodeIndex}) => {
   return (
-    <div></div>
+    <div>
+      <div className="w-full h-full z-50 absolute top-0 right-0">
+        <div id="video-player" ></div>
+        <div className="absolute bottom-24 right-[44%]">
+        <FullscreenEpisodeText {...{ currentEpisodeIndex, episodeName }} />
+
+        </div>
+      </div>
+    </div>
   )
 };
 
@@ -76,7 +94,7 @@ const Fullscreen: FC = () => {
     <div className={FullscreenOuterStyling}>
       <BackgroundImage {...{ cover,episodeName }} />
       {isAudio && <FullscreenStaticImage {...{ cover, episodeName, currentEpisodeIndex }} />}
-      {isVideo && <FullscreenVideo />}
+      {isVideo && <FullscreenVideo {...{ episodeName, currentEpisodeIndex}}  />}
     </div>
   );
 };

@@ -27,6 +27,22 @@ if (typeof window !== 'undefined') {
 }
 const addPassive = supportsPassive && isMobile
 
+
+function Video(src, append) {
+  var v = document.createElement("video");
+  v.class = "w-[100%] h-[90%]";
+  v.className = "w-[100%] h-[90%]";
+  if (src != "") {
+    v.src = src;
+  }
+  if (append == true) {
+    // TODO: RE-WRITE
+    setTimeout(() => document.getElementById("video-player")?.appendChild(v), 5000)
+    
+  }
+  return v;
+}
+
 class Player {
   constructor(options) {
     this.id = playerArr.length
@@ -192,7 +208,13 @@ class Player {
 
   initAudio() {
     if (this.options.audio.src) {
-      this.audio = new Audio()
+      // this.audio = new Audio()
+      let video = new Video(this.options.audio.src, true)
+      this.audio = video
+
+      this.audio.height = 280;
+      this.audio.width = 500;
+      console.log(video)
       this.initAudioEvents()
       this.events.audioEvents.forEach((name) => {
         this.audio.addEventListener(name, (e) => {
