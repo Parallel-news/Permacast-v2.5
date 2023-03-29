@@ -3,7 +3,8 @@ import { DescriptionButton } from "../../component/reusables/buttons";
 import { 
     HeartIcon, 
     PlusIcon,
-    PlayIcon 
+    PlayIcon, 
+    ArrowTopRightOnSquareIcon
 } from '@heroicons/react/24/solid';
 import { Episode, episodeIconStyling, EpisodeInfoButtonsInter } from "../episode/eidTools";
 import { useEffect, useState } from "react";
@@ -26,6 +27,7 @@ export interface PodcastInfoInter {
 export interface PodcastBannerInter extends PodcastInfoInter {
     color: string;
     setLoadTipModal: (v: any) => void
+    setLoadShareModal: (v: any) => void
     podcastId: string
 }
 
@@ -110,10 +112,16 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             <Link href={`/upload-episode?pid=${props.podcastId}`}>
                 <DescriptionButton
                     icon={<PlusIcon className={episodeIconStyling} />} 
-                    text={"Add Episode"}
+                    text={"Episode"}
                     color={color}
                 />
             </Link>
+            <DescriptionButton
+                icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
+                text={"Share"}
+                color={color}
+                onClick={props.setLoadShareModal}
+            />
         </div>
     )
 }
@@ -130,6 +138,7 @@ export const PodcastBanner = (props: PodcastBannerInter) => {
                 color={props.color}
                 setLoadTipModal={props.setLoadTipModal}
                 podcastId={props.podcastId}
+                setLoadShareModal={props.setLoadShareModal}
             />
         </div>
     )

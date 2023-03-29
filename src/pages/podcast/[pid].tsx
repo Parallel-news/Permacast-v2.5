@@ -13,11 +13,19 @@ import { EXM_READ_LINK, ARWEAVE_READ_LINK, PAYLOAD_RECEIVED, NO_PODCAST_FOUND } 
 import { getContractVariables } from "../../utils/contract";
 import { findObjectById } from "../../utils/reusables";
 import { TipModal } from "../../component/tipModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ShareButtons } from "../../component/shareButtons";
 
 export default function PodcastId({data, status}) {
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
     const [loadTipModal, setLoadTipModal] = useState<boolean>(false)
+    const [loadShareModal, setLoadShareModal] = useState<boolean>(false)
+    const [baseUrl, setBaseUrl] = useState<string>("")
+
+    useEffect(() => {
+        if(typeof window !== 'undefined') setBaseUrl(window.location.protocol + "//"+window.location.hostname+(window.location.port ? ":" + window.location.port : ""))
+    }, [])
+
     console.log("data: ", data)
     if(data) {
         //State Calls Here
@@ -27,6 +35,7 @@ export default function PodcastId({data, status}) {
         const description = data.obj?.description
         const nextEpisodeTitle = "Episodes"
         const episodes = data.obj?.episodes
+
         return (
             <>
                 <Head>
@@ -52,6 +61,7 @@ export default function PodcastId({data, status}) {
                         color={color}
                         setLoadTipModal={() => setLoadTipModal(true)}
                         podcastId={data.obj?.pid}
+                        setLoadShareModal={() => setLoadShareModal(true)}
                     />
                     {/*Episode Track*/}
                     <Episodes
@@ -68,6 +78,14 @@ export default function PodcastId({data, status}) {
                         toAddress={data?.obj.owner} 
                         isVisible={loadTipModal}
                         setVisible={setLoadTipModal}
+                    />
+                )}
+                {loadShareModal && (
+                    <ShareButtons
+                        isVisible={loadShareModal} 
+                        setVisible={setLoadShareModal}
+                        title={"Check this out "}
+                        url={`${baseUrl}/podcast/${data.obj?.pid}`}
                     />
                 )}
             </>
