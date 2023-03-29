@@ -76,6 +76,7 @@ export default function EpisodeId({data, status}) {
                         imgSrc={ARWEAVE_READ_LINK+data?.cover}
                         color={color}
                         episodes={[]}
+                        podcastId={data?.obj.pid}
                     />
                     {loadTipModal && (
                         <TipModal

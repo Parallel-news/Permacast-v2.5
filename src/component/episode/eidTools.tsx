@@ -191,10 +191,11 @@ export const EpisodeInfoSub = (props: EpisodeInfoSubInter) => {
 
 export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
     const { color } = props
-    const [downloadCreated, setDownloadCreated] = useState<boolean>(false)
-    const [downloadUrl, setDownloadUrl] = useState<string>("")
+    const [downloading, setDownloading] = useState<boolean>(false)
+
 
     const downloadFile = async () => {
+        setDownloading(true)
         const response = await fetch(props.mediaLink);
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
@@ -204,6 +205,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        setDownloading(false)
     };
 
     return (
@@ -219,12 +221,22 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
                 color={color} 
                 onClick={props.setLoadTipModal}
             />
+            {downloading ?
+            <DescriptionButton
+                icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
+                text={"Fetching"}
+                color={color}
+                onClick={() => downloadFile()}
+            />
+            :
             <DescriptionButton
                 icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
                 text={"Download"}
                 color={color}
                 onClick={() => downloadFile()}
             />
+            }
+
             <DescriptionButton
                 icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
                 text={"Share"}
