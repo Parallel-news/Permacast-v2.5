@@ -30,11 +30,12 @@ export default function EpisodeId({data, status}) {
         const ts = new Date(data?.obj.uploadedAt);
         const formattedDate = ts.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
         const d = data?.obj
+        console.log("big: ", data)
         const color = "#818cf8"
         const nextEpisodeTitle = "Next Episode"
         const date = formattedDate
         const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
-        const owner = data?.obj.owner
+
         const episodes = d.episodes
         console.log("Data Cover: ", data.cover)
         return (
@@ -76,11 +77,11 @@ export default function EpisodeId({data, status}) {
                         episodes={[]}
                     />
                     {loadTipModal && (
-                        <TipModal 
+                        <TipModal
+                            to={data?.podcastName}
+                            toAddress={data?.owner} 
                             isVisible={loadTipModal}
                             setVisible={setLoadTipModal}
-                            toAddress={owner}
-                            to={data?.obj.podcastName}
                         />
                     )}
                 </div>
@@ -117,8 +118,9 @@ export async function getServerSideProps(context) {
     // Podcast Exists
     if(foundPodcasts) {
         const podcastData = {
-            cover: foundPodcasts.obj.cover
-    
+            cover: foundPodcasts.obj.cover,
+            podcastName: foundPodcasts.obj.podcastName,
+            owner: foundPodcasts.obj.owner
         }
         const foundEpisode = findObjectById(foundPodcasts.obj.episodes, episodeId, "eid")
         // Episode Exist

@@ -188,7 +188,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
                 icon={<HeartIcon className={episodeIconStyling} />} 
                 text={"Tip"}
                 color={color} 
-                onClick={() => props.setLoadTipModal}
+                onClick={props.setLoadTipModal}
             />
             <DescriptionButton
                 icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
