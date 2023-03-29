@@ -64,6 +64,7 @@ export default function EpisodeId({data, status}) {
                         episodeNum={data?.index+1}
                         date={date}
                         setLoadTipModal={() => setLoadTipModal(true)}
+                        mediaLink={ARWEAVE_READ_LINK+data.obj.contentTx}
                     />
                     {/*Episode Description*/}
                     <EpisodeDescription

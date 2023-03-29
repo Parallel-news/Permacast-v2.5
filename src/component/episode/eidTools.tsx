@@ -11,6 +11,8 @@ import { formatStringByLen, hexToRGB } from "../../utils/reusables";
 import { ARWEAVE_READ_LINK, STR_LEN_EPISODE_BOX, STR_LEN_EPISODE_DESC } from "../../constants";
 import { useRecoilState } from "recoil";
 import { loadTipModal } from "../../atoms";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function eidTools() {
     return false
@@ -38,6 +40,7 @@ export interface EpisodeInfoButtonsInter {
     color: string;
     setLoadTipModal: (v: any) => void
     podcastId?: string;
+    mediaLink?: string;
 }
 
 export interface EpisodeInfoSubInter {
@@ -48,11 +51,13 @@ export interface EpisodeInfoSubInter {
 
 export interface EpisodeBannerInter extends EpisodeInfoInter {
     imgSrc: string;
+    mediaLink: string;
 }
 
 export interface EpisodeInfoInter extends EpisodeInfoSubInter {
     title: string;
-    setLoadTipModal: () => void
+    setLoadTipModal: () => void;
+    mediaLink: string;
 }
 
 export interface CreatorTagInter {
@@ -141,6 +146,7 @@ export const EpisodeBanner = (props: EpisodeBannerInter) => {
                 episodeNum={props.episodeNum}
                 date={props.date}
                 setLoadTipModal={props.setLoadTipModal}
+                mediaLink={props.mediaLink}
             />
         </div>
     )
@@ -158,6 +164,7 @@ export const EpisodeInfo = (props: EpisodeInfoInter) => {
             <EpisodeInfoButtons
                 color={props.color}
                 setLoadTipModal={props.setLoadTipModal}
+                mediaLink={props.mediaLink}
             />
         </div>
     )
@@ -177,6 +184,42 @@ export const EpisodeInfoSub = (props: EpisodeInfoSubInter) => {
 
 export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
     const { color } = props
+    const [downloadCreated, setDownloadCreated] = useState<boolean>(false)
+    const [downloadUrl, setDownloadUrl] = useState<string>("")
+
+    const downloadFile = async () => {
+        const response = await fetch('https://2fues3rx4bz7alo3fzeehjky2qp2tfcwtzuoqkqv4ihwnrlfumnq.arweave.net/0WhJbjfgc_At2y5IQ6VY1B-plFaeaOgqFeIPZsVloxs');
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'test.mpeg';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    useEffect(() => {
+        const fetchFile = async() => {
+            const response = await fetch(props.mediaLink)
+            const blobObj = await response.blob()
+            //blobObj.type
+            setDownloadUrl(URL.createObjectURL(blobObj))
+        }
+        
+        fetchFile()
+        /*
+        .then(blob => {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'filename.extension';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+        */
+    }, [])
 
     return (
         <div className={episodeInfoButtonsStyling}>
@@ -195,6 +238,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
                 icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
                 text={"Download"}
                 color={color}
+                onClick={() => downloadFile()}
             />
             <DescriptionButton
                 icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
