@@ -356,12 +356,18 @@ export const SubmitTipButton = (props: UploadButtonInter) => {
 
 export const SelectPodcast = (props: SelectPodcastInter) => {
     const [isVisible, setIsVisible] = useState<boolean>(false)
-    const [_arweaveAddress, _setArweaveAddress] = useRecoilState(arweaveAddress)
-    const yourShows = props.shows.filter((item: Podcast) => item.owner === _arweaveAddress)
-
+    const { address,  } = useArconnect();
+    const yourShows = props.shows.filter((item: Podcast) => item.owner === address)
+    console.log("_arweaveAddress: ", address)
     let selectedShow;
     if(props.pid.length > 0) {
-        selectedShow = yourShows.filter((item: Podcast) => item.pid === props.pid)
+        selectedShow = yourShows.map((item: Podcast, index) => {
+            if(item.pid === props.pid) {
+                console.log("match found")
+                return item
+            }
+        })
+        console.log("selectedShow: ", selectedShow)
     }
 
     useEffect(() => {
@@ -444,7 +450,7 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
 
     return(
         <div className={selectPodcastModalStyling}>
-            <div className={`${containerPodcastModalStyling} ${showModal ? FADE_IN_STYLE :FADE_OUT_STYLE}`}>
+            <div className={`${containerPodcastModalStyling + " p-6"} ${showModal ? FADE_IN_STYLE :FADE_OUT_STYLE}`}>
                 {/*Header*/}
                 <div className={titleModalStyling}>
                     <div></div>
