@@ -13,6 +13,7 @@ import { useRecoilState } from "recoil";
 import { loadTipModal } from "../../atoms";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { getTypeFromMime } from "../../utils/fileTools";
 
 export default function eidTools() {
     return false
@@ -41,6 +42,7 @@ export interface EpisodeInfoButtonsInter {
     setLoadTipModal: (v: any) => void
     podcastId?: string;
     mediaLink?: string;
+    episodeName?: string;
 }
 
 export interface EpisodeInfoSubInter {
@@ -165,6 +167,7 @@ export const EpisodeInfo = (props: EpisodeInfoInter) => {
                 color={props.color}
                 setLoadTipModal={props.setLoadTipModal}
                 mediaLink={props.mediaLink}
+                episodeName={props.title}
             />
         </div>
     )
@@ -188,38 +191,16 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
     const [downloadUrl, setDownloadUrl] = useState<string>("")
 
     const downloadFile = async () => {
-        const response = await fetch('https://2fues3rx4bz7alo3fzeehjky2qp2tfcwtzuoqkqv4ihwnrlfumnq.arweave.net/0WhJbjfgc_At2y5IQ6VY1B-plFaeaOgqFeIPZsVloxs');
+        const response = await fetch(props.mediaLink);
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'test.mpeg';
+        link.download = props.episodeName+'.'+getTypeFromMime(blob.type);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     };
-
-    useEffect(() => {
-        const fetchFile = async() => {
-            const response = await fetch(props.mediaLink)
-            const blobObj = await response.blob()
-            //blobObj.type
-            setDownloadUrl(URL.createObjectURL(blobObj))
-        }
-        
-        fetchFile()
-        /*
-        .then(blob => {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'filename.extension';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
-        */
-    }, [])
 
     return (
         <div className={episodeInfoButtonsStyling}>
