@@ -10,18 +10,18 @@ import {
     Episodes,
     ErrorTag,
     podcastIdStyling,
-    textTruncateButtonStyling
  } from "../../../../component/episode/eidTools";
-import { EXM_READ_LINK, ARWEAVE_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND, STR_LEN_EPISODE_DESC } from "../../../../constants";
+import { EXM_READ_LINK, ARWEAVE_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND } from "../../../../constants";
 import { getContractVariables } from "../../../../utils/contract";
 import { findObjectById, formatStringByLen } from "../../../../utils/reusables";
 import { TipModal } from "../../../../component/tipModal";
-import TextTruncate from "../../../../component/TextTruncate";
+import { ShareButtons } from "../../../../component/shareButtons";
 
 export default function EpisodeId({data, status}) {
     const [, setBackgroundColor_] = useRecoilState(backgroundColor);
     const [loadTipModal, setLoadTipModal] = useState<boolean>(false)
-
+    const [loadShareModal, setLoadShareModal] = useState<boolean>(false)
+    const [baseUrl, setBaseUrl] = useState<string>("")
     if(data) {
         useEffect(() => {
             setBackgroundColor_(color)
@@ -35,9 +35,13 @@ export default function EpisodeId({data, status}) {
         const nextEpisodeTitle = "Next Episode"
         const date = formattedDate
         const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
-
         const episodes = d.episodes
         console.log("Data Cover: ", data.cover)
+
+        useEffect(() => {
+            if(typeof window !== 'undefined') setBaseUrl(window.location.protocol + "//"+window.location.hostname+(window.location.port ? ":" + window.location.port : ""))
+        }, [])
+
         return (
             <>
                 <Head>
@@ -78,12 +82,23 @@ export default function EpisodeId({data, status}) {
                         episodes={[]}
                         podcastId={data?.obj.pid}
                     />
+                    <button onClick={() => setLoadShareModal(prev => !prev)}>
+                        Show
+                    </button>
                     {loadTipModal && (
                         <TipModal
                             to={data?.podcastName}
                             toAddress={data?.owner} 
                             isVisible={loadTipModal}
                             setVisible={setLoadTipModal}
+                        />
+                    )}
+                    {loadShareModal && (
+                        <ShareButtons
+                            isVisible={loadShareModal} 
+                            setVisible={setLoadShareModal}
+                            title={"Check this out "}
+                            url={baseUrl+"/episode/7c78a4a408622fb0f385d21fca30e89e93b9608859f85d2fd324a55770213d195c15e6dd0618f4cb852115cadfd7bd1a299fdd72cad84ce28969feab7813bd35/f353dd3c8f405d7b6c67e2d24fe8d86ae5c4ddae5d873a6525894f9cc47f00cb16fa510d11c148d86e8b49662e340c9ae718cc389a934198f7dbf3f36ec07c89"}
                         />
                     )}
                 </div>
