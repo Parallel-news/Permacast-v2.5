@@ -18,6 +18,7 @@ import { useState } from "react";
 export default function PodcastId({data, status}) {
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
     const [loadTipModal, setLoadTipModal] = useState<boolean>(false)
+    const [loadShareModal, setLoadShareModal] = useState<boolean>(false)
     console.log("data: ", data)
     if(data) {
         //State Calls Here
@@ -52,6 +53,7 @@ export default function PodcastId({data, status}) {
                         color={color}
                         setLoadTipModal={() => setLoadTipModal(true)}
                         podcastId={data.obj?.pid}
+                        setLoadShareModal={() => setLoadShareModal(true)}
                     />
                     {/*Episode Track*/}
                     <Episodes
