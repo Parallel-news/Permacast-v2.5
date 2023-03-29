@@ -167,3 +167,8 @@ export async function getImageSizeInBytes(imageUrl) {
       return -1;
     }
   }
+
+  // Ex. Extract mpeg from audio/mpeg
+export function getTypeFromMime(mimeType) {
+  return mimeType.split('/')[1];
+}
