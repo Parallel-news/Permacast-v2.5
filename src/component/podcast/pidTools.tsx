@@ -26,6 +26,7 @@ export interface PodcastInfoInter {
 export interface PodcastBannerInter extends PodcastInfoInter {
     color: string;
     setLoadTipModal: (v: any) => void
+    podcastId: string
 }
 
 interface Podcast {
@@ -106,7 +107,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
                 color={color}
                 onClick={props.setLoadTipModal} 
             />
-            <Link href={`/upload-episode?pid=123`}>
+            <Link href={`/upload-episode?pid=${props.podcastId}`}>
                 <DescriptionButton
                     icon={<PlusIcon className={episodeIconStyling} />} 
                     text={"Add Episode"}
@@ -128,6 +129,7 @@ export const PodcastBanner = (props: PodcastBannerInter) => {
             <PodcastButtons 
                 color={props.color}
                 setLoadTipModal={props.setLoadTipModal}
+                podcastId={props.podcastId}
             />
         </div>
     )

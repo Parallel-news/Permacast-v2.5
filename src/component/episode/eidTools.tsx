@@ -37,6 +37,7 @@ export interface DescriptionContainerInter {
 export interface EpisodeInfoButtonsInter {
     color: string;
     setLoadTipModal: (v: any) => void
+    podcastId?: string;
 }
 
 export interface EpisodeInfoSubInter {

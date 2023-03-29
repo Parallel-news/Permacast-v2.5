@@ -51,6 +51,7 @@ export default function PodcastId({data, status}) {
                         description={ARWEAVE_READ_LINK+description}
                         color={color}
                         setLoadTipModal={() => setLoadTipModal(true)}
+                        podcastId={data.obj?.pid}
                     />
                     {/*Episode Track*/}
                     <Episodes
