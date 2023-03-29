@@ -33,7 +33,7 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
   const styles = {transition: 'opacity 2.5s ease', backgroundImage: `linear-gradient(${backgroundColor_}, black, black)`};
 
   return (
-    <div className="w-screen overflow-scroll" style={true ? styles : {}}>
+    <div className="w-screen overflow-x-hidden overflow-y-scroll " style={true ? styles : {}}>
       {children}
     </div>
   )

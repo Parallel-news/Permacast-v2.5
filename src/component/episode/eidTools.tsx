@@ -39,7 +39,8 @@ export interface DescriptionContainerInter {
 
 export interface EpisodeInfoButtonsInter {
     color: string;
-    setLoadTipModal: (v: any) => void
+    setLoadTipModal: (v: any) => void;
+    setLoadShareModal: (v: any) => void;
     podcastId?: string;
     mediaLink?: string;
     episodeName?: string;
@@ -59,6 +60,7 @@ export interface EpisodeBannerInter extends EpisodeInfoInter {
 export interface EpisodeInfoInter extends EpisodeInfoSubInter {
     title: string;
     setLoadTipModal: () => void;
+    setLoadShareModal: () => void;
     mediaLink: string;
 }
 
@@ -73,12 +75,15 @@ export interface EpisodeBoxTitleData {
     creator: string;
     color: string;
     title: string;
+    eid: string;
+    pid: string;
 }
 
 export interface EpisodeBoxInter {
     episode: Episode 
     imgSrc: string;
     color: string;
+    podcastId: string;
 }
 
 
@@ -87,6 +92,7 @@ export interface EpisodesInter {
     episodes: Episode[]
     color: string; 
     imgSrc: string;
+    podcastId: string;
 }
 
 export interface Episode {
@@ -148,6 +154,7 @@ export const EpisodeBanner = (props: EpisodeBannerInter) => {
                 episodeNum={props.episodeNum}
                 date={props.date}
                 setLoadTipModal={props.setLoadTipModal}
+                setLoadShareModal={props.setLoadShareModal}
                 mediaLink={props.mediaLink}
             />
         </div>
@@ -166,6 +173,7 @@ export const EpisodeInfo = (props: EpisodeInfoInter) => {
             <EpisodeInfoButtons
                 color={props.color}
                 setLoadTipModal={props.setLoadTipModal}
+                setLoadShareModal={props.setLoadShareModal}
                 mediaLink={props.mediaLink}
                 episodeName={props.title}
             />
@@ -187,10 +195,11 @@ export const EpisodeInfoSub = (props: EpisodeInfoSubInter) => {
 
 export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
     const { color } = props
-    const [downloadCreated, setDownloadCreated] = useState<boolean>(false)
-    const [downloadUrl, setDownloadUrl] = useState<string>("")
+    const [downloading, setDownloading] = useState<boolean>(false)
+
 
     const downloadFile = async () => {
+        setDownloading(true)
         const response = await fetch(props.mediaLink);
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
@@ -200,6 +209,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        setDownloading(false)
     };
 
     return (
@@ -215,16 +225,27 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
                 color={color} 
                 onClick={props.setLoadTipModal}
             />
+            {downloading ?
+            <DescriptionButton
+                icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
+                text={"Fetching"}
+                color={color}
+                onClick={() => downloadFile()}
+            />
+            :
             <DescriptionButton
                 icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
                 text={"Download"}
                 color={color}
                 onClick={() => downloadFile()}
             />
+            }
+
             <DescriptionButton
                 icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
                 text={"Share"}
                 color={color}
+                onClick={props.setLoadShareModal}
             />
         </div>
     )
@@ -263,6 +284,7 @@ export const Episodes = (props: EpisodesInter) => {
                         episode={item}
                         imgSrc={props.imgSrc}
                         color={props.color}
+                        podcastId={props.podcastId}
                     />
                 ))
             :
@@ -282,6 +304,8 @@ export const EpisodeBox = (props: EpisodeBoxInter) => {
                 creator={uploader.length > 15 ? formatStringByLen(uploader, 4, 4) : uploader}
                 color={props.color}
                 title={props.episode.episodeName}
+                eid={props.episode.eid}
+                pid={props.podcastId}
             />
             {/*Episode Description*/}
             <div className="w-[50%]">
@@ -314,7 +338,7 @@ export const EpisodeBoxTitleData = (props: EpisodeBoxTitleData) => {
                 className={episodeBoxTitleDataImg}
             />
             <div className="flex flex-col">
-                <p className={episodeBoxTitleStyling}>{props.title}</p>
+                <a href={`/episode/${props.pid}/${props.eid}`} className={episodeBoxTitleStyling+" mb-1"}>{props.title}</a>
                 <div className={creatorTagDivStyling}>
                     <p className={byStyling}>by</p>
                     <CreatorTag color={props.color} creator={props.creator} imgSrc={props.imgSrc}/>
