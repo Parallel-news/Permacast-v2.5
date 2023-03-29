@@ -59,6 +59,7 @@ export default function PodcastId({data, status}) {
                         imgSrc={imgSrc}
                         color={color}
                         episodes={episodes}
+                        podcastId={data.obj?.pid}
                     />            
                 </div>
                 {loadTipModal && (

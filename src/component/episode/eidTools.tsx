@@ -73,12 +73,15 @@ export interface EpisodeBoxTitleData {
     creator: string;
     color: string;
     title: string;
+    eid: string;
+    pid: string;
 }
 
 export interface EpisodeBoxInter {
     episode: Episode 
     imgSrc: string;
     color: string;
+    podcastId: string;
 }
 
 
@@ -87,6 +90,7 @@ export interface EpisodesInter {
     episodes: Episode[]
     color: string; 
     imgSrc: string;
+    podcastId: string;
 }
 
 export interface Episode {
@@ -263,6 +267,7 @@ export const Episodes = (props: EpisodesInter) => {
                         episode={item}
                         imgSrc={props.imgSrc}
                         color={props.color}
+                        podcastId={props.podcastId}
                     />
                 ))
             :
@@ -282,6 +287,8 @@ export const EpisodeBox = (props: EpisodeBoxInter) => {
                 creator={uploader.length > 15 ? formatStringByLen(uploader, 4, 4) : uploader}
                 color={props.color}
                 title={props.episode.episodeName}
+                eid={props.episode.eid}
+                pid={props.podcastId}
             />
             {/*Episode Description*/}
             <div className="w-[50%]">
@@ -314,7 +321,7 @@ export const EpisodeBoxTitleData = (props: EpisodeBoxTitleData) => {
                 className={episodeBoxTitleDataImg}
             />
             <div className="flex flex-col">
-                <p className={episodeBoxTitleStyling}>{props.title}</p>
+                <a href={`/episode/${props.pid}/${props.eid}`} className={episodeBoxTitleStyling+" mb-1"}>{props.title}</a>
                 <div className={creatorTagDivStyling}>
                     <p className={byStyling}>by</p>
                     <CreatorTag color={props.color} creator={props.creator} imgSrc={props.imgSrc}/>
