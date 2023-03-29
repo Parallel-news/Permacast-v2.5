@@ -39,7 +39,8 @@ export interface DescriptionContainerInter {
 
 export interface EpisodeInfoButtonsInter {
     color: string;
-    setLoadTipModal: (v: any) => void
+    setLoadTipModal: (v: any) => void;
+    setLoadShareModal: (v: any) => void;
     podcastId?: string;
     mediaLink?: string;
     episodeName?: string;
@@ -59,6 +60,7 @@ export interface EpisodeBannerInter extends EpisodeInfoInter {
 export interface EpisodeInfoInter extends EpisodeInfoSubInter {
     title: string;
     setLoadTipModal: () => void;
+    setLoadShareModal: () => void;
     mediaLink: string;
 }
 
@@ -152,6 +154,7 @@ export const EpisodeBanner = (props: EpisodeBannerInter) => {
                 episodeNum={props.episodeNum}
                 date={props.date}
                 setLoadTipModal={props.setLoadTipModal}
+                setLoadShareModal={props.setLoadShareModal}
                 mediaLink={props.mediaLink}
             />
         </div>
@@ -170,6 +173,7 @@ export const EpisodeInfo = (props: EpisodeInfoInter) => {
             <EpisodeInfoButtons
                 color={props.color}
                 setLoadTipModal={props.setLoadTipModal}
+                setLoadShareModal={props.setLoadShareModal}
                 mediaLink={props.mediaLink}
                 episodeName={props.title}
             />
@@ -241,6 +245,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
                 icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
                 text={"Share"}
                 color={color}
+                onClick={props.setLoadShareModal}
             />
         </div>
     )

@@ -36,7 +36,7 @@ export default function EpisodeId({data, status}) {
         const date = formattedDate
         const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
         const episodes = d.episodes
-        console.log("Data Cover: ", data.cover)
+        console.log("Data : ", data)
 
         useEffect(() => {
             if(typeof window !== 'undefined') setBaseUrl(window.location.protocol + "//"+window.location.hostname+(window.location.port ? ":" + window.location.port : ""))
@@ -68,6 +68,7 @@ export default function EpisodeId({data, status}) {
                         episodeNum={data?.index+1}
                         date={date}
                         setLoadTipModal={() => setLoadTipModal(true)}
+                        setLoadShareModal={() => setLoadShareModal(true)}
                         mediaLink={ARWEAVE_READ_LINK+data.obj.contentTx}
                     />
                     {/*Episode Description*/}
@@ -98,7 +99,7 @@ export default function EpisodeId({data, status}) {
                             isVisible={loadShareModal} 
                             setVisible={setLoadShareModal}
                             title={"Check this out "}
-                            url={baseUrl+"/episode/7c78a4a408622fb0f385d21fca30e89e93b9608859f85d2fd324a55770213d195c15e6dd0618f4cb852115cadfd7bd1a299fdd72cad84ce28969feab7813bd35/f353dd3c8f405d7b6c67e2d24fe8d86ae5c4ddae5d873a6525894f9cc47f00cb16fa510d11c148d86e8b49662e340c9ae718cc389a934198f7dbf3f36ec07c89"}
+                            url={`${baseUrl}/episode/${data?.pid}/${data?.obj.eid}`}
                         />
                     )}
                 </div>
@@ -137,7 +138,8 @@ export async function getServerSideProps(context) {
         const podcastData = {
             cover: foundPodcasts.obj.cover,
             podcastName: foundPodcasts.obj.podcastName,
-            owner: foundPodcasts.obj.owner
+            owner: foundPodcasts.obj.owner,
+            pid: foundPodcasts.obj.pid
         }
         const foundEpisode = findObjectById(foundPodcasts.obj.episodes, episodeId, "eid")
         // Episode Exist

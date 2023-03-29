@@ -12,6 +12,9 @@ interface ShareButtonsInter {
     isVisible: boolean;
     setVisible: (v: any) => void;
 }
+const circleStyling = "bg-black rounded-full p-4"
+const shareColStyling = "flex flex-row justify-center space-x-12"
+const titleStyling = "flex flex-row justify-center text-white text-3xl font-bold p-8 mb-[85px] bg-zinc-900"
 
 export const ShareButtons = (props: ShareButtonsInter) => {
 
@@ -36,11 +39,11 @@ export const ShareButtons = (props: ShareButtonsInter) => {
             <div className={`${containerPodcastModalStyling+ " justify-start relative overflow-hidden"} ${showModal ? FADE_IN_STYLE :FADE_OUT_STYLE}`}>
                 <XMarkIcon className={xMarkModalStyling} onClick={() => props.setVisible(false)} /> 
                 <div>
-                    <p className="flex flex-row justify-center text-white text-3xl font-bold p-8 mb-[75px] bg-zinc-900">Share</p>
+                    <p className={titleStyling}>Share</p>
                 </div>    
-                <div className="flex flex-row justify-center space-x-12">
+                <div className={shareColStyling}>
                     <TwitterShareButton url={url} title={title}>
-                        <div className="bg-black rounded-full p-4">
+                        <div className={circleStyling}>
                             <Image 
                                 src="/twitter_bw.svg"
                                 width={width}
@@ -51,7 +54,7 @@ export const ShareButtons = (props: ShareButtonsInter) => {
                         </div>
                     </TwitterShareButton>
                     <TelegramShareButton url={url} title={title}>
-                        <div className="bg-black rounded-full p-4">
+                        <div className={circleStyling}>
                             <Image 
                                 src="/telegram_bw.svg"
                                 width={width}
@@ -62,7 +65,7 @@ export const ShareButtons = (props: ShareButtonsInter) => {
                         </div>
                     </TelegramShareButton>
                     <FacebookShareButton url={url} title={title}>
-                        <div className="bg-black rounded-full p-4">
+                        <div className={circleStyling}>
                             <Image 
                                 src="/facebook_bw.svg"
                                 width={width}
