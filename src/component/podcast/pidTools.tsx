@@ -112,7 +112,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             <Link href={`/upload-episode?pid=${props.podcastId}`}>
                 <DescriptionButton
                     icon={<PlusIcon className={episodeIconStyling} />} 
-                    text={"Add Episode"}
+                    text={"Episode"}
                     color={color}
                 />
             </Link>
