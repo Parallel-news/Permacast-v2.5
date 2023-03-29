@@ -52,6 +52,7 @@ export default function PodcastId({data, status}) {
                         color={color}
                         setLoadTipModal={() => setLoadTipModal(true)}
                         podcastId={data.obj?.pid}
+                        podcastOwner={data.obj?.owner}
                     />
                     {/*Episode Track*/}
                     <Episodes

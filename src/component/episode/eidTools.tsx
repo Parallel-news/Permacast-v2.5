@@ -43,6 +43,7 @@ export interface EpisodeInfoButtonsInter {
     podcastId?: string;
     mediaLink?: string;
     episodeName?: string;
+    podcastOwner: string;
 }
 
 export interface EpisodeInfoSubInter {
@@ -60,6 +61,7 @@ export interface EpisodeInfoInter extends EpisodeInfoSubInter {
     title: string;
     setLoadTipModal: () => void;
     mediaLink: string;
+    podcastOwner: string;
 }
 
 export interface CreatorTagInter {
@@ -153,6 +155,7 @@ export const EpisodeBanner = (props: EpisodeBannerInter) => {
                 date={props.date}
                 setLoadTipModal={props.setLoadTipModal}
                 mediaLink={props.mediaLink}
+                podcastOwner={props.podcastOwner}
             />
         </div>
     )
@@ -172,6 +175,7 @@ export const EpisodeInfo = (props: EpisodeInfoInter) => {
                 setLoadTipModal={props.setLoadTipModal}
                 mediaLink={props.mediaLink}
                 episodeName={props.title}
+                podcastOwner={props.podcastOwner}
             />
         </div>
     )

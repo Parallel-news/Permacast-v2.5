@@ -11,6 +11,7 @@ import MarkdownRenderer from "../markdownRenderer";
 import Link from "next/link";
 import { useRecoilState } from "recoil";
 import { loadTipModal } from "../../atoms";
+import { useArconnect } from "react-arconnect";
 
 export default function pidTools() {
     return false
@@ -25,8 +26,9 @@ export interface PodcastInfoInter {
 
 export interface PodcastBannerInter extends PodcastInfoInter {
     color: string;
-    setLoadTipModal: (v: any) => void
-    podcastId: string
+    setLoadTipModal: (v: any) => void;
+    podcastId: string;
+    podcastOwner: string;
 }
 
 interface Podcast {
@@ -94,6 +96,7 @@ export const PodcastInfo = (props: PodcastInfoInter) => {
 
 export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
     const { color } = props
+    const { address } = useArconnect()
     return (
         <div className={podcastButtonsStyling}>
             <DescriptionButton 
@@ -107,13 +110,15 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
                 color={color}
                 onClick={props.setLoadTipModal} 
             />
-            <Link href={`/upload-episode?pid=${props.podcastId}`}>
-                <DescriptionButton
-                    icon={<PlusIcon className={episodeIconStyling} />} 
-                    text={"Add Episode"}
-                    color={color}
-                />
-            </Link>
+            {props.podcastOwner === address && (
+                <Link href={`/upload-episode?pid=${props.podcastId}`}>
+                    <DescriptionButton
+                        icon={<PlusIcon className={episodeIconStyling} />} 
+                        text={"Add Episode"}
+                        color={color}
+                    />
+                </Link>
+            )}
         </div>
     )
 }
@@ -130,6 +135,7 @@ export const PodcastBanner = (props: PodcastBannerInter) => {
                 color={props.color}
                 setLoadTipModal={props.setLoadTipModal}
                 podcastId={props.podcastId}
+                podcastOwner={props.podcastOwner}
             />
         </div>
     )
