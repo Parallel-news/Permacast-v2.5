@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useTranslation } from "next-i18next";
 import { useRecoilState } from 'recoil';
 import { currentEpisodeAtom, currentPodcastAtom } from '../atoms';
@@ -20,7 +20,9 @@ interface FullscreenStaticImageProps {
 export const BackgroundCoverImageStyling = `absolute h-full w-full blur-lg opacity-30 object-cover `;
 export const FullscreenInnerContentStyling = `mt-28 absolute w-full text-center select-text `;
 export const LargeGrayTextStyling = `text-xl text-gray-300 `;
-export const FullscreenOuterStyling = `absolute h-full w-full z-20 bg-black `;
+export const FullscreenOuterStyling = `absolute h-full w-full z-20 bg-black overflow-y-hidden `;
+export const FullscreenVideoWrapperStyling = `w-full h-full z-50 relative top-0 right-0 `;
+export const FullscreenEpisodeTextStyling = `absolute bottom-40 right-[44%] default-animation `;
 
 export const BackgroundImage: FC<BackgroundImageProps> = ({ cover, episodeName }) => (
   <Image
@@ -63,14 +65,18 @@ export const FullscreenStaticImage: FC<FullscreenStaticImageProps> = ({ cover, e
 };
 
 export const FullscreenVideo: FC<FullscreenStaticImageProps> = ({ episodeName, currentEpisodeIndex}) => {
-  return (
-    <div>
-      <div className="w-full h-full z-50 absolute top-0 right-0">
-        <div id="video-player" ></div>
-        <div className="absolute bottom-24 right-[44%]">
-        <FullscreenEpisodeText {...{ currentEpisodeIndex, episodeName }} />
+  
+  const [loaded, setLoaded] = useState<boolean>(false);
+  
+  useEffect(() => {
+    setTimeout(() => setLoaded(true), 4000)
+  }, []);
 
-        </div>
+  return (
+    <div className={FullscreenVideoWrapperStyling}>
+      <div id="video-player"></div>
+      <div className={FullscreenEpisodeTextStyling + (loaded ? "hover:opacity-100 opacity-0": "opacity-100") }>
+        <FullscreenEpisodeText {...{ currentEpisodeIndex, episodeName }} />
       </div>
     </div>
   )
