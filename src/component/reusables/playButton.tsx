@@ -16,7 +16,7 @@ interface PlayButtonProps {
   onClick?: () => void;
 };
 
-const playButtonStyling = `flex z-10 rounded-full justify-center items-center shrink-0 default-animation hover:scale-[1.1]`;
+const playButtonStyling = `flex z-10 rounded-full justify-center items-center shrink-0 default-animation hover:scale-[1.1] outline-none focus:ring-2 focus:ring-white`;
 
 const PlayButton: FC<PlayButtonProps> = ({ size, iconSize, buttonColor, accentColor, isPlaying, onClick }) => {
   return (
