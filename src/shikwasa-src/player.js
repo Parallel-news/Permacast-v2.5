@@ -28,17 +28,18 @@ if (typeof window !== 'undefined') {
 const addPassive = supportsPassive && isMobile
 
 
+function rehoistVideo (v) {
+  document.getElementById("video-player")?.appendChild(v)
+}
+
 function Video(src, append) {
   var v = document.createElement("video");
-  v.class = "w-[100%] h-[90%]";
-  v.className = "w-[100%] h-[90%]";
+  v.className = "ml-[92px] w-[100%] object-cover";
   if (src != "") {
     v.src = src;
   }
   if (append == true) {
-    // TODO: RE-WRITE
-    setTimeout(() => document.getElementById("video-player")?.appendChild(v), 5000)
-    
+    setTimeout(() => rehoistVideo(v), 1)
   }
   return v;
 }
@@ -56,6 +57,7 @@ class Player {
     this._dragging = false
     this.events = new Events()
     this.options = handleOptions(options)
+    this.rehoistVideo = rehoistVideo
     this.renderComponents()
     this.initUI(this.options)
     this.initAudio()
