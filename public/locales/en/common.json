@@ -162,5 +162,9 @@
 	"textTruncate": {
 		"showMore": "Show More",
 		"showLess": "Show Less"
+	},
+	"share": {
+		"Checkthis": "Check this out",
+		"share": "Share"
 	}
 }

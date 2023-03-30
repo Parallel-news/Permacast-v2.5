@@ -16,18 +16,18 @@ import { TipModal } from "../../component/tipModal";
 import { useEffect, useState } from "react";
 import { ShareButtons } from "../../component/shareButtons";
 import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
+import { useTranslation } from "react-i18next";
 
 export default function PodcastId({data, status}) {
+    
+    const { t } = useTranslation();
+
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
     const [loadTipModal, setLoadTipModal] = useState<boolean>(false)
     const [loadShareModal, setLoadShareModal] = useState<boolean>(false)
     const [baseUrl, setBaseUrl] = useState<string>("")
     const [color, setColor] = useState<string>("")
-    /*
-    useEffect(() => {
-        if(typeof window !== 'undefined') setBaseUrl(window.location.protocol + "//"+window.location.hostname+(window.location.port ? ":" + window.location.port : ""))
-    }, [])
-    */
+
     console.log("data: ", data)
     if(data) {
         //State Calls Here
@@ -78,7 +78,7 @@ export default function PodcastId({data, status}) {
                     />
                     {/*Episode Track*/}
                     <Episodes
-                        containerTitle={nextEpisodeTitle} 
+                        containerTitle={t("search.episodes")} 
                         imgSrc={imgSrc}
                         color={color}
                         episodes={episodes}
@@ -97,7 +97,7 @@ export default function PodcastId({data, status}) {
                     <ShareButtons
                         isVisible={loadShareModal} 
                         setVisible={setLoadShareModal}
-                        title={"Check this out "}
+                        title={t("Checkthis")}
                         url={`${baseUrl}/podcast/${data.obj?.pid}`}
                     />
                 )}

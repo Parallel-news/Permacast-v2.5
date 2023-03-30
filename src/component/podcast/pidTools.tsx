@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useRecoilState } from "recoil";
 import { loadTipModal } from "../../atoms";
 import { useArconnect } from "react-arconnect";
+import { useTranslation } from "react-i18next";
 
 export default function pidTools() {
     return false
@@ -98,6 +99,7 @@ export const PodcastInfo = (props: PodcastInfoInter) => {
 }
 
 export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
+    const { t } = useTranslation();
     const { color } = props
     const { address } = useArconnect()
     return (
@@ -109,7 +111,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             />
             <DescriptionButton
                 icon={<HeartIcon className={episodeIconStyling} />} 
-                text={"Tip"}
+                text={t("tip")}
                 color={color}
                 onClick={props.setLoadTipModal} 
             />
@@ -117,14 +119,14 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             <Link href={`/upload-episode?pid=${props.podcastId}`}>
                 <DescriptionButton
                     icon={<PlusIcon className={episodeIconStyling} />} 
-                    text={"Episode"}
+                    text={t("episode.number")}
                     color={color}
                 />
             </Link>
             )}
             <DescriptionButton
                 icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
-                text={"Share"}
+                text={t("share.share")}
                 color={color}
                 onClick={props.setLoadShareModal}
             />

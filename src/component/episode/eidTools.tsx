@@ -14,6 +14,7 @@ import { loadTipModal } from "../../atoms";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getTypeFromMime } from "../../utils/fileTools";
+import { useTranslation } from "react-i18next";
 
 export default function eidTools() {
     return false
@@ -332,6 +333,7 @@ export const EpisodeBox = (props: EpisodeBoxInter) => {
 }
 
 export const EpisodeBoxTitleData = (props: EpisodeBoxTitleData) => {
+    const { t } = useTranslation();
     return (
         <div className={episodeBoxTitleDataStyling}>
             <Image 
@@ -344,7 +346,7 @@ export const EpisodeBoxTitleData = (props: EpisodeBoxTitleData) => {
             <div className="flex flex-col">
                 <a href={`/episode/${props.pid}/${props.eid}`} className={episodeBoxTitleStyling+" mb-1"}>{props.title}</a>
                 <div className={creatorTagDivStyling}>
-                    <p className={byStyling}>by</p>
+                    <p className={byStyling}>{t("track.by")}</p>
                     <CreatorTag color={props.color} creator={props.creator} imgSrc={props.imgSrc}/>
                 </div>
             </div>

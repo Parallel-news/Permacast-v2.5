@@ -5,6 +5,7 @@ import { containerPodcastModalStyling, tipModalStyling } from '../uploadEpisode/
 import { FADE_IN_STYLE, FADE_OUT_STYLE } from '../../constants'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { xMarkModalStyling } from '../tipModal'
+import { useTranslation } from 'react-i18next'
 
 interface ShareButtonsInter {
     url: string;
@@ -17,7 +18,7 @@ const shareColStyling = "flex flex-row justify-center space-x-12"
 const titleStyling = "flex flex-row justify-center text-white text-3xl font-bold p-8 mb-[85px] bg-zinc-900"
 
 export const ShareButtons = (props: ShareButtonsInter) => {
-
+    const { t } = useTranslation();
     const height = 70
     const width = 70
     const [showModal, setShowModal] = useState<boolean>(false)
@@ -39,7 +40,7 @@ export const ShareButtons = (props: ShareButtonsInter) => {
             <div className={`${containerPodcastModalStyling+ " justify-start relative overflow-hidden"} ${showModal ? FADE_IN_STYLE :FADE_OUT_STYLE}`}>
                 <XMarkIcon className={xMarkModalStyling} onClick={() => props.setVisible(false)} /> 
                 <div>
-                    <p className={titleStyling}>Share</p>
+                    <p className={titleStyling}>{t("share.share")}</p>
                 </div>    
                 <div className={shareColStyling}>
                     <TwitterShareButton url={url} title={title}>

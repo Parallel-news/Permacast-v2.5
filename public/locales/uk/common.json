@@ -171,5 +171,9 @@
 	"fullscreen": {
 		"episode": "Епізод"
 	},
-	"view": "Переглянути"
+	"view": "Переглянути",
+	"share": {
+		"Checkthis": "Заціни",
+		"share": "частка"
+	}
 }
