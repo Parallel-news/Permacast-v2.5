@@ -22,7 +22,7 @@ export default function EpisodeId({data, status}) {
     const [, setBackgroundColor_] = useRecoilState(backgroundColor);
     const [loadTipModal, setLoadTipModal] = useState<boolean>(false)
     const [loadShareModal, setLoadShareModal] = useState<boolean>(false)
-    const [textColor, setTextColor] = useState<string>("")
+    const [color, setColor] = useState<string>("")
     const [baseUrl, setBaseUrl] = useState<string>("")
     if(data) {
 
@@ -42,9 +42,9 @@ export default function EpisodeId({data, status}) {
             const fetchColor = async () => {
                 const dominantColor = await fetchDominantColor(data.cover);
                 const [coverColor, textColor] = getCoverColorScheme(dominantColor.rgba)
-                const buttonColor = RGBobjectToString(RGBAstringToObject(dominantColor.rgba))
-                console.log(coverColor, textColor, buttonColor)
-                setTextColor(textColor)
+                console.log(coverColor, textColor)
+                console.log("textColor: ", textColor)
+                setColor("rgb(0, 0, 0)")
                 setBackgroundColor_(coverColor)
             }
             fetchColor()
@@ -72,7 +72,7 @@ export default function EpisodeId({data, status}) {
                     <EpisodeBanner 
                         title={d.episodeName}
                         imgSrc={ARWEAVE_READ_LINK+data?.cover}
-                        color={textColor}
+                        color={color}
                         episodeNum={data?.index+1}
                         date={date}
                         setLoadTipModal={() => setLoadTipModal(true)}
@@ -88,7 +88,7 @@ export default function EpisodeId({data, status}) {
                     <Episodes
                         containerTitle={nextEpisodeTitle} 
                         imgSrc={ARWEAVE_READ_LINK+data?.cover}
-                        color={textColor}
+                        color={color}
                         episodes={[]}
                         podcastId={data?.obj.pid}
                     />

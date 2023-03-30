@@ -132,7 +132,7 @@ export const creatorTagStyling = "flex flex-row items-center p-1.5 rounded-3xl"
 export const episodeBoxTitleDataStyling = "flex flex-row items-center space-x-3 w-[30%]"
 export const nextEpisodeTitleStyling = "text-2xl text-neutral-300/90 font-semibold"
 export const episodeNumberStyling = "rounded-2xl bg-gray-400/30 p-2 py-1 text-[11px]"
-export const episodeTitleStyling = "text-white text-[40px] font-medium pb-0 flex items-end"
+export const episodeTitleStyling = "text-[40px] font-medium pb-0 flex items-end"
 export const nextEpisodeStyling = "w-full flex flex-col space-y-6  overflow-auto overflow-x-hidden h-[425px]"
 export const textTruncateButtonStyling = "text-gray-400 font-bold hover:text-blue-400 transition duration-400 ease-in-out"
 export const episodeBoxStyling = "w-[98%] rounded-2xl border-2 border-gray-400/30 p-3 flex flex-row justify-between items-center"
@@ -167,7 +167,7 @@ export const EpisodeBanner = (props: EpisodeBannerInter) => {
 export const EpisodeInfo = (props: EpisodeInfoInter) => {
     return (
         <div className={episodeInfoStyling}>
-            <p className={episodeTitleStyling}>{props.title}</p>
+            <p className={episodeTitleStyling} style={{color: props.color}}>{props.title}</p>
             <EpisodeInfoSub 
                 color={props.color}
                 episodeNum={props.episodeNum}
