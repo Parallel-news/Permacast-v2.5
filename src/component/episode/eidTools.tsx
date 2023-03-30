@@ -39,7 +39,8 @@ export interface DescriptionContainerInter {
 
 export interface EpisodeInfoButtonsInter {
     color: string;
-    setLoadTipModal: (v: any) => void
+    setLoadTipModal: (v: any) => void;
+    setLoadShareModal: (v: any) => void;
     podcastId?: string;
     mediaLink?: string;
     episodeName?: string;
@@ -60,6 +61,7 @@ export interface EpisodeBannerInter extends EpisodeInfoInter {
 export interface EpisodeInfoInter extends EpisodeInfoSubInter {
     title: string;
     setLoadTipModal: () => void;
+    setLoadShareModal: () => void;
     mediaLink: string;
     podcastOwner: string;
 }
@@ -131,7 +133,7 @@ export const episodeBoxTitleDataStyling = "flex flex-row items-center space-x-3 
 export const nextEpisodeTitleStyling = "text-2xl text-neutral-300/90 font-semibold"
 export const episodeNumberStyling = "rounded-2xl bg-gray-400/30 p-2 py-1 text-[11px]"
 export const episodeTitleStyling = "text-white text-[40px] font-medium pb-0 flex items-end"
-export const nextEpisodeStyling = "w-full flex flex-col space-y-6  overflow-auto overflow-x-hidden h-[350px]"
+export const nextEpisodeStyling = "w-full flex flex-col space-y-6  overflow-auto overflow-x-hidden h-[425px]"
 export const textTruncateButtonStyling = "text-gray-400 font-bold hover:text-blue-400 transition duration-400 ease-in-out"
 export const episodeBoxStyling = "w-[98%] rounded-2xl border-2 border-gray-400/30 p-3 flex flex-row justify-between items-center"
 
@@ -154,6 +156,7 @@ export const EpisodeBanner = (props: EpisodeBannerInter) => {
                 episodeNum={props.episodeNum}
                 date={props.date}
                 setLoadTipModal={props.setLoadTipModal}
+                setLoadShareModal={props.setLoadShareModal}
                 mediaLink={props.mediaLink}
                 podcastOwner={props.podcastOwner}
             />
@@ -173,6 +176,7 @@ export const EpisodeInfo = (props: EpisodeInfoInter) => {
             <EpisodeInfoButtons
                 color={props.color}
                 setLoadTipModal={props.setLoadTipModal}
+                setLoadShareModal={props.setLoadShareModal}
                 mediaLink={props.mediaLink}
                 episodeName={props.title}
                 podcastOwner={props.podcastOwner}
@@ -195,10 +199,11 @@ export const EpisodeInfoSub = (props: EpisodeInfoSubInter) => {
 
 export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
     const { color } = props
-    const [downloadCreated, setDownloadCreated] = useState<boolean>(false)
-    const [downloadUrl, setDownloadUrl] = useState<string>("")
+    const [downloading, setDownloading] = useState<boolean>(false)
+
 
     const downloadFile = async () => {
+        setDownloading(true)
         const response = await fetch(props.mediaLink);
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
@@ -208,6 +213,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        setDownloading(false)
     };
 
     return (
@@ -223,16 +229,27 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
                 color={color} 
                 onClick={props.setLoadTipModal}
             />
+            {downloading ?
+            <DescriptionButton
+                icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
+                text={"Fetching"}
+                color={color}
+                onClick={() => downloadFile()}
+            />
+            :
             <DescriptionButton
                 icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
                 text={"Download"}
                 color={color}
                 onClick={() => downloadFile()}
             />
+            }
+
             <DescriptionButton
                 icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
                 text={"Share"}
                 color={color}
+                onClick={props.setLoadShareModal}
             />
         </div>
     )

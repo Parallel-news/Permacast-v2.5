@@ -1,19 +1,16 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import Everpay from "everpay";
-import { ChainType } from "everpay/cjs/types";
 import Link from "next/link";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useArconnect } from "react-arconnect";
 import toast from "react-hot-toast";
 import { useRecoilState } from "recoil";
 import { arweaveAddress, everPayBalance } from "../../atoms";
-import { EVERPAY_AR_TAG, FADE_IN_STYLE, FADE_OUT_STYLE, MIN_UPLOAD_PAYMENT, SPINNER_COLOR } from "../../constants";
+import { FADE_IN_STYLE, FADE_OUT_STYLE, SPINNER_COLOR } from "../../constants";
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { transferFunds } from "../../utils/everpay";
 import { fetchARPriceInUSD } from "../../utils/redstone";
 import { PermaSpinner } from "../reusables/PermaSpinner";
-import { ConnectButton, containerPodcastModalStyling, SubmitTipButton, tipModalStyling, titleModalStyling} from "../uploadEpisode/uploadEpisodeTools";
-import { spinnerClass } from "../uploadShow/uploadShowTools";
+import { ConnectButton, containerPodcastModalStyling, SubmitTipButton, tipModalStyling } from "../uploadEpisode/uploadEpisodeTools";
 
 interface TipModalInter {
     to?: string;
@@ -25,7 +22,7 @@ interface TipModalInter {
 export const tipAmountDivStyling = "w-full flex flex-row justify-center items-center mx-auto space-x-2"
 export const titleCornerStyling = "absolute top-0 left-0 bg-black h-[150px] w-[150px] flex justify-center items-center rounded-br-full z-20"
 export const benefactorBannerStyling = "absolute top-0 bg-zinc-900 w-full h-[100px] z-10 flex flex-row items-center"
-export const xMarkModalStyling = "h-7 w-7 mt-1 cursor-pointer hover:text-red-400 hover:bg-red-400/10 transition duration-400 ease-in-out rounded-full z-30 absolute top-2 right-2"
+export const xMarkModalStyling = "h-7 w-7 mt-1 cursor-pointer hover:text-red-400 hover:bg-red-400/10 transition duration-400 ease-in-out rounded-full z-30 absolute top-3 right-3"
 export const tipInputStyling = "input input-secondary px-4 bg-zinc-700/80 border-0 rounded-lg outline-none focus:ring-2 focus:ring-inset focus:ring-white w-[200px] h-[100px] placeholder:text-5xl placeholder:font-bold text-5xl font-bold text-center" 
 export const tipAmountAbsStyling = "absolute inset-0 top-0 flex justify-center items-center flex flex-col"
 export const benefactorNameStyling = "text-white text-3xl font-bold w-[85%] ml-[10%] text-center"

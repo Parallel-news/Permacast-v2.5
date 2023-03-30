@@ -10,18 +10,18 @@ import {
     Episodes,
     ErrorTag,
     podcastIdStyling,
-    textTruncateButtonStyling
  } from "../../../../component/episode/eidTools";
-import { EXM_READ_LINK, ARWEAVE_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND, STR_LEN_EPISODE_DESC } from "../../../../constants";
+import { EXM_READ_LINK, ARWEAVE_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND } from "../../../../constants";
 import { getContractVariables } from "../../../../utils/contract";
 import { findObjectById, formatStringByLen } from "../../../../utils/reusables";
 import { TipModal } from "../../../../component/tipModal";
-import TextTruncate from "../../../../component/TextTruncate";
+import { ShareButtons } from "../../../../component/shareButtons";
 
 export default function EpisodeId({data, status}) {
     const [, setBackgroundColor_] = useRecoilState(backgroundColor);
     const [loadTipModal, setLoadTipModal] = useState<boolean>(false)
-
+    const [loadShareModal, setLoadShareModal] = useState<boolean>(false)
+    const [baseUrl, setBaseUrl] = useState<string>("")
     if(data) {
         useEffect(() => {
             setBackgroundColor_(color)
@@ -35,9 +35,13 @@ export default function EpisodeId({data, status}) {
         const nextEpisodeTitle = "Next Episode"
         const date = formattedDate
         const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
-
         const episodes = d.episodes
-        console.log("Data Cover: ", data.cover)
+        console.log("Data : ", data)
+
+        useEffect(() => {
+            if(typeof window !== 'undefined') setBaseUrl(window.location.protocol + "//"+window.location.hostname+(window.location.port ? ":" + window.location.port : ""))
+        }, [])
+
         return (
             <>
                 <Head>
@@ -64,6 +68,7 @@ export default function EpisodeId({data, status}) {
                         episodeNum={data?.index+1}
                         date={date}
                         setLoadTipModal={() => setLoadTipModal(true)}
+                        setLoadShareModal={() => setLoadShareModal(true)}
                         mediaLink={ARWEAVE_READ_LINK+data.obj.contentTx}
                     />
                     {/*Episode Description*/}
@@ -78,12 +83,23 @@ export default function EpisodeId({data, status}) {
                         episodes={[]}
                         podcastId={data?.obj.pid}
                     />
+                    <button onClick={() => setLoadShareModal(prev => !prev)}>
+                        Show
+                    </button>
                     {loadTipModal && (
                         <TipModal
                             to={data?.podcastName}
                             toAddress={data?.owner} 
                             isVisible={loadTipModal}
                             setVisible={setLoadTipModal}
+                        />
+                    )}
+                    {loadShareModal && (
+                        <ShareButtons
+                            isVisible={loadShareModal} 
+                            setVisible={setLoadShareModal}
+                            title={"Check this out "}
+                            url={`${baseUrl}/episode/${data?.pid}/${data?.obj.eid}`}
                         />
                     )}
                 </div>
@@ -122,7 +138,8 @@ export async function getServerSideProps(context) {
         const podcastData = {
             cover: foundPodcasts.obj.cover,
             podcastName: foundPodcasts.obj.podcastName,
-            owner: foundPodcasts.obj.owner
+            owner: foundPodcasts.obj.owner,
+            pid: foundPodcasts.obj.pid
         }
         const foundEpisode = findObjectById(foundPodcasts.obj.episodes, episodeId, "eid")
         // Episode Exist
