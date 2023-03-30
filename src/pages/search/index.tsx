@@ -57,7 +57,9 @@ export default function Search({podcasts, episodes}) {
               <div className='mt-6'>
                 <div className={resultsStyling}>{t("search.episodes")}</div>
                 {filteredEpisodes.map((episode: FullEpisodeInfo, index: number) => (
-                  <Track {...{episode}} key={index} />
+                  <div className="mb-4">
+                    <Track {...{episode}} key={index} includeDescription includePlayButton />
+                  </div>
                 ))}
               </div>
             </div>
