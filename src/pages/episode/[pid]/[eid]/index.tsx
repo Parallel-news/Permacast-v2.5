@@ -92,9 +92,6 @@ export default function EpisodeId({data, status}) {
                         episodes={[]}
                         podcastId={data?.obj.pid}
                     />
-                    <button onClick={() => setLoadShareModal(prev => !prev)}>
-                        Show
-                    </button>
                     {loadTipModal && (
                         <TipModal
                             to={data?.podcastName}
