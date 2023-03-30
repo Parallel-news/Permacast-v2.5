@@ -196,7 +196,7 @@ export function Sidenav() {
 export function NavBar() {
   const { t } = useTranslation();
   const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
-  const everPayStyling = "flex justify-center items-center text-sm text-white wallet-button font-semibold bg-black rounded-full w-[12%] mx-2"
+  const everPayStyling = "flex justify-center items-center text-sm text-white wallet-button font-semibold bg-zinc-900 rounded-full w-[12%] mx-2"
   return (
     <>
       <div className="md:hidden">

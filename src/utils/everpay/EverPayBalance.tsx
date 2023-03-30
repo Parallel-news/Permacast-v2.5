@@ -54,7 +54,7 @@ export const EverPayBalance = (props: everpayBalanceInterface) => {
         (balanceError ?
             <a href="https://app.everpay.io/" className="underline text-white font-semibold">balance</a>
             : balanceLoading ?
-                <div className={`${textClassname} flex justify-center items-center z-50`}>
+                <div className={`${textClassname} flex justify-center items-center z-50 bg-zinc-900`}>
                     <MoonLoader 
                         size={LOADER_SIZE}
                         color={LOADER_COLOR}
