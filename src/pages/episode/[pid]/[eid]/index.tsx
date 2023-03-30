@@ -124,7 +124,7 @@ export default function EpisodeId({data, status}) {
         return (
             <ErrorTag 
                 msg={"404"}
-            />
+            />  
         )
     }
 }
