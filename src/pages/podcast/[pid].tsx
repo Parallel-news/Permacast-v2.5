@@ -15,26 +15,38 @@ import { findObjectById } from "../../utils/reusables";
 import { TipModal } from "../../component/tipModal";
 import { useEffect, useState } from "react";
 import { ShareButtons } from "../../component/shareButtons";
+import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 
 export default function PodcastId({data, status}) {
     const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
     const [loadTipModal, setLoadTipModal] = useState<boolean>(false)
     const [loadShareModal, setLoadShareModal] = useState<boolean>(false)
     const [baseUrl, setBaseUrl] = useState<string>("")
-
+    const [color, setColor] = useState<string>("")
+    /*
     useEffect(() => {
         if(typeof window !== 'undefined') setBaseUrl(window.location.protocol + "//"+window.location.hostname+(window.location.port ? ":" + window.location.port : ""))
     }, [])
-
+    */
     console.log("data: ", data)
     if(data) {
         //State Calls Here
-        const color = "#818cf8"
         const imgSrc = ARWEAVE_READ_LINK+data.obj?.cover
         const title = data.obj?.podcastName
         const description = data.obj?.description
         const nextEpisodeTitle = "Episodes"
         const episodes = data.obj?.episodes
+
+        useEffect(() => {
+            if(typeof window !== 'undefined') setBaseUrl(window.location.protocol + "//"+window.location.hostname+(window.location.port ? ":" + window.location.port : ""))
+            const fetchColor = async () => {
+                const dominantColor = await fetchDominantColor(data.obj?.cover);
+                const [coverColor, textColor] = getCoverColorScheme(dominantColor.rgba)
+                setColor(textColor) 
+                setBackgroundColor_(coverColor)
+            }
+            fetchColor()
+        }, [])
 
         return (
             <>

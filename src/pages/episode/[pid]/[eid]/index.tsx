@@ -30,7 +30,6 @@ export default function EpisodeId({data, status}) {
         const ts = new Date(data?.obj.uploadedAt);
         const formattedDate = ts.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
         const d = data?.obj
-        console.log("big: ", data)
         const nextEpisodeTitle = "Next Episode"
         const date = formattedDate
         const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
@@ -42,9 +41,7 @@ export default function EpisodeId({data, status}) {
             const fetchColor = async () => {
                 const dominantColor = await fetchDominantColor(data.cover);
                 const [coverColor, textColor] = getCoverColorScheme(dominantColor.rgba)
-                console.log(coverColor, textColor)
-                console.log("textColor: ", textColor)
-                setColor("rgb(0, 0, 0)")
+                setColor(textColor) 
                 setBackgroundColor_(coverColor)
             }
             fetchColor()

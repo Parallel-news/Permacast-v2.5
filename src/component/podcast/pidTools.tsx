@@ -23,6 +23,7 @@ export interface PodcastInfoInter {
     title: string;
     imgSrc: string;
     description: string;
+    color: string;
 }
 
 export interface PodcastBannerInter extends PodcastInfoInter {
@@ -56,7 +57,7 @@ interface Podcast {
 // 2. Stylings
 export const podcastInfoDescStyling = "text-neutral-400 text-[12px]"
 export const podcastInfoStyling = "flex flex-row items-center space-x-16"
-export const podcastInfoTitleStyling = "text-white text-2xl font-semibold"
+export const podcastInfoTitleStyling = "text-3xl font-semibold"
 export const podcastButtonsStyling = "flex flex-row items-center space-x-6"
 export const podcastBannerStyling = "flex flex-row w-full justify-between px-24"
 export const podcastInfoTitleDivStyling = "flex flex-col justify-start w-[60%] space-y-2"
@@ -89,8 +90,8 @@ export const PodcastInfo = (props: PodcastInfoInter) => {
                 className="object-cover rounded-3xl"
             />
             <div className={podcastInfoTitleDivStyling}>
-                <p className={podcastInfoTitleStyling}>{props.title}</p>
-                <MarkdownRenderer markdownText={markdownText} />
+                <p className={podcastInfoTitleStyling} style={{color: props.color}}>{props.title}</p>
+                <MarkdownRenderer markdownText={markdownText} color={props.color === "rgb(0, 0, 0)" ? 'text-black' : 'text-white'}/>
             </div>
         </div>
     )
@@ -138,6 +139,7 @@ export const PodcastBanner = (props: PodcastBannerInter) => {
                 imgSrc={props.imgSrc}
                 title={props.title}
                 description={props.description}
+                color={props.color}
             />
             <PodcastButtons 
                 color={props.color}
