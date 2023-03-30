@@ -166,5 +166,9 @@
 	"share": {
 		"Checkthis": "Check this out",
 		"share": "Share"
+	},
+	"tipModal": {
+		"submitTip": "Submit Tip",
+		"balance": "Balance"
 	}
 }

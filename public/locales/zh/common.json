@@ -161,5 +161,9 @@
 	"share": {
 		"Checkthis": "看一下这个",
 		"share": "分享"
+	},
+	"tipModal": {
+		"submitTip": "提交提示",
+		"balance": "平衡"
 	}
 }

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useArconnect } from "react-arconnect";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import { useRecoilState } from "recoil";
 import { arweaveAddress, everPayBalance } from "../../atoms";
 import { FADE_IN_STYLE, FADE_OUT_STYLE, SPINNER_COLOR } from "../../constants";
@@ -30,6 +31,9 @@ export const submitTipDivStyling = "w-full h-[100px] bg-zinc-900 flex justify-ce
 export const tipStyling = "text-white text-4xl transform -rotate-45 font-bold"
 
 export const TipModal = (props: TipModalInter) => {
+
+    const { t } = useTranslation();
+    
     const [showModal, setShowModal] = useState<boolean>(false)
     const [_arweaveAddress, _setArweaveAddress] = useRecoilState(arweaveAddress)
     const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
@@ -94,7 +98,7 @@ export const TipModal = (props: TipModalInter) => {
 
                 {/*Tip Amount*/}
                 <div className={tipAmountAbsStyling}>
-                    <Link href="https://app.everpay.io/" target="_blank" rel="noreferrer">{"Balance: "+Number(_everPayBalance).toFixed(2) + ' AR'}</Link> 
+                    <Link href="https://app.everpay.io/" target="_blank" rel="noreferrer">{t("tipModal.balance")+" "+Number(_everPayBalance).toFixed(2) + ' AR'}</Link> 
                     <input className={tipInputStyling+" mb-2 mt-2"} required pattern=".{3,500}" type="number" name="tipAmount" placeholder={"AR"}
                     onChange={(e) => {
                         setTipAmount(e.target.value);

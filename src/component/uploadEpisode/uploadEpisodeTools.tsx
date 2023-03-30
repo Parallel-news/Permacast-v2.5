@@ -14,6 +14,7 @@ import { ArrowUpTrayIcon, XMarkIcon, WalletIcon, CurrencyDollarIcon } from '@her
 import { getBundleArFee, upload2DMedia, upload3DMedia } from '../../utils/arseeding';
 import { allFieldsFilled, byteSize, checkConnection, determineMediaType, handleError } from '../../utils/reusables';
 import { ARWEAVE_READ_LINK, AR_DECIMALS, CONNECT_WALLET, DESCRIPTION_UPLOAD_ERROR, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EP_UPLOAD_SUCCESS, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, MEDIA_UPLOAD_ERROR, MIN_UPLOAD_PAYMENT, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from '../../constants';
+import { useTranslation } from 'react-i18next';
 
 export default function uploadEpisode() {
     return false
@@ -342,6 +343,7 @@ export const ConnectButton = (props: UploadButtonInter) => {
 }
 
 export const SubmitTipButton = (props: UploadButtonInter) => {
+    const { t } = useTranslation();
     return (
         <button
             className={`${submitModalStyling} ${props.width}`}
@@ -349,7 +351,7 @@ export const SubmitTipButton = (props: UploadButtonInter) => {
             onClick={props.click}
         >
             <CurrencyDollarIcon className={dollarIconStyling} />
-            Submit Tip
+            {t("tipModal.submitTip")}
       </button>
     )
 }

@@ -175,5 +175,9 @@
 	"share": {
 		"Checkthis": "Заціни",
 		"share": "частка"
+	},
+	"tipModal": {
+		"submitTip": "Надіслати підказку",
+		"balance": "Баланс"
 	}
 }
