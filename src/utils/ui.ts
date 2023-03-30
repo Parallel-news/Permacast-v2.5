@@ -2,6 +2,8 @@ import Shikwasa from '../shikwasa-src/main.js';
 import { HSL, replaceColorsInterface, RGB, RGBA, RGBstring, RGBtoHSLInterface } from '../interfaces/ui';
 import { ShowShikwasaPlayerInterface } from '../interfaces/playback';
 import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
+import { podcastCoverColorManager } from './localstorage.js';
+import { ARWEAVE_READ_LINK } from '../constants/index.js';
 
 
 export const RGBtoHex = (rgb: RGB): string => {
@@ -184,6 +186,16 @@ export const getCoverColorScheme = (RGBAstring: string): string[] => {
 // capitalize first letter, remove ar from label
 export const trimANSLabel = (label: string) => {
   return label.replace(/\w/, c => c.toUpperCase()).replace('ar', '')
+};
+
+export const fetchDominantColor = async (cover: string): Promise<FastAverageColorResult> => {
+  if (!cover) return;
+  const savedColor = podcastCoverColorManager.getValueFromObject(cover);
+  if (savedColor) return {rgb: '', rgba: savedColor, hex: '', isDark: false, isLight: false, hexa: '', value: [0,0,0,0]};
+  const fac = new FastAverageColor();
+  const averageColor: FastAverageColorResult = await fac.getColorAsync(ARWEAVE_READ_LINK + cover, { algorithm: 'dominant' })
+  podcastCoverColorManager.addValueToObject(cover, averageColor.rgba); //? in the future, if this becomes too big, save first 10 chars.
+  return averageColor;
 };
 
 export const showShikwasaPlayer: ShowShikwasaPlayerInterface = ({
