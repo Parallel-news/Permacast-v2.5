@@ -70,6 +70,7 @@ export default function EpisodeId({data, status}) {
                         setLoadTipModal={() => setLoadTipModal(true)}
                         setLoadShareModal={() => setLoadShareModal(true)}
                         mediaLink={ARWEAVE_READ_LINK+data.obj.contentTx}
+                        podcastOwner={data?.obj.owner}
                     />
                     {/*Episode Description*/}
                     <EpisodeDescription

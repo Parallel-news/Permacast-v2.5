@@ -112,7 +112,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
                 color={color}
                 onClick={props.setLoadTipModal} 
             />
-
+            {address === props.podcastOwner && (
             <Link href={`/upload-episode?pid=${props.podcastId}`}>
                 <DescriptionButton
                     icon={<PlusIcon className={episodeIconStyling} />} 
@@ -120,6 +120,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
                     color={color}
                 />
             </Link>
+            )}
             <DescriptionButton
                 icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
                 text={"Share"}
