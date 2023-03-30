@@ -16,22 +16,21 @@ import { getContractVariables } from "../../../../utils/contract";
 import { findObjectById, formatStringByLen } from "../../../../utils/reusables";
 import { TipModal } from "../../../../component/tipModal";
 import { ShareButtons } from "../../../../component/shareButtons";
+import { fetchDominantColor, getCoverColorScheme, rgba2hex, RGBAstringToObject, RGBobjectToString } from "../../../../utils/ui";
 
 export default function EpisodeId({data, status}) {
     const [, setBackgroundColor_] = useRecoilState(backgroundColor);
     const [loadTipModal, setLoadTipModal] = useState<boolean>(false)
     const [loadShareModal, setLoadShareModal] = useState<boolean>(false)
+    const [textColor, setTextColor] = useState<string>("")
     const [baseUrl, setBaseUrl] = useState<string>("")
     if(data) {
-        useEffect(() => {
-            setBackgroundColor_(color)
-        }, [])
+
         //Serverside Results
         const ts = new Date(data?.obj.uploadedAt);
         const formattedDate = ts.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
         const d = data?.obj
         console.log("big: ", data)
-        const color = "#818cf8"
         const nextEpisodeTitle = "Next Episode"
         const date = formattedDate
         const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
@@ -40,6 +39,15 @@ export default function EpisodeId({data, status}) {
 
         useEffect(() => {
             if(typeof window !== 'undefined') setBaseUrl(window.location.protocol + "//"+window.location.hostname+(window.location.port ? ":" + window.location.port : ""))
+            const fetchColor = async () => {
+                const dominantColor = await fetchDominantColor(data.cover);
+                const [coverColor, textColor] = getCoverColorScheme(dominantColor.rgba)
+                const buttonColor = RGBobjectToString(RGBAstringToObject(dominantColor.rgba))
+                console.log(coverColor, textColor, buttonColor)
+                setTextColor(textColor)
+                setBackgroundColor_(coverColor)
+            }
+            fetchColor()
         }, [])
 
         return (
@@ -64,7 +72,7 @@ export default function EpisodeId({data, status}) {
                     <EpisodeBanner 
                         title={d.episodeName}
                         imgSrc={ARWEAVE_READ_LINK+data?.cover}
-                        color={color}
+                        color={textColor}
                         episodeNum={data?.index+1}
                         date={date}
                         setLoadTipModal={() => setLoadTipModal(true)}
@@ -80,7 +88,7 @@ export default function EpisodeId({data, status}) {
                     <Episodes
                         containerTitle={nextEpisodeTitle} 
                         imgSrc={ARWEAVE_READ_LINK+data?.cover}
-                        color={color}
+                        color={textColor}
                         episodes={[]}
                         podcastId={data?.obj.pid}
                     />

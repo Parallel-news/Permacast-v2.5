@@ -2,9 +2,30 @@ import Shikwasa from '../shikwasa-src/main.js';
 import { HSL, replaceColorsInterface, RGB, RGBA, RGBstring, RGBtoHSLInterface } from '../interfaces/ui';
 import { ShowShikwasaPlayerInterface } from '../interfaces/playback';
 import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
-import { podcastCoverColorManager } from './localstorage.js';
+import { podcastCoverColorManager } from './localstorage';
 import { ARWEAVE_READ_LINK } from '../constants/index.js';
 
+// Allows for Alpha
+export function rgba2hex(orig) {
+  let a, isPercent,
+    rgb = orig.replace(/\s/g, '').match(/^rgba?\((\d+),(\d+),(\d+),?([^,\s)]+)?/i),
+    alpha = (rgb && rgb[4] || "").trim(),
+    hex = rgb ?
+    (rgb[1] | 1 << 8).toString(16).slice(1) +
+    (rgb[2] | 1 << 8).toString(16).slice(1) +
+    (rgb[3] | 1 << 8).toString(16).slice(1) : orig;
+
+  if (alpha !== "") {
+    a = alpha;
+  } else {
+    a = 1;
+  }
+  // multiply before convert to HEX
+  a = ((a * 255) | 1 << 8).toString(16).slice(1)
+  hex = hex + a;
+
+  return hex;
+}
 
 export const RGBtoHex = (rgb: RGB): string => {
   const hexNum = (c: number) => {
