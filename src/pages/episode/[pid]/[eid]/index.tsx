@@ -85,7 +85,7 @@ export default function EpisodeId({data, status}) {
                     <Episodes
                         containerTitle={nextEpisodeTitle} 
                         imgSrc={ARWEAVE_READ_LINK+data?.cover}
-                        color={color}
+                        color={'rgb(255, 255, 255)'}
                         episodes={[]}
                         podcastId={data?.obj.pid}
                     />
