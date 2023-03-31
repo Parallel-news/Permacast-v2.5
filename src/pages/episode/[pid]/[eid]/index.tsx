@@ -30,7 +30,11 @@ export default function EpisodeId({data, status}) {
     if(data) {
         //Serverside Results
         const ts = new Date(data?.obj.uploadedAt);
-        const formattedDate = ts.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        //const formattedDate = ts.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        const day = ts.getDate().toString().padStart(2, '0'); // get the day and add leading zero if necessary
+        const month = (ts.getMonth() + 1).toString().padStart(2, '0'); // get the month (adding 1 because getMonth() returns 0-indexed) and add leading zero if necessary
+        const year = ts.getFullYear().toString(); // get the year
+        const formattedDate = `${day}/${month}/${year}`;
         const d = data?.obj
         const date = formattedDate
         const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
