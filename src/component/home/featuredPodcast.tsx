@@ -1,14 +1,17 @@
 import React, { useState, useEffect, FC } from "react";
 import { useTranslation } from "next-i18next";
 import {
-  fetchAverageColor,
+  fetchDominantColor,
   getCoverColorScheme,
 } from "../../utils/ui";
 import { arweaveTX, Podcast } from "../../interfaces/index";
 import Link from "next/link";
 import FeaturedPodcastPlayButton from "./featuredPodcastPlayButton";
 import Image from "next/image";
+import { ARWEAVE_READ_LINK } from "../../constants";
 import MarkdownRenderer from "../markdownRenderer";
+import { queryMarkdownByTX } from "../../utils/markdown";
+
 
 
 /**
@@ -41,13 +44,14 @@ interface PodcastDescriptionProps {
 
 // 2. Stylings
 
-const podcastOuterBackgroundStyling = `rounded-3xl text-white/30 relative overflow-hidden carousel-item hover-up-effect max-w-[280px]`
-const podcastInnerBackgroundStyling = `w-full h-1/6 px-5 pb-2 cursor-pointer relative`
-const podcastCoverStyling = `w-full max-w-[250px] overflow-x-hidden mx-auto mb-2`
-const podcastEpisodeCountStyling = `pt-5 pb-3 text-xs font-semibold`
-const podcastBottomStyling = `h-16 flex items-center`
-const podcastNameStyling = `text-lg font-medium line-clamp-1`
-const podcastDescriptionStyling = `text-xs line-clamp-2 max-w-[95%] break-all`
+export const featuredPocastCarouselStyling = `w-full mt-8 carousel gap-x-12 py-3`;
+export const podcastOuterBackgroundStyling = `rounded-3xl text-white/30 relative overflow-hidden carousel-item hover-up-effect max-w-[280px] default-outline `
+export const podcastInnerBackgroundStyling = `w-full h-1/6 px-5 pb-2 cursor-pointer relative`
+export const podcastCoverStyling = `w-full max-w-[250px] overflow-x-hidden mx-auto mb-2`
+export const podcastEpisodeCountStyling = `pt-5 pb-3 text-xs font-semibold`
+export const podcastBottomStyling = `h-16 flex items-center`
+export const podcastNameStyling = `text-lg font-medium line-clamp-1`
+export const podcastDescriptionStyling = `text-xs line-clamp-2 max-w-[95%] break-all`
 
 // 3. Custom Functions
 
@@ -74,7 +78,7 @@ const PocastCover: FC<PodcastCoverProps> = ({ cover, podcastName }) => {
           height={240}
           width={240}
           className="aspect-square object-cover w-[240px] h-[240px]"
-          src={"https://arweave.net/" + cover}
+          src={ARWEAVE_READ_LINK + cover}
           alt={podcastName}
         />
       }
@@ -93,7 +97,7 @@ const PodcastName: FC<PodcastNameProps> = ({ podcastName }) => {
 const PodcastDescription: FC<PodcastDescriptionProps> = ({ podcastDescription }) => {
   return (
     <div className={podcastDescriptionStyling}>
-      {podcastDescription}
+      <MarkdownRenderer markdownText={podcastDescription} />
     </div>
   );
 };
@@ -114,18 +118,29 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
 
   const [themeColor, setThemeColor] = useState<string>('');
   const [textColor, setTextColor] = useState<string>('');
-  const [markdownText, setMarkdownText] = useState('');
+  const [markdownText, setMarkdownText] = useState<string>('');
 
   useEffect(() => {
+    const fetchMarkdown = async (tx: arweaveTX) => {
+      const text = await queryMarkdownByTX(tx);
+      setMarkdownText(text);
+    };
+
     const fetchData = async () => {
       const coverToBeUsed = (minifiedCover || cover);
-      const averageColor = await fetchAverageColor(coverToBeUsed);
-      if (averageColor.error) return;
-      const [coverColor, textColor] = getCoverColorScheme(averageColor.rgba);
+      const dominantColor = await fetchDominantColor(coverToBeUsed);
+      if (dominantColor.error) return;
+      const [coverColor, textColor] = getCoverColorScheme(dominantColor.rgba);
       setThemeColor(coverColor);
       setTextColor(textColor);
     };
-    fetchData();
+
+    try {
+      fetchData();
+      fetchMarkdown(description);
+    } catch (error) {
+      console.log(error)
+    };
   }, []);
 
   useEffect(() => {
@@ -164,6 +179,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
           </div>
           <div className="ml-3 w-full" style={{color: textColor}}>
             <PodcastName podcastName={podcastName} />
+            <PodcastDescription podcastDescription={markdownText} />
           </div>
         </div>
       </div>

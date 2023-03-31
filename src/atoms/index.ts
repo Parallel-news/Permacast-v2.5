@@ -1,5 +1,7 @@
 import { atom } from 'recoil';
-import { Episode, Podcast } from '../interfaces';
+import { DEFAULT_BACKGROUND_COLOR, DEFAULT_PODCAST_COLOR, DEFAULT_THEME_COLOR } from '../constants/ui';
+import { Ans, Episode, FullEpisodeInfo, Podcast } from '../interfaces';
+import { RGBorRGBAstring } from '../interfaces/ui';
 
 export const uploadPercent = atom({
     key: 'uploadPercent',
@@ -24,8 +26,8 @@ export const isFullscreenAtom = atom<boolean>({
 
 
 // *** DATA-FETCHING ***
-export const podcasts = atom({
-    key: "podcasts",
+export const podcastsAtom = atom<Podcast[]>({
+    key: "podcastsAtom",
     default: [],
 });
 
@@ -44,8 +46,8 @@ export const featuredPodcasts = atom({
     default: [],
 });
 
-export const latestEpisodes = atom({
-    key: "latestEpisodes",
+export const latestEpisodesAtom = atom<FullEpisodeInfo[]>({
+    key: "latestEpisodesAtom",
     default: [],
 });
 
@@ -63,8 +65,8 @@ export const allPodcasts = atom({
     default: [],
 });
 
-export const input = atom({
-    key: "input",
+export const searchInputAtom = atom<string>({
+    key: "searchInputAtom",
     default: ""
 });
 
@@ -78,8 +80,8 @@ export const selection = atom({
     default: 0
 });
 
-export const creators = atom({
-    key: "creators",
+export const creatorsAtom = atom<Ans[]>({
+    key: "creatorsAtom",
     default: []
 });
 
@@ -159,24 +161,20 @@ export const globalModalOpen = atom({
 
 // *** THEMING ***
 
-export const themeColor = atom ({
-    key: "themeColor",
-    default: 'rgb(255, 255, 0)'
+
+export const currentThemeColorAtom = atom<RGBorRGBAstring>({
+    key: "currentThemeColorAtom",
+    default: DEFAULT_THEME_COLOR
 })
 
-export const currentThemeColor = atom ({
-    key: "currentThemeColor",
-    default: ''
+export const backgroundColorAtom = atom ({
+    key: "backgroundColorAtom",
+    default: DEFAULT_BACKGROUND_COLOR
 })
 
-export const backgroundColor = atom ({
-    key: "backgroundColor",
-    default: 'rgb(0, 0, 0)'
-})
-
-export const podcastColor = atom ({
-    key: "podcastColor",
-    default: 'rgb(0, 0, 0)'
+export const podcastColorAtom = atom ({
+    key: "podcastColorAtom",
+    default: DEFAULT_PODCAST_COLOR
 })
 
 // Everpay

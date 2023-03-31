@@ -67,7 +67,7 @@ export const ShikwasaProvider = ({ children }) => {
   const [queue, setQueue] = useRecoilState(queueAtom);
 
   const playerState = {
-    player: player,
+    player,
     isQueueVisible,
     isPlaying,
     isFullscreen,
@@ -105,7 +105,7 @@ export const ShikwasaProvider = ({ children }) => {
       setCurrentEpisode(episodes[0]);
       setQueue(episodes);
     };
-
+    if (episodes[0].type.includes("video")) setIsFullscreen(true);
     const queue = playerObject?.ui?.queueBtn;
     const playing = playerObject?.ui?.playBtn;
     const fullscreen = playerObject?.ui?.fullscreenBtn;
@@ -125,8 +125,17 @@ export const ShikwasaProvider = ({ children }) => {
     setIsPlaying(playing => !playing);
   };
 
+  const rehoistVideo = () => {
+    const v = player?.current?.audio;
+    player.current.rehoistVideo(v);
+  }
+
   useEffect(() => {
-    console.log("router.asPath changed", router.asPath);
+    if (isFullscreen) rehoistVideo();
+  }, [isFullscreen])
+
+  useEffect(() => {
+    setIsFullscreen(false);
   }, [router.asPath]);
 
   return <ShikwasaContext.Provider value={{ playerState, launchPlayer, togglePlay }}>

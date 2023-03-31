@@ -46,7 +46,7 @@ export interface Podcast {
   podcastName: string;
   author:      string;
   email:       string;
-  description: string;
+  description: arweaveTX; // markdown file tx on arseeding
   language:    string;
   explicit:    string;
   categories:  string[];
@@ -70,6 +70,7 @@ export interface Episode {
   uploader:    string;
   uploadedAt:  number;
   isVisible:   boolean;
+  order?:      number; // UI only
 }
 
 export interface FullEpisodeInfo {
@@ -78,6 +79,8 @@ export interface FullEpisodeInfo {
 };
 
 export interface Ans {
+  ANSuserExists?: boolean; // only on UI
+  userIsAddress?: boolean; // only on UI
   user:           string;
   currentLabel:   string;
   ownedLabels:    OwnedLabel[];
@@ -91,10 +94,10 @@ export interface Ans {
 }
 
 export interface Links {
-  github:    string;
-  twitter:   string;
-  customUrl: string;
-  instagram: string;
+  github?:    string;
+  twitter?:   string;
+  customUrl?: string;
+  instagram?: string;
 }
 
 export interface OwnedLabel {

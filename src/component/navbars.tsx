@@ -16,7 +16,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Cooyub } from "./reusables/icons";
 import ArConnect from "./arconnect";
-import { Searchbar } from "./searchbar";
+import Searchbar from "./searchbar";
 import LANGUAGES from "../utils/languages";
 import { UploadCount } from "./upload_count";
 import { useRecoilState } from "recoil";

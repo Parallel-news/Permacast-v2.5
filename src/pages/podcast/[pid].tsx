@@ -2,7 +2,7 @@ import axios from "axios";
 import Head from "next/head";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRecoilState } from "recoil";
-import { backgroundColor, loadTipModal } from "../../atoms";
+import { backgroundColorAtom, loadTipModal } from "../../atoms";
 import { 
     Episodes,
     ErrorTag,
@@ -19,14 +19,15 @@ import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 import { useTranslation } from "react-i18next";
 
 export default function PodcastId({data, status}) {
-    
+
     const { t } = useTranslation();
 
-    const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
+    const [backgroundColor, setBackgroundColor] = useRecoilState(backgroundColorAtom);
     const [loadTipModal, setLoadTipModal] = useState<boolean>(false)
     const [loadShareModal, setLoadShareModal] = useState<boolean>(false)
     const [baseUrl, setBaseUrl] = useState<string>("")
     const [color, setColor] = useState<string>("")
+
 
     console.log("data: ", data)
     if(data) {
@@ -43,7 +44,7 @@ export default function PodcastId({data, status}) {
                 const dominantColor = await fetchDominantColor(data.obj?.cover);
                 const [coverColor, textColor] = getCoverColorScheme(dominantColor.rgba)
                 setColor(textColor) 
-                setBackgroundColor_(coverColor)
+                setBackgroundColor(coverColor)
             }
             fetchColor()
         }, [])

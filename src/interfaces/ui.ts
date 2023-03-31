@@ -1,3 +1,4 @@
+export type HexString = string;
 export type RGBstring = string;
 
 export interface RGB {
@@ -25,6 +26,6 @@ export interface HSL {
 
 export type RGBtoHSLInterface = (rgb: RGB) => HSL;
 
-export type replaceColorsInterface = (rgba: RGBA) => RGB;
+export type replaceColorsInterface = (rgba: RGBA, lightness: number) => RGB;
 
 export type Classname = string;

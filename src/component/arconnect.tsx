@@ -24,6 +24,7 @@ export default function ArConnect() {
   useEffect(() => {
     async function fetchData () {
       if (!walletConnected) return;
+      // TODO: Remove this line after arconnect v1.0.0
       const arconnectPubKey = await getPublicKey();
       if (!arconnectPubKey) throw new Error("ArConnect public key not found");
   
@@ -37,7 +38,7 @@ export default function ArConnect() {
 
   return (
     <button 
-      className="w-full h-12 flex items-center btn-base-color flex px-3 justify-center mx-auto text-sm md:text-base normal-case focus:outline-white"
+      className="w-full h-12 items-center btn-base-color flex px-3 justify-center mx-auto text-sm md:text-base normal-case focus:outline-white default-animation"
       onClick={walletConnected ? arconnectDisconnect: connect}
     >
       {(walletConnected && (

@@ -8,10 +8,11 @@ import {
 } from '@heroicons/react/24/solid';
 import TextTruncate from "../TextTruncate";
 import { formatStringByLen, hexToRGB } from "../../utils/reusables";
-import { ARWEAVE_READ_LINK, STR_LEN_EPISODE_BOX, STR_LEN_EPISODE_DESC } from "../../constants";
+import { ARWEAVE_READ_LINK, STR_LEN_EPISODE_BOX, STR_LEN_EPISODE_DESC, ARSEED_URL } from "../../constants";
 import { useState } from "react";
 import { getTypeFromMime } from "../../utils/fileTools";
 import { useTranslation } from "react-i18next";
+
 
 export default function eidTools() {
     return false
@@ -315,7 +316,7 @@ export const EpisodeBox = (props: EpisodeBoxInter) => {
             {/*Episode Description*/}
             <div className="w-[50%]">
                 <TextTruncate 
-                    text={ARWEAVE_READ_LINK+props.episode.description}
+                    text={ARSEED_URL+props.episode.description}
                     limit={STR_LEN_EPISODE_BOX}
                     textClass="text-neutral-400 text-[12px]"
                     buttonClass={textTruncateButtonStyling+" text-[13px]"}

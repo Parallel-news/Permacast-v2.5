@@ -24,6 +24,14 @@
     @apply ease-in-out duration-300 transition-all;
   }
 
+  .default-animation-slow {
+    @apply ease-in-out transition-all duration-3500;
+  }
+
+  .default-outline {
+    @apply focus:outline-white focus:outline-2
+  }
+
   .hover-up-effect {
     @apply hover:shadow-white/20 hover:shadow-lg default-animation;
   } //hover:-translate-y-1

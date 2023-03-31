@@ -21,7 +21,7 @@ export interface CrossIconProps {
 };
 
 // 2. Stylings
-const episodeQueueStyling = "rounded-l-3xl w-72 text-white h-screen overflow-y-auto p-4 bg-zinc-800 default-animation";
+const episodeQueueStyling = "rounded-l-3xl w-72 text-white h-screen overflow-y-auto p-4 bg-zinc-800 default-animation absolute z-50 bottom-0 right-0";
 const topTextWrapperStyling = "flex items-center justify-between mb-4 font-bold text-xl";
 const crossStyling = "rotate-45 text-zinc-400 hover:text-white default-animation";
 
@@ -54,7 +54,7 @@ const EpisodeQueue: FC = () => {
     <div>
       {queue.map((episode: Episode, index: number) => (
         <div key={index} className="mb-2 relative">
-          <Track episode={{episode: episode, podcast: currentPodcast}} episodeNumber={index + 1} includePlayButton />
+          <Track episode={{episode: episode, podcast: currentPodcast}} includePlayButton />
         </div>
       )) || <p className="text-zinc-400">{t("queue.emptyqueue")}</p>}
     </div>

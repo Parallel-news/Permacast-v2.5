@@ -1,63 +1,50 @@
-import React, { FC, ReactNode, useEffect } from 'react';
+import React, { FC, ReactNode } from 'react';
 
 import { useRecoilState } from 'recoil';
 
 import { useTranslation } from 'next-i18next';
 
-import { Sidenav, NavBar } from './navbars';
+import { Sidenav, NavBar } from './navigation';
 import Background from './background';
 
 import EpisodeQueue from './episodeQueue';
 import Fullscreen from './fullscreen';
 
-import { isFullscreenAtom, currentThemeColor, isQueueVisibleAtom } from '../atoms/index';
-import { THEME_COLOR } from '../constants/ui';
+import { isFullscreenAtom, isQueueVisibleAtom } from '../atoms/index';
 
 interface LayoutInterface {
   children: ReactNode;
-}
+};
+
+export const AppStyling = `select-none h-full bg-black overflow-hidden `;
+export const AppInnerStyling = `flex h-screen overflow-x-hidden relative `;
+export const BackgroundWrapperStyling = `w-screen overflow-y-scroll overflow-x-hidden `;
+export const InnerLayoutStyling = `ml-8 pr-8 pt-9 relative z-[3] `;
+export const ParentStyling = `w-full overflow-hidden z-[3] `;
 
 const Layout: FC<LayoutInterface> = ({ children }) => {
-  const { t } = useTranslation()
 
-
-  const [_isFullscreen, _setIsFullscreen] = useRecoilState(isFullscreenAtom);
-  const [isQueueVisible, setQueueVisible] = useRecoilState(isQueueVisibleAtom);
-
-  const [currentThemeColor_, setCurrentThemeColor_] = useRecoilState(currentThemeColor);
-
-  useEffect(() => {
-    setCurrentThemeColor_(THEME_COLOR);
-  }, []);
+  const [isFullscreen] = useRecoilState(isFullscreenAtom);
+  const [isQueueVisible] = useRecoilState(isQueueVisibleAtom);
 
   return (
-    <div className="select-none h-full bg-black overflow-hidden " data-theme="permacast">
-      <div className="flex h-screen">
-        <div className="hidden md:block z-50">
-          <div className="w-[100px] z-50 flex justify-center">
-            <Sidenav />
-          </div>
-        </div>
-        <div className="z-50">
-          <div className="absolute z-50 bottom-0 right-0">
-            {isQueueVisible && <EpisodeQueue />}
-          </div>
-        </div>
-        {/* placeholder */}
-        {_isFullscreen && <Fullscreen episode={''} id={1} />}
-        <Background>
-          <div className="ml-8 pr-8 pt-9">
-            <div className="mb-10">
-              <NavBar />
-            </div>
-            <div className="w-full overflow-hidden">
+    <div className={AppStyling} data-theme="permacast">
+      <div className={AppInnerStyling}>
+        <Sidenav />
+        {isQueueVisible && <EpisodeQueue />}
+        {isFullscreen && <Fullscreen />}
+        <div className={BackgroundWrapperStyling}>
+          <Background />
+          <div className={InnerLayoutStyling}>
+            <NavBar />
+            <div className={ParentStyling}>
               {children}
             </div>
           </div>
-        </Background>
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Layout;

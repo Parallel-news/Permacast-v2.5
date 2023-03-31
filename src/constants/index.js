@@ -1,3 +1,5 @@
+import { FaDiscord, FaTwitter, FaTelegram } from "react-icons/fa";
+
 // Upload Podcast Constants
 export const PODCAST_NAME_MIN_LEN = 2;
 export const PODCAST_NAME_MAX_LEN = 500;
@@ -52,6 +54,34 @@ export const STR_LEN_EPISODE_DESC = 400
 export const EXM_READ_LINK = "https://api.exm.dev/read/"
 export const ARWEAVE_READ_LINK = "https://arweave.net/"
 
+// SOCIALS
+export const PERMACAST_DISCORD_URL = "https://discord.gg/cQanQVCs7G"
+export const PERMACAST_TWITTER_URL = "https://twitter.com/permacast"
+export const PERMACAST_TELEGRAM_URL = "https://t.me/permacast"
+
+const iconStyling = "w-4 h-4 text-zinc-300"
+
+export const discordObject = {
+    "name": "Discord",
+    "url": PERMACAST_DISCORD_URL,
+    "icon": <FaDiscord className={iconStyling} />
+}
+
+export const twitterObject = {
+    "name": "Twitter",
+    "url": PERMACAST_TWITTER_URL,
+    "icon": <FaTwitter className={iconStyling} />
+}
+
+export const telegramObject = {
+    "name": "Telegram",
+    "url": PERMACAST_TELEGRAM_URL,
+    "icon": <FaTelegram className={iconStyling} />
+}
+
+export const HELP_LINKS = [ discordObject, twitterObject, telegramObject ]
+
+
 // ERRORS
 export const NO_PODCAST_FOUND = "No Podcast Found."
 export const NO_EPISODE_FOUND = "No Episode Found."
@@ -64,7 +94,7 @@ export const PAYLOAD_RECEIVED = "Received"
 
 // ARSEEDING
 export const ARSEED_CURRENCY = "ar"
-export const ARSEED_URL = "https://arseed.web3infra.dev"
+export const ARSEED_URL = "https://arseed.web3infra.dev/"
 export const TEXTMARKDOWN = {
     tags: [{name: "Content-Type", value:'text/markdown'}]
 }
@@ -97,3 +127,19 @@ export const NO_SHOW = "Unable to fetch shows. Refresh and try again."
 // API SUCCESS
 export const SHOW_UPLOAD_SUCCESS = "Show Uploaded. Redirecting."
 export const EP_UPLOAD_SUCCESS = "Episode Uploaded. Redirecting."
+
+
+export const DUMMY_ANS = {
+    user: '',
+    avatar: '',
+    currentLabel: '',
+    address_color: '',
+    nickname: '',
+    bio: null,
+    ownedLabels: [],
+    links: {},
+    subdomains: [],
+    freeSubdomains: 0
+};
+
+export const EXM_ANS_CONTRACT_ADDRESS = "VGWeJLDLJ9ify3ezl9tW-9fhB0G-GIUd60FE-5Q-_VI";

@@ -3,7 +3,7 @@ import Head from "next/head";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { backgroundColor, loadTipModal } from "../../../../atoms";
+import { backgroundColorAtom, loadTipModal } from "../../../../atoms";
 import { 
     EpisodeBanner,
     EpisodeDescription,
@@ -20,7 +20,8 @@ import { fetchDominantColor, getCoverColorScheme, rgba2hex, RGBAstringToObject, 
 import { useTranslation } from "react-i18next";
 
 export default function EpisodeId({data, status}) {
-    const [, setBackgroundColor_] = useRecoilState(backgroundColor);
+
+    const [, setBackgroundColor_] = useRecoilState(backgroundColorAtom);
     const [loadTipModal, setLoadTipModal] = useState<boolean>(false)
     const [loadShareModal, setLoadShareModal] = useState<boolean>(false)
     const [color, setColor] = useState<string>("")

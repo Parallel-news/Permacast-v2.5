@@ -1,89 +1,69 @@
 import axios from 'axios';
 import { NextPage } from "next";
-import { useRouter } from "next/router";
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { Fragment, useEffect, useState, } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
 import {
-  Greeting,
-  FeaturedEpisode,
-  FeaturedPodcastsMobile,
-  RecentlyAdded,
+  Greeting, RecentlyAdded
 } from "../component/featured";
-import FeaturedPodcast from '../component/home/featuredPodcast';
-import FeaturedCreators from '../component/home/featuredCreators';
+import FeaturedPodcast, { featuredPocastCarouselStyling } from '../component/home/featuredPodcast';
+import FeaturedCreators from '../component/creator/featuredCreators';
 import Loading from '../component/reusables/loading';
 import {
-  podcasts,
-  featuredCreators,
   featuredEpisode,
-  featuredPodcasts,
-  latestEpisodes,
-  switchFocus,
- } from "../atoms/index";
+  latestEpisodesAtom,
+  podcastsAtom
+} from "../atoms/index";
 
-import { Episode, EXMDevState, PodcastDev } from '../interfaces';
+import { Episode, EXMDevState, FullEpisodeInfo, Podcast, PodcastDev } from '../interfaces';
+import Track from '../component/reusables/track';
 
 
 const Home: NextPage = () => {
+
+  const { t } = useTranslation();
+
   const [loading, setLoading] = useState(false);
 
-  const [podcasts_, setPodcasts_] = useRecoilState(podcasts);
+  const [podcasts_, setPodcasts_] = useRecoilState(podcastsAtom);
   const [featuredEpisode_, setFeaturedEpisode_] = useRecoilState(featuredEpisode);
-  const [latestEpisodes_, setLatestEpisodes_] = useRecoilState(latestEpisodes);
-  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
-  // const [recentlyAdded]
+  const [latestEpisodes, setLatestEpisodes] = useRecoilState(latestEpisodesAtom);
 
 
-  
+
   useEffect(() => {
-    console.log("index.tsx useEffect");
     const fetchData = async () => {
-      setLoading(true)
-      const exmState: EXMDevState = (await axios.get('/api/exm/read')).data
+      setLoading(true);
+      const exmState: EXMDevState = (await axios.get('/api/exm/read')).data;
       const { podcasts } = exmState;
-      const episodes: Episode[] = podcasts.map((podcast: PodcastDev) => podcast.episodes).flat()
-      
-      setLatestEpisodes_(episodes.sort((episodeA, episodeB) => episodeB.uploadedAt - episodeA.uploadedAt))
-      setPodcasts_(podcasts)
+      const episodes: FullEpisodeInfo[] = podcasts
+        .map((podcast: Podcast) => podcast.episodes
+          .map((episode: Episode, index: number) => 
+            ({podcast, episode: {...episode, order: index}})))
+              .flat();
 
-      setLoading(false)
+      const sorted = episodes.sort((episodeA, episodeB) => episodeB.episode.uploadedAt - episodeA.episode.uploadedAt);
+      setLatestEpisodes(sorted);
+      setPodcasts_(podcasts);
+      setLoading(false);
     };
 
-    fetchData()
-
+    fetchData();
   }, []);
-
-  const PodcastTypeButton = () => {
-    return (
-      <button 
-        className={`btn btn-sm btn-primary`}
-        onClick={() => {
-          setSwitchFocus_(true);
-        }}
-      >
-      </button>
-    )
-  }
 
   return (
     <div className="w-full pb-10 mb-10">
       <Greeting />
 
-      {/* {latestEpisodes_.length > 0 ? (
-        <div className="hidden md:block">
-          <FeaturedEpisode />
-        </div>
-      ) : <Loading />} */}
-
       {podcasts_.length > 0 ? (
-        <div className="w-full mt-8 carousel gap-x-12 py-3">
-          {podcasts_.map((podcast: PodcastDev, index: number) => 
+        <div className={featuredPocastCarouselStyling}>
+          {podcasts_.map((podcast: PodcastDev, index: number) =>
             <FeaturedPodcast {...podcast} key={index} />
           )}
         </div>
-      ): <Loading />}
+      ) : <Loading />}
 
       {/* {Object.keys(secondaryData_).length > 0 ? (
         <FeaturedPodcastsMobile />
@@ -93,7 +73,16 @@ const Home: NextPage = () => {
       <div className="my-9 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-x-12">
         <div className="xl:col-span-3 lg:col-span-2 md:col-span-1 mb-9">
           {!loading ? (
-            <RecentlyAdded />
+            <>
+              <h2 className="text-zinc-400 text-lg mb-3">{t("home.recentlyadded")}</h2>
+              <div className="grid grid-rows-3 gap-y-4 text-zinc-100">
+                {latestEpisodes.map((episode: FullEpisodeInfo) => (
+                  <div className="hidden md:block">
+                    <Track {...{episode }} includeDescription includePlayButton  />
+                  </div>
+                )) || <Loading />}
+              </div>
+            </>
           ) : (
             <Loading />
           )}

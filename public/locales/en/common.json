@@ -1,5 +1,8 @@
 {
 	"language": "Language",
+	"tooltip": {
+		"coming-soon": "Coming soon"
+	},
 	"navbar": {
 		"home": "Home",
 		"help": "Get help",
@@ -138,6 +141,16 @@
 	},
 	"creator": {
 		"ans": "View on ANS",
+		"verification": {
+			"verified": {
+				"text": "Verified",
+				"explanation": "This user is a verified recipient on ANS"
+			},
+			"unverified": {
+				"text": "Unverified",
+				"explanation": "This user does not exist on ANS. Always double check who you send money to."
+			}
+		},
 		"podcasts": "Podcasts",
 		"nopodcasts": "No podcasts found",
 		"address": "Address",
