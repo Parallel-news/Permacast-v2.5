@@ -141,12 +141,13 @@
 		"newepisode": "додай новий епізод"
 	},
   "episode": {
-    "number": "Епізод",
+    	"number": "Епізод",
 		"download": "Завантажити",
 		"nextepisode": "Наступний епізод",
 		"share": "Поділитись",
 		"copied": "Скопійовано!",
-		"nodescription": "Опис відсутній"
+		"nodescription": "Опис відсутній",
+		"fetching": "вибірка"
   },
 	"creator": {
 		"ans": "Подивитися на ANS",

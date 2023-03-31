@@ -127,12 +127,13 @@
 		"newepisode": "添加新剧集"
 	},
 	"episode": {
-    "number": "数字",
+    	"number": "数字",
 		"download": "下载",
 		"nextepisode": "下一集",
 		"share": "分享",
 		"copied": "已复制",
-		"nodescription": "无描述"
+		"nodescription": "无描述",
+		"fetching": "取"
   },
 	"creator": {
 		"ans": "ANS 地址",

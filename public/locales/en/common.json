@@ -132,7 +132,8 @@
 		"nextepisode": "Next Episode",
 		"share": "Share",
 		"copied": "Copied to clipboard",
-		"nodescription": "No description provided"
+		"nodescription": "No description provided",
+		"fetching": "fetching"
 	},
 	"creator": {
 		"ans": "View on ANS",

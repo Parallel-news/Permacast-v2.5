@@ -234,9 +234,9 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
             {downloading ?
             <DescriptionButton
                 icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
-                text={"Fetching"}
+                text={t("episode.fetching")}
                 color={color}
-                onClick={() => downloadFile()}
+                onClick={() => ""}
             />
             :
             <DescriptionButton
