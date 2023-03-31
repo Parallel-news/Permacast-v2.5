@@ -13,8 +13,9 @@ import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
 import { ArrowUpTrayIcon, XMarkIcon, WalletIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
 import { getBundleArFee, upload2DMedia, upload3DMedia } from '../../utils/arseeding';
 import { allFieldsFilled, byteSize, checkConnection, determineMediaType, handleError } from '../../utils/reusables';
-import { ARWEAVE_READ_LINK, AR_DECIMALS, CONNECT_WALLET, DESCRIPTION_UPLOAD_ERROR, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EP_UPLOAD_SUCCESS, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, MEDIA_UPLOAD_ERROR, MIN_UPLOAD_PAYMENT, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from '../../constants';
+import { ARWEAVE_READ_LINK, AR_DECIMALS, CONNECT_WALLET, DESCRIPTION_UPLOAD_ERROR, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EP_UPLOAD_SUCCESS, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, MEDIA_UPLOAD_ERROR, MIN_UPLOAD_PAYMENT, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from '../../constants';
 import { useTranslation } from 'react-i18next';
+import { transferFunds } from '../../utils/everpay';
 
 export default function uploadEpisode() {
     return false
@@ -200,7 +201,8 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         "desc": "",
         "content": "",
         "mimeType": "",
-        "sig": ""
+        "sig": "",
+        "txid": ""
     }
 
     const submitEpisode = async (epPayload: any) => {
@@ -230,8 +232,26 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         } catch (e) {
             console.log(e); handleErr(MEDIA_UPLOAD_ERROR, setSubmittingEp); return;
         }
+
+        // Media to Arseeding
+        try {
+            const media = await upload3DMedia(epMedia, epMedia.type); epPayload["content"] = media?.order?.itemId
+            epPayload["mimeType"] = determineMediaType(epMedia.type)
+        } catch (e) {
+            console.log(e); handleErr(MEDIA_UPLOAD_ERROR, setSubmittingEp); return;
+        }
+
+        // Pay Upload Fee
+        try {
+            const tx = await transferFunds("UPLOAD_EPISODE_FEE", EPISODE_UPLOAD_FEE, EVERPAY_EOA, address)
+            //@ts-ignore - refusing to acknowledge everHash
+            epPayload["txid"] = tx[1].everHash
+        } catch(e) {
+            console.log(e); handleErr(EVERPAY_BALANCE_ERROR, setSubmittingEp); return;
+        }
         // EXM REDIRECT AND ERROR HANDLING NEEDED
         const result = await axios.post('/api/exm/write', createEpPayload);
+        console.log("PAYLOAD: ", epPayload)
         console.log("exm res: ", result)
         setSubmittingEp(false)
         //EXM call, set timeout, then redirect. 
@@ -478,7 +498,22 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
         </div>
     )
 }
-
-
-
+/*
+{
+    "function": "createPodcast",
+    "name": "Zoophilia at its Finest!",
+    "desc": "eog0KRdoVQUgUrBl1zLPRWTt_dDjxfZJhP6Hy2XXgiA",
+    "author": "Sebs Steele",
+    "lang": "en",
+    "isExplicit": "no",
+    "categories": "art",
+    "email": "s@s.com",
+    "cover": "t5PClo_A8BUfDjXx3Po8wI4v2kGRTTs8Jum-ScBLRwM",
+    "minifiedCover": "2utNxqNZWnzpbIjlECWk4H6TMaZ3K7Nisvtl_QmeBkQ",
+    "label": "sebs",
+    "jwk_n": "vBxHYO9sFsPi2FsLpz5AGPC79TrsmBg6nh7x-8wUE3jRF6-km81nfN7-8e9z9xC8WbPQ9GgdpL8JyfcTZK4WCXo692TfYrZCl-nzK6535xVr_zRyVCquotN9dRdKrfteTahFCSnDqjR10CccF8BloJBogXXx9ygAHnySw6gDH_e0ih2KWCRYEBGz8kylQ7vsKFD_UrtcljHMoFv0P9W1kNHFcG1ONlDt-rOEkk-yboVo4safzKh9DaiW9n__vRNpvT7Zz2EG3bTp__NZ_CfzvOEkY2QOKtLOOOvGfDqaRpODMwjzd5gZTEk-et9Zm4FZ8yv05gOHu9zjagNUMJW86sooL3SD1GqWDGQL0meCxRz2YT8I-0ShrhLFR3NTGdgBApZz5VxvaQyN-e6auQY0zAXjvp7uSJ3G1hOAlaeKHbFdQc-k_VCbcj7tqlM004kfNlUdlI4xkN7wJHq4r34TA9GW3Xjl6pg1lqnNDBuCnxCHbkjCUSVubLNCaKrDb-0Bdq9AqXuN4IhCsLey35JD4mbFdkIeQPheAVsPj_XWu8HSn08GSX9SL-IRNVPP4gykL35LVQugcjHVN_UWMkORz3x6ER5k9GmnHKvriQgv_fJPt9AyrMj7KSjFufGD8iH0I-Qz5p-12piyPS9iep0i9c_IGU6SNGHvVmmueR7gNO8",
+    "txid": "0xd93c839c2502cd83ed968d1c7080eb24911558e34282f273e72ffed8ec2e4303",
+    "sig": "GUeHf4eMTFJGsfH3USJnP9FiM7v4jsU1ZlxrzFnq/UZ47ISTZRW5IWEanAdba0BOzOA3iIE+gm/lvXTgZ87o04Kj6YMtfgItNBg4Fp0SK9DfdUZZT1Bdfb+xdGgdkTQ+iZj/JpW8O8Wr8Rwq0mDzXEG4JLxv25BNIlmciuk4JzICFt/To82umudB3WWZColF/giE07SBodGBNmnSvZll1Ex3oXwKvCc9HErykfh8ZxLmNdFoT0aVG10SXGgcPFHT2dlSW6vG0l2xaziN5rI+g+K6j9Dm76yrKPJfr0kkuKiydSmqqcZQbUhvL/+J0o5SlWHejsWLmXZ6j3Xkk2A8NHb+CHow4o8oigxvMkuHyfHeguH4bWJ4R4o2WUp90BVDsMPfKbtfswHLSwCOAcAJ+JQUbwtGtAWj/bLwNcqnY4nI+zFSX/vGJK8Hv217b50sl+NMjkr8zvQHc+RNrgsVF8D5xyofPJ1qzTFCr7+RAgoTO1Z2NbkRgXcUu6/n/KSM0snS/5McPmEI9uUJwSvVszG2k5pspVqj+JLu9ake6jCGoGRUOdnlPIeTxRbmaaR1YUrzBCbRRy0jdjXtY+snOZJ9kjTbNTHXB90XNy3zpB2PZx2nM43DAbpxwxv65mZJZ2jx6iFgfT13uUToIKKJZGjimFLU08/0HvsfrWnZ8rU="
+}
+*/
 
