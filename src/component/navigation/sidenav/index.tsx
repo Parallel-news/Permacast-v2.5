@@ -10,9 +10,8 @@ import {
 import { Cooyub } from "../../reusables/icons";
 import { HelpDropdown, LanguageDropdown, NavButton, UploadDropdown } from "../sidenavButtons";
 import { ComingSoonTooltip } from "../../reusables/tooltip";
-
 export const IconSizeStyling = `w-9 h-9 `;
-export const SideNavStyling = `hidden md:flex flex-col items-center gap-y-9 h-full pt-10 w-[100px] text-zinc-400 z-50 `;
+export const SideNavStyling = `hidden md:flex items-center flex-col gap-y-9 h-full pt-10 w-[100px] text-zinc-400 z-50 `;
 
 export const Sidenav: FC = () => {
 
