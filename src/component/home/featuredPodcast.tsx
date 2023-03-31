@@ -1,19 +1,17 @@
 import React, { useState, useEffect, FC } from "react";
 import { useTranslation } from "next-i18next";
-
 import {
   fetchDominantColor,
   getCoverColorScheme,
 } from "../../utils/ui";
-
 import { arweaveTX, Podcast } from "../../interfaces/index";
 import Link from "next/link";
 import FeaturedPodcastPlayButton from "./featuredPodcastPlayButton";
-
 import Image from "next/image";
 import { ARWEAVE_READ_LINK } from "../../constants";
 import MarkdownRenderer from "../markdownRenderer";
 import { queryMarkdownByTX } from "../../utils/markdown";
+
 
 
 /**
@@ -145,6 +143,17 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
     };
   }, []);
 
+  useEffect(() => {
+    const fetchMarkdown = async () => {
+      const url = `https://arweave.net/${description}`;
+      const response = await fetch(url);
+      const txt = await response.text();
+      setMarkdownText(txt);
+    };
+
+    fetchMarkdown();
+  }, []);
+
   const episode = episodes.length ? episodes[0]: undefined;
   const playerInfo = { playerColorScheme: themeColor, buttonColor: themeColor, accentColor: textColor, title: episode?.episodeName, artist: author, cover, src: episode?.contentTx };
 
@@ -179,3 +188,5 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
 };
 
 export default FeaturedPodcast;
+//<PodcastDescription podcastDescription={description} />
+//<MarkdownRenderer markdownText={markdownText} />

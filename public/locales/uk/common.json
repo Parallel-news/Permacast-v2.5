@@ -144,12 +144,15 @@
 		"newepisode": "додай новий епізод"
 	},
   "episode": {
-    "number": "Епізод",
+    	"number": "Епізод",
 		"download": "Завантажити",
 		"nextepisode": "Наступний епізод",
 		"share": "Поділитись",
 		"copied": "Скопійовано!",
-		"nodescription": "Опис відсутній"
+		"nodescription": "Опис відсутній",
+		"fetching": "вибірка",
+		"noneToShow": "Немає для показу..."
+	
   },
 	"creator": {
 		"ans": "Подивитися на ANS",
@@ -184,5 +187,13 @@
 	"fullscreen": {
 		"episode": "Епізод"
 	},
-	"view": "Переглянути"
+	"view": "Переглянути",
+	"share": {
+		"Checkthis": "Заціни",
+		"share": "частка"
+	},
+	"tipModal": {
+		"submitTip": "Надіслати підказку",
+		"balance": "Баланс"
+	}
 }

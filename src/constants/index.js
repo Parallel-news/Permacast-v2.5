@@ -106,6 +106,7 @@ export const USER_SIG_MESSAGES = ["my Arweave PK for Permacast is "]
 export const EVERPAY_EOA = '0x197f818c1313DC58b32D88078ecdfB40EA822614';
 export const EVERPAY_AR_TAG = 'arweave,ethereum-ar-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,0x4fadc7a98f2dc96510e42dd1a74141eeae0c1543';
 export const MIN_UPLOAD_PAYMENT = .000001  // 1000000 winston
+export const EPISODE_UPLOAD_FEE = .13 //13000000000 winston
 
 // TOAST
 export const TOAST_POSITION = "top-center"
@@ -126,6 +127,7 @@ export const NO_SHOW = "Unable to fetch shows. Refresh and try again."
 // API SUCCESS
 export const SHOW_UPLOAD_SUCCESS = "Show Uploaded. Redirecting."
 export const EP_UPLOAD_SUCCESS = "Episode Uploaded. Redirecting."
+
 
 export const DUMMY_ANS = {
     user: '',

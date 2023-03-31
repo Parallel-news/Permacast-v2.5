@@ -130,12 +130,14 @@
 		"newepisode": "添加新剧集"
 	},
 	"episode": {
-    "number": "数字",
+    	"number": "数字",
 		"download": "下载",
 		"nextepisode": "下一集",
 		"share": "分享",
 		"copied": "已复制",
-		"nodescription": "无描述"
+		"nodescription": "无描述",
+		"fetching": "取",
+		"noneToShow": "没有显示..."
   },
 	"creator": {
 		"ans": "ANS 地址",
@@ -170,5 +172,13 @@
 	"fullscreen": {
 		"episode": "剧集"
 	},
-	"view": "看法"
+	"view": "看法",
+	"share": {
+		"Checkthis": "看一下这个",
+		"share": "分享"
+	},
+	"tipModal": {
+		"submitTip": "提交提示",
+		"balance": "平衡"
+	}
 }

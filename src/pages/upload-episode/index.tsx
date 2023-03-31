@@ -11,6 +11,7 @@ export default function UploadEpisode({yourShows, error, pid}) {
     console.log("pid: ", pid)
     console.log(typeof pid)
     console.log("yourShows: ", yourShows)
+    console.log("error: ", error)
     if(error.length > 0) {
       return (
         <p className={showErrorTag}>{error}</p>

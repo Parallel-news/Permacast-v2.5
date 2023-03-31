@@ -2,7 +2,7 @@ import axios from "axios";
 import Head from "next/head";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRecoilState } from "recoil";
-import { backgroundColorAtom } from "../../atoms";
+import { backgroundColorAtom, loadTipModal } from "../../atoms";
 import { 
     Episodes,
     ErrorTag,
@@ -12,18 +12,43 @@ import { PodcastBanner } from "../../component/podcast/pidTools";
 import { EXM_READ_LINK, ARWEAVE_READ_LINK, PAYLOAD_RECEIVED, NO_PODCAST_FOUND } from "../../constants";
 import { getContractVariables } from "../../utils/contract";
 import { findObjectById } from "../../utils/reusables";
+import { TipModal } from "../../component/tipModal";
+import { useEffect, useState } from "react";
+import { ShareButtons } from "../../component/shareButtons";
+import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
+import { useTranslation } from "react-i18next";
 
 export default function PodcastId({data, status}) {
+
+    const { t } = useTranslation();
+
     const [backgroundColor, setBackgroundColor] = useRecoilState(backgroundColorAtom);
+    const [loadTipModal, setLoadTipModal] = useState<boolean>(false)
+    const [loadShareModal, setLoadShareModal] = useState<boolean>(false)
+    const [baseUrl, setBaseUrl] = useState<string>("")
+    const [color, setColor] = useState<string>("")
+
+
     console.log("data: ", data)
     if(data) {
         //State Calls Here
-        const color = "#818cf8"
         const imgSrc = ARWEAVE_READ_LINK+data.obj?.cover
         const title = data.obj?.podcastName
         const description = data.obj?.description
         const nextEpisodeTitle = "Episodes"
         const episodes = data.obj?.episodes
+
+        useEffect(() => {
+            if(typeof window !== 'undefined') setBaseUrl(window.location.protocol + "//"+window.location.hostname+(window.location.port ? ":" + window.location.port : ""))
+            const fetchColor = async () => {
+                const dominantColor = await fetchDominantColor(data.obj?.cover);
+                const [coverColor, textColor] = getCoverColorScheme(dominantColor.rgba)
+                setColor(textColor) 
+                setBackgroundColor(coverColor)
+            }
+            fetchColor()
+        }, [])
+
         return (
             <>
                 <Head>
@@ -33,7 +58,6 @@ export default function PodcastId({data, status}) {
                         <meta name="twitter:title" content={`${data.obj.podcastName} | Permacast`} />
                         <meta name="twitter:url" content={`https://permacast.dev/`}></meta>
                         <meta name="twitter:description" content={`By ${data.obj.author}`} />
-
                         <meta name="og:card" content="summary" />
                         <meta name="description" content={`By ${data.obj.author}`} />
                         <meta name="og:image" content={(data.obj.cover !== "") ? `https://arweave.net/${data.obj.cover}` : "https://ar.page/favicon.png"} />
@@ -48,15 +72,36 @@ export default function PodcastId({data, status}) {
                         title={title}
                         description={ARWEAVE_READ_LINK+description}
                         color={color}
+                        setLoadTipModal={() => setLoadTipModal(true)}
+                        podcastId={data.obj?.pid}
+                        podcastOwner={data.obj?.owner}
+                        setLoadShareModal={() => setLoadShareModal(true)}
                     />
                     {/*Episode Track*/}
                     <Episodes
-                        containerTitle={nextEpisodeTitle} 
+                        containerTitle={t("search.episodes")} 
                         imgSrc={imgSrc}
                         color={color}
                         episodes={episodes}
+                        podcastId={data.obj?.pid}
                     />            
                 </div>
+                {loadTipModal && (
+                    <TipModal
+                        to={data?.obj.podcastName}
+                        toAddress={data?.obj.owner} 
+                        isVisible={loadTipModal}
+                        setVisible={setLoadTipModal}
+                    />
+                )}
+                {loadShareModal && (
+                    <ShareButtons
+                        isVisible={loadShareModal} 
+                        setVisible={setLoadShareModal}
+                        title={t("Checkthis")}
+                        url={`${baseUrl}/podcast/${data.obj?.pid}`}
+                    />
+                )}
             </>
         )
     } else if(status === NO_PODCAST_FOUND) {
@@ -73,8 +118,6 @@ export default function PodcastId({data, status}) {
             />
         )
     }
-    
-
 }
 
 export async function getServerSideProps(context) {

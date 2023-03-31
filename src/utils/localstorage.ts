@@ -108,4 +108,6 @@ export const PODCAST_COVER_COLORS_MANAGER = 'PODCAST_COVER_COLORS_MANAGER';
 export const PODCAST_DESCRIPTION_MANAGER = 'PODCAST_DESCRIPTION_MANAGER';
 
 export const podcastCoverColorManager = new LocalStorageObjectManager(PODCAST_COVER_COLORS_MANAGER);
+
 export const podcastDescriptionManager = new LocalStorageObjectManager(PODCAST_DESCRIPTION_MANAGER);
+

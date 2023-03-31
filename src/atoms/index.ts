@@ -85,6 +85,11 @@ export const creatorsAtom = atom<Ans[]>({
     default: []
 });
 
+export const loadTipModal = atom({
+    key: "loadTipModal",
+    default: false
+});
+
 
 // *** PLAYBACK ***
 

@@ -135,7 +135,9 @@
 		"nextepisode": "Next Episode",
 		"share": "Share",
 		"copied": "Copied to clipboard",
-		"nodescription": "No description provided"
+		"nodescription": "No description provided",
+		"fetching": "fetching",
+		"noneToShow": "None to show..."
 	},
 	"creator": {
 		"ans": "View on ANS",
@@ -175,5 +177,13 @@
 	"textTruncate": {
 		"showMore": "Show More",
 		"showLess": "Show Less"
+	},
+	"share": {
+		"Checkthis": "Check this out",
+		"share": "Share"
+	},
+	"tipModal": {
+		"submitTip": "Submit Tip",
+		"balance": "Balance"
 	}
 }
