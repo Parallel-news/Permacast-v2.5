@@ -147,7 +147,9 @@
 		"share": "Поділитись",
 		"copied": "Скопійовано!",
 		"nodescription": "Опис відсутній",
-		"fetching": "вибірка"
+		"fetching": "вибірка",
+		"noneToShow": "Немає для показу..."
+	
   },
 	"creator": {
 		"ans": "Подивитися на ANS",

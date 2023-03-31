@@ -17,6 +17,7 @@ import { findObjectById, formatStringByLen } from "../../../../utils/reusables";
 import { TipModal } from "../../../../component/tipModal";
 import { ShareButtons } from "../../../../component/shareButtons";
 import { fetchDominantColor, getCoverColorScheme, rgba2hex, RGBAstringToObject, RGBobjectToString } from "../../../../utils/ui";
+import { useTranslation } from "react-i18next";
 
 export default function EpisodeId({data, status}) {
     const [, setBackgroundColor_] = useRecoilState(backgroundColor);
@@ -24,13 +25,13 @@ export default function EpisodeId({data, status}) {
     const [loadShareModal, setLoadShareModal] = useState<boolean>(false)
     const [color, setColor] = useState<string>("")
     const [baseUrl, setBaseUrl] = useState<string>("")
+    const { t } = useTranslation();
+    
     if(data) {
-
         //Serverside Results
         const ts = new Date(data?.obj.uploadedAt);
         const formattedDate = ts.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
         const d = data?.obj
-        const nextEpisodeTitle = "Next Episode"
         const date = formattedDate
         const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
         const episodes = d.episodes
@@ -83,7 +84,7 @@ export default function EpisodeId({data, status}) {
                     />
                     {/*Next Episode*/}
                     <Episodes
-                        containerTitle={nextEpisodeTitle} 
+                        containerTitle={t("episode.nextepisode")} 
                         imgSrc={ARWEAVE_READ_LINK+data?.cover}
                         color={'rgb(255, 255, 255)'}
                         episodes={[]}

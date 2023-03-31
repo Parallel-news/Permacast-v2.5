@@ -133,7 +133,8 @@
 		"share": "Share",
 		"copied": "Copied to clipboard",
 		"nodescription": "No description provided",
-		"fetching": "fetching"
+		"fetching": "fetching",
+		"noneToShow": "None to show..."
 	},
 	"creator": {
 		"ans": "View on ANS",

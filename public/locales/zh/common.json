@@ -133,7 +133,8 @@
 		"share": "分享",
 		"copied": "已复制",
 		"nodescription": "无描述",
-		"fetching": "取"
+		"fetching": "取",
+		"noneToShow": "没有显示..."
   },
 	"creator": {
 		"ans": "ANS 地址",

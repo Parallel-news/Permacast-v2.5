@@ -9,10 +9,7 @@ import {
 import TextTruncate from "../TextTruncate";
 import { formatStringByLen, hexToRGB } from "../../utils/reusables";
 import { ARWEAVE_READ_LINK, STR_LEN_EPISODE_BOX, STR_LEN_EPISODE_DESC } from "../../constants";
-import { useRecoilState } from "recoil";
-import { loadTipModal } from "../../atoms";
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useState } from "react";
 import { getTypeFromMime } from "../../utils/fileTools";
 import { useTranslation } from "react-i18next";
 
@@ -203,7 +200,6 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
     const [downloading, setDownloading] = useState<boolean>(false)
     const { t } = useTranslation();
 
-
     const downloadFile = async () => {
         setDownloading(true)
         const response = await fetch(props.mediaLink);
@@ -258,8 +254,10 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
 }
 
 export const EpisodeNumber = (props: EpisodeNumberInter) => {
+    const { t } = useTranslation();
+
     return (
-        <p className={episodeNumberStyling} style={{color: props.color}}>Episode {props.episodeNum}</p>
+        <p className={episodeNumberStyling} style={{color: props.color}}>{t("episode.number")+" "+props.episodeNum}</p>
     )
 }
 
@@ -279,6 +277,7 @@ export const EpisodeDescription = (props: DescriptionContainerInter) => {
 
 export const Episodes = (props: EpisodesInter) => {
     const episodeList = props.episodes
+    const { t } = useTranslation()
     return (
         <div className={nextEpisodeStyling}>
             <p className={nextEpisodeTitleStyling}>{props.containerTitle}</p>
@@ -294,7 +293,7 @@ export const Episodes = (props: EpisodesInter) => {
                     />
                 ))
             :
-                <p className="text-neutral-400">None to show...</p>
+                <p className="text-neutral-400">{t("episode.noneToShow")}</p>
             }
         </div>
     )
