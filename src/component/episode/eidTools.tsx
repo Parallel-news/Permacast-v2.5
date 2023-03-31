@@ -223,21 +223,21 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
             />
             <DescriptionButton
                 icon={<HeartIcon className={episodeIconStyling} />} 
-                text={t("tip")}
+                text={"Tip"}
                 color={color} 
                 onClick={props.setLoadTipModal}
             />
             {downloading ?
             <DescriptionButton
                 icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
-                text={t("episode.fetching")}
+                text={"Fetching"}
                 color={color}
                 onClick={() => ""}
             />
             :
             <DescriptionButton
                 icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
-                text={t("episode.download")}
+                text={"Download"}
                 color={color}
                 onClick={() => downloadFile()}
             />
@@ -245,7 +245,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
 
             <DescriptionButton
                 icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
-                text={t("episode.share")}
+                text={"Share"}
                 color={color}
                 onClick={props.setLoadShareModal}
             />
@@ -257,7 +257,7 @@ export const EpisodeNumber = (props: EpisodeNumberInter) => {
     const { t } = useTranslation();
 
     return (
-        <p className={episodeNumberStyling} style={{color: props.color}}>{t("episode.number")+" "+props.episodeNum}</p>
+        <p className={episodeNumberStyling} style={{color: props.color}}>{"Episode"+" "+props.episodeNum}</p>
     )
 }
 
@@ -293,7 +293,7 @@ export const Episodes = (props: EpisodesInter) => {
                     />
                 ))
             :
-                <p className="text-neutral-400">{t("episode.noneToShow")}</p>
+                <p className="text-neutral-400">None to Show.</p>
             }
         </div>
     )
@@ -346,7 +346,7 @@ export const EpisodeBoxTitleData = (props: EpisodeBoxTitleData) => {
             <div className="flex flex-col">
                 <a href={`/episode/${props.pid}/${props.eid}`} className={episodeBoxTitleStyling+" mb-1"}>{props.title}</a>
                 <div className={creatorTagDivStyling}>
-                    <p className={byStyling}>{t("track.by")}</p>
+                    <p className={byStyling}>{"by"}</p>
                     <CreatorTag color={props.color} creator={props.creator} imgSrc={props.imgSrc}/>
                 </div>
             </div>

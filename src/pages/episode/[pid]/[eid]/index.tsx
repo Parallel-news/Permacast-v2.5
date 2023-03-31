@@ -88,7 +88,7 @@ export default function EpisodeId({data, status}) {
                     />
                     {/*Next Episode*/}
                     <Episodes
-                        containerTitle={t("episode.nextepisode")} 
+                        containerTitle={"Next Episode"} 
                         imgSrc={ARWEAVE_READ_LINK+data?.cover}
                         color={'rgb(255, 255, 255)'}
                         episodes={[]}
