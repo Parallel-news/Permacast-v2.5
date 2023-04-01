@@ -3,11 +3,15 @@ import { ShowForm, uploadShowStyling, showTitleStyling } from "../../component/u
 import { EXM_READ_LINK, NO_SHOW } from "../../constants";
 import { getContractVariables } from "../../utils/contract";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from "next-i18next";
 
 export default function UploadShow({yourShows, error}) {
+
+    const { t } = useTranslation();
+
     return (
         <div className={uploadShowStyling}>
-            <p className={showTitleStyling}>Add Show</p>
+            <p className={showTitleStyling}>{t("uploadshow.addpodcast")}</p>
             <ShowForm 
                 podcasts={yourShows}
             />
