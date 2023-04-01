@@ -12,6 +12,7 @@ import { ARWEAVE_READ_LINK, STR_LEN_EPISODE_BOX, STR_LEN_EPISODE_DESC, ARSEED_UR
 import { useState } from "react";
 import { getTypeFromMime } from "../../utils/fileTools";
 import { useTranslation } from "react-i18next";
+import FeaturedPodcastPlayButton from "../home/featuredPodcastPlayButton";
 
 
 export default function eidTools() {
@@ -217,11 +218,14 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
 
     return (
         <div className={episodeInfoButtonsStyling}>
+            {/*<FeaturedPodcastPlayButton {...{ playerInfo, podcastInfo, episodes }} />*/}
+            {/*
             <DescriptionButton 
                 icon={<PlayIcon className="w-6 h-6" />}
                 text={""}
                 color={color}
             />
+            */}
             <DescriptionButton
                 icon={<HeartIcon className={episodeIconStyling} />} 
                 text={"Tip"}

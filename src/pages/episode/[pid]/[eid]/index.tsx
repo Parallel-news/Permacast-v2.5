@@ -26,6 +26,10 @@ export default function EpisodeId({data, status}) {
     const [loadShareModal, setLoadShareModal] = useState<boolean>(false)
     const [color, setColor] = useState<string>("")
     const [baseUrl, setBaseUrl] = useState<string>("")
+
+    const [themeColor, setThemeColor] = useState<string>('');
+    const [textColor, setTextColor] = useState<string>('');
+
     const { t } = useTranslation();
     
     if(data) {
@@ -39,8 +43,22 @@ export default function EpisodeId({data, status}) {
         const d = data?.obj
         const date = formattedDate
         const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
-        const episodes = d.episodes
+        console.log("Episodes: ", data?.episodes)
         console.log("Data : ", data)
+        /*
+        playerInfo = {
+            "playerColorScheme": "rgba(144, 123, 90, 1)",
+            "buttonColor": "rgba(144, 123, 90, 1)",
+            "accentColor": "rgb(255, 255, 255)",
+            "title": "Why are people calling the police??",
+            "artist": "Sebs Steele",
+            "cover": "t5PClo_A8BUfDjXx3Po8wI4v2kGRTTs8Jum-ScBLRwM",
+            "src": "ahCH0wG_wxwmvQ_syjTZB1qxzzC3B10xJ9XdbsX1eZI"
+        }
+        */
+       const episodes = data?.episodes
+       const cover = data.cover
+       const playerInfo = { playerColorScheme: themeColor, buttonColor: themeColor, accentColor: textColor, title: data.obj.episodeName, artist: data.author, cover, src: data.obj.contentTx };
 
         useEffect(() => {
             if(typeof window !== 'undefined') setBaseUrl(window.location.protocol + "//"+window.location.hostname+(window.location.port ? ":" + window.location.port : ""))
@@ -49,10 +67,12 @@ export default function EpisodeId({data, status}) {
                 const [coverColor, textColor] = getCoverColorScheme(dominantColor.rgba)
                 setColor(textColor) 
                 setBackgroundColor_(coverColor)
+                setThemeColor(coverColor);
+                setTextColor(textColor);
             }
             fetchColor()
         }, [])
-
+        console.log("PLAYER INFO: ", playerInfo)
         return (
             <>
                 <Head>
@@ -148,7 +168,9 @@ export async function getServerSideProps(context) {
             cover: foundPodcasts.obj.cover,
             podcastName: foundPodcasts.obj.podcastName,
             owner: foundPodcasts.obj.owner,
-            pid: foundPodcasts.obj.pid
+            author: foundPodcasts.obj.author,
+            pid: foundPodcasts.obj.pid,
+            episodes: foundPodcasts.obj.episodes
         }
         const foundEpisode = findObjectById(foundPodcasts.obj.episodes, episodeId, "eid")
         // Episode Exist
