@@ -5,9 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
-import {
-  Greeting, RecentlyAdded
-} from "../component/featured";
+import { Greeting } from "../component/featured";
 import FeaturedPodcast, { featuredPocastCarouselStyling } from '../component/home/featuredPodcast';
 import FeaturedCreators from '../component/creator/featuredCreators';
 import Loading from '../component/reusables/loading';

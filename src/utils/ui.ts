@@ -211,10 +211,6 @@ export const getCoverColorScheme = (RGBAstring: RGBorRGBAstring): RGBorRGBAstrin
   return [coverColor, textColor];
 };
 
-// capitalize first letter, remove ar from label
-export const trimANSLabel = (label: string) => {
-  return label.replace(/\w/, c => c.toUpperCase()).replace('ar', '')
-};
 
 export const stringToHexColor = (str: string): HexString => {
   // Truncate or pad the string to 3 characters
