@@ -12,7 +12,9 @@ interface TextTruncateProps {
 
 const TextTruncate: React.FC<TextTruncateProps> = ({ text, limit, textClass, buttonClass, isMarkDown }) => {
   const [showFullText, setShowFullText] = useState(false);
+  const [markdownText, setMarkdownText] = useState('');
   const truncatedText = showFullText ? text : `${text.slice(0, limit)}${text.length < limit ? "" : "..."}`;
+  const truncatedMarkdown = showFullText ? markdownText : `${markdownText.slice(0, limit)}${markdownText.length < limit ? "" : "..."}`;
   const [isVisible, setIsVisible] = useState<boolean>(true)
 
   const { t } = useTranslation()
@@ -25,12 +27,13 @@ const TextTruncate: React.FC<TextTruncateProps> = ({ text, limit, textClass, but
     }, 200); // react makes current text disappear, pause, then fade in
   };
 
-  const [markdownText, setMarkdownText] = useState('');
+  
 
   useEffect(() => {
     const fetchMarkdown = async () => {
       const url = text;
       const response = await fetch(url);
+      console.log("response: ", response.body)
       const txt = await response.text();
       setMarkdownText(txt);
     };
@@ -41,13 +44,13 @@ const TextTruncate: React.FC<TextTruncateProps> = ({ text, limit, textClass, but
   return (
     <div>
       {isMarkDown ?
-        <MarkdownRenderer markdownText={markdownText} />
+        <MarkdownRenderer markdownText={truncatedMarkdown} />
       :
         <p className={textClass+ " " +(isVisible ? "opacity-100" : (FADE_IN_STYLE))}>{truncatedText}</p>
       }
-      {text.length > limit && (
+      {markdownText.length > limit && (
         <button onClick={toggleShowFullText} className={buttonClass}>
-          {showFullText ? <p>{t("navbar.home")}</p> : <p>{t("navbar.home")}</p>}
+          {showFullText ? <p>Show Less</p> : <p>Show More</p>}
         </button>
       )}
     </div>
@@ -55,3 +58,6 @@ const TextTruncate: React.FC<TextTruncateProps> = ({ text, limit, textClass, but
 };
 
 export default TextTruncate;
+
+
+
