@@ -1,7 +1,5 @@
 import React, { useState, useEffect, FC } from "react";
 
-import { dimColorString, RGBAstringToObject, RGBobjectToString } from "../../utils/ui";
-
 import PlayButton from "../reusables/playButton";
 
 
@@ -19,6 +17,7 @@ const FeaturedPodcastPlayButton: FC<FeaturedPodcastPlayButtonInterface> = ({ pla
   const { currentPodcast, isPlaying } = playerState;
 
   const [localIsPlaying, setLocalIsPlaying] = useState<boolean>(false);
+  const openFullscreen = true;
 
   useEffect(() => {
     if (currentPodcast.pid === podcastInfo.pid && isPlaying) {
@@ -30,7 +29,7 @@ const FeaturedPodcastPlayButton: FC<FeaturedPodcastPlayButtonInterface> = ({ pla
 
   const handlePlay = () => {
     if (!(currentPodcast.pid === podcastInfo.pid)) {
-      launchPlayer({ playerColorScheme, buttonColor, title, artist, cover, src }, podcastInfo, episodes);
+      launchPlayer({ playerColorScheme, buttonColor, openFullscreen, title, artist, cover, src }, podcastInfo, episodes);
     } else {
       togglePlay();
       setLocalIsPlaying(false);
