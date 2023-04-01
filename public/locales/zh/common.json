@@ -53,7 +53,8 @@
 		"addpodcast": "添加播客",
 		"title": "添加新的节目",
 		"uploadstitle": "上传",
-		"label": "之后您可在节目中添加剧集",
+		"label": "短网址",
+		"label-explanation": "这是一个可选参数，但如果您选择使用它，将创建一个短链接",
 		"name": "节目名称",
 		"description": "节目描述",
 		"image": "封面图片",
@@ -74,7 +75,11 @@
 			"description": "描述必须介于 {{minLength}} 和 {{maxLength}} 个字符之间",
 			"author": "作者必须在 {{minLength}} 和 {{maxLength}} 个字符之间",
 			"email": "请输入有效的邮箱",
-			"success": "播客上传成功！"
+			"success": "播客上传成功！",
+			"label": {
+				"limit": "子域名长度必须介于1和35个字符之间。",
+				"in-use": "此子域名已被使用。"
+			}
 		},
 		"swal": {
 			"showadded": {
