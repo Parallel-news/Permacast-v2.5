@@ -207,7 +207,7 @@ export function NavBar() {
           <div className="w-4/5">
             <Searchbar />
           </div>
-          <div className="ml-8 w-64">
+          <div className="w-64">
             <ArConnect />
           </div>
           {arweaveAddress_ && arweaveAddress_.length > 0 && (
