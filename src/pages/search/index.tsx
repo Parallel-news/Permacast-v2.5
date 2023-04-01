@@ -9,6 +9,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Episode, EXMDevState, FullEpisodeInfo, Podcast } from '../../interfaces';
 import Track from '../../component/reusables/track';
 import FeaturedPodcast, { featuredPocastCarouselStyling } from '../../component/home/featuredPodcast';
+import { convertPodcastsToEpisodes, removeDuplicates } from '../../utils/filters';
 
 const searchContainerStyling = "text-white h-full pb-80"
 const resultsStyling = "text-2xl text-white font-bold mb-6"
@@ -16,20 +17,6 @@ const startTypingStyling = "text-center text-white text-2xl"
 const searchLoadingStyling = "text-3xl text-white font-bold mb-6"
 const noPodcastsStyling = "text-2xl text-white font-normal mb-12"
 const podcastOptionStyling = "mb-6 w-[35%] flex flex-row items-center"
-
-const removeDuplicates = (list: FullEpisodeInfo[]) => {
-  const uniquePodcasts: FullEpisodeInfo[] = [];
-
-  for (const obj of list) {
-    const isDuplicate = uniquePodcasts.some(uniquePodcast => uniquePodcast.podcast.podcastName === obj.podcast.podcastName);
-
-    if (!isDuplicate) {
-      uniquePodcasts.push(obj);
-    }
-  }
-
-  return uniquePodcasts;
-};
 
 
 export default function Search() {
@@ -42,17 +29,23 @@ export default function Search() {
   const [_selection, ] = useRecoilState(selection);
   const [searchInput, _] = useRecoilState(searchInputAtom); 
 
+  const [allEpisodes, setAllEpisodes] = useState<FullEpisodeInfo[]>([]);
+
+  const [filteredPodcasts, setFilteredPodcasts] = useState<Podcast[]>([]);
   const [filteredEpisodes, setFilteredEpisodes] = useState<FullEpisodeInfo[]>([]);
-  const [filteredPodcasts, setFilteredPodcasts] = useState<FullEpisodeInfo[]>([]);
+
+  useEffect(() => {
+    if (allPodcasts_.length) setAllEpisodes(convertPodcastsToEpisodes(allPodcasts_));
+  }, [allPodcasts_]);
 
   useEffect(() => {
     const fetchFiltered = async () => {
-      if (searchInput.length === 0) return;
+      if (searchInput.length === 0 || allPodcasts_.length === 0 || allEpisodes.length === 0) return;
 
-      let filteredPodcasts = removeDuplicates(allPodcasts_.filter((podcast: FullEpisodeInfo) => 
-        podcast.podcast.podcastName.toLowerCase().includes(searchInput.toLowerCase())));
+      let filteredPodcasts = allPodcasts_.filter((podcast: Podcast) => 
+        podcast.podcastName.toLowerCase().includes(searchInput.toLowerCase()));
       
-      let filteredEpisodes = removeDuplicates(allPodcasts_.filter((episode: FullEpisodeInfo) => 
+      let filteredEpisodes = removeDuplicates(allEpisodes.filter((episode: FullEpisodeInfo) => 
         episode.episode.episodeName.toLowerCase().includes(searchInput.toLowerCase())));
 
       setFilteredPodcasts(filteredPodcasts.splice(0, 20));
@@ -73,8 +66,8 @@ export default function Search() {
             <div>
               <div className={resultsStyling}>{t("search.podcasts")}</div>
               <div className={featuredPocastCarouselStyling}>
-                {filteredPodcasts.map((podcast: FullEpisodeInfo, index: number) => (
-                  <FeaturedPodcast {...podcast.podcast } key={index} />
+                {filteredPodcasts.map((podcast: Podcast, index: number) => (
+                  <FeaturedPodcast {...podcast } key={index} />
                 ))}
               </div>
               <div className='mt-6'>
