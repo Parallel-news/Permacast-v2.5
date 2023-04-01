@@ -395,11 +395,11 @@ export const ShowForm = (props: ShowFormInter) => {
 
 export const LabelInput = (props: LabelInputInter) => {
     const { t } = useTranslation();
-
+//absolute right-2 top-3
     return (
         <>
         <div className="flex-col">
-            <div className="flex">
+            <div className="flex flex-row items-center bg-zinc-800 rounded-xl pr-1">
             <input className={episodeNameStyling} required title="Only letters and numbers are allowed" type="text" name="showLabel" placeholder={t("uploadshow.label")}
             value={props.labelValue}
             onChange={(e) => {
@@ -414,7 +414,7 @@ export const LabelInput = (props: LabelInputInter) => {
             }
             }}/>
             <Tooltip rounded color="invert" content={<div className="max-w-[240px]">{t("uploadshow.label-explanation")} <a href={`https://${props.labelValue}.pc.show`}>{props.labelValue}.pc.show</a></div>}>
-                <div className="helper-tooltip absolute right-2 top-3">?</div>
+                <div className="helper-tooltip">?</div>
             </Tooltip>
             </div>
             <ValMsg valMsg={props.labelMsg} className="pl-2" />
