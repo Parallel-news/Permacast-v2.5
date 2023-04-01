@@ -3,7 +3,7 @@ import Script from 'next/script';
 import { appWithTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
-import { RecoilRoot } from 'recoil';
+import { RecoilRoot, useRecoilState } from 'recoil';
 import { ArconnectProvider } from 'react-arconnect';
 import Layout from '../component/layout';
 import { MINT_DURATION, TOAST_POSITION } from '../constants';
@@ -14,8 +14,9 @@ import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import '../styles/globals.css';
 import { PERMISSIONS } from '../constants/arconnect';
+import QueryPodcasts from '../component/QueryPodcasts';
 
-
+// fetch data in _app.tsx -> populate recoil -> re-write search to query from that recoil state, if it fails then fuse.js
 function App({ Component, pageProps }) {
 
   useEffect(() => {
@@ -42,6 +43,7 @@ function App({ Component, pageProps }) {
             <meta name="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} /> 
           </Head>
         <ArconnectProvider permissions={PERMISSIONS}>
+          <QueryPodcasts />
           <Script
             async
             src="https://www.googletagmanager.com/gtag/js?id=G-4XDV8F7VJB"
