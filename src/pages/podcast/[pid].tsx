@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { ShareButtons } from "../../component/shareButtons";
 import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 import { useTranslation } from "react-i18next";
+import FeaturedPodcastPlayButton from "../../component/home/featuredPodcastPlayButton";
 
 export default function PodcastId({data, status}) {
 
@@ -28,6 +29,9 @@ export default function PodcastId({data, status}) {
     const [baseUrl, setBaseUrl] = useState<string>("")
     const [color, setColor] = useState<string>("")
 
+    const [themeColor, setThemeColor] = useState<string>('');
+    const [textColor, setTextColor] = useState<string>('');
+
 
     console.log("data: ", data)
     if(data) {
@@ -36,8 +40,23 @@ export default function PodcastId({data, status}) {
         const title = data.obj?.podcastName
         const description = data.obj?.description
         const nextEpisodeTitle = "Episodes"
-        const episodes = data.obj?.episodes
+        
 
+        const podcastInfo = data.obj
+        const episodes = data.obj?.episodes
+        const cover = data.obj.cover
+        const playerInfo = { playerColorScheme: themeColor, buttonColor: themeColor, accentColor: textColor, title: episodes[0].episodeName, artist: data.obj.author, cover, src: episodes.length ? episodes[0].contentTx : undefined };
+
+        console.log(podcastInfo)
+        console.log(episodes)
+        console.log(playerInfo)
+        let playButton;
+        if(episodes.length) {
+            playButton = <FeaturedPodcastPlayButton {...{ playerInfo, podcastInfo, episodes }} />
+        } else {
+            playButton = <></>
+        }
+        
         useEffect(() => {
             if(typeof window !== 'undefined') setBaseUrl(window.location.protocol + "//"+window.location.hostname+(window.location.port ? ":" + window.location.port : ""))
             const fetchColor = async () => {
@@ -45,6 +64,8 @@ export default function PodcastId({data, status}) {
                 const [coverColor, textColor] = getCoverColorScheme(dominantColor.rgba)
                 setColor(textColor) 
                 setBackgroundColor(coverColor)
+                setThemeColor(coverColor);
+                setTextColor(textColor);
             }
             fetchColor()
         }, [])
@@ -76,6 +97,7 @@ export default function PodcastId({data, status}) {
                         podcastId={data.obj?.pid}
                         podcastOwner={data.obj?.owner}
                         setLoadShareModal={() => setLoadShareModal(true)}
+                        playButton={playButton}
                     />
                     {/*Episode Track*/}
                     <Episodes

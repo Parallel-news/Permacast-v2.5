@@ -224,13 +224,6 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
     return (
         <div className={episodeInfoButtonsStyling}>
             {props.playButton}
-            {/*
-            <DescriptionButton 
-                icon={<PlayIcon className="w-6 h-6" />}
-                text={""}
-                color={color}
-            />
-            */}
             <DescriptionButton
                 icon={<HeartIcon className={episodeIconStyling} />} 
                 text={"Tip"}
