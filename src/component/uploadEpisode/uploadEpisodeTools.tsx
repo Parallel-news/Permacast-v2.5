@@ -13,7 +13,7 @@ import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
 import { ArrowUpTrayIcon, XMarkIcon, WalletIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
 import { getBundleArFee, upload2DMedia, upload3DMedia } from '../../utils/arseeding';
 import { allFieldsFilled, byteSize, checkConnection, determineMediaType, handleError } from '../../utils/reusables';
-import { ARWEAVE_READ_LINK, AR_DECIMALS, CONNECT_WALLET, DESCRIPTION_UPLOAD_ERROR, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EP_UPLOAD_SUCCESS, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, MEDIA_UPLOAD_ERROR, MIN_UPLOAD_PAYMENT, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from '../../constants';
+import { ARSEED_URL, ARWEAVE_READ_LINK, AR_DECIMALS, CONNECT_WALLET, DESCRIPTION_UPLOAD_ERROR, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EP_UPLOAD_SUCCESS, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, MEDIA_UPLOAD_ERROR, MIN_UPLOAD_PAYMENT, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from '../../constants';
 import { useTranslation } from 'react-i18next';
 import { transferFunds } from '../../utils/everpay';
 
@@ -118,6 +118,7 @@ export const episodeDescStyling =  "input input-secondary resize-none w-full h-2
 
 // 4. Components
 export const EpisodeForm = (props: EpisodeFormInter) => {
+    const { t } = useTranslation();
     const [submittingEp, setSubmittingEp] = useState<boolean>(false)
     const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
@@ -269,14 +270,14 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                 />
             )}
             {/*Episode Name*/}
-            <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="episodeName" placeholder={"Episode Name"}
+            <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="episodeName" placeholder={t("uploadepisode.name")}
             onChange={(e) => {
                 setEpNameMsg(handleValMsg(e.target.value, "epName"));
                 setEpName(e.target.value);
             }}/>
             {epNameMsg.length > 0 && <ValMsg valMsg={epNameMsg} className="pl-2" />}
             {/*Episode Description*/}
-            <textarea className={episodeDescStyling} required title="Between 1 and 5000 characters" name="episodeShowNotes" placeholder={"Description"} 
+            <textarea className={episodeDescStyling} required title="Between 1 and 5000 characters" name="episodeShowNotes" placeholder={t("uploadepisode.description")} 
             onChange={(e) => {
                 setEpDescMsg(handleValMsg(e.target.value, "epDesc"));
                 setEpDesc(e.target.value);
@@ -315,7 +316,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                 <p className="mt-2 text-neutral-400">Calculating Fee...</p> 
                 )}
                 {uploadCost !== 0 && epDesc.length > 0 && epMedia && (
-                <p className="mt-2 text-neutral-400">{"Upload Cost: "+(Number(uploadCost)).toFixed(6) +" AR"}</p>
+                <p className="mt-2 text-neutral-400">{t("uploadepisode.feetext")} {(Number(uploadCost)).toFixed(6) +" AR"}</p>
                 )}
             </div>
         </div>
@@ -323,13 +324,15 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
 }
 
 export const EpisodeMedia = (props: EpisodeMediaInter) => {
+    const { t } = useTranslation();
+
     return (
         <div className={episodeMediaStyling}>
             <input className={inputEpisodeMediaStyling} id="file" required type="file" onChange={(e) => props.setMedia(e.target.files?.[0])} name="episodeMedia" />
             <label htmlFor="file" className={labelEpisodeMediaStyling}>
                 <FiFile className={episodeFaFileStyling} />
                 <div>
-                    {props.media ? props.media.name : "Episode Media"}
+                    {props.media ? props.media.name : t("uploadepisode.file")}
                 </div>
             </label>
         </div>
@@ -337,6 +340,8 @@ export const EpisodeMedia = (props: EpisodeMediaInter) => {
 }
 
 export const UploadButton = (props: UploadButtonInter) => {
+    const { t } = useTranslation();
+
     return (
         <button
             className={`${uploadButtonStyling} ${props.width}`}
@@ -344,12 +349,14 @@ export const UploadButton = (props: UploadButtonInter) => {
             onClick={props.click}
         >
             <ArrowUpTrayIcon className={trayIconStyling} />
-            Upload
+            {t("uploadepisode.upload")}
       </button>
     )
 }
 
 export const ConnectButton = (props: UploadButtonInter) => {
+    const { t } = useTranslation();
+
     return (
         <button
             className={`${uploadButtonStyling} ${props.width}`}
@@ -357,7 +364,7 @@ export const ConnectButton = (props: UploadButtonInter) => {
             onClick={props.click}
         >
             <WalletIcon className={trayIconStyling} />
-            Connect Wallet
+            {t("uploadshow.connect-wallet")}
       </button>
     )
 }
@@ -377,6 +384,8 @@ export const SubmitTipButton = (props: UploadButtonInter) => {
 }
 
 export const SelectPodcast = (props: SelectPodcastInter) => {
+    const { t } = useTranslation();
+
     const [isVisible, setIsVisible] = useState<boolean>(false)
     const { address,  } = useArconnect();
     const yourShows = props.shows.filter((item: Podcast) => item.owner === address)
@@ -400,12 +409,12 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
         <>
             {props.pid.length === 0 ? 
             <button className={selectPodcastStyling+ " relative"} onClick={() => setIsVisible(prev => !prev)}>
-                Select Show
+                {t("uploadepisode.select-show")}
             </button>
             :
             <div onClick={() => setIsVisible(true)}>
                 <PodcastOption 
-                    imgSrc={ARWEAVE_READ_LINK+selectedShow[0].minifiedCover}
+                    imgSrc={ARSEED_URL+selectedShow[0].minifiedCover}
                     title={selectedShow[0].podcastName}
                     disableClick={false}
                 />
@@ -454,6 +463,7 @@ export const PodcastOption = (props: PodcastOptionInter) => {
 }   
 
 export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
+    const { t } = useTranslation();
 
     const [showModal, setShowModal] = useState<boolean>(false)
     const [_arweaveAddress, _setArweaveAddress] = useRecoilState(arweaveAddress)
@@ -476,7 +486,7 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
                 {/*Header*/}
                 <div className={titleModalStyling}>
                     <div></div>
-                    <p className="text-white text-xl">Select Podcast</p>
+                    <p className="text-white text-xl">{t("uploadepisode.select-show")}</p>
                     <XMarkIcon className={xMarkStyling} onClick={() => props.setVisible(false)} />
                 </div>
                 <hr className={hrPodcastStyling}/>
@@ -491,8 +501,8 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
                             pid={item.pid}
                         />
                     ))}
-                    {props.shows.length === 0 && <p className="text-white text-lg text-center">No Shows In Your Account</p>}
-                    {_arweaveAddress.length === 0 && <p className="text-blue-400 mt-2 text-lg text-center cursor-pointer" onClick={connect}>Connect Wallet</p>}
+                    {props.shows.length === 0 && <p className="text-white text-lg text-center">{t("uploadepisode.no-shows")}</p>}
+                    {_arweaveAddress.length === 0 && <p className="text-blue-400 mt-2 text-lg text-center cursor-pointer" onClick={connect}>{t("uploadshow.connect-wallet")}</p>}
                 </div>
             </div>
         </div>
