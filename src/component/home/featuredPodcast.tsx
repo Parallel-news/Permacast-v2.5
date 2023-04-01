@@ -144,14 +144,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
   }, []);
 
   useEffect(() => {
-    const fetchMarkdown = async () => {
-      const url = `https://arweave.net/${description}`;
-      const response = await fetch(url);
-      const txt = await response.text();
-      setMarkdownText(txt);
-    };
-
-    fetchMarkdown();
+    queryMarkdownByTX(description).then(setMarkdownText);
   }, []);
 
   const episode = episodes.length ? episodes[0]: undefined;
