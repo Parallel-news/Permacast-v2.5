@@ -28,6 +28,7 @@ import { ARSEED_URL } from "../../constants";
 */
 export interface TrackProps {
   episode: FullEpisodeInfo;
+  openFullscreen?: boolean;
   includeDescription?: boolean,
   includePlayButton?: boolean,
 };
@@ -154,12 +155,13 @@ export const TrackPlayButton: FC<TrackPlayButtonProps> = ({ playerInfo, episode,
   const { playerState, launchPlayer, togglePlay } = useShikwasa();
 
   const { currentPodcast, currentEpisode, isPlaying } = playerState;
-  const { episode: episodeInfo, podcast: podcastInfo } = episode;
+  const episodeInfo = episode.episode;
+  const podcastInfo = episode.podcast;
 
 
   const handlePlay = () => {
     if (!(currentEpisode.eid === episodeInfo.eid)) {
-      launchPlayer(playerInfo, podcastInfo, [episodeInfo]);
+      launchPlayer(playerInfo, podcastInfo, [episode]);
     } else {
       togglePlay();
     };
@@ -183,7 +185,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
 
   const { t } = useTranslation();
 
-  const { episode, includeDescription, includePlayButton } = props;
+  const { episode, openFullscreen, includeDescription, includePlayButton } = props;
   const {
     cover,
     minifiedCover,
@@ -255,6 +257,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     playerColorScheme: coverColor,
     buttonColor: textColor,
     accentColor: textColor,
+    openFullscreen, 
     title: episodeName,
     artist: author,
     cover: coverUsed,
