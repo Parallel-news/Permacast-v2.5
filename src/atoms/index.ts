@@ -93,7 +93,7 @@ export const loadTipModal = atom({
 
 // *** PLAYBACK ***
 
-export const queueAtom = atom<Episode[]>({
+export const queueAtom = atom<FullEpisodeInfo[]>({
     key: "queueAtom",
     default: []
 });
