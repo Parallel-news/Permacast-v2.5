@@ -199,7 +199,7 @@ export const fetchDominantColor = async (cover: string): Promise<FastAverageColo
   const savedColor = podcastCoverColorManager.getValueFromObject(cover);
   if (savedColor) return {rgb: '', rgba: savedColor, hex: '', isDark: false, isLight: false, hexa: '', value: [0,0,0,0]};
   const fac = new FastAverageColor();
-  const averageColor: FastAverageColorResult = await fac.getColorAsync(ARWEAVE_READ_LINK + cover, { algorithm: 'dominant' })
+  const averageColor: FastAverageColorResult = await fac.getColorAsync(ARSEED_URL + cover, { algorithm: 'dominant' })
   podcastCoverColorManager.addValueToObject(cover, averageColor.rgba); //? in the future, if this becomes too big, save first 10 chars.
   return averageColor;
 };
