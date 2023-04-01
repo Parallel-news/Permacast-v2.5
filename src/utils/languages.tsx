@@ -549,7 +549,6 @@ export const LANGUAGES = [
     "categories" : categories_en,
     "languages" : languages_en
   },
-  /*
   {
     "code": "uk",
     "name": "Українська",
@@ -562,7 +561,6 @@ export const LANGUAGES = [
     "categories" : categories_zh,
     "languages" : languages_zh
   }
-  */
 ]
 
 export const useLanguageHook = () => {
