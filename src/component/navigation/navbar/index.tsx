@@ -27,7 +27,7 @@ export const NavBar: FC = () => {
           <div className="w-4/5">
             <Searchbar />
           </div>
-          <div className="ml-8 w-64">
+          <div className="ml-2 w-64">
             <ArConnect />
           </div>
           {/* TODO: Re-write */}

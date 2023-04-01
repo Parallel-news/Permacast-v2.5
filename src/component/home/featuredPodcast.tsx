@@ -160,6 +160,10 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
   const prevent = (event: any) => {
     event.preventDefault();
   };
+  console.log("HEADS UP: ")
+  console.log("playerInfo: ", playerInfo)
+  console.log("podcastInfo ", podcastInfo)
+  console.log("episodes: ", episodes)
 
   return (
     <Link 

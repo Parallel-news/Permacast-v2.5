@@ -16,11 +16,11 @@ interface LayoutInterface {
   children: ReactNode;
 };
 
-export const AppStyling = `select-none h-full bg-black overflow-hidden `;
-export const AppInnerStyling = `flex h-screen overflow-x-hidden relative `;
-export const BackgroundWrapperStyling = `w-screen overflow-y-scroll overflow-x-hidden `;
-export const InnerLayoutStyling = `ml-8 pr-8 pt-9 z-[3] `;
-export const ParentStyling = `w-full overflow-hidden z-[3] `;
+export const AppStyling = "select-none h-full bg-black overflow-hidden";
+export const AppInnerStyling = "flex h-screen overflow-x-hidden relative";
+export const BackgroundWrapperStyling = "w-screen overflow-y-scroll overflow-x-hidden z-[1]";
+export const InnerLayoutStyling = "ml-8 pr-8 pt-9 z-[3]";
+export const ParentStyling = "w-full overflow-hidden z-[3]";
 
 const Layout: FC<LayoutInterface> = ({ children }) => {
 
