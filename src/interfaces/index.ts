@@ -69,7 +69,7 @@ export interface Episode {
   type:        string;
   uploader:    string;
   uploadedAt:  number;
-  isVisible:   boolean;
+  isVisible?:   boolean;
   order?:      number; // UI only
 }
 

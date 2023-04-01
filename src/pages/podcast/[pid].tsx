@@ -6,6 +6,7 @@ import { backgroundColorAtom, loadTipModal } from "../../atoms";
 import { 
     Episodes,
     ErrorTag,
+    nextEpisodeTitleStyling,
     podcastIdStyling,
 } from "../../component/episode/eidTools";
 import { PodcastBanner } from "../../component/podcast/pidTools";
@@ -18,8 +19,11 @@ import { ShareButtons } from "../../component/shareButtons";
 import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 import { useTranslation } from "react-i18next";
 import FeaturedPodcastPlayButton from "../../component/home/featuredPodcastPlayButton";
+import { FullEpisodeInfo } from "../../interfaces";
+import Track from "../../component/reusables/track";
+import Loading from "../../component/reusables/loading";
 
-export default function PodcastId({data, status}) {
+export default function PodcastId({data, status, fullEpisodeInfo}) {
 
     const { t } = useTranslation();
 
@@ -46,10 +50,8 @@ export default function PodcastId({data, status}) {
         const episodes = data.obj?.episodes
         const cover = data.obj.cover
         const playerInfo = { playerColorScheme: themeColor, buttonColor: themeColor, accentColor: textColor, title: episodes[0].episodeName, artist: data.obj.author, cover, src: episodes.length ? episodes[0].contentTx : undefined };
+        console.log("fullEpisodeInfo: ", fullEpisodeInfo)
 
-        console.log(podcastInfo)
-        console.log(episodes)
-        console.log(playerInfo)
         let playButton;
         if(episodes.length) {
             playButton = <FeaturedPodcastPlayButton {...{ playerInfo, podcastInfo, episodes }} />
@@ -99,15 +101,15 @@ export default function PodcastId({data, status}) {
                         setLoadShareModal={() => setLoadShareModal(true)}
                         playButton={playButton}
                     />
+                    {/*Title Track*/}
+                    <p className={nextEpisodeTitleStyling+ " pt-10"}>Episodes</p>
                     {/*Episode Track*/}
-                    <Episodes
-                        containerTitle={t("search.episodes")} 
-                        imgSrc={imgSrc}
-                        color={color}
-                        episodes={episodes}
-                        podcastId={data.obj?.pid}
-                    />            
-                </div>
+                    {fullEpisodeInfo.map((episode: FullEpisodeInfo) => (
+                    <div className="hidden md:block">
+                        <Track {...{episode}} includeDescription includePlayButton  />
+                    </div>
+                    )) || <Loading />}
+                    </div>
                 {loadTipModal && (
                     <TipModal
                         to={data?.obj.podcastName}
@@ -158,11 +160,33 @@ export async function getServerSideProps(context) {
     if(foundPodcasts) {
         const data = foundPodcasts
         const status = PAYLOAD_RECEIVED
-        return { props: { data, status, ...translations } }
+        const episodes = foundPodcasts.obj.episodes
+        let fullEpisodeInfo = []
+        for (let i = 0; i < episodes.length; i++) {
+            fullEpisodeInfo[i] = {}
+            const episode = foundPodcasts.obj.episodes[i]
+            const podcast = foundPodcasts.obj
+            fullEpisodeInfo[i] = {episode, podcast}
+        }
+
+
+        return { props: { data, status, fullEpisodeInfo, ...translations  } }
     // Podcasts Not Found
     } else {
         const status = NO_PODCAST_FOUND
         const data = null
-        return { props: { data, status, ...translations } }  
+        const fullEpisodeInfo = null
+        return { props: { data, status, fullEpisodeInfo, ...translations  } }  
     }   
 }
+
+/*
+<Episodes
+    containerTitle={t("search.episodes")} 
+    imgSrc={imgSrc}
+    color={color}
+    episodes={episodes}
+    podcastId={data.obj?.pid}
+/> 
+KEEP FOR UI PURPOSES, TRACK IS SLIGHTLY OFF DESIGN
+*/
