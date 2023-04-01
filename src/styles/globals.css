@@ -32,6 +32,10 @@
     @apply focus:outline-white focus:outline-2
   }
 
+  .helper-tooltip {
+    @apply w-6 h-6 rounded-full border-2 flex justify-center cursor-pointer hover:text-zinc-200 text-zinc-400 items-center hover:border-zinc-200 border-zinc-400 default-animation;
+  }
+
   .hover-up-effect {
     @apply hover:shadow-white/20 hover:shadow-lg default-animation;
   } //hover:-translate-y-1

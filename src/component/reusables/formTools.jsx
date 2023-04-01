@@ -1,3 +1,5 @@
+import { useTranslation } from "next-i18next";
+import { PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_LABEL_MAX_LEN, PODCAST_LABEL_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN } from "../../constants";
 
 /**
  * Reusable Text Validation Box to Appear Under Respective Input
@@ -5,9 +7,16 @@
  * @returns Text highlighted validation concern
  */
 export const ValMsg = props => {
+  const { t } = useTranslation();
   const { valMsg, className } = props;
+  let lengths;
+  if (valMsg === "uploadshow.validation.label.limit") lengths = { minLength: PODCAST_LABEL_MIN_LEN, maxLength: PODCAST_LABEL_MAX_LEN};
+  if (valMsg === "uploadshow.validation.name") lengths = {minLength: PODCAST_NAME_MIN_LEN, maxLength: PODCAST_NAME_MAX_LEN};
+  if (valMsg === "uploadshow.validation.description") lengths = {minLength: PODCAST_DESC_MIN_LEN, maxLength: PODCAST_DESC_MAX_LEN};
+  if (valMsg === "uploadshow.validation.author") lengths = {minLength: PODCAST_AUTHOR_MIN_LEN, maxLength: PODCAST_AUTHOR_MAX_LEN};
+  
   return (
-    <p className={`text-red-300 flex ${className}`}>{valMsg}</p>
+    <p className={`text-red-300 flex ${className}`}>{t(valMsg, lengths)}</p>
   );
 }
 
