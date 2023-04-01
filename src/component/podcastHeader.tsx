@@ -1,7 +1,10 @@
 import { FC } from 'react'
 import { useTranslation } from "next-i18next";
 import TipButton from "./reusables/tip";
-import { FaRss } from "react-icons/fa";
+import { FaRss, FaRegGem } from "react-icons/fa";
+import { PlusIcon } from "@heroicons/react/24/solid";
+import UploadVideo from "./uploadVideo";
+import { getButtonRGBs } from "../utils/ui";
 import { useRecoilState } from "recoil";
 
 import { globalModalOpen, switchFocus } from "../atoms";

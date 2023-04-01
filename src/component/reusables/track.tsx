@@ -10,6 +10,7 @@ import { showShikwasaPlayerArguments } from "../../interfaces/playback";
 import PlayButton from "./playButton";
 import MarkdownRenderer from "../markdownRenderer";
 import { queryMarkdownByTX } from "../../utils/markdown";
+import { ARSEED_URL } from "../../constants";
 
 /**
  * Index
@@ -105,8 +106,8 @@ export const PodcastCover: FC<PodcastCoverProps> = ({ pid, cover, alt }) => {
       <Image
         width={56}
         height={56}
-        className="rounded-lg"
-        src={"https://arweave.net/" + cover}
+        className="rounded-lg aspect-square object-cover w-14 h-14"
+        src={ARSEED_URL + cover}
         alt={alt}
       />
     </Link>

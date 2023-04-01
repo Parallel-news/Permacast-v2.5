@@ -3,7 +3,7 @@ import { HexString, HSL, replaceColorsInterface, RGB, RGBA, RGBorRGBAstring, RGB
 import { ShowShikwasaPlayerInterface } from '../interfaces/playback';
 import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
 import { podcastCoverColorManager } from './localstorage';
-import { ARWEAVE_READ_LINK } from '../constants/index.js';
+import { ARSEED_URL, ARWEAVE_READ_LINK } from '../constants/index.js';
 
 // Allows for Alpha
 export function rgba2hex(orig) {
@@ -211,10 +211,6 @@ export const getCoverColorScheme = (RGBAstring: RGBorRGBAstring): RGBorRGBAstrin
   return [coverColor, textColor];
 };
 
-// capitalize first letter, remove ar from label
-export const trimANSLabel = (label: string) => {
-  return label.replace(/\w/, c => c.toUpperCase()).replace('ar', '')
-};
 
 export const stringToHexColor = (str: string): HexString => {
   // Truncate or pad the string to 3 characters
@@ -247,8 +243,8 @@ export const showShikwasaPlayer: ShowShikwasaPlayerInterface = ({
     audio: {
       title: title,
       artist: artist,
-      cover: `https://arweave.net/${cover}`,
-      src: `https://arweave.net/${src}`,
+      cover: ARSEED_URL + cover,
+      src: ARSEED_URL + src,
       color: playerColorScheme,
     },
     download: true

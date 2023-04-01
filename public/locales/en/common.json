@@ -50,12 +50,13 @@
 		"emptyqueue": "Your queue is empty, add some episodes to it!"
 	},
 	"uploadshow": {
-		"addpodcast": "New Show",
+		"addpodcast": "Add Podcast",
 		"title": "New Show",
 		"uploadstitle": "Uploads",
-		"label": "You'll add episodes to the show next.",
-		"name": "Show name",
-		"description": "Show description",
+		"label": "Short URL",
+		"label-explanation": "This is an optional parameter, but if you choose to use it, a short url will be created",
+		"name": "Podcast name",
+		"description": "Podcast description",
 		"image": "Cover Image",
 		"author": "Author",
 		"email": "Email",
@@ -64,7 +65,7 @@
 		"explicit": "Contains explicit content",
 		"contentaudio": "Audio only",
 		"contentvideo": "Video only",
-		"disabled": "Connect wallets to continue",
+		"connect-wallet": "Connect wallet",
 		"upload": "Create",
 		"uploading": "Processing...",
 		"cancel": "Cancel",
@@ -75,6 +76,10 @@
 			"description": "Description must be between {{minLength}} and {{maxLength}} characters",
 			"author": "Author must be between {{minLength}} and {{maxLength}} characters",
 			"email": "Please enter a valid email",
+			"label": {
+				"limit": "Label Length must be between 1 and 35 characters.",
+				"in-use": "Label already being used."
+			},
 			"success": "Podcast uploaded successfully!"
 		},
 		"swal": {
@@ -116,9 +121,11 @@
 			}
 		},
 		"feetext": "Uploading the episode will cost: ",
-		"title": "Add Episode",
+		"title": "Upload Episode",
 		"name": "Episode name",
 		"description": "Episode description",
+		"select-show": "Select show",
+		"no-shows": "You don't have any podcasts",
 		"file": "Episode media",
 		"verto": "Upload to Verto",
 		"toupload": "to upload",

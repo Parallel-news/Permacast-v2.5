@@ -105,16 +105,30 @@ export const ShikwasaProvider = ({ children }) => {
       setCurrentEpisode(episodes[0]);
       setQueue(episodes);
     };
-    if (episodes[0].type.includes("video")) setIsFullscreen(true);
-    const queue = playerObject?.ui?.queueBtn;
-    const playing = playerObject?.ui?.playBtn;
-    const fullscreen = playerObject?.ui?.fullscreenBtn;
-
+    if (episodes[0].type.includes("video")) {
+      //! TODO prevent this from popping open when played in the queue
+      setIsFullscreen(true);
+    };
+    
+    const thePlayer = player.current;
+    const queueBtn = playerObject?.ui?.queueBtn;
+    const playingBtn = playerObject?.ui?.playBtn;
+    const fullscreenBtn = playerObject?.ui?.fullscreenBtn;
+    
     // add event listeners
-    // TODO: re-add event listeners on navigation
-    queue?.addEventListener('click', (event) => {event.stopPropagation(); setQueueVisible(visible => !visible)});
-    playing?.addEventListener('click', (event) => {event.stopPropagation(); setIsPlaying(playing => !playing)});
-    fullscreen?.addEventListener('click', (event) => {event.stopPropagation(); setIsFullscreen(isFullscreen => !isFullscreen)});
+    thePlayer.audio.addEventListener('ended', () => {
+      setIsPlaying(false);
+      // const newQueue = queue.splice(1, queue.length - 1);
+      // setQueue(newQueue)
+      // if (newQueue.length > 1) {
+        // !TODO launch next episode in the queue
+        // const episode = newQueue[0];
+        // launchPlayer();
+      // };
+    });
+    queueBtn?.addEventListener('click', (event) => {event.stopPropagation(); setQueueVisible(visible => !visible)});
+    playingBtn?.addEventListener('click', (event) => {event.stopPropagation(); setIsPlaying(playing => !playing)});
+    fullscreenBtn?.addEventListener('click', (event) => {event.stopPropagation(); setIsFullscreen(isFullscreen => !isFullscreen)});
     console.log('mounted successfully');
     return playerObject;
   };
@@ -132,7 +146,7 @@ export const ShikwasaProvider = ({ children }) => {
 
   useEffect(() => {
     if (isFullscreen) rehoistVideo();
-  }, [isFullscreen])
+  }, [isFullscreen]);
 
   useEffect(() => {
     setIsFullscreen(false);

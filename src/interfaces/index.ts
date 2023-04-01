@@ -41,7 +41,6 @@ export interface Podcast {
   label:       string;
   contentType: string;
   createdAt:   number;
-  index:       number;
   owner:       string;
   podcastName: string;
   author:      string;

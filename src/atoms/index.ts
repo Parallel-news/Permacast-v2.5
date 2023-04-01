@@ -105,7 +105,6 @@ export const currentPodcastAtom = atom<Podcast>({
         label: '',
         contentType: '',
         createdAt: 0,
-        index: 0,
         owner: '',
         podcastName: '',
         author: '',

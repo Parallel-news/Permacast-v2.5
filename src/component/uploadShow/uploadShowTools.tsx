@@ -17,6 +17,10 @@ import { useRecoilState } from "recoil";
 import { arweaveAddress } from "../../atoms";
 import { PermaSpinner } from "../reusables/PermaSpinner";
 import axios from "axios";
+import { useTranslation } from "next-i18next";
+import { Tooltip } from "@nextui-org/react";
+// const { t } = useTranslation();
+
 
 
 export default function uploadShowTools() {
@@ -68,7 +72,7 @@ interface ShowFormInter {
 }
 
 // 2. Stylings
-export const showTitleStyling = "text-white text-xl"
+export const showTitleStyling = "text-white text-xl mb-4"
 export const spinnerClass = "w-full flex justify-center mt-4"
 export const photoIconStyling = "h-11 w-11 text-zinc-400"
 export const explicitLabelStyling = "flex items-center mr-5"
@@ -103,19 +107,19 @@ const handleValMsg = (input: string, type: string, input2: any ="") => {
     switch(type) {
         case 'podName':
         if((input.length > PODCAST_NAME_MAX_LEN || input.length < PODCAST_NAME_MIN_LEN)) {
-            return `Name must be between ${PODCAST_NAME_MIN_LEN} and ${PODCAST_NAME_MAX_LEN} characters`;
+            return "uploadshow.validation.name"//, { minLength: PODCAST_NAME_MIN_LEN, maxLength: PODCAST_NAME_MAX_LEN });
         } else {
             return "";
         }
         case 'podDesc':
         if((input.length > PODCAST_DESC_MAX_LEN || input.length < PODCAST_DESC_MIN_LEN)) {
-            return `Description must be between ${PODCAST_DESC_MIN_LEN} and ${PODCAST_DESC_MAX_LEN} characters`;
+            return "uploadshow.validation.description"//, { minLength: PODCAST_DESC_MIN_LEN, maxLength: PODCAST_DESC_MAX_LEN });
         } else {
             return "";
         }
         case 'podAuthor':
         if((input.length > PODCAST_AUTHOR_MAX_LEN || input.length < PODCAST_AUTHOR_MIN_LEN)) {
-            return `Author must be between ${PODCAST_AUTHOR_MIN_LEN} and ${PODCAST_AUTHOR_MAX_LEN}`;
+            return "uploadshow.validation.author"//, { minLength: PODCAST_AUTHOR_MIN_LEN, maxLength: PODCAST_AUTHOR_MAX_LEN };
         } else {
             return "";
         }
@@ -123,7 +127,7 @@ const handleValMsg = (input: string, type: string, input2: any ="") => {
         if(isValidEmail(input)) {
             return "";
         } else {
-            return `Enter a valid email`
+            return "uploadshow.validation.email";
         }
         case 'podLabel':
         if(validateLabel(input, input2).res) {
@@ -137,6 +141,7 @@ const handleValMsg = (input: string, type: string, input2: any ="") => {
 // 4. Components
 export const ShowForm = (props: ShowFormInter) => {
     // hooks
+    const { t } = useTranslation();
     const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
     const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
@@ -291,7 +296,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Episode Name
                     */}
-                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="showName" placeholder={"Show Name"}                     
+                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="showName" placeholder={t("uploadshow.name")} 
                     onChange={(e) => {
                       setPodNameMsg(handleValMsg(e.target.value, "podName"));
                       setPodcastName_(e.target.value);
@@ -301,7 +306,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Episode Description
                     */}
-                    <textarea className={episodeDescStyling + " h-32"} required title="Between 1 and 5000 characters" name="showShowNotes" placeholder={"Description"}                     
+                    <textarea className={episodeDescStyling + " h-32"} required title="Between 1 and 5000 characters" name="showShowNotes" placeholder={t("uploadshow.description")}                     
                     onChange={(e) => {
                       setPodDescMsg(handleValMsg(e.target.value, "podDesc"));
                       setPodcastDescription_(e.target.value);
@@ -311,7 +316,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Author
                     */}
-                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Author" type="text" name="showName" placeholder={"Author"}                   
+                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Author" type="text" name="showName" placeholder={t("uploadshow.author")}                   
                     onChange={(e) => {
                         setPodAuthMsg(handleValMsg(e.target.value, "podAuthor"));
                         setPodcastAuthor_(e.target.value);
@@ -321,7 +326,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Email
                     */}
-                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Email" type="text" name="showName" placeholder={"Email"}                   
+                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Email" type="text" name="showName" placeholder={t("uploadshow.email")}                   
                     onChange={(e) => {
                         setPodEmailMsg(handleValMsg(e.target.value, "podEmail"));
                         setPodcastEmail_(e.target.value);
@@ -389,11 +394,14 @@ export const ShowForm = (props: ShowFormInter) => {
 }
 
 export const LabelInput = (props: LabelInputInter) => {
+    const { t } = useTranslation();
+
     return (
         <>
         <div className="flex-col">
-            <input className={episodeNameStyling} required title="Only letters and numbers are allowed" type="text" name="showLabel" placeholder={"Label (.pc.show)"}
-            value={props.labelValue}                     
+            <div className="flex relative">
+            <input className={episodeNameStyling} required title="Only letters and numbers are allowed" type="text" name="showLabel" placeholder={t("uploadshow.label")}
+            value={props.labelValue}
             onChange={(e) => {
             const pattern = /^[a-zA-Z0-9]*$/;
             const isValid = pattern.test(e.target.value.trim());
@@ -405,6 +413,10 @@ export const LabelInput = (props: LabelInputInter) => {
                 console.log(e.target.value.trim())
             }
             }}/>
+            <Tooltip rounded color="invert" content={<div className="max-w-[240px]">{t("uploadshow.label-explanation")} <a href={`https://${props.labelValue}.pc.show`}>{props.labelValue}.pc.show</a></div>}>
+                <div className="helper-tooltip absolute right-2 top-3">?</div>
+            </Tooltip>
+            </div>
             <ValMsg valMsg={props.labelMsg} className="pl-2" />
         </div>
         </>       
@@ -497,13 +509,14 @@ export const CoverContainer = (props: CoverContainerInter) => {
 }
 
 export const EmptyCover = () => {
+    const { t } = useTranslation();
     return (
         <div className={emptyCoverIconStyling}>
           {/*Image Logo*/}
             <PhotoIcon className={photoIconStyling} />
           {/*Cover Image Text*/}
             <div className={emptyCoverIconTextStyling}>
-              Image Required
+              {t("uploadshow.image")}
             </div>
         </div>
     )
@@ -551,26 +564,31 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
 }
 
 export const ExplicitInput = (props: ExplicitInputInter) => {
+    const { t } = useTranslation();
+
     return (
-    <label className={explicitLabelStyling}>
-        <input
-            id="podcastExplicit"
-            type="checkbox"
-            className={explicitCheckBoxStyling}
-            onChange={() => props.setExplicit(!props.explicit)}
-        />
-        <span className={explicitTextStyling}>
-            Contains Explicit Content
-        </span>
-    </label>
+        <label className={explicitLabelStyling}>
+            <input
+                id="podcastExplicit"
+                type="checkbox"
+                className={explicitCheckBoxStyling}
+                onChange={() => props.setExplicit(!props.explicit)}
+            />
+            <span className={explicitTextStyling}>
+                {t("uploadshow.explicit")}
+            </span>
+        </label>
     )
 }
 
 export const MediaSwitcher = () => {
+    const { t } = useTranslation();
+
     const [contentType_, setContentType_] = useState<string>("")
+
     return (
         <label className={mediaSwitcherLabelStyling}>
-            <div className={mediaSwitcherVideoStyling}>
+            {/* <div className={mediaSwitcherVideoStyling}>
                 Video
             </div>
             <input type="checkbox" className="toggle" checked={contentType_ === "a" ? true: false}
@@ -581,7 +599,7 @@ export const MediaSwitcher = () => {
             />
             <div className={mediaSwitchedAudioStyling}>
                 Audio
-            </div>
+            </div> */}
         </label>
     )
 }

@@ -22,6 +22,9 @@ export const EPISODE_NAME_MAX_LEN = 500;
 export const EPISODE_DESC_MIN_LEN = 1;
 export const EPISODE_DESC_MAX_LEN = 5000;
 
+export const PODCAST_LABEL_MIN_LEN = 1;
+export const PODCAST_LABEL_MAX_LEN = 35;
+
 export const PODCAST_COVER_MIN_LEN = 43;
 export const PODCAST_COVER_MAX_LEN = 43;
 

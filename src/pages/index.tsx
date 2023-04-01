@@ -5,9 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
-import {
-  Greeting, RecentlyAdded
-} from "../component/featured";
+import { Greeting } from "../component/featured";
 import FeaturedPodcast, { featuredPocastCarouselStyling } from '../component/home/featuredPodcast';
 import FeaturedCreators from '../component/creator/featuredCreators';
 import Loading from '../component/reusables/loading';
@@ -19,9 +17,11 @@ import {
 
 import { Episode, EXMDevState, FullEpisodeInfo, Podcast, PodcastDev } from '../interfaces';
 import Track from '../component/reusables/track';
+import { getContractVariables } from '../utils/contract';
 
+interface props {isProduction: string, contractAddress: string};
 
-const Home: NextPage = () => {
+const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
 
   const { t } = useTranslation();
 
@@ -56,7 +56,12 @@ const Home: NextPage = () => {
   return (
     <div className="w-full pb-10 mb-10">
       <Greeting />
-
+      {isProduction !== "true" &&
+        <div className="select-text">
+          <p className='text-red-500 font-bold'>Warning: this is staging build!</p>
+          <p className="text-teal-300">Address: {contractAddress}</p>
+        </div>
+      }
       {podcasts_.length > 0 ? (
         <div className={featuredPocastCarouselStyling}>
           {podcasts_.map((podcast: PodcastDev, index: number) =>
@@ -100,11 +105,15 @@ const Home: NextPage = () => {
 };
 
 export async function getStaticProps({ locale }) {
+  const { isProduction, contractAddress } = await getContractVariables();
+
   return {
     props: {
       ...(await serverSideTranslations(locale, [
         'common',
       ])),
+      isProduction,
+      contractAddress
     },
   }
 }
