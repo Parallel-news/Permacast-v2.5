@@ -58,8 +58,8 @@ interface Podcast {
 
 // 2. Stylings
 export const podcastInfoDescStyling = "text-neutral-400 text-[12px]"
-export const podcastInfoStyling = "flex flex-row items-center space-x-16"
-export const podcastInfoTitleStyling = "text-3xl font-semibold"
+export const podcastInfoStyling = "flex flex-row items-center space-x-16 select-text"
+export const podcastInfoTitleStyling = "text-3xl font-semibold select-text"
 export const podcastButtonsStyling = "flex flex-row items-center space-x-6"
 export const podcastBannerStyling = "flex flex-row w-full justify-between px-24"
 export const podcastInfoTitleDivStyling = "flex flex-col justify-start w-[60%] space-y-2"
