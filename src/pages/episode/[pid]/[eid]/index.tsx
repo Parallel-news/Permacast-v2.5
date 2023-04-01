@@ -36,7 +36,6 @@ export default function EpisodeId({data, status}) {
     if(data) {
         //Serverside Results
         const ts = new Date(data?.obj.uploadedAt);
-        //const formattedDate = ts.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
         const day = ts.getDate().toString().padStart(2, '0'); // get the day and add leading zero if necessary
         const month = (ts.getMonth() + 1).toString().padStart(2, '0'); // get the month (adding 1 because getMonth() returns 0-indexed) and add leading zero if necessary
         const year = ts.getFullYear().toString(); // get the year
@@ -45,7 +44,7 @@ export default function EpisodeId({data, status}) {
         const date = formattedDate
         const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
         console.log("Episodes: ", data?.episodes)
-        console.log("Data : ", data)
+        
         // Assemble Player Data
         const podcastInfo = data.podcast
         const episodes = data?.episodes
@@ -65,6 +64,8 @@ export default function EpisodeId({data, status}) {
             fetchColor()
         }, [])
         console.log("PLAYER INFO: ", playerInfo)
+        console.log("Datos : ", data)
+        console.log("SOCIALS: ", d.episodeName + " - " +data.podcastName)
         return (
             <>
                 <Head>
@@ -120,7 +121,7 @@ export default function EpisodeId({data, status}) {
                         <ShareButtons
                             isVisible={loadShareModal} 
                             setVisible={setLoadShareModal}
-                            title={"Check this out "}
+                            title={d.episodeName + " - " +data.podcastName}
                             url={`${baseUrl}/episode/${data?.pid}/${data?.obj.eid}`}
                         />
                     )}

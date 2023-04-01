@@ -27,7 +27,7 @@ export const xMarkModalStyling = "h-7 w-7 mt-1 cursor-pointer hover:text-red-400
 export const tipInputStyling = "input input-secondary px-4 bg-zinc-700/80 border-0 rounded-lg outline-none focus:ring-2 focus:ring-inset focus:ring-white w-[200px] h-[100px] placeholder:text-5xl placeholder:font-bold text-5xl font-bold text-center" 
 export const tipAmountAbsStyling = "absolute inset-0 top-0 flex justify-center items-center flex flex-col z-20"
 export const benefactorNameStyling = "text-white text-3xl font-bold w-[85%] ml-[10%] text-center"
-export const submitTipDivStyling = "w-full h-[100px] bg-zinc-900 flex justify-center items-center absolute bottom-0"
+export const submitTipDivStyling = "w-full h-[100px] bg-zinc-900 flex justify-center items-center absolute bottom-0 cursor-pointer"
 export const tipStyling = "text-white text-4xl transform -rotate-45 font-bold"
 
 export const TipModal = (props: TipModalInter) => {
@@ -118,7 +118,7 @@ export const TipModal = (props: TipModalInter) => {
                     {address && address.length > 0 && !tipLoading && ( 
                         <SubmitTipButton 
                             disable={false} 
-                            click={() => submitTip()}
+                            click={submitTip}
                             
                         />
                     )}

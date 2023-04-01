@@ -1,6 +1,4 @@
-import { PlayIcon } from "@heroicons/react/24/outline";
 import { FC } from 'react'
-
 import { useTranslation } from "next-i18next";
 import TipButton from "./reusables/tip";
 import { FaRss, FaRegGem } from "react-icons/fa";
