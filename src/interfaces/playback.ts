@@ -1,4 +1,4 @@
-import { Episode, PodcastDev } from ".";
+import { FullEpisodeInfo, Podcast } from ".";
 import Player from "../shikwasa-src/player";
 import { RGBorRGBAstring, RGBstring } from "./ui";
 
@@ -23,6 +23,6 @@ export type ShowShikwasaPlayerInterface = ({
 
 export interface FeaturedPodcastPlayButtonInterface {
   playerInfo:  showShikwasaPlayerArguments;
-  podcastInfo: PodcastDev;
-  episodes?:   Episode[];
+  podcastInfo: Podcast;
+  episodes:    FullEpisodeInfo[];
 };
