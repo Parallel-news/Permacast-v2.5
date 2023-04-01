@@ -122,7 +122,7 @@ export default function PodcastId({data, status, fullEpisodeInfo}) {
                     <ShareButtons
                         isVisible={loadShareModal} 
                         setVisible={setLoadShareModal}
-                        title={t("Checkthis")}
+                        title={data?.obj.podcastName + " - "}
                         url={`${baseUrl}/podcast/${data.obj?.pid}`}
                     />
                 )}
