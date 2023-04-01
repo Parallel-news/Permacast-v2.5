@@ -104,8 +104,8 @@ export default function PodcastId({data, status, fullEpisodeInfo}) {
                     {/*Title Track*/}
                     <p className={nextEpisodeTitleStyling+ " pt-10"}>Episodes</p>
                     {/*Episode Track*/}
-                    {fullEpisodeInfo.map((episode: FullEpisodeInfo) => (
-                    <div className="hidden md:block">
+                    {fullEpisodeInfo.map((episode: FullEpisodeInfo, index: number) => (
+                    <div className="hidden md:block" key={index}>
                         <Track {...{episode}} includeDescription includePlayButton  />
                     </div>
                     )) || <Loading />}
