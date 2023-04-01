@@ -1,9 +1,10 @@
 import Shikwasa from '../shikwasa-src/main.js';
-import { HexString, HSL, replaceColorsInterface, RGB, RGBA, RGBorRGBAstring, RGBstring, RGBtoHSLInterface } from '../interfaces/ui';
+import { HexString, HSL, replaceColorsInterface, RGB, RGBA, RGBAstring, RGBorRGBAstring, RGBstring, RGBtoHSLInterface } from '../interfaces/ui';
 import { ShowShikwasaPlayerInterface } from '../interfaces/playback';
 import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
 import { podcastCoverColorManager } from './localstorage';
 import { ARSEED_URL, ARWEAVE_READ_LINK } from '../constants/index.js';
+import { arweaveTX } from '../interfaces/index.js';
 
 // Allows for Alpha
 export function rgba2hex(orig) {
@@ -211,6 +212,19 @@ export const getCoverColorScheme = (RGBAstring: RGBorRGBAstring): RGBorRGBAstrin
   return [coverColor, textColor];
 };
 
+/*
+  basically getCoverColorScheme and fetchDominantColor combined
+  just pass an ArweaveTX to this function and you'll receive two color strings
+  think of it as an extended getCoverColorScheme
+*/
+export const getColorSchemeShorthand = async (cover: arweaveTX): Promise<RGBorRGBAstring[]> => {
+  const dominantColor = await fetchDominantColor(cover);
+  if (dominantColor.error) {
+    console.log('dominant color function failed: ', dominantColor.error);
+    return ['rgba(0,0,0,1)', 'rgba(255,255,255,1)'];
+  };
+  return getCoverColorScheme(dominantColor.rgba);
+};
 
 export const stringToHexColor = (str: string): HexString => {
   // Truncate or pad the string to 3 characters
