@@ -8,6 +8,7 @@ module.exports = {
     domains: [
       'arweave.net', 
       'img.arweave.dev',
+      'arseed.web3infra.dev',
     ],
     minimumCacheTTL: 60,
     formats: ['image/avif', 'image/webp']
