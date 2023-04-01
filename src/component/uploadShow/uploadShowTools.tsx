@@ -399,7 +399,7 @@ export const LabelInput = (props: LabelInputInter) => {
     return (
         <>
         <div className="flex-col">
-            <div className="flex relative">
+            <div className="flex">
             <input className={episodeNameStyling} required title="Only letters and numbers are allowed" type="text" name="showLabel" placeholder={t("uploadshow.label")}
             value={props.labelValue}
             onChange={(e) => {
