@@ -516,8 +516,7 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 name="category"
                 onChange={(e) => props.setCategory(e.target.value)}
             >
-                <option>Arts</option>
-                <option>Business</option>
+                <CategoryOptions />
             </select>
             {/*Languages*/}
             <select
@@ -526,8 +525,7 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 name="language"
                 onChange={(e) => props.setLanguage(e.target.value)}
             >
-                <option>English</option>
-                <option>Chinese</option>
+                <LanguageOptions />
             </select>
             {/*Label*/}
             <LabelInput 
