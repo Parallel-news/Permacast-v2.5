@@ -210,7 +210,7 @@ export const UploadDropdown: FC<UploadDropdownProps> = ({ routeMatches }) => {
           <LinkWithProgress href="/upload-podcast" onClick={switchToPodcast} loading={podcastClickLoad} hrefText={t("home.add-podcast")} />
         </li>
         <li>
-          <LinkWithProgress href="/upload-episode" onClick={switchToEpisode} loading={podcastClickLoad} hrefText={t("home.add-episode")} />
+          <LinkWithProgress href="/upload-episode" onClick={switchToEpisode} loading={episodeClickLoad} hrefText={t("home.add-episode")} />
         </li>
       </ul>
     </div>
