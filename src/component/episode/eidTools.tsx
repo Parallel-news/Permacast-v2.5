@@ -266,7 +266,7 @@ export const EpisodeNumber = (props: EpisodeNumberInter) => {
 
 export const EpisodeDescription = (props: DescriptionContainerInter) => {
     return (
-        <div className="w-full">
+        <div className="w-full pt-10">
             <TextTruncate 
                 text={ARWEAVE_READ_LINK+props.text}
                 limit={STR_LEN_EPISODE_DESC}
