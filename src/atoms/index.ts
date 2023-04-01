@@ -60,7 +60,7 @@ export const titles = atom({
     default: [],
 });
 
-export const allPodcasts = atom({
+export const allPodcasts = atom<Podcast[]>({
     key: "allPodcasts",
     default: [],
 });

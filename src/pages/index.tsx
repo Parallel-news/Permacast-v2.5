@@ -45,8 +45,8 @@ const Home: NextPage = () => {
               .flat();
 
       const sorted = episodes.sort((episodeA, episodeB) => episodeB.episode.uploadedAt - episodeA.episode.uploadedAt);
-      setLatestEpisodes(sorted);
-      setPodcasts_(podcasts);
+      setLatestEpisodes(sorted.splice(0, 3));
+      setPodcasts_(podcasts.splice(0, 4));
       setLoading(false);
     };
 
