@@ -6,6 +6,7 @@ import { backgroundColorAtom, loadTipModal } from "../../atoms";
 import { 
     Episodes,
     ErrorTag,
+    nextEpisodeTitleStyling,
     podcastIdStyling,
 } from "../../component/episode/eidTools";
 import { PodcastBanner } from "../../component/podcast/pidTools";
@@ -17,8 +18,12 @@ import { useEffect, useState } from "react";
 import { ShareButtons } from "../../component/shareButtons";
 import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 import { useTranslation } from "react-i18next";
+import FeaturedPodcastPlayButton from "../../component/home/featuredPodcastPlayButton";
+import { FullEpisodeInfo } from "../../interfaces";
+import Track from "../../component/reusables/track";
+import Loading from "../../component/reusables/loading";
 
-export default function PodcastId({data, status}) {
+export default function PodcastId({data, status, fullEpisodeInfo}) {
 
     const { t } = useTranslation();
 
@@ -28,6 +33,9 @@ export default function PodcastId({data, status}) {
     const [baseUrl, setBaseUrl] = useState<string>("")
     const [color, setColor] = useState<string>("")
 
+    const [themeColor, setThemeColor] = useState<string>('');
+    const [textColor, setTextColor] = useState<string>('');
+
 
     console.log("data: ", data)
     if(data) {
@@ -36,8 +44,21 @@ export default function PodcastId({data, status}) {
         const title = data.obj?.podcastName
         const description = data.obj?.description
         const nextEpisodeTitle = "Episodes"
-        const episodes = data.obj?.episodes
+        
 
+        const podcastInfo = data.obj
+        const episodes = data.obj?.episodes
+        const cover = data.obj.cover
+        const playerInfo = { playerColorScheme: themeColor, buttonColor: themeColor, accentColor: textColor, title: episodes[0].episodeName, artist: data.obj.author, cover, src: episodes.length ? episodes[0].contentTx : undefined };
+        console.log("fullEpisodeInfo: ", fullEpisodeInfo)
+
+        let playButton;
+        if(episodes.length) {
+            playButton = <FeaturedPodcastPlayButton {...{ playerInfo, podcastInfo, episodes }} />
+        } else {
+            playButton = <></>
+        }
+        
         useEffect(() => {
             if(typeof window !== 'undefined') setBaseUrl(window.location.protocol + "//"+window.location.hostname+(window.location.port ? ":" + window.location.port : ""))
             const fetchColor = async () => {
@@ -45,6 +66,8 @@ export default function PodcastId({data, status}) {
                 const [coverColor, textColor] = getCoverColorScheme(dominantColor.rgba)
                 setColor(textColor) 
                 setBackgroundColor(coverColor)
+                setThemeColor(coverColor);
+                setTextColor(textColor);
             }
             fetchColor()
         }, [])
@@ -76,16 +99,17 @@ export default function PodcastId({data, status}) {
                         podcastId={data.obj?.pid}
                         podcastOwner={data.obj?.owner}
                         setLoadShareModal={() => setLoadShareModal(true)}
+                        playButton={playButton}
                     />
+                    {/*Title Track*/}
+                    <p className={nextEpisodeTitleStyling+ " pt-10"}>Episodes</p>
                     {/*Episode Track*/}
-                    <Episodes
-                        containerTitle={t("search.episodes")} 
-                        imgSrc={imgSrc}
-                        color={color}
-                        episodes={episodes}
-                        podcastId={data.obj?.pid}
-                    />            
-                </div>
+                    {fullEpisodeInfo.map((episode: FullEpisodeInfo) => (
+                    <div className="hidden md:block">
+                        <Track {...{episode}} includeDescription includePlayButton  />
+                    </div>
+                    )) || <Loading />}
+                    </div>
                 {loadTipModal && (
                     <TipModal
                         to={data?.obj.podcastName}
@@ -136,11 +160,33 @@ export async function getServerSideProps(context) {
     if(foundPodcasts) {
         const data = foundPodcasts
         const status = PAYLOAD_RECEIVED
-        return { props: { data, status, ...translations } }
+        const episodes = foundPodcasts.obj.episodes
+        let fullEpisodeInfo = []
+        for (let i = 0; i < episodes.length; i++) {
+            fullEpisodeInfo[i] = {}
+            const episode = foundPodcasts.obj.episodes[i]
+            const podcast = foundPodcasts.obj
+            fullEpisodeInfo[i] = {episode, podcast}
+        }
+
+
+        return { props: { data, status, fullEpisodeInfo, ...translations  } }
     // Podcasts Not Found
     } else {
         const status = NO_PODCAST_FOUND
         const data = null
-        return { props: { data, status, ...translations } }  
+        const fullEpisodeInfo = null
+        return { props: { data, status, fullEpisodeInfo, ...translations  } }  
     }   
 }
+
+/*
+<Episodes
+    containerTitle={t("search.episodes")} 
+    imgSrc={imgSrc}
+    color={color}
+    episodes={episodes}
+    podcastId={data.obj?.pid}
+/> 
+KEEP FOR UI PURPOSES, TRACK IS SLIGHTLY OFF DESIGN
+*/

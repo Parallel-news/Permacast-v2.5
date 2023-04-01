@@ -33,6 +33,7 @@ export interface PodcastBannerInter extends PodcastInfoInter {
     setLoadShareModal: (v: any) => void;
     podcastId: string;
     podcastOwner: string;
+    playButton: JSX.Element;
 }
 
 interface Podcast {
@@ -104,11 +105,8 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
     const { address } = useArconnect()
     return (
         <div className={podcastButtonsStyling}>
-            <DescriptionButton 
-                icon={<PlayIcon className="w-6 h-6" />}
-                text={""}
-                color={color}
-            />
+            {props.playButton}
+
             <DescriptionButton
                 icon={<HeartIcon className={episodeIconStyling} />} 
                 text={t("tip")}
@@ -149,6 +147,7 @@ export const PodcastBanner = (props: PodcastBannerInter) => {
                 podcastId={props.podcastId}
                 podcastOwner={props.podcastOwner}
                 setLoadShareModal={props.setLoadShareModal}
+                playButton={props.playButton}
             />
         </div>
     )

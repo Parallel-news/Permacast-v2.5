@@ -32,6 +32,7 @@ interface SelectDropdownRowInter {
     setLanguage: (v: any) => void;
     setCategory: (v: any) => void;
     setLabel: (v: any) => void;
+    labelValue: string;
     setLabelMsg: (v: any) => void;
     labelMsg: string;
     podcasts: Podcast[];
@@ -57,6 +58,7 @@ interface CoverContainerInter {
 interface LabelInputInter {
     setLabelMsg: (v: any) => void;
     setLabel: (v: any) => void;
+    labelValue: string;
     labelMsg: string;
     podcasts: Podcast[];
 }
@@ -333,6 +335,7 @@ export const ShowForm = (props: ShowFormInter) => {
                         setLanguage={setPodcastLanguage_}
                         setCategory={setPodcastCategory_}
                         setLabel={setPodcastLabel_}
+                        labelValue={podcastLabel_}
                         setLabelMsg={setLabelMsg}
                         labelMsg={labelMsg}
                         podcasts={props.podcasts}
@@ -389,10 +392,18 @@ export const LabelInput = (props: LabelInputInter) => {
     return (
         <>
         <div className="flex-col">
-            <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 1 and 38 characters" type="text" name="showLabel" placeholder={"Label (.pc.show)"}                     
+            <input className={episodeNameStyling} required title="Only letters and numbers are allowed" type="text" name="showLabel" placeholder={"Label (.pc.show)"}
+            value={props.labelValue}                     
             onChange={(e) => {
-            props.setLabelMsg(handleValMsg(e.target.value, "podLabel", props.podcasts));
-            props.setLabel(e.target.value);
+            const pattern = /^[a-zA-Z0-9]*$/;
+            const isValid = pattern.test(e.target.value.trim());
+            console.log("isValid: ", isValid)
+  
+            if (isValid) {
+                props.setLabelMsg(handleValMsg(e.target.value.trim(), "podLabel", props.podcasts));
+                props.setLabel(e.target.value.trim());
+                console.log(e.target.value.trim())
+            }
             }}/>
             <ValMsg valMsg={props.labelMsg} className="pl-2" />
         </div>
@@ -516,8 +527,7 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 name="category"
                 onChange={(e) => props.setCategory(e.target.value)}
             >
-                <option>Arts</option>
-                <option>Business</option>
+                <CategoryOptions />
             </select>
             {/*Languages*/}
             <select
@@ -526,8 +536,7 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 name="language"
                 onChange={(e) => props.setLanguage(e.target.value)}
             >
-                <option>English</option>
-                <option>Chinese</option>
+                <LanguageOptions />
             </select>
             {/*Label*/}
             <LabelInput 
@@ -535,6 +544,7 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 setLabelMsg={props.setLabelMsg}
                 labelMsg={props.labelMsg}
                 podcasts={props.podcasts}
+                labelValue={props.labelValue}
             />
         </div>
     )

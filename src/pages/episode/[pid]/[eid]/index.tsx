@@ -18,6 +18,7 @@ import { TipModal } from "../../../../component/tipModal";
 import { ShareButtons } from "../../../../component/shareButtons";
 import { fetchDominantColor, getCoverColorScheme, rgba2hex, RGBAstringToObject, RGBobjectToString } from "../../../../utils/ui";
 import { useTranslation } from "react-i18next";
+import FeaturedPodcastPlayButton from "../../../../component/home/featuredPodcastPlayButton";
 
 export default function EpisodeId({data, status}) {
 
@@ -45,21 +46,12 @@ export default function EpisodeId({data, status}) {
         const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
         console.log("Episodes: ", data?.episodes)
         console.log("Data : ", data)
-        /*
-        playerInfo = {
-            "playerColorScheme": "rgba(144, 123, 90, 1)",
-            "buttonColor": "rgba(144, 123, 90, 1)",
-            "accentColor": "rgb(255, 255, 255)",
-            "title": "Why are people calling the police??",
-            "artist": "Sebs Steele",
-            "cover": "t5PClo_A8BUfDjXx3Po8wI4v2kGRTTs8Jum-ScBLRwM",
-            "src": "ahCH0wG_wxwmvQ_syjTZB1qxzzC3B10xJ9XdbsX1eZI"
-        }
-        */
-       const episodes = data?.episodes
-       const cover = data.cover
-       const playerInfo = { playerColorScheme: themeColor, buttonColor: themeColor, accentColor: textColor, title: data.obj.episodeName, artist: data.author, cover, src: data.obj.contentTx };
-
+        // Assemble Player Data
+        const podcastInfo = data.podcast
+        const episodes = data?.episodes
+        const cover = data.cover
+        const playerInfo = { playerColorScheme: themeColor, buttonColor: themeColor, accentColor: textColor, title: data.obj.episodeName, artist: data.author, cover, src: data.obj.contentTx };
+        const playButton = <FeaturedPodcastPlayButton {...{ playerInfo, podcastInfo, episodes }} />
         useEffect(() => {
             if(typeof window !== 'undefined') setBaseUrl(window.location.protocol + "//"+window.location.hostname+(window.location.port ? ":" + window.location.port : ""))
             const fetchColor = async () => {
@@ -102,6 +94,7 @@ export default function EpisodeId({data, status}) {
                         setLoadShareModal={() => setLoadShareModal(true)}
                         mediaLink={ARWEAVE_READ_LINK+data.obj.contentTx}
                         podcastOwner={data?.obj.owner}
+                        playButton={playButton}
                     />
                     {/*Episode Description*/}
                     <EpisodeDescription
@@ -170,7 +163,8 @@ export async function getServerSideProps(context) {
             owner: foundPodcasts.obj.owner,
             author: foundPodcasts.obj.author,
             pid: foundPodcasts.obj.pid,
-            episodes: foundPodcasts.obj.episodes
+            episodes: foundPodcasts.obj.episodes,
+            podcast: foundPodcasts.obj
         }
         const foundEpisode = findObjectById(foundPodcasts.obj.episodes, episodeId, "eid")
         // Episode Exist

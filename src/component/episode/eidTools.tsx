@@ -45,6 +45,7 @@ export interface EpisodeInfoButtonsInter {
     mediaLink?: string;
     episodeName?: string;
     podcastOwner: string;
+    playButton: JSX.Element;
 }
 
 export interface EpisodeInfoSubInter {
@@ -56,6 +57,7 @@ export interface EpisodeInfoSubInter {
 export interface EpisodeBannerInter extends EpisodeInfoInter {
     imgSrc: string;
     mediaLink: string;
+    playButton: JSX.Element;
 }
 
 export interface EpisodeInfoInter extends EpisodeInfoSubInter {
@@ -64,6 +66,7 @@ export interface EpisodeInfoInter extends EpisodeInfoSubInter {
     setLoadShareModal: () => void;
     mediaLink: string;
     podcastOwner: string;
+    playButton: JSX.Element;
 }
 
 export interface CreatorTagInter {
@@ -159,6 +162,7 @@ export const EpisodeBanner = (props: EpisodeBannerInter) => {
                 setLoadShareModal={props.setLoadShareModal}
                 mediaLink={props.mediaLink}
                 podcastOwner={props.podcastOwner}
+                playButton={props.playButton}
             />
         </div>
     )
@@ -180,6 +184,7 @@ export const EpisodeInfo = (props: EpisodeInfoInter) => {
                 mediaLink={props.mediaLink}
                 episodeName={props.title}
                 podcastOwner={props.podcastOwner}
+                playButton={props.playButton}
             />
         </div>
     )
@@ -218,14 +223,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
 
     return (
         <div className={episodeInfoButtonsStyling}>
-            {/*<FeaturedPodcastPlayButton {...{ playerInfo, podcastInfo, episodes }} />*/}
-            {/*
-            <DescriptionButton 
-                icon={<PlayIcon className="w-6 h-6" />}
-                text={""}
-                color={color}
-            />
-            */}
+            {props.playButton}
             <DescriptionButton
                 icon={<HeartIcon className={episodeIconStyling} />} 
                 text={"Tip"}
