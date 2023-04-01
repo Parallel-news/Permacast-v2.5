@@ -6,6 +6,7 @@ export interface showShikwasaPlayerArguments {
   playerColorScheme?:  RGBorRGBAstring; // actual player color
   buttonColor?:        RGBstring; // play button in featured podcast, track, etc
   accentColor?:        string; // the play Icon within the play button, better contrast this way
+  openFullscreen?:     boolean; // set this to true to force open fullscreen
   title:               string;
   artist:              string;
   cover:               string;
