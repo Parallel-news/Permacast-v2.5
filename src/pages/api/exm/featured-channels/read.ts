@@ -27,7 +27,7 @@ export default async function handler(
         "input": JSON.stringify({function: "getFeaturedChannel"})
       }],
     }, {})
-    res.status(200).json(data.data.data.execution.result);
+    res.status(200).json(data.data.data.execution);
   } catch (error) {
     console.error(error)
     return res.status(error.status || 500).end(error.message)
