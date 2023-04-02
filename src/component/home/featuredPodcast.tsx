@@ -5,7 +5,7 @@ import { arweaveTX, Podcast } from "../../interfaces/index";
 import Link from "next/link";
 import FeaturedPodcastPlayButton from "./featuredPodcastPlayButton";
 import Image from "next/image";
-import { ARWEAVE_READ_LINK } from "../../constants";
+import { ARSEED_URL } from "../../constants";
 import MarkdownRenderer from "../markdownRenderer";
 import { queryMarkdownByTX } from "../../utils/markdown";
 import { convertPodcastsToEpisodes } from "../../utils/filters";
@@ -76,7 +76,7 @@ const PocastCover: FC<PodcastCoverProps> = ({ cover, podcastName }) => {
           height={240}
           width={240}
           className="aspect-square object-cover w-[240px] h-[240px]"
-          src={ARWEAVE_READ_LINK + cover}
+          src={ARSEED_URL + cover}
           alt={podcastName}
         />
       }

@@ -26,7 +26,7 @@ export const benefactorBannerStyling = "absolute top-0 bg-zinc-900 w-full h-[100
 export const xMarkModalStyling = "h-7 w-7 mt-1 cursor-pointer hover:text-red-400 hover:bg-red-400/10 transition duration-400 ease-in-out rounded-full z-30 absolute top-3 right-3"
 export const tipInputStyling = "input input-secondary px-4 bg-zinc-700/80 border-0 rounded-lg outline-none focus:ring-2 focus:ring-inset focus:ring-white w-[200px] h-[100px] placeholder:text-5xl placeholder:font-bold text-5xl font-bold text-center" 
 export const tipAmountAbsStyling = "absolute inset-0 top-0 flex justify-center items-center flex flex-col z-20"
-export const benefactorNameStyling = "text-white text-3xl font-bold w-[85%] ml-[10%] text-center"
+export const benefactorNameStyling = "text-white text-3xl font-bold flex justify-center w-full text-center"
 export const submitTipDivStyling = "w-full h-[100px] bg-zinc-900 flex justify-center items-center absolute bottom-0 cursor-pointer"
 export const tipStyling = "text-white text-4xl transform -rotate-45 font-bold"
 
@@ -98,7 +98,7 @@ export const TipModal = (props: TipModalInter) => {
 
                 {/*Tip Amount*/}
                 <div className={tipAmountAbsStyling}>
-                    <Link href="https://app.everpay.io/" target="_blank" rel="noreferrer">{t("tipModal.balance")+" "+Number(_everPayBalance).toFixed(2) + ' AR'}</Link> 
+                    <a href="https://app.everpay.io/" target="_blank" rel="noreferrer">{t("tipModal.balance")+" "+Number(_everPayBalance).toFixed(2) + ' AR'}</a> 
                     <input className={tipInputStyling+" mb-2 mt-2"} required pattern=".{3,500}" type="number" name="tipAmount" placeholder={"AR"}
                     onChange={(e) => {
                         setTipAmount(e.target.value);

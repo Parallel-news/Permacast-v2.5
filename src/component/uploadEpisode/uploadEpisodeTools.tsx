@@ -13,7 +13,7 @@ import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
 import { ArrowUpTrayIcon, XMarkIcon, WalletIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
 import { getBundleArFee, upload2DMedia, upload3DMedia } from '../../utils/arseeding';
 import { allFieldsFilled, byteSize, checkConnection, determineMediaType, handleError } from '../../utils/reusables';
-import { ARSEED_URL, ARWEAVE_READ_LINK, AR_DECIMALS, CONNECT_WALLET, DESCRIPTION_UPLOAD_ERROR, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EP_UPLOAD_SUCCESS, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, MEDIA_UPLOAD_ERROR, MIN_UPLOAD_PAYMENT, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from '../../constants';
+import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, DESCRIPTION_UPLOAD_ERROR, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EP_UPLOAD_SUCCESS, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, MEDIA_UPLOAD_ERROR, MIN_UPLOAD_PAYMENT, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from '../../constants';
 import { useTranslation } from 'react-i18next';
 import { transferFunds } from '../../utils/everpay';
 
@@ -97,7 +97,7 @@ export const episodeFaFileStyling = "w-7 h-6 cursor-pointer rounded-lg mx-2"
 export const episodeMediaStyling = "bg-zinc-800 rounded-xl cursor-pointer w-full"
 export const buttonColStyling = "w-full flex justify-center items-center flex-col"
 export const selectPodcastModalStyling = "absolute inset-0 top-0 flex justify-center"
-export const tipModalStyling = "absolute inset-0 top-0 flex justify-center items-center z-15"
+export const tipModalStyling = "absolute inset-0 top-0 flex justify-center items-center z-50"
 export const podcastOptionsContainer = "w-full flex flex-col px-5 overflow-auto h-[80%]"
 export const podcastOptionBaseStyling = "w-full flex justify-start items-center space-x-4"
 export const episodeFormStyling = "w-[50%] flex flex-col justify-center items-center space-y-4"
@@ -439,7 +439,7 @@ export const PodcastSelectOptions = (props: PodcastSelectOptionsInter) => {
     return (
         <div className={podcastSelectOptionsStyling} onClick={() => props.setPid(props.pid)}>
             <PodcastOption 
-                imgSrc={ARWEAVE_READ_LINK+props.imgSrc}
+                imgSrc={ARSEED_URL+props.imgSrc}
                 title={props.title}
                 disableClick={props.disable}
             />

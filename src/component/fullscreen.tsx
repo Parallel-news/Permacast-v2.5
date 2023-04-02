@@ -3,7 +3,7 @@ import { useTranslation } from "next-i18next";
 import { useRecoilState } from 'recoil';
 import { currentEpisodeAtom, currentPodcastAtom } from '../atoms';
 import Image from 'next/image';
-import { ARWEAVE_READ_LINK } from '../constants';
+import { ARSEED_URL } from '../constants';
 import { WhiteLargeFont } from './creator';
 
 interface BackgroundImageProps {
@@ -29,7 +29,7 @@ export const BackgroundImage: FC<BackgroundImageProps> = ({ cover, episodeName }
     width={1000}
     height={1000}
     className={BackgroundCoverImageStyling}
-    src={ARWEAVE_READ_LINK + cover}
+    src={ARSEED_URL + cover}
     alt={episodeName}
   />
 );
@@ -54,7 +54,7 @@ export const FullscreenStaticImage: FC<FullscreenStaticImageProps> = ({ cover, e
     <div className={FullscreenInnerContentStyling}>
       <Image
         className="w-[25%] mx-auto"
-        src={ARWEAVE_READ_LINK + cover}
+        src={ARSEED_URL + cover}
         alt={episodeName}
         width={1000}
         height={1000}

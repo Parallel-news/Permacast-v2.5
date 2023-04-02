@@ -37,6 +37,8 @@ export async function getStaticProps(context) {
       userInfo = info;
       userInfo.ANSuserExists = true;
     } else {
+      userInfo.nickname = address;
+      userInfo.currentLabel = address;
       userInfo.userIsAddress = isAddress ? true: false;
       userInfo.ANSuserExists = false;
     };
@@ -55,7 +57,7 @@ export async function getStaticProps(context) {
 };
 
 const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
-  if (!userInfo?.ANSuserExists) return <Creator404 address={userInfo?.user || ''} />;
+  if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) return <Creator404 address={userInfo?.user || ''} />;
 
   const { user, address_color } = userInfo;
 
