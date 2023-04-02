@@ -373,14 +373,17 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
     const yourShows = props.shows.filter((item: Podcast) => item.owner === address)
     console.log("_arweaveAddress: ", address)
     let selectedShow;
+    let selectedShowIndex;
     if(props.pid.length > 0) {
         selectedShow = yourShows.map((item: Podcast, index) => {
             if(item.pid === props.pid) {
                 console.log("match found")
+                selectedShowIndex = index
                 return item
             }
         })
         console.log("selectedShow: ", selectedShow)
+        console.log("selectedShowIndex: ", selectedShowIndex)
     }
 
     useEffect(() => {
@@ -396,8 +399,8 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
             :
             <div onClick={() => setIsVisible(true)}>
                 <PodcastOption 
-                    imgSrc={ARSEED_URL+selectedShow[0].minifiedCover}
-                    title={selectedShow[0].podcastName}
+                    imgSrc={ARSEED_URL+selectedShow[selectedShowIndex].minifiedCover}
+                    title={selectedShow[selectedShowIndex].podcastName}
                     disableClick={false}
                 />
             </div>
