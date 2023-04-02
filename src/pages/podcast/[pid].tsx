@@ -10,7 +10,7 @@ import {
     podcastIdStyling,
 } from "../../component/episode/eidTools";
 import { PodcastBanner } from "../../component/podcast/pidTools";
-import { EXM_READ_LINK, ARWEAVE_READ_LINK, PAYLOAD_RECEIVED, NO_PODCAST_FOUND } from "../../constants";
+import { EXM_READ_LINK, PAYLOAD_RECEIVED, NO_PODCAST_FOUND, ARSEED_URL } from "../../constants";
 import { getContractVariables } from "../../utils/contract";
 import { findObjectById } from "../../utils/reusables";
 import { TipModal } from "../../component/tipModal";
@@ -40,7 +40,7 @@ export default function PodcastId({data, status, fullEpisodeInfo}) {
     console.log("data: ", data)
     if(data) {
         //State Calls Here
-        const imgSrc = ARWEAVE_READ_LINK+data.obj?.cover
+        const imgSrc = ARSEED_URL + data.obj?.cover
         const title = data.obj?.podcastName
         const description = data.obj?.description
         const nextEpisodeTitle = "Episodes"
@@ -93,7 +93,7 @@ export default function PodcastId({data, status, fullEpisodeInfo}) {
                     <PodcastBanner 
                         imgSrc={imgSrc}
                         title={title}
-                        description={ARWEAVE_READ_LINK+description}
+                        description={description}
                         color={color}
                         setLoadTipModal={() => setLoadTipModal(true)}
                         podcastId={data.obj?.pid}
