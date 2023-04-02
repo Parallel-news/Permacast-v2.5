@@ -98,7 +98,7 @@ export const TipModal = (props: TipModalInter) => {
 
                 {/*Tip Amount*/}
                 <div className={tipAmountAbsStyling}>
-                    <Link href="https://app.everpay.io/" target="_blank" rel="noreferrer">{t("tipModal.balance")+" "+Number(_everPayBalance).toFixed(2) + ' AR'}</Link> 
+                    <a href="https://app.everpay.io/" target="_blank" rel="noreferrer">{t("tipModal.balance")+" "+Number(_everPayBalance).toFixed(2) + ' AR'}</a> 
                     <input className={tipInputStyling+" mb-2 mt-2"} required pattern=".{3,500}" type="number" name="tipAmount" placeholder={"AR"}
                     onChange={(e) => {
                         setTipAmount(e.target.value);
