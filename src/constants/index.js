@@ -63,7 +63,7 @@ export const EXM_ANS_CONTRACT_ADDRESS = "VGWeJLDLJ9ify3ezl9tW-9fhB0G-GIUd60FE-5Q
 
 // SOCIALS
 export const PERMACAST_DISCORD_URL = "https://discord.gg/cQanQVCs7G"
-export const PERMACAST_TWITTER_URL = "https://twitter.com/permacast"
+export const PERMACAST_TWITTER_URL = "https://twitter.com/permacastapp"
 export const PERMACAST_TELEGRAM_URL = "https://t.me/permacast"
 
 const iconStyling = "w-4 h-4 text-zinc-300"
@@ -113,7 +113,8 @@ export const USER_SIG_MESSAGES = ["my Arweave PK for Permacast is "]
 export const EVERPAY_EOA = '0x197f818c1313DC58b32D88078ecdfB40EA822614';
 export const EVERPAY_AR_TAG = 'arweave,ethereum-ar-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,0x4fadc7a98f2dc96510e42dd1a74141eeae0c1543';
 export const MIN_UPLOAD_PAYMENT = .000001  // 1000000 winston
-export const EPISODE_UPLOAD_FEE = .13 //13000000000 winston
+export const EPISODE_UPLOAD_FEE = .13 //130000000000 winston
+                                      //250000000000
 
 // TOAST
 export const TOAST_POSITION = "top-center"
