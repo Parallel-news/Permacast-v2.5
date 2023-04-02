@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
-import { useArconnect, shortenAddress } from 'react-arconnect';
+import { useArconnect } from 'react-arconnect';
 import { useTranslation } from 'next-i18next';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../constants/arconnect';
 import { useRecoilState } from 'recoil';
 import { arweaveAddress } from '../atoms';
 import { Dropdown } from "@nextui-org/react";
 import Link from 'next/link';
+import { shortenAddress } from 'react-arconnect';
 
 
 export default function ArConnect() {
