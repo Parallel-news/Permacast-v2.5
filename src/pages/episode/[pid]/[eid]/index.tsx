@@ -11,7 +11,7 @@ import {
     ErrorTag,
     podcastIdStyling,
  } from "../../../../component/episode/eidTools";
-import { EXM_READ_LINK, ARWEAVE_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND } from "../../../../constants";
+import { EXM_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND, ARSEED_URL } from "../../../../constants";
 import { getContractVariables } from "../../../../utils/contract";
 import { findObjectById, formatStringByLen } from "../../../../utils/reusables";
 import { TipModal } from "../../../../component/tipModal";
@@ -87,13 +87,13 @@ export default function EpisodeId({data, status}) {
                     {/*Episode Cover & Info*/}
                     <EpisodeBanner 
                         title={d.episodeName}
-                        imgSrc={ARWEAVE_READ_LINK+data?.cover}
+                        imgSrc={ARSEED_URL + data?.cover}
                         color={color}
                         episodeNum={data?.index+1}
                         date={date}
                         setLoadTipModal={() => setLoadTipModal(true)}
                         setLoadShareModal={() => setLoadShareModal(true)}
-                        mediaLink={ARWEAVE_READ_LINK+data.obj.contentTx}
+                        mediaLink={ARSEED_URL + data.obj.contentTx}
                         podcastOwner={data?.obj.owner}
                         playButton={playButton}
                     />
@@ -104,7 +104,7 @@ export default function EpisodeId({data, status}) {
                     {/*Next Episode*/}
                     <Episodes
                         containerTitle={"Next Episode"} 
-                        imgSrc={ARWEAVE_READ_LINK+data?.cover}
+                        imgSrc={ARSEED_URL + data?.cover}
                         color={'rgb(255, 255, 255)'}
                         episodes={[]}
                         podcastId={data?.obj.pid}

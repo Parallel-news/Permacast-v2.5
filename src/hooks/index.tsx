@@ -1,12 +1,13 @@
-import { useRecoilState } from 'recoil';
+import { useRecoilCallback, useRecoilState } from 'recoil';
 import { currentEpisodeAtom, currentPodcastAtom, isFullscreenAtom, isPlayingAtom, isQueueVisibleAtom, queueAtom } from '../atoms';
 import { createContext, MutableRefObject, useContext, useEffect, useRef, useState } from 'react';
-import { showShikwasaPlayer } from '../utils/ui';
+import { getColorSchemeShorthand, showShikwasaPlayer } from '../utils/ui';
 import { showShikwasaPlayerArguments } from '../interfaces/playback';
-import { Episode, Podcast } from '../interfaces';
+import { Episode, FullEpisodeInfo, Podcast } from '../interfaces';
 
 import Player from '../shikwasa-src/player';
 import { useRouter } from 'next/router';
+import { CURRENT_EPISODE_TEMPLATE, CURRENT_PODCAST_TEMPLATE } from '../constants/ui';
 
 export type playerInterface = Player | null | any;
 
@@ -17,13 +18,13 @@ export interface playerStateInterface {
   isFullscreen: boolean;
   currentPodcast: Podcast | null;
   currentEpisode: Episode | null;
-  queue: Episode[];
+  queue: FullEpisodeInfo[];
 };
 
 export type launchPlayerInterface = (
   args: showShikwasaPlayerArguments,
   podcast?: Podcast,
-  episodes?: Episode[]
+  episodes?: FullEpisodeInfo[],
 ) => Player;
 
 type togglePlayInterface = () => void;
@@ -84,6 +85,26 @@ export const ShikwasaProvider = ({ children }) => {
   // useEffect(() => console.log('currentEpisode updated', currentEpisode), [currentEpisode])
   // useEffect(() => console.log('currentPodcast updated', currentPodcast), [currentPodcast])
   // useEffect(() => console.log('queue updated', queue), [queue])
+  const onPlaybackEndCallback = useRecoilCallback(({ snapshot, set }) => async (event) => {
+    set(isPlayingAtom, () => false);
+    const queue = await snapshot.getPromise(queueAtom);
+    let newQueue = [...queue];
+    newQueue = newQueue.splice(1, queue.length);
+    if (newQueue.length > 0) {
+      const { podcast, episode } = newQueue[0];
+      const { minifiedCover: coverToBeUsed = podcast.cover } = podcast;
+      const { author: artist, cover } = podcast;
+      const { contentTx: src, episodeName: title } = episode;
+      const [coverColor, textColor] = await getColorSchemeShorthand(coverToBeUsed);
+      const args = { playerColorScheme: coverColor, buttonColor: textColor, accentColor: textColor, title, artist, cover, src };
+      launchPlayer(args, podcast, newQueue);
+    } else {
+      set(queueAtom, () => []);
+      setCurrentEpisode(CURRENT_EPISODE_TEMPLATE);
+      setCurrentPodcast(CURRENT_PODCAST_TEMPLATE);
+    };
+  });
+
 
   // In simple terms, this function is responsible for:
   // 1. Creating a new player instance and mounting it to the UI
@@ -101,13 +122,12 @@ export const ShikwasaProvider = ({ children }) => {
     setIsPlaying(true);
     // save data about current podcast and episodes
     if (podcast) setCurrentPodcast(podcast);
-    if (episodes && episodes.length) {
-      setCurrentEpisode(episodes[0]);
+    if (episodes.length) {
+      const { episode } = episodes[0];
+      setCurrentEpisode(episode);
       setQueue(episodes);
-    };
-    if (episodes[0].type.includes("video")) {
-      //! TODO prevent this from popping open when played in the queue
-      setIsFullscreen(true);
+      console.log(episodes);
+      if (episode.type?.includes("video") && args?.openFullscreen) setIsFullscreen(true);
     };
     
     const thePlayer = player.current;
@@ -116,16 +136,7 @@ export const ShikwasaProvider = ({ children }) => {
     const fullscreenBtn = playerObject?.ui?.fullscreenBtn;
     
     // add event listeners
-    thePlayer.audio.addEventListener('ended', () => {
-      setIsPlaying(false);
-      // const newQueue = queue.splice(1, queue.length - 1);
-      // setQueue(newQueue)
-      // if (newQueue.length > 1) {
-        // !TODO launch next episode in the queue
-        // const episode = newQueue[0];
-        // launchPlayer();
-      // };
-    });
+    thePlayer.audio.addEventListener('ended', onPlaybackEndCallback);
     queueBtn?.addEventListener('click', (event) => {event.stopPropagation(); setQueueVisible(visible => !visible)});
     playingBtn?.addEventListener('click', (event) => {event.stopPropagation(); setIsPlaying(playing => !playing)});
     fullscreenBtn?.addEventListener('click', (event) => {event.stopPropagation(); setIsFullscreen(isFullscreen => !isFullscreen)});

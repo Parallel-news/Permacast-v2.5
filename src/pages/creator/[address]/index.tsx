@@ -7,7 +7,7 @@ import { hexToRGB, RGBobjectToString } from '../../../utils/ui';
 import { allPodcasts, podcastColorAtom } from '../../../atoms';
 import { useRecoilState } from 'recoil';
 import { Creator404, CreatorPageComponent, sortByDate } from '../../../component/creator';
-import { DUMMY_ANS } from '../../../constants';
+import { ANS_TEMPLATE } from '../../../constants/ui';
 import { removeDuplicates } from '../../../utils/filters';
 
 // pages/blog/[slug].js
@@ -26,7 +26,7 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
   const { locale, params } = context;
   const { address } = params;
-  let userInfo: Ans = DUMMY_ANS;
+  let userInfo: Ans = ANS_TEMPLATE;
   userInfo.address_color = "#000000";
   userInfo.user = address;
   const isAddress = address.length === 43;
@@ -37,6 +37,8 @@ export async function getStaticProps(context) {
       userInfo = info;
       userInfo.ANSuserExists = true;
     } else {
+      userInfo.nickname = address;
+      userInfo.currentLabel = address;
       userInfo.userIsAddress = isAddress ? true: false;
       userInfo.ANSuserExists = false;
     };
@@ -55,7 +57,7 @@ export async function getStaticProps(context) {
 };
 
 const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
-  if (!userInfo?.ANSuserExists) return <Creator404 address={userInfo?.user || ''} />;
+  if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) return <Creator404 address={userInfo?.user || ''} />;
 
   const { user, address_color } = userInfo;
 

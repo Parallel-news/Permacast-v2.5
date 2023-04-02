@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import { useTranslation } from 'next-i18next';
 import Track from './reusables/track';
 import { useRecoilState } from 'recoil';
-import { currentPodcastAtom, isQueueVisibleAtom, queueAtom } from '../atoms';
-import { Episode } from '../interfaces';
+import { isQueueVisibleAtom, queueAtom } from '../atoms';
+import { FullEpisodeInfo } from '../interfaces';
 import { PlusIcon } from '@heroicons/react/24/solid';
 
 /**
@@ -41,7 +41,6 @@ const EpisodeQueue: FC = () => {
 
   const [queue, setQueue] = useRecoilState(queueAtom);
   const [isQueueVisible, setIsQueueVisible] = useRecoilState(isQueueVisibleAtom);
-  const [currentPodcast, setCurrentPodcast] = useRecoilState(currentPodcastAtom);
 
   const TopText: FC = () => (
     <div className={topTextWrapperStyling}>
@@ -52,9 +51,9 @@ const EpisodeQueue: FC = () => {
 
   const QueueList: FC = () => (
     <div>
-      {queue.map((episode: Episode, index: number) => (
+      {queue.map((episode: FullEpisodeInfo, index: number) => (
         <div key={index} className="mb-2 relative">
-          <Track episode={{episode: episode, podcast: currentPodcast}} includePlayButton />
+          <Track {...{episode }} includePlayButton />
         </div>
       )) || <p className="text-zinc-400">{t("queue.emptyqueue")}</p>}
     </div>

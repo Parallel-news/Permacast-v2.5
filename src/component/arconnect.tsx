@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useArconnect } from 'react-arconnect';
+import { useArconnect, shortenAddress } from 'react-arconnect';
 import { useTranslation } from 'next-i18next';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../constants/arconnect';
 import { useRecoilState } from 'recoil';
@@ -18,7 +18,6 @@ export default function ArConnect() {
     address,
     ANS,
     getPublicKey,
-    shortenAddress,
     arconnectConnect,
     arconnectDisconnect
   } = useArconnect();

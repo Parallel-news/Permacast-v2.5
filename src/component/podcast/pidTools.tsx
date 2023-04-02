@@ -14,6 +14,9 @@ import { useRecoilState } from "recoil";
 import { loadTipModal } from "../../atoms";
 import { useArconnect } from "react-arconnect";
 import { useTranslation } from "react-i18next";
+import { queryMarkdownByTX } from "../../utils/markdown";
+import { RssIcon } from "@heroicons/react/24/solid";
+import { PERMACAST_HELPER_URL, RSS_FEED_URL } from "../../constants";
 
 export default function pidTools() {
     return false
@@ -72,14 +75,7 @@ export const PodcastInfo = (props: PodcastInfoInter) => {
     const [markdownText, setMarkdownText] = useState('');
 
     useEffect(() => {
-      const fetchMarkdown = async () => {
-        const url = props.description;
-        const response = await fetch(url);
-        const text = await response.text();
-        setMarkdownText(text);
-      };
-  
-      fetchMarkdown();
+        queryMarkdownByTX(props.description).then(setMarkdownText);
     }, []);
 
     return (
@@ -101,7 +97,7 @@ export const PodcastInfo = (props: PodcastInfoInter) => {
 
 export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
     const { t } = useTranslation();
-    const { color } = props
+    const { color, podcastId } = props
     const { address } = useArconnect()
     return (
         <div className={podcastButtonsStyling}>
@@ -128,6 +124,13 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
                 color={color}
                 onClick={props.setLoadShareModal}
             />
+            <a target="_blank" rel="noreferrer" href={RSS_FEED_URL + podcastId}>
+                <DescriptionButton
+                    icon={<RssIcon className={episodeIconStyling} />}
+                    text={"rss"}
+                    color={color}
+                />
+            </a>
         </div>
     )
 }
