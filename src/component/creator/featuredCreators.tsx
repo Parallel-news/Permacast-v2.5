@@ -56,59 +56,95 @@ const Loading:FC<{ loading: boolean, dummyArray: any[] }> = ({ loading, dummyArr
   </>
 );
 
-const CreatorsMap: FC<{ creators: Ans[] }> = ({ creators }) => (
-  <>
-    {creators.map((creator: Ans, index: number) => (
-      <div key={index}>
-        <div className={borderCreatorStyling}>
-          <div className={flexCenter}>
-            {(({ currentLabel, avatar, address_color }) => 
-              <ProfileImage {...{currentLabel, avatar, address_color, size: 48}} squared />)
-            (creator)}
-            <div className={flexCol + " ml-4"}>
-              {(({ nickname, currentLabel }) => 
-                <CreatorNamesSmall {...{ nickname, currentLabel }} />
-              )(creator)}
+const CreatorsMap: FC<{ creators: Ans[] }> = ({ creators }) => {
+  const creatorLimit = 10
+  let creatorCount = 0
+  return(
+    <>
+      {creators.map((creator: Ans, index: number) => {
+        if(creator.currentLabel && creatorCount < creatorLimit) {
+          creatorCount += 1
+          return (
+            <div key={index}>
+              <div className={borderCreatorStyling}>
+                <div className={flexCenter}>
+                  {(({ currentLabel, avatar, address_color }) => 
+                    <ProfileImage {...{currentLabel, avatar, address_color, size: 48}} squared />)
+                  (creator)}
+                  <div className={flexCol + " ml-4"}>
+                    {(({ nickname, currentLabel }) => 
+                      <CreatorNamesSmall {...{ nickname, currentLabel }} />
+                    )(creator)}
+                  </div>
+                </div>
+                <ViewANSButton currentLabel={creator.currentLabel} />
+              </div>
             </div>
-          </div>
-          <ViewANSButton currentLabel={creator.currentLabel} />
-        </div>
-      </div>
-    ))}
-  </>
-);
-
+          )
+        }
+      })}
+    </>
+  );
+}
 
 export const FeaturedCreators: FC = () => {
 
   const { t } = useTranslation();
   const [currentThemeColor, setcurrentThemeColor] = useRecoilState(currentThemeColorAtom);
+  const [fetchError, setFetchError] = useState<boolean>(false)
 
   const wl = [
     "kaYP9bJtpqON8Kyy3RbqnqdtDBDUsPTQTNUCvZtKiFI",
     "vZY2XY1RD9HIfWi8ift-1_DnHLDadZMWrufSh-_rKF0",
-    "lIg5mdDMAAIj5Pn2BSYKI8SEo8hRIdh-Zrn_LSy_3Qg"
+    "lIg5mdDMAAIj5Pn2BSYKI8SEo8hRIdh-Zrn_LSy_3Qg",
+    "9J5tCNjf1EL7d-E2t8SQlcjMpwEWqMjDiGu0ktRApwY"
   ]
 
   const [loading, setLoading] = useState(true);
   const [creators, setCreators] = useRecoilState(creatorsAtom);
 
+  const episodeCounter = {}
+
   useEffect(() => {
     const fetchCreators = async () => {
-      const creators = await Promise.all(
-        wl.map((address: string) => axios.get(`/api/ans/${address}`)
+      setFetchError(false)
+      // fetch the creators from EXM
+      let payload
+      try {
+        payload = await axios.get(`/api/exm/read`)
+        console.log("payload: ", payload.data.podcasts)
+      } catch(e) {
+        console.log(e)
+        setFetchError(true)
+      }
+
+      payload.data.podcasts.map((item: any, index: any) => {
+        if(episodeCounter[item.owner]) {
+          episodeCounter[item.owner] += item.episodes.length
+        } else {
+          episodeCounter[item.owner] = item.episodes.length
+        }
+      })
+      
+      let sortedCounter = Object.keys(episodeCounter).sort((a, b) => episodeCounter[b] - episodeCounter[a]);
+
+      let creators = await Promise.all(
+        sortedCounter.map((address: string) => axios.get(`/api/ans/${address}`)
       ));
+
       setCreators(creators.map(promise => promise.data));
       setLoading(false);
     }
     fetchCreators();
   }, []);
-
   return (
-    <div>
+    <div className="h-[325px] overflow-y-auto overflow-x-hidden px-2">
       <h2 className={creatorHeadingStyling}>{t("home.featuredcreators")}</h2>
-      <Loading {...{ loading, dummyArray: wl }} />
-      <CreatorsMap {...{ creators }} />
+      {loading ?
+        <Loading {...{ loading, dummyArray: wl }} />
+      :
+        <CreatorsMap {...{ creators }} />
+      }
     </div>
   );
 };

@@ -9,10 +9,10 @@ import FeaturedPodcast from '../home/featuredPodcast';
 import Track from '../reusables/track';
 import Link from 'next/link';
 import TipButton from '../reusables/tip';
-import { shortenAddress } from 'react-arconnect';
 import { flexCenter } from './featuredCreators';
 import Verification from '../reusables/Verification';
 import { TipModal } from '../tipModal';
+import { shortenAddress } from 'react-arconnect';
 
 
 /**
