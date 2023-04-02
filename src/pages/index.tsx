@@ -80,8 +80,8 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
             <>
               <h2 className="text-zinc-400 text-lg mb-3">{t("home.recentlyadded")}</h2>
               <div className="grid grid-rows-3 gap-y-4 text-zinc-100">
-                {latestEpisodes.map((episode: FullEpisodeInfo) => (
-                  <div className="hidden md:block">
+                {latestEpisodes.map((episode: FullEpisodeInfo, index: number) => (
+                  <div className="hidden md:block" key={index}>
                     <Track {...{ episode }} openFullscreen includeDescription includePlayButton  />
                   </div>
                 )) || <Loading />}
