@@ -43,7 +43,6 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
           .map((episode: Episode, index: number) => 
             ({podcast, episode: {...episode, order: index}})))
               .flat();
-
       const sorted = episodes.sort((episodeA, episodeB) => episodeB.episode.uploadedAt - episodeA.episode.uploadedAt);
       setLatestEpisodes(sorted.splice(0, 3));
       setPodcasts_(podcasts.splice(0, 4));
@@ -83,7 +82,7 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
               <div className="grid grid-rows-3 gap-y-4 text-zinc-100">
                 {latestEpisodes.map((episode: FullEpisodeInfo) => (
                   <div className="hidden md:block">
-                    <Track {...{episode }} includeDescription includePlayButton  />
+                    <Track {...{ episode }} openFullscreen includeDescription includePlayButton  />
                   </div>
                 )) || <Loading />}
               </div>

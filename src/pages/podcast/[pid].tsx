@@ -49,8 +49,8 @@ export default function PodcastId({data, status, fullEpisodeInfo}) {
         const podcastInfo = data.obj
         const episodes = data.obj?.episodes
         const cover = data.obj.cover
-        const playerInfo = { playerColorScheme: themeColor, buttonColor: themeColor, accentColor: textColor, title: episodes[0].episodeName, artist: data.obj.author, cover, src: episodes.length ? episodes[0].contentTx : undefined };
-        console.log("fullEpisodeInfo: ", fullEpisodeInfo)
+        const playerInfo = { playerColorScheme: themeColor, buttonColor: themeColor, accentColor: textColor, title: episodes[0]?.episodeName, artist: data.obj.author, cover, src: episodes.length ? episodes?.[0]?.contentTx : undefined };
+        console.log("fullEpisodeInfo: ", fullEpisodeInfo);
 
         let playButton;
         if(episodes.length) {
@@ -104,8 +104,8 @@ export default function PodcastId({data, status, fullEpisodeInfo}) {
                     {/*Title Track*/}
                     <p className={nextEpisodeTitleStyling+ " pt-10"}>Episodes</p>
                     {/*Episode Track*/}
-                    {fullEpisodeInfo.map((episode: FullEpisodeInfo) => (
-                    <div className="hidden md:block">
+                    {fullEpisodeInfo.map((episode: FullEpisodeInfo, index: number) => (
+                    <div className="hidden md:block" key={index}>
                         <Track {...{episode}} includeDescription includePlayButton  />
                     </div>
                     )) || <Loading />}

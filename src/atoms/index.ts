@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { DEFAULT_BACKGROUND_COLOR, DEFAULT_PODCAST_COLOR, DEFAULT_THEME_COLOR } from '../constants/ui';
+import { CURRENT_EPISODE_TEMPLATE, CURRENT_PODCAST_TEMPLATE, DEFAULT_BACKGROUND_COLOR, DEFAULT_PODCAST_COLOR, DEFAULT_THEME_COLOR } from '../constants/ui';
 import { Ans, Episode, FullEpisodeInfo, Podcast } from '../interfaces';
 import { RGBorRGBAstring } from '../interfaces/ui';
 
@@ -93,47 +93,19 @@ export const loadTipModal = atom({
 
 // *** PLAYBACK ***
 
-export const queueAtom = atom<Episode[]>({
+export const queueAtom = atom<FullEpisodeInfo[]>({
     key: "queueAtom",
     default: []
 });
 
 export const currentPodcastAtom = atom<Podcast>({
     key: 'currentPodcastAtom',
-    default: {
-        pid: '',
-        label: '',
-        contentType: '',
-        createdAt: 0,
-        owner: '',
-        podcastName: '',
-        author: '',
-        email: '',
-        description: '',
-        language: '',
-        explicit: '',
-        categories: [],
-        maintainers: [],
-        cover: '',
-        isVisible: false,
-        episodes: [],
-        minifiedCover: '',
-    },
+    default: CURRENT_PODCAST_TEMPLATE
 });
 
 export const currentEpisodeAtom = atom<Episode>({
     key: "currentEpisodeAtom",
-    default: {
-        eid: '',
-        episodeName: '',
-        description: '',
-        contentTx: '',
-        size: 0,
-        type: '',
-        uploader: '',
-        uploadedAt: 0,
-        isVisible: false,
-    }
+    default: CURRENT_EPISODE_TEMPLATE,
 });
 
 export const queueHistory = atom({

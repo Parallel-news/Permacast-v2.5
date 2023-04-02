@@ -1,4 +1,4 @@
-import { Episode, PodcastDev } from ".";
+import { FullEpisodeInfo, Podcast } from ".";
 import Player from "../shikwasa-src/player";
 import { RGBorRGBAstring, RGBstring } from "./ui";
 
@@ -6,6 +6,7 @@ export interface showShikwasaPlayerArguments {
   playerColorScheme?:  RGBorRGBAstring; // actual player color
   buttonColor?:        RGBstring; // play button in featured podcast, track, etc
   accentColor?:        string; // the play Icon within the play button, better contrast this way
+  openFullscreen?:     boolean; // set this to true to force open fullscreen
   title:               string;
   artist:              string;
   cover:               string;
@@ -22,6 +23,6 @@ export type ShowShikwasaPlayerInterface = ({
 
 export interface FeaturedPodcastPlayButtonInterface {
   playerInfo:  showShikwasaPlayerArguments;
-  podcastInfo: PodcastDev;
-  episodes?:   Episode[];
+  podcastInfo: Podcast;
+  episodes:    FullEpisodeInfo[];
 };

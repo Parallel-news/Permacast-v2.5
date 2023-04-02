@@ -14,6 +14,7 @@ import { useRecoilState } from "recoil";
 import { loadTipModal } from "../../atoms";
 import { useArconnect } from "react-arconnect";
 import { useTranslation } from "react-i18next";
+import { queryMarkdownByTX } from "../../utils/markdown";
 
 export default function pidTools() {
     return false
@@ -72,14 +73,7 @@ export const PodcastInfo = (props: PodcastInfoInter) => {
     const [markdownText, setMarkdownText] = useState('');
 
     useEffect(() => {
-      const fetchMarkdown = async () => {
-        const url = props.description;
-        const response = await fetch(url);
-        const text = await response.text();
-        setMarkdownText(text);
-      };
-  
-      fetchMarkdown();
+        queryMarkdownByTX(props.description).then(setMarkdownText);
     }, []);
 
     return (

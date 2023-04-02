@@ -54,8 +54,11 @@ export const STR_LEN_EPISODE_BOX = 100
 export const STR_LEN_EPISODE_DESC = 400
 
 // API
-export const EXM_READ_LINK = "https://api.exm.dev/read/"
-export const ARWEAVE_READ_LINK = "https://arweave.net/"
+export const EXM_READ_LINK = "https://api.exm.dev/read/";
+// !Please use ARSEED_URL insead of ARWEAVE_READ_LINK for instant retrieval on user-uploaded content
+export const ARWEAVE_READ_LINK = "https://arweave.net/";
+export const PERMACAST_HELPER_URL = "https://permacast-bloodstone-helper.herokuapp.com/";
+export const EXM_ANS_CONTRACT_ADDRESS = "VGWeJLDLJ9ify3ezl9tW-9fhB0G-GIUd60FE-5Q-_VI";
 
 // SOCIALS
 export const PERMACAST_DISCORD_URL = "https://discord.gg/cQanQVCs7G"
@@ -130,19 +133,3 @@ export const NO_SHOW = "Unable to fetch shows. Refresh and try again."
 // API SUCCESS
 export const SHOW_UPLOAD_SUCCESS = "Show Uploaded. Redirecting."
 export const EP_UPLOAD_SUCCESS = "Episode Uploaded. Redirecting."
-
-
-export const DUMMY_ANS = {
-    user: '',
-    avatar: '',
-    currentLabel: '',
-    address_color: '',
-    nickname: '',
-    bio: null,
-    ownedLabels: [],
-    links: {},
-    subdomains: [],
-    freeSubdomains: 0
-};
-
-export const EXM_ANS_CONTRACT_ADDRESS = "VGWeJLDLJ9ify3ezl9tW-9fhB0G-GIUd60FE-5Q-_VI";

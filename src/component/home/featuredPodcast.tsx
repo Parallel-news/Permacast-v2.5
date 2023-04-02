@@ -1,9 +1,6 @@
 import React, { useState, useEffect, FC } from "react";
 import { useTranslation } from "next-i18next";
-import {
-  fetchDominantColor,
-  getCoverColorScheme,
-} from "../../utils/ui";
+import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 import { arweaveTX, Podcast } from "../../interfaces/index";
 import Link from "next/link";
 import FeaturedPodcastPlayButton from "./featuredPodcastPlayButton";
@@ -11,6 +8,7 @@ import Image from "next/image";
 import { ARWEAVE_READ_LINK } from "../../constants";
 import MarkdownRenderer from "../markdownRenderer";
 import { queryMarkdownByTX } from "../../utils/markdown";
+import { convertPodcastsToEpisodes } from "../../utils/filters";
 
 
 
@@ -110,7 +108,6 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
     pid,
     minifiedCover,
     podcastName,
-    episodes,
     author,
     label,
     description,
@@ -126,7 +123,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
       setMarkdownText(text);
     };
 
-    const fetchData = async () => {
+    const fetchColors = async () => {
       const coverToBeUsed = (minifiedCover || cover);
       const dominantColor = await fetchDominantColor(coverToBeUsed);
       if (dominantColor.error) return;
@@ -136,7 +133,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
     };
 
     try {
-      fetchData();
+      fetchColors();
       fetchMarkdown(description);
     } catch (error) {
       console.log(error)
@@ -144,26 +141,20 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
   }, []);
 
   useEffect(() => {
-    const fetchMarkdown = async () => {
-      const url = `https://arweave.net/${description}`;
-      const response = await fetch(url);
-      const txt = await response.text();
-      setMarkdownText(txt);
-    };
-
-    fetchMarkdown();
+    queryMarkdownByTX(description).then(setMarkdownText);
   }, []);
 
-  const episode = episodes.length ? episodes[0]: undefined;
-  const playerInfo = { playerColorScheme: themeColor, buttonColor: themeColor, accentColor: textColor, title: episode?.episodeName, artist: author, cover, src: episode?.contentTx };
+  const episodes = convertPodcastsToEpisodes([podcastInfo]);
+  const episode = episodes.length ? episodes[0]: undefined
+  const playerInfo = { playerColorScheme: themeColor, buttonColor: themeColor, accentColor: textColor, title: episode?.episode?.episodeName, artist: author, cover, src: episode?.episode?.contentTx };
 
   const prevent = (event: any) => {
     event.preventDefault();
   };
-  console.log("HEADS UP: ")
-  console.log("playerInfo: ", playerInfo)
-  console.log("podcastInfo ", podcastInfo)
-  console.log("episodes: ", episodes)
+  // console.log("HEADS UP: ")
+  // console.log("playerInfo: ", playerInfo)
+  // console.log("podcastInfo ", podcastInfo)
+  // console.log("episodes: ", episodes)
 
   return (
     <Link 
