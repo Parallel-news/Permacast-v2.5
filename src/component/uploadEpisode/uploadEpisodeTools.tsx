@@ -120,7 +120,7 @@ export const episodeDescStyling =  "input input-secondary resize-none w-full h-2
 export const EpisodeForm = (props: EpisodeFormInter) => {
     const { t } = useTranslation();
     const [submittingEp, setSubmittingEp] = useState<boolean>(false)
-    const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
+    const { address, ANS, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
     const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
     const [uploadCost, setUploadCost] = useState<Number>(0)
@@ -251,12 +251,18 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             console.log(e); handleErr(EVERPAY_BALANCE_ERROR, setSubmittingEp); return;
         }
         // EXM REDIRECT AND ERROR HANDLING NEEDED
-        const result = await axios.post('/api/exm/write', createEpPayload);
-        console.log("PAYLOAD: ", epPayload)
-        console.log("exm res: ", result)
-        setSubmittingEp(false)
-        //EXM call, set timeout, then redirect. 
-        toast.success(EP_UPLOAD_SUCCESS, {style: TOAST_DARK})
+        setTimeout(async function () {
+            const result = await axios.post('/api/exm/write', createEpPayload);
+            console.log("PAYLOAD: ", epPayload)
+            console.log("exm res: ", result)
+            setSubmittingEp(false)
+            //EXM call, set timeout, then redirect. 
+            toast.success(EP_UPLOAD_SUCCESS, {style: TOAST_DARK})
+            setTimeout(async function () {
+                const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
+                window.location.assign(`/creator/${identifier}`);
+            }, 500)
+        }, 4000)
     }
     //Submit Episode Function
     return(
