@@ -106,11 +106,11 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
           )}
         </div>
         {!loading ? (
-          <div className="w-[30%] xl:w-[27%]">
+          <div className="w-full xl:w-[27%]">
             <FeaturedCreators />
           </div>
         ) : (
-          <div className="w-[30%] xl:w-[27%]"><Loading /></div>
+          <div className="w-full xl:w-[27%]"><Loading /></div>
         )}
       </div>
     </div>
