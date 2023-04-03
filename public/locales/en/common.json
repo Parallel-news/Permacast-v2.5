@@ -27,6 +27,13 @@
 		"welcome": "Welcome!",
 		"subtext": "Let's see what we have for today",
 		"get-featured": "Feature your podcast",
+		"featured-modal": {
+			"days": "days",
+			"cost": "This will cost:",
+			"feature": "Feature",
+			"balance": "Your balance:",
+			"insufficient-balance": "Insufficient balance"
+		},
 		"playfeaturedepisode": "Play",
 		"viewfeaturedepisode": "View",
 		"episode": "Episode",

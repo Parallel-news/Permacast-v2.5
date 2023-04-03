@@ -27,6 +27,13 @@
     "welcome": "Ласкаво просимо!",
     "subtext": "Давай-но подивимося, що ми маємо на сьогодні",
 		"get-featured": "Рекламуйте свій подкаст",
+		"featured-modal": {
+			"days": "днів",
+			"cost": "Це коштуватиме:",
+			"feature": "Рекламувати",
+			"balance": "Ваш баланс:",
+			"insufficient-balance": "Недостатній баланс"
+		},	
     "playfeaturedepisode": "Грати",
 		"viewfeaturedepisode": "Переглянути",
     "episodes": "Епізодів",
