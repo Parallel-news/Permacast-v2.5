@@ -75,7 +75,7 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
         <Loading />
       )} */}
       <div className="my-9 flex flex-col xl:flex-row md:justify-between space-y-10 xl:space-y-0">
-        <div className="w-[95%] xl:w-[71%]">
+        <div className="w-[100%] xl:w-[71%]">
           {!loading ? (
             <>
               <h2 className="text-zinc-400 text-lg mb-3">{t("home.recentlyadded")}</h2>
@@ -84,7 +84,7 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
                   <div key={index}>
                     <Track {...{ episode }} openFullscreen includeDescription includePlayButton  />
                   </div>
-                )) || <div className="w-[95%] xl:w-[71%]"><Loading /></div>}
+                )) || <div className="w-[100%] xl:w-[71%]"><Loading /></div>}
               </div>
             </>
           ) : (
