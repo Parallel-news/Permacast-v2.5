@@ -74,8 +74,8 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
       ) : (
         <Loading />
       )} */}
-      <div className="my-9 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-x-12">
-        <div className="xl:col-span-3 lg:col-span-2 md:col-span-1 mb-9">
+      <div className="my-9 flex flex-col md:flex-row md:justify-between">
+        <div className="w-[66%] xl:w-[75%]">
           {!loading ? (
             <>
               <h2 className="text-zinc-400 text-lg mb-3">{t("home.recentlyadded")}</h2>
@@ -84,7 +84,7 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
                   <div className="hidden md:block" key={index}>
                     <Track {...{ episode }} openFullscreen includeDescription includePlayButton  />
                   </div>
-                )) || <Loading />}
+                )) || <div className="w-[66%] xl:w-[75%]"><Loading /></div>}
               </div>
             </>
           ) : (
@@ -92,11 +92,11 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
           )}
         </div>
         {!loading ? (
-          <div className="w-full">
+          <div className="w-[30%] xl:w-[23%]">
             <FeaturedCreators />
           </div>
         ) : (
-          <Loading />
+          <div className="w-[30%] xl:w-[23%]"><Loading /></div>
         )}
       </div>
     </div>
@@ -131,3 +131,6 @@ export async function getStaticProps({ locale }) {
 // };
 
 export default Home
+
+//xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2
+//xl:col-span-3 lg:col-span-2 md:col-span-1
