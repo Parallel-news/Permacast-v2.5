@@ -67,7 +67,7 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
       <Greeting />
       {isProduction !== "true" &&
         <div className="select-text">
-          <p className='text-red-500 font-bold'>Warning: this is staging build!</p>
+          <p className='text-yellow-500 font-bold'>Heads up: isProduction !== "true"</p>
           <p className="text-teal-300">Address: {contractAddress}</p>
         </div>
       }
