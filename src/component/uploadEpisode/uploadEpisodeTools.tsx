@@ -225,14 +225,6 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         } catch (e) {
             console.log(e); handleErr(DESCRIPTION_UPLOAD_ERROR, setSubmittingEp); return;
         }
-        
-        // Media to Arseeding
-        try {
-            const media = await upload3DMedia(epMedia, epMedia.type); epPayload["content"] = media?.order?.itemId
-            epPayload["mimeType"] = determineMediaType(epMedia.type)
-        } catch (e) {
-            console.log(e); handleErr(MEDIA_UPLOAD_ERROR, setSubmittingEp); return;
-        }
 
         // Media to Arseeding
         try {
