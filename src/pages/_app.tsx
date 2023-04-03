@@ -68,7 +68,7 @@ function App({ Component, pageProps }) {
             />
 
             <Layout>
-              <Component {...pageProps} />
+              <Component {...pageProps} className="scrollbar-container"/>
             </Layout>
           </ShikwasaProvider>
         </ArconnectProvider>

@@ -1,10 +1,12 @@
+import { EXM_PROD_CONTRACT } from "../constants";
+
 interface ContractVariables {
   contractAddress: string;
   isProduction: boolean;
 };
 
 export const getContractVariables = (): ContractVariables => {
-  const PROD_CONTRACT = process.env.EXM_PROD_CONTRACT_ADDRESS;
+  const PROD_CONTRACT = EXM_PROD_CONTRACT;
   const DEV_CONTRACT = process.env.EXM_DEV_CONTRACT_ADDRESS;
   const IS_PROD = process.env.IS_PROD;
 

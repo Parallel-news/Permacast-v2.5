@@ -80,7 +80,7 @@ export const episodeMediaStyling = "bg-zinc-800 rounded-xl cursor-pointer w-full
 export const buttonColStyling = "w-full flex justify-center items-center flex-col"
 export const selectPodcastModalStyling = "absolute inset-0 top-0 flex justify-center"
 export const tipModalStyling = "absolute inset-0 top-0 flex justify-center items-center z-50"
-export const podcastOptionsContainer = "w-full flex flex-col px-5 overflow-auto h-[80%]"
+export const podcastOptionsContainer = "w-full flex flex-col px-5 overflow-auto h-[120%] mb-[40px]"
 export const podcastOptionBaseStyling = "w-full flex justify-start items-center space-x-4"
 export const episodeFormStyling = "w-[50%] flex flex-col justify-center items-center space-y-4"
 export const showErrorTag = "flex justify-center items-center m-auto text-white font-semibold text-xl"
@@ -102,7 +102,7 @@ export const episodeDescStyling =  "input input-secondary resize-none w-full h-2
 export const EpisodeForm = (props: EpisodeFormInter) => {
     const { t } = useTranslation();
     const [submittingEp, setSubmittingEp] = useState<boolean>(false)
-    const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
+    const { address, ANS, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
     const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
     const [uploadCost, setUploadCost] = useState<Number>(0)
@@ -146,7 +146,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         if(epDesc.length > 0 && epMedia !== null) {
             calculateTotal().then(async total => {
                 const formattedTotal = total / AR_DECIMALS
-                setUploadCost(formattedTotal+MIN_UPLOAD_PAYMENT)
+                setUploadCost(formattedTotal+EPISODE_UPLOAD_FEE)
             })
         } else {
             setUploadCost(0)
@@ -207,14 +207,6 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         } catch (e) {
             console.log(e); handleErr(DESCRIPTION_UPLOAD_ERROR, setSubmittingEp); return;
         }
-        
-        // Media to Arseeding
-        try {
-            const media = await upload3DMedia(epMedia, epMedia.type); epPayload["content"] = media?.order?.itemId
-            epPayload["mimeType"] = determineMediaType(epMedia.type)
-        } catch (e) {
-            console.log(e); handleErr(MEDIA_UPLOAD_ERROR, setSubmittingEp); return;
-        }
 
         // Media to Arseeding
         try {
@@ -233,12 +225,18 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             console.log(e); handleErr(EVERPAY_BALANCE_ERROR, setSubmittingEp); return;
         }
         // EXM REDIRECT AND ERROR HANDLING NEEDED
-        const result = await axios.post('/api/exm/write', createEpPayload);
-        console.log("PAYLOAD: ", epPayload)
-        console.log("exm res: ", result)
-        setSubmittingEp(false)
-        //EXM call, set timeout, then redirect. 
-        toast.success(EP_UPLOAD_SUCCESS, {style: TOAST_DARK})
+        setTimeout(async function () {
+            const result = await axios.post('/api/exm/write', createEpPayload);
+            console.log("PAYLOAD: ", epPayload)
+            console.log("exm res: ", result)
+            setSubmittingEp(false)
+            //EXM call, set timeout, then redirect. 
+            toast.success(EP_UPLOAD_SUCCESS, {style: TOAST_DARK})
+            setTimeout(async function () {
+                const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
+                window.location.assign(`/creator/${identifier}`);
+            }, 500)
+        }, 4000)
     }
     //Submit Episode Function
     return(
@@ -314,7 +312,7 @@ export const EpisodeMedia = (props: EpisodeMediaInter) => {
             <label htmlFor="file" className={labelEpisodeMediaStyling}>
                 <FiFile className={episodeFaFileStyling} />
                 <div>
-                    {props.media ? props.media.name : t("uploadepisode.file")}
+                {props.media ? (props.media.name.length > 50 ? props.media.name.substring(0, 50) + "..." : props.media.name) : t("uploadepisode.file")}
                 </div>
             </label>
         </div>
@@ -382,8 +380,6 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
                 return item
             }
         })
-        console.log("selectedShow: ", selectedShow)
-        console.log("selectedShowIndex: ", selectedShowIndex)
     }
 
     useEffect(() => {
@@ -471,6 +467,7 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
                 {/*Header*/}
                 <div className={titleModalStyling}>
                     <div></div>
+                    {/*Show Title*/}
                     <p className="text-white text-xl">{t("uploadepisode.select-show")}</p>
                     <XMarkIcon className={xMarkStyling} onClick={() => props.setVisible(false)} />
                 </div>
@@ -493,22 +490,5 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
         </div>
     )
 }
-/*
-{
-    "function": "createPodcast",
-    "name": "Zoophilia at its Finest!",
-    "desc": "eog0KRdoVQUgUrBl1zLPRWTt_dDjxfZJhP6Hy2XXgiA",
-    "author": "Sebs Steele",
-    "lang": "en",
-    "isExplicit": "no",
-    "categories": "art",
-    "email": "s@s.com",
-    "cover": "t5PClo_A8BUfDjXx3Po8wI4v2kGRTTs8Jum-ScBLRwM",
-    "minifiedCover": "2utNxqNZWnzpbIjlECWk4H6TMaZ3K7Nisvtl_QmeBkQ",
-    "label": "sebs",
-    "jwk_n": "vBxHYO9sFsPi2FsLpz5AGPC79TrsmBg6nh7x-8wUE3jRF6-km81nfN7-8e9z9xC8WbPQ9GgdpL8JyfcTZK4WCXo692TfYrZCl-nzK6535xVr_zRyVCquotN9dRdKrfteTahFCSnDqjR10CccF8BloJBogXXx9ygAHnySw6gDH_e0ih2KWCRYEBGz8kylQ7vsKFD_UrtcljHMoFv0P9W1kNHFcG1ONlDt-rOEkk-yboVo4safzKh9DaiW9n__vRNpvT7Zz2EG3bTp__NZ_CfzvOEkY2QOKtLOOOvGfDqaRpODMwjzd5gZTEk-et9Zm4FZ8yv05gOHu9zjagNUMJW86sooL3SD1GqWDGQL0meCxRz2YT8I-0ShrhLFR3NTGdgBApZz5VxvaQyN-e6auQY0zAXjvp7uSJ3G1hOAlaeKHbFdQc-k_VCbcj7tqlM004kfNlUdlI4xkN7wJHq4r34TA9GW3Xjl6pg1lqnNDBuCnxCHbkjCUSVubLNCaKrDb-0Bdq9AqXuN4IhCsLey35JD4mbFdkIeQPheAVsPj_XWu8HSn08GSX9SL-IRNVPP4gykL35LVQugcjHVN_UWMkORz3x6ER5k9GmnHKvriQgv_fJPt9AyrMj7KSjFufGD8iH0I-Qz5p-12piyPS9iep0i9c_IGU6SNGHvVmmueR7gNO8",
-    "txid": "0xd93c839c2502cd83ed968d1c7080eb24911558e34282f273e72ffed8ec2e4303",
-    "sig": "GUeHf4eMTFJGsfH3USJnP9FiM7v4jsU1ZlxrzFnq/UZ47ISTZRW5IWEanAdba0BOzOA3iIE+gm/lvXTgZ87o04Kj6YMtfgItNBg4Fp0SK9DfdUZZT1Bdfb+xdGgdkTQ+iZj/JpW8O8Wr8Rwq0mDzXEG4JLxv25BNIlmciuk4JzICFt/To82umudB3WWZColF/giE07SBodGBNmnSvZll1Ex3oXwKvCc9HErykfh8ZxLmNdFoT0aVG10SXGgcPFHT2dlSW6vG0l2xaziN5rI+g+K6j9Dm76yrKPJfr0kkuKiydSmqqcZQbUhvL/+J0o5SlWHejsWLmXZ6j3Xkk2A8NHb+CHow4o8oigxvMkuHyfHeguH4bWJ4R4o2WUp90BVDsMPfKbtfswHLSwCOAcAJ+JQUbwtGtAWj/bLwNcqnY4nI+zFSX/vGJK8Hv217b50sl+NMjkr8zvQHc+RNrgsVF8D5xyofPJ1qzTFCr7+RAgoTO1Z2NbkRgXcUu6/n/KSM0snS/5McPmEI9uUJwSvVszG2k5pspVqj+JLu9ake6jCGoGRUOdnlPIeTxRbmaaR1YUrzBCbRRy0jdjXtY+snOZJ9kjTbNTHXB90XNy3zpB2PZx2nM43DAbpxwxv65mZJZ2jx6iFgfT13uUToIKKJZGjimFLU08/0HvsfrWnZ8rU="
-}
-*/
+
 
