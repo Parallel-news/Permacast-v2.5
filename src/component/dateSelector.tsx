@@ -29,7 +29,7 @@ const DateSelector: FC<DateSelectorInterface> = ({ duration, setDuration }) => {
           setDuration(parseInt(e.target.value));
         }}
       />
-      <span>{duration} days</span>
+      <span className="mb-0.5">{duration} days</span>
     </div>
   );
 };
