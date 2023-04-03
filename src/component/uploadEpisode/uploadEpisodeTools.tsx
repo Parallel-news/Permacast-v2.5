@@ -250,10 +250,10 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             setSubmittingEp(false)
             //EXM call, set timeout, then redirect. 
             toast.success(EP_UPLOAD_SUCCESS, {style: TOAST_DARK})
-            //setTimeout(async function () {
-                //const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
-                //window.location.assign(`/creator/${identifier}`);
-            //}, 500)
+            setTimeout(async function () {
+                const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
+                window.location.assign(`/creator/${identifier}`);
+            }, 500)
         }, 4000)
     }
     //Submit Episode Function
