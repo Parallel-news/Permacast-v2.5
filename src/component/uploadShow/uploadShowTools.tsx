@@ -142,7 +142,7 @@ const handleValMsg = (input: string, type: string, input2: any ="") => {
 export const ShowForm = (props: ShowFormInter) => {
     // hooks
     const { t } = useTranslation();
-    const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
+    const { address, ANS, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
     const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
     const [submittingShow, setSubmittingShow] = useState<boolean>(false)
@@ -275,6 +275,12 @@ export const ShowForm = (props: ShowFormInter) => {
             setSubmittingShow(false)
             //EXM call, set timeout, then redirect. 
             toast.success(SHOW_UPLOAD_SUCCESS, {style: TOAST_DARK})
+            console.log("allFieldsFilled: ", allFieldsFilled(validationObject))
+            console.log("validation Object: ", validationObject)
+            setTimeout(async function () {
+                const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
+                window.location.assign(`/creator/${identifier}`);
+            }, 500)
         }, 5000)
     }
 
