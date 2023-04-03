@@ -164,7 +164,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         if(epDesc.length > 0 && epMedia !== null) {
             calculateTotal().then(async total => {
                 const formattedTotal = total / AR_DECIMALS
-                setUploadCost(formattedTotal+MIN_UPLOAD_PAYMENT)
+                setUploadCost(formattedTotal+EPISODE_UPLOAD_FEE)
             })
         } else {
             setUploadCost(0)
@@ -225,14 +225,6 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         } catch (e) {
             console.log(e); handleErr(DESCRIPTION_UPLOAD_ERROR, setSubmittingEp); return;
         }
-        
-        // Media to Arseeding
-        try {
-            const media = await upload3DMedia(epMedia, epMedia.type); epPayload["content"] = media?.order?.itemId
-            epPayload["mimeType"] = determineMediaType(epMedia.type)
-        } catch (e) {
-            console.log(e); handleErr(MEDIA_UPLOAD_ERROR, setSubmittingEp); return;
-        }
 
         // Media to Arseeding
         try {
@@ -258,10 +250,10 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             setSubmittingEp(false)
             //EXM call, set timeout, then redirect. 
             toast.success(EP_UPLOAD_SUCCESS, {style: TOAST_DARK})
-            setTimeout(async function () {
-                const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
-                window.location.assign(`/creator/${identifier}`);
-            }, 500)
+            //setTimeout(async function () {
+                //const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
+                //window.location.assign(`/creator/${identifier}`);
+            //}, 500)
         }, 4000)
     }
     //Submit Episode Function
