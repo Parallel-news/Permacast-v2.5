@@ -332,7 +332,7 @@ export const EpisodeMedia = (props: EpisodeMediaInter) => {
             <label htmlFor="file" className={labelEpisodeMediaStyling}>
                 <FiFile className={episodeFaFileStyling} />
                 <div>
-                    {props.media ? props.media.name : t("uploadepisode.file")}
+                {props.media ? (props.media.name.length > 50 ? props.media.name.substring(0, 50) + "..." : props.media.name) : t("uploadepisode.file")}
                 </div>
             </label>
         </div>
