@@ -1,11 +1,11 @@
-import { Dispatch, FC, SetStateAction } from "react";
+import { FC } from "react";
 import { useTranslation } from "next-i18next";
 
 interface GetFeaturedProps {
   onClick: () => void;
 }
 
-export const GetFeaturedButtonStyling = `btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8 `;
+export const GetFeaturedButtonStyling = `btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8 disabled:bg-zinc-700`;
 
 const GetFeatured: FC<GetFeaturedProps> = ({ onClick }) => {
   const { t } = useTranslation();
