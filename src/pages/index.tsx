@@ -18,7 +18,6 @@ import {
 import { Episode, EXMDevState, FullEpisodeInfo, Podcast, PodcastDev } from '../interfaces';
 import Track from '../component/reusables/track';
 import { getContractVariables } from '../utils/contract';
-import '../../i18next'
 
 interface props {isProduction: string, contractAddress: string};
 
