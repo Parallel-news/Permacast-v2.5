@@ -15,11 +15,11 @@ const DateSelector: FC<DateSelectorInterface> = ({ duration, setDuration }) => {
   const [currentThemeColor, setcurrentThemeColor] = useRecoilState(currentThemeColorAtom);
 
   return (
-    <div className={flexItemsCenter}>
+    <div className={flexItemsCenter + "w-96 justify-center"}>
       <input
         id="default-range"
         type="range"
-        className="w-72 h-0.5 bg-black rounded-lg appearance-none cursor-pointer dark:bg-gray-700 mx-2"
+        className="w-72 h-0.5 bg-black rounded-lg cursor-pointer dark:bg-gray-700 mx-2 grow"
         style={{ accentColor: currentThemeColor }}
         min="1"
         max="100"
@@ -29,7 +29,7 @@ const DateSelector: FC<DateSelectorInterface> = ({ duration, setDuration }) => {
           setDuration(parseInt(e.target.value));
         }}
       />
-      <span className="mb-0.5">{duration} days</span>
+      <span className="mb-0.5 grow font-mono">{duration} {t("home.featured-modal.days")}</span>
     </div>
   );
 };
