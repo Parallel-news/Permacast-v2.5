@@ -13,10 +13,11 @@ import Link from "next/link";
 import { useRecoilState } from "recoil";
 import { loadTipModal } from "../../atoms";
 import { useArconnect } from "react-arconnect";
-import { useTranslation } from "react-i18next";
 import { queryMarkdownByTX } from "../../utils/markdown";
 import { RssIcon } from "@heroicons/react/24/solid";
 import { PERMACAST_HELPER_URL, RSS_FEED_URL } from "../../constants";
+import { useTranslation, initReactI18next } from 'react-i18next';
+import i18n from 'i18next';
 
 export default function pidTools() {
     return false

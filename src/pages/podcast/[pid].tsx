@@ -36,8 +36,6 @@ export default function PodcastId({data, status, fullEpisodeInfo}) {
     const [themeColor, setThemeColor] = useState<string>('');
     const [textColor, setTextColor] = useState<string>('');
 
-
-    console.log("data: ", data)
     if(data) {
         //State Calls Here
         const imgSrc = ARSEED_URL + data.obj?.cover
@@ -50,7 +48,6 @@ export default function PodcastId({data, status, fullEpisodeInfo}) {
         const episodes = data.obj?.episodes
         const cover = data.obj.cover
         const playerInfo = { playerColorScheme: themeColor, buttonColor: themeColor, accentColor: textColor, title: episodes[0]?.episodeName, artist: data.obj.author, cover, src: episodes.length ? episodes?.[0]?.contentTx : undefined };
-        console.log("fullEpisodeInfo: ", fullEpisodeInfo);
 
         let playButton;
         if(episodes.length) {
@@ -179,14 +176,3 @@ export async function getServerSideProps(context) {
         return { props: { data, status, fullEpisodeInfo, ...translations  } }  
     }   
 }
-
-/*
-<Episodes
-    containerTitle={t("search.episodes")} 
-    imgSrc={imgSrc}
-    color={color}
-    episodes={episodes}
-    podcastId={data.obj?.pid}
-/> 
-KEEP FOR UI PURPOSES, TRACK IS SLIGHTLY OFF DESIGN
-*/

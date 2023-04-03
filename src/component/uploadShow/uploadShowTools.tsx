@@ -391,6 +391,10 @@ export const ShowForm = (props: ShowFormInter) => {
                         {uploadCost !== 0 && podcastDescription_.length > 0 && podcastCover_ && (
                         <p className="mt-2 text-neutral-400">{"Upload Cost: "+(Number(uploadCost)).toFixed(6) +" AR"}</p>
                         )}
+                        <button onClick={() => {
+                            console.log("allFieldsFilled: ", allFieldsFilled(validationObject))
+                            console.log("validationObject: ", validationObject)
+                        }}>Show Stuff</button>
                     </div>
                 </div>
                 <div className="w-[25%]"></div>

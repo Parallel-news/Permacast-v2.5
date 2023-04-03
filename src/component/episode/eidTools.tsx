@@ -226,7 +226,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
             {props.playButton}
             <DescriptionButton
                 icon={<HeartIcon className={episodeIconStyling} />} 
-                text={"Tip"}
+                text={t("tip")}
                 color={color} 
                 onClick={props.setLoadTipModal}
             />
