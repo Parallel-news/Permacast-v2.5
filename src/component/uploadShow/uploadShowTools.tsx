@@ -268,7 +268,6 @@ export const ShowForm = (props: ShowFormInter) => {
         } catch (e) {
             console.log(e); handleErr(EVERPAY_BALANCE_ERROR, setSubmittingShow); return;
         }
-        console.log("Payload: ", createShowPayload)
         //Error handling and timeout needed for this to complete redirect
         setTimeout(async function () {
             const result = await axios.post('/api/exm/write', createShowPayload);
@@ -276,16 +275,12 @@ export const ShowForm = (props: ShowFormInter) => {
             setSubmittingShow(false)
             //EXM call, set timeout, then redirect. 
             toast.success(SHOW_UPLOAD_SUCCESS, {style: TOAST_DARK})
-            console.log("allFieldsFilled: ", allFieldsFilled(validationObject))
-            console.log("validation Object: ", validationObject)
             setTimeout(async function () {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
                 window.location.assign(`/creator/${identifier}`);
             }, 500)
         }, 5000)
     }
-
-    console.log("podcasts: ", props.podcasts)
 
     return (
         <div className={showFormStyling}>
@@ -392,6 +387,10 @@ export const ShowForm = (props: ShowFormInter) => {
                         {uploadCost !== 0 && podcastDescription_.length > 0 && podcastCover_ && (
                         <p className="mt-2 text-neutral-400">{"Upload Cost: "+(Number(uploadCost)).toFixed(6) +" AR"}</p>
                         )}
+                        <button onClick={() => {
+                            console.log("allFieldsFilled: ", allFieldsFilled(validationObject))
+                            console.log("validationObject: ", validationObject)
+                        }}>Show Stuff</button>
                     </div>
                 </div>
                 <div className="w-[25%]"></div>
@@ -453,6 +452,7 @@ export const CoverContainer = (props: CoverContainerInter) => {
               setShowCrop(true);
             } else {
               setImg(URL.createObjectURL(event.target.files[0]));
+              props.setCover(URL.createObjectURL(event.target.files[0]))
             }
           };
         }

@@ -13,10 +13,11 @@ import Link from "next/link";
 import { useRecoilState } from "recoil";
 import { loadTipModal } from "../../atoms";
 import { useArconnect } from "react-arconnect";
-import { useTranslation } from "react-i18next";
 import { queryMarkdownByTX } from "../../utils/markdown";
 import { RssIcon } from "@heroicons/react/24/solid";
 import { PERMACAST_HELPER_URL, RSS_FEED_URL } from "../../constants";
+import { useTranslation, initReactI18next } from 'react-i18next';
+import i18n from 'i18next';
 
 export default function pidTools() {
     return false
@@ -88,13 +89,13 @@ export const PodcastInfo = (props: PodcastInfoInter) => {
                 className="object-cover rounded-3xl"
             />
             <div className={podcastInfoTitleDivStyling}>
-                <p className={podcastInfoTitleStyling} style={{color: props.color}}>{props.title}</p>
+                <p className={podcastInfoTitleStyling}>{props.title}</p>
                 <MarkdownRenderer markdownText={markdownText} color={props.color === "rgb(0, 0, 0)" ? 'text-black' : 'text-white'}/>
             </div>
         </div>
     )
 }
-
+//style={{color: props.color}}
 export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
     const { t } = useTranslation();
     const { color, podcastId } = props
