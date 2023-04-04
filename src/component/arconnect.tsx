@@ -88,12 +88,14 @@ export default function ArConnect() {
             css={{ backgroundColor: "#18181B", color: "white" }}
             className='hover:bg-zinc-700'
           >
-            <Link
-              href={item.href}
-              onClick={item.key === "disconnect" && (() => arconnectDisconnect())}
-            >
-              {t(item.name)}
-            </Link>
+            <>
+              {item.key === "disconnect" && <button onClick={() => arconnectDisconnect()}>{t(item.name)}</button>}
+              {item.key !== "disconnect" && (
+                <Link href={item.href}>
+                  {t(item.name)}
+                </Link>
+              )}
+            </>
           </Dropdown.Item>
         )}
       </Dropdown.Menu>
