@@ -87,7 +87,7 @@ export const creatorLabelSmallStyling = `select-text text-sm font-medium text-[#
 export const WhiteLargeFont = `text-3xl font-bold text-white `;
 export const podcastCarouselStyling = `w-full mt-8 carousel gap-x-12 py-3`;
 export const flexCol = `flex flex-col`;
-export const flexItemsCenter = `flex flex-col md:flex-row items-center `;
+export const flexItemsCenter = `flex flex-col md:flex-row items-center `; 
 export const CreatorPageStyling = "mt-12 h-full pb-40";
 export const hoverableLinkButton = "px-3 py-2 rounded-full text-sm ml-5 cursor-pointer hover:brightness-[3] default-animation";
 
