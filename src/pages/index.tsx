@@ -21,7 +21,7 @@ import Track from '../component/reusables/track';
 import { getContractVariables } from '../utils/contract';
 import GetFeatured from '../component/home/getFeatured';
 
-interface props {isProduction: string, contractAddress: string};
+interface props {isProduction: boolean, contractAddress: string};
 
 const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
 
@@ -65,7 +65,7 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
   return (
     <div className="w-full pb-10 mb-10">
       <Greeting />
-      {isProduction !== "true" &&
+      {isProduction !== true &&
         <div className="select-text">
           <p className='text-yellow-500 font-bold'>Heads up: isProduction !== "true"</p>
           <p className="text-teal-300">Address: {contractAddress}</p>
