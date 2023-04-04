@@ -61,13 +61,13 @@ interface Podcast {
 }
 
 // 2. Stylings
-//flex flex-col lg:justify-start w-[100%] lg:w-[60%] space-y-2 m-0
+//flex flex-col xl:justify-start w-[100%] xl:w-[60%] space-y-2 m-0
 export const podcastInfoDescStyling = "text-neutral-400 text-[12px]"
-export const podcastInfoMobileStyling = "flex flex-col lg:flex-row items-center space-x-16 justify-start lg:justify-start lg:hidden"
-export const podcastInfoStyling = "items-center space-x-16 justify-start lg:justify-start hidden lg:flex lg:flex-row"
+export const podcastInfoMobileStyling = "flex flex-col xl:flex-row items-center space-x-16 justify-start xl:justify-start xl:hidden"
+export const podcastInfoStyling = "items-center space-x-16 justify-start xl:justify-start hidden xl:flex xl:flex-row"
 export const podcastInfoTitleStyling = "text-3xl font-semibold select-text items-start justify-start"
-export const podcastButtonsStyling = "flex flex-row items-center space-x-6 justify-center lg:justify-start"
-export const podcastBannerStyling = "flex flex-col lg:flex-row w-full justify-between px-0.5 sm:px-8 lg:px-24 space-y-8 lg:space-y-0 text-center lg:text-left w-full"
+export const podcastButtonsStyling = "flex flex-row items-center space-x-6 justify-center xl:justify-start"
+export const podcastBannerStyling = "flex flex-col xl:flex-row w-full justify-between px-0.5 sm:px-8 xl:px-24 space-y-8 xl:space-y-0 text-center xl:text-left w-full"
 export const podcastInfoTitleDivStyling = "flex flex-col ml-0 m-0 mr-[64px]"
 
 // 3. Custom Functions
@@ -106,7 +106,7 @@ export const PodcastInfoMobile = (props: PodcastInfoInter) => {
     }, []);
 
     return (
-        <div className="flex flex-col justify-center items-center px-4 lg:hidden space-y-6">
+        <div className="flex flex-col justify-center items-center px-4 xl:hidden space-y-6">
             <Image
                 src={props.imgSrc}
                 alt="Podcast Cover"
