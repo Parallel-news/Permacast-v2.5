@@ -266,7 +266,7 @@ export const showShikwasaPlayer: ShowShikwasaPlayerInterface = ({
       title: title,
       artist: artist,
       cover: ARSEED_URL + cover,
-      src: ARWEAVE_READ_LINK + src,
+      src: ARSEED_URL + src,
       color: playerColorScheme,
     },
     download: true
