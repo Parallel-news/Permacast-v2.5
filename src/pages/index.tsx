@@ -16,10 +16,11 @@ import {
   podcastsAtom
 } from "../atoms/index";
 
-import { Episode, EXMDevState, FullEpisodeInfo, Podcast } from '../interfaces';
+import { Episode, EXMDevState, FeaturedChannel, FullEpisodeInfo, Podcast } from '../interfaces';
 import Track from '../component/reusables/track';
-import { getContractVariables } from '../utils/contract';
+import { getContractVariables, getFeaturedChannelsContract } from '../utils/contract';
 import GetFeatured from '../component/home/getFeatured';
+import { findPodcast } from '../utils/filters';
 
 interface props {isProduction: boolean, contractAddress: string};
 
@@ -53,7 +54,11 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
       const sorted = episodes.sort((episodeA, episodeB) => episodeB.episode.uploadedAt - episodeA.episode.uploadedAt);
       setLatestEpisodes(sorted.splice(0, 3));
       const sortedPodcasts = podcasts.filter((podcast: Podcast) => podcast.episodes.length > 0 && !podcast.podcastName.includes("Dick"));
-      setPodcasts_([...(featuredState?.featured_channels || []) ,...sortedPodcasts].splice(0, 4));
+      const featuredChannels = featuredState?.featured_channels
+        .map(
+          (channel: FeaturedChannel) => findPodcast(channel.pid, podcasts))
+            .filter((channel: FeaturedChannel) => channel);
+      setPodcasts_([...(featuredChannels || []) ,...sortedPodcasts].splice(0, 4));
       setLoading(false);
     };
     const fetchFeatured = async () => {
@@ -121,6 +126,7 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
 
 export async function getStaticProps({ locale }) {
   const { isProduction, contractAddress } = await getContractVariables();
+  const { isProduction: featuredIsProduction, contractAddress: featuredContractAddress } = await getFeaturedChannelsContract();
 
   return {
     props: {
@@ -128,7 +134,9 @@ export async function getStaticProps({ locale }) {
         'common',
       ])),
       isProduction,
-      contractAddress
+      contractAddress,
+      featuredIsProduction,
+      featuredContractAddress,
     },
   }
 }
