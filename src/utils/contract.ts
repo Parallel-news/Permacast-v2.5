@@ -16,5 +16,7 @@ export const getContractVariables = (): ContractVariables => {
 };
 
 export const getFeaturedChannelsContract = (): ContractVariables => {
-  return { contractAddress: "zyeTjKzVgKS6iu6g7JIeoXwOIBgpu_7LW8pRSjtKzPI", isProduction: true };
-}
+  const isProduction = process.env.IS_PROD === 'true' ? true : false;
+  const contractAddress = isProduction ? process.env.EXM_FEATURED_CHANNEL_PROD_ADDRESS: process.env.EXM_FEATURED_CHANNEL_DEV_ADDRESS;
+  return { contractAddress, isProduction };
+};
