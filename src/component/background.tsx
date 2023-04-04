@@ -21,6 +21,7 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
     "/",
     "/search",
     "/upload-podcast",
+    "/upload-episode"
   ];
 
   useEffect(() => {
