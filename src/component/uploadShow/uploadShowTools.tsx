@@ -79,7 +79,7 @@ export const photoIconStyling = "h-11 w-11 text-zinc-400"
 export const explicitLabelStyling = "flex items-center mr-5"
 export const mediaSwitcherLabelStyling = "flex items-center label"
 export const imgStyling = "h-48 w-48 text-slate-400 rounded-[20px]"
-export const selectDropdownRowStyling = "flex flex-row w-full justify-between"
+export const selectDropdownRowStyling = "flex flex-col sm:flex-row w-full justify-between space-y-2 sm:space-y-0"
 export const explicitCheckBoxStyling = "checkbox mr-2 border-2 border-zinc-600"
 export const emptyCoverIconTextStyling = "text-lg tracking-wider pt-2 text-zinc-400"
 export const explicitTextStyling = "label-text cursor-pointer text-zinc-400 font-semibold"
@@ -288,16 +288,16 @@ export const ShowForm = (props: ShowFormInter) => {
     return (
         <div className={showFormStyling}>
             {/*First Row*/}
-            <div className="flex flex-row w-full">
+            <div className="flex flex-col justify-center items-center lg:items-start lg:flex-row w-full">
                 {/*
                     Cover
                 */}
-                <div className="w-[25%] flex justify-center">
+                <div className="w-[25%] flex justify-center mb-4 lg:mb-0">
                     <CoverContainer 
                         setCover={setPodcastCover_}
                     />
                 </div>
-                <div className="flex flex-col w-[50%] space-y-3">
+                <div className="flex flex-col w-[95%] md:w-[75%] lg:w-[50%] space-y-3">
                     {/*
                         Episode Name
                     */}
@@ -379,7 +379,7 @@ export const ShowForm = (props: ShowFormInter) => {
                         )}
                         {!address && (
                             <ConnectButton 
-                                width="w-[50%]"
+                                width="w-[75%] md:w-[50%]"
                                 disable={false}
                                 click={() => connect()}
                             />
@@ -390,10 +390,6 @@ export const ShowForm = (props: ShowFormInter) => {
                         {uploadCost !== 0 && podcastDescription_.length > 0 && podcastCover_ && (
                         <p className="mt-2 text-neutral-400">{"Upload Cost: "+(Number(uploadCost)).toFixed(6) +" AR"}</p>
                         )}
-                        <button onClick={() => {
-                            console.log("allFieldsFilled: ", allFieldsFilled(validationObject))
-                            console.log("validationObject: ", validationObject)
-                        }}>Show Stuff</button>
                     </div>
                 </div>
                 <div className="w-[25%]"></div>
@@ -542,25 +538,44 @@ export const ImgCover = (props: ImgCoverInter) => {
 
 export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
     return (
-        <div className={selectDropdownRowStyling}>
+        <div className={`${selectDropdownRowStyling} space-y-3`}>
             {/*Categories*/}
+            <div className="sm:hidden flex justify-between">
+                <select
+                    className={`${selectDropdownStyling} sm:mr-[2%] w-[47%]`}
+                    id="podcastCategory"
+                    name="category"
+                    onChange={(e) => props.setCategory(e.target.value)}
+                >
+                    <CategoryOptions />
+                </select>
+                {/*Languages*/}
+                <select
+                    className={`${selectDropdownStyling} sm:mr-[2%] w-[47%]`}
+                    id="podcastLanguage"
+                    name="language"
+                    onChange={(e) => props.setLanguage(e.target.value)}
+                >
+                    <LanguageOptions />
+                </select>
+            </div>
             <select
-                className={`${selectDropdownStyling} mr-[2%]`}
-                id="podcastCategory"
-                name="category"
-                onChange={(e) => props.setCategory(e.target.value)}
-            >
-                <CategoryOptions />
-            </select>
-            {/*Languages*/}
-            <select
-                className={`${selectDropdownStyling} mr-[2%]`}
-                id="podcastLanguage"
-                name="language"
-                onChange={(e) => props.setLanguage(e.target.value)}
-            >
-                <LanguageOptions />
-            </select>
+                    className={`${selectDropdownStyling} hidden sm:flex mr-[2%]`}
+                    id="podcastCategory"
+                    name="category"
+                    onChange={(e) => props.setCategory(e.target.value)}
+                >
+                    <CategoryOptions />
+                </select>
+                {/*Languages*/}
+                <select
+                    className={`${selectDropdownStyling} hidden sm:flex mr-[2%]`}
+                    id="podcastLanguage"
+                    name="language"
+                    onChange={(e) => props.setLanguage(e.target.value)}
+                >
+                    <LanguageOptions />
+                </select>
             {/*Label*/}
             <LabelInput 
                 setLabel={props.setLabel}

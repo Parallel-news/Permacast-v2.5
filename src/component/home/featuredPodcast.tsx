@@ -1,6 +1,6 @@
 import React, { useState, useEffect, FC } from "react";
 import { useTranslation } from "next-i18next";
-import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
+import { determinePodcastURL, fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 import { arweaveTX, Podcast } from "../../interfaces/index";
 import Link from "next/link";
 import FeaturedPodcastPlayButton from "./featuredPodcastPlayButton";
@@ -159,7 +159,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
   return (
     <Link 
       passHref
-      href={`/podcast/${pid}`}
+      href={`/podcast/${determinePodcastURL(label, pid)}`}
       className={podcastOuterBackgroundStyling}
       style={{ backgroundColor: themeColor }}
     >

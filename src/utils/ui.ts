@@ -4,7 +4,10 @@ import { ShowShikwasaPlayerInterface } from '../interfaces/playback';
 import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
 import { podcastCoverColorManager } from './localstorage';
 import { ARSEED_URL } from '../constants/index.js';
-import { arweaveTX } from '../interfaces/index.js';
+import { arweaveTX, Podcast } from '../interfaces/index.js';
+import { trimChars } from './filters';
+
+export const determinePodcastURL = (label: string, pid: string) => label || trimChars(pid);
 
 // Allows for Alpha
 export function rgba2hex(orig) {
@@ -197,12 +200,17 @@ export function getButtonRGBs(rgb: RGB, textLightness=0.8, backgroundLightness=0
 // Fetches the color, but also stores it in memory for later use.
 export const fetchDominantColor = async (cover: string): Promise<FastAverageColorResult> => {
   if (!cover) return;
-  const savedColor = podcastCoverColorManager.getValueFromObject(cover);
-  if (savedColor) return {rgb: '', rgba: savedColor, hex: '', isDark: false, isLight: false, hexa: '', value: [0,0,0,0]};
-  const fac = new FastAverageColor();
-  const averageColor: FastAverageColorResult = await fac.getColorAsync(ARSEED_URL + cover, { algorithm: 'dominant' })
-  podcastCoverColorManager.addValueToObject(cover, averageColor.rgba); //? in the future, if this becomes too big, save first 10 chars.
-  return averageColor;
+  try {
+    const savedColor = podcastCoverColorManager.getValueFromObject(cover);
+    if (savedColor) return {rgb: '', rgba: savedColor, hex: '', isDark: false, isLight: false, hexa: '', value: [0,0,0,0]};
+    const fac = new FastAverageColor();
+    const averageColor: FastAverageColorResult = await fac.getColorAsync(ARSEED_URL + cover, { algorithm: 'dominant' })
+    podcastCoverColorManager.addValueToObject(cover, averageColor.rgba);
+    return averageColor;      
+  } catch {
+    console.log('error fetching dominant color')
+    return {rgb: '', rgba: '', hex: '', isDark: false, isLight: false, hexa: '', value: [0,0,0,0]};
+  }
 };
 
 export const getCoverColorScheme = (RGBAstring: RGBorRGBAstring): RGBorRGBAstring[] => {

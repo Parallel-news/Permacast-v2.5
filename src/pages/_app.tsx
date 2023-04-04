@@ -14,7 +14,8 @@ import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import '../styles/globals.css';
 import { PERMISSIONS } from '../constants/arconnect';
-import QueryPodcasts from '../component/QueryPodcasts';
+import QueryPodcasts from '../component/loaders/QueryPodcasts';
+import QueryANS from '../component/loaders/QueryANS';
 
 // fetch data in _app.tsx -> populate recoil -> re-write search to query from that recoil state, if it fails then fuse.js
 function App({ Component, pageProps }) {
@@ -44,6 +45,7 @@ function App({ Component, pageProps }) {
           </Head>
         <ArconnectProvider permissions={PERMISSIONS}>
           <QueryPodcasts />
+          <QueryANS />
           <Script
             async
             src="https://www.googletagmanager.com/gtag/js?id=G-4XDV8F7VJB"

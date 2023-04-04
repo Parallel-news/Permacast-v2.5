@@ -30,6 +30,7 @@ interface ProfileImageProps {
   avatar: string;
   address_color: string;
   size?: number;
+  borderWidth?: number;
   squared?: boolean;
   linkToArPage?: boolean;
 };
@@ -86,7 +87,7 @@ export const creatorLabelSmallStyling = `select-text text-sm font-medium text-[#
 export const WhiteLargeFont = `text-3xl font-bold text-white `;
 export const podcastCarouselStyling = `w-full mt-8 carousel gap-x-12 py-3`;
 export const flexCol = `flex flex-col`;
-export const flexItemsCenter = `flex items-center `;
+export const flexItemsCenter = `flex flex-col md:flex-row items-center `; 
 export const CreatorPageStyling = "mt-12 h-full pb-40";
 export const hoverableLinkButton = "px-3 py-2 rounded-full text-sm ml-5 cursor-pointer hover:brightness-[3] default-animation";
 
@@ -106,7 +107,7 @@ export const sortByDate = (episodes: FullEpisodeInfo[], descending = false): Ful
 };
 
 // 4. Reusable Components
-export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, address_color, size, squared, linkToArPage }) => {
+export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, address_color, size, borderWidth, squared, linkToArPage }) => {
   const borderColor = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "rgb(169, 169, 169)" : "rgb(255, 255, 255)";
   const hex = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "#A9A9A9" : "#ffffff";
   const imageSize = size || 120;
@@ -116,7 +117,7 @@ export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, addr
   return (
     <Link
       href={linkToArPage ? resolveArDomainToArpage(currentLabel) : `/creator/${currentLabel}`}
-      style={{ borderColor: borderColor, borderWidth: '4px', borderRadius: squaredOuterBorderRadius }}
+      style={{ borderColor: borderColor, borderWidth: borderWidth || '4px', borderRadius: squaredOuterBorderRadius }}
     >
       {avatar && <Image width={imageSize} height={imageSize} alt={avatar} src={avatar} className="object-fit aspect-square" />}
       {!avatar && (

@@ -75,19 +75,11 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   useEffect(() => {
     if (!allPodcasts_) return;
     const fetchUserData = async () => {
-      const fullEpisodes: FullEpisodeInfo[] = allPodcasts_
-        .map((podcast: Podcast) => podcast.episodes
-          .map((episode: Episode, index: number) => 
-            ({podcast, episode: {...episode, order: index}})))
-              .flat();
-      const usersPodcasts = removeDuplicates(fullEpisodes)
-        .filter((podcast: FullEpisodeInfo) => podcast.podcast.owner === user)
-          .map((podcast) => podcast.podcast)
-            .splice(0, 20);
-      setPodcasts(usersPodcasts);
-      const userEpisodes = usersPodcasts.map((podcast: Podcast) => 
+      const podcasts: Podcast[] = allPodcasts_.filter((podcast: Podcast) => podcast.owner === user);
+      const userEpisodes = podcasts.map((podcast: Podcast) => 
         podcast.episodes.map((episode: Episode) => ({episode, podcast}))
       ).flat(1).splice(0, 3);
+      setPodcasts(podcasts);
       setEpisodes(sortByDate(userEpisodes));
     };
     fetchUserData();

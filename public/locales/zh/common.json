@@ -3,6 +3,12 @@
 	"tooltip": {
 		"coming-soon": "即将推出"
 	},
+	"arconnect": {
+    "profile": "查看个人资料",
+    "arpage": "在 ar.page 上查看",
+		"everpay": "使用 Everpay 充值",
+    "disconnect": "断开连接"
+  },
 	"navbar": {
 		"home": "主页",
 		"help": "获取帮助",

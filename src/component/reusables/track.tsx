@@ -4,14 +4,18 @@ import React, { FC, useState, useMemo } from "react";
 import { useTranslation } from "next-i18next";
 import { shortenAddress } from "react-arconnect";
 
-import { arweaveTX, FullEpisodeInfo } from "../../interfaces";
-import { fetchDominantColor, getButtonRGBs, getCoverColorScheme, RGBAstringToObject, RGBobjectToString, RGBstringToObject } from "../../utils/ui";
+import { ANSMapped, arweaveTX, FullEpisodeInfo } from "../../interfaces";
+import { determinePodcastURL, fetchDominantColor, getButtonRGBs, getCoverColorScheme, RGBAstringToObject, RGBobjectToString, RGBstringToObject } from "../../utils/ui";
 import { useShikwasa } from "../../hooks";
 import { showShikwasaPlayerArguments } from "../../interfaces/playback";
 import PlayButton from "./playButton";
 import MarkdownRenderer from "../markdownRenderer";
 import { queryMarkdownByTX } from "../../utils/markdown";
 import { ARSEED_URL } from "../../constants";
+import { trimChars } from "../../utils/filters";
+import { flexCenter } from "../creator/featuredCreators";
+import { allANSUsersAtom } from "../../atoms";
+import { useRecoilState } from "recoil";
 
 /**
  * Index
@@ -35,7 +39,7 @@ export interface TrackProps {
 };
 
 export interface PodcastCoverProps {
-  pid?: string;
+  podcastURL?: string;
   cover?: string;
   alt: string;
 };
@@ -46,7 +50,7 @@ export interface ButtonStyle {
 };
 
 export interface EpisodeLinkableTitleProps {
-  pid: string;
+  podcastURL: string;
   eid: string;
   episodeName: string;
 };
@@ -71,28 +75,16 @@ export interface TrackPlayButtonProps {
   accentColor: string;
 };
 
-export interface MemoizedComponentProps {
-  pid: string,
-  coverUsed: string,
-  podcastName: string,
-  eid: string,
-  episodeName: string,
-  uploader: string,
-  coverColor: string,
-  author: string,
-  includeDescription: boolean,
-  description?: arweaveTX,
-}
-
 // 2. Stylings
 
-const trackFlexCenterYStyling = `flex items-center mt-1`;
-const trackFlexCenterPaddedYStyling = `flex items-center p-3`;
-const trackFlexCenterBothStyling = `flex items-center justify-between border-zinc-600 border-2 rounded-2xl pr-4`;
-const trackEpisodeLinkableTitleStyling = `cursor-pointer line-clamp-1 pr-2 text-sm hover:underline`;
-const trackByStyling = `text-zinc-400 text-[10px] mr-2`;
-const trackBackgroundColorStyling = `rounded-full cursor-pointer flex items-center min-w-max text-[10px] gap-x-1 px-2 py-0.5 focus:brightness-150 hover:brightness-125 default-animation`;
-const trackDescriptionStyling = `mx-1.5 w-full line-clamp-1 text-xs`;
+export const trackFlexCenterYStyling = `${flexCenter} mt-1 `;
+export const trackFlexCenterPaddedYStyling = `${flexCenter} p-3 `;
+export const trackFlexCenterBothStyling = `${flexCenter} justify-between border-zinc-600 border-2 rounded-2xl pr-4 `;
+export const trackEpisodeLinkableTitleStyling = `cursor-pointer line-clamp-1 pr-2 text-sm hover:underline `;
+export const trackByStyling = `text-zinc-400 text-[10px] mr-2 `;
+export const trackBackgroundColorStyling = `rounded-full cursor-pointer flex items-center min-w-max text-[10px] gap-x-1 px-2 py-0.5 focus:brightness-150 hover:brightness-125 default-animation `;
+export const trackDescriptionStyling = `mx-1.5 w-full line-clamp-1 text-xs `;
+export const trackMainInfoStyling = `ml-4 flex flex-col min-w-[160px] `;
 
 // 3. Custom Functions
 
@@ -102,9 +94,9 @@ const trackDescriptionStyling = `mx-1.5 w-full line-clamp-1 text-xs`;
 
 // 4. Reusable Components
 
-export const PodcastCover: FC<PodcastCoverProps> = ({ pid, cover, alt }) => {
+export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt }) => {
   if (cover) return (
-    <Link href={`/podcast/${pid}`} className={`w-14 h-14 shrink-0`}>
+    <Link href={`/podcast/${podcastURL}`} className={`w-14 h-14 shrink-0`}>
       <Image
         width={56}
         height={56}
@@ -116,10 +108,10 @@ export const PodcastCover: FC<PodcastCoverProps> = ({ pid, cover, alt }) => {
   );
 };
 
-export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ pid, eid, episodeName }) => {
+export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ podcastURL, eid, episodeName }) => {
   return (
     <Link
-      href={`/episode/${pid}/${eid}`}
+      href={`/episode/${podcastURL}/${trimChars(eid)}`}
       className={trackEpisodeLinkableTitleStyling}
     >
       {episodeName}
@@ -138,7 +130,7 @@ export const TrackCreatorLink: FC<TrackCreatorLinkProps> = ({ uploader, buttonSt
         className="h-2.5 w-2.5 rounded-full"
         style={{backgroundColor: coverColor}}
       ></div>
-      <div>{shortenAddress(uploader || author || "", 8)}</div>
+      <div>{uploader || author || ""}</div>
     </Link>
   );
 };
@@ -155,7 +147,14 @@ export const TrackPlayButton: FC<TrackPlayButtonProps> = ({ playerInfo, episode,
 
   const { playerState, launchPlayer, togglePlay } = useShikwasa();
 
-  const { currentPodcast, currentEpisode, isPlaying } = playerState;
+  let currentPodcast, currentEpisode, isPlaying;
+
+  if (playerState) {
+    currentPodcast = playerState?.currentPodcast;
+    currentEpisode = playerState?.currentEpisode;
+    isPlaying = playerState?.isPlaying;
+  }
+  
   const episodeInfo = episode.episode;
   const podcastInfo = episode.podcast;
 
@@ -189,6 +188,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
   const { episode, openFullscreen, includeDescription, includePlayButton } = props;
   const {
     cover,
+    label,
     minifiedCover,
     author,
     podcastName,
@@ -204,10 +204,20 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
 
   const coverUsed = minifiedCover || cover;
 
+  const [allANSUsers, setAllANSUsers] = useRecoilState(allANSUsersAtom);
+
   const [coverColor, setCoverColor] = useState<string>('');
   const [textColor, setTextColor] = useState<string>('');
   const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({backgroundColor: '', color: ''})
   const [markdown, setMarkdown] = useState<string>('');
+  const [artist, setArtist] = useState<string>('');
+
+  useMemo(() => {
+    const ANS = allANSUsers.find((user: ANSMapped) => user.address === uploader);
+    console.log(ANS)
+    if (ANS) setArtist(ANS.primary + ".ar");
+    else setArtist(shortenAddress(uploader || author || "", 8));
+  }, []);
 
   useMemo(() => {
     const fetchData = async () => {
@@ -222,37 +232,10 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
       setTextColor(textColor);
       setButtonStyles(buttonStyles);
       const markdown = (await queryMarkdownByTX(description));
-      setMarkdown(markdown)
+      setMarkdown(markdown);
     };
     fetchData();
   }, []);
-
-  const MemoizedTrackInfo: React.FC<MemoizedComponentProps> = React.memo(({
-    pid,
-    coverUsed,
-    podcastName,
-    eid,
-    episodeName,
-    uploader,
-    coverColor,
-    author,
-    includeDescription,
-    description,
-  }) => {
-    return (
-      <div className={trackFlexCenterPaddedYStyling}>
-        <PodcastCover {...{ pid, cover: coverUsed, alt: podcastName }} />
-        <div className="ml-4 flex flex-col min-w-[100px]">
-          <EpisodeLinkableTitle {...{ pid, eid, episodeName }} />
-          <div className={trackFlexCenterYStyling}>
-            <p className={trackByStyling}>{t("track.by")}</p>
-            <TrackCreatorLink {...{ uploader, buttonStyles, coverColor, author }} />
-          </div>
-        </div>
-        <TrackDescription {...{ includeDescription, description: markdown }} />
-      </div>
-    );
-  });
 
   const playerInfo = {
     playerColorScheme: coverColor,
@@ -260,14 +243,26 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     accentColor: textColor,
     openFullscreen, 
     title: episodeName,
-    artist: shortenAddress(uploader || author || "", 8),
+    artist,
     cover: coverUsed,
     src: contentTx,
   };
 
+  const podcastURL =  determinePodcastURL(label, pid);
+
   return (
     <div className={trackFlexCenterBothStyling}>
-      <MemoizedTrackInfo {...{ pid, coverUsed, podcastName, eid, episodeName, uploader, coverColor, author, description, includeDescription }} />
+      <div className={trackFlexCenterPaddedYStyling}>
+        <PodcastCover {...{ podcastURL, cover: coverUsed, alt: podcastName }} />
+        <div className={trackMainInfoStyling}>
+          <EpisodeLinkableTitle {...{ podcastURL, eid, episodeName }} />
+          <div className={trackFlexCenterYStyling}>
+            <p className={trackByStyling}>{t("track.by")}</p>
+            <TrackCreatorLink {...{ uploader: artist, buttonStyles, coverColor, author }} />
+          </div>
+        </div>
+        <TrackDescription {...{ includeDescription, description: markdown }} />
+      </div>
       <TrackPlayButton {...{ playerInfo, episode, includePlayButton, buttonColor: coverColor, accentColor: coverColor }} />
     </div>
   );

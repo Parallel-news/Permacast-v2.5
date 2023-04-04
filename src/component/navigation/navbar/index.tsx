@@ -1,3 +1,4 @@
+import { FC } from "react";
 import { useTranslation } from "next-i18next";
 import { Disclosure } from "@headlessui/react";
 
@@ -8,15 +9,9 @@ import {
 import ArConnect from "../../arconnect";
 import Searchbar from "../../searchbar";
 import LANGUAGES from "../../../utils/languages";
-import { useRecoilState } from "recoil";
-import { arweaveAddress } from "../../../atoms";
-import { EverPayBalance } from "../../../utils/everpay/EverPayBalance";
-import { FC } from "react";
+import Link from "next/link";
 
 export const NavBar: FC = () => {
-  const { t } = useTranslation();
-  const [arweaveAddress_, ] = useRecoilState(arweaveAddress);
-  const everPayStyling = "flex justify-center items-center text-sm text-white focus:outline-white wallet-button font-semibold bg-zinc-900 hover:bg-zinc-700 default-animation rounded-full w-[12%] mx-2";
   return (
     <div className="mb-10 ">
       <div className="md:hidden">
@@ -27,15 +22,9 @@ export const NavBar: FC = () => {
           <div className="w-4/5">
             <Searchbar />
           </div>
-          <div className="ml-2 w-64">
+          <div className="ml-2 w-80">
             <ArConnect />
           </div>
-          {/* TODO: Re-write */}
-          {arweaveAddress_ && arweaveAddress_.length > 0 && (
-          <EverPayBalance
-            textClassname={everPayStyling}
-          />
-          )}
         </div>
       </div>
     </div>
@@ -103,34 +92,27 @@ export function NavBarMobile() {
                     as="div"
                     className="block px-3 py-2 rounded-md"
                   >
-                    <div onClick={() => ""}>{t("navbar.home")}</div>
-                  </Disclosure.Button>
-                  <Disclosure.Button
-                    as="a"
-                    href="https://t.me/permacast"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="block px-3 py-2 rounded-md"
-                  >
-                    {t("navbar.help")}
+                    <Link href="/">
+                      {t("navbar.home")}
+                    </Link>
                   </Disclosure.Button>
                   <Disclosure.Button
                     as="a"
                     className="block px-3 py-2 rounded-md cursor-pointer"
                   >
-                    <span onClick={() => console.log('')}>
-                      {t("navbar.new")}
-                    </span>
-                  </Disclosure.Button>
-                  <Disclosure.Button
-                    as="a"
-                    className="block px-3 py-2 rounded-md cursor-pointer"
-                  >
-                    <div onClick={() => ("uploadpodcast")}>
+                    <Link href="/upload-podcast">
                       {t("uploadshow.addpodcast")}
-                    </div>
+                      </Link>
                   </Disclosure.Button>
 
+                  <Disclosure.Button
+                    as="a"
+                    className="block px-3 py-2 rounded-md cursor-pointer"
+                  >
+                    <Link href="/upload-episode">
+                      {t("podcast.newepisode")}
+                    </Link>
+                  </Disclosure.Button>
                   <Disclosure.Button as="div" className="block py-2 rounded-md">
                     <ArConnect />
                   </Disclosure.Button>
