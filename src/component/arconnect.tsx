@@ -47,13 +47,13 @@ export default function ArConnect() {
   console.log("ANS: ", ANS)
   return (
     <Dropdown>
-      <button 
-        className="w-full h-12 btn-base-color items-center flex px-3 justify-center mx-auto text-sm md:text-base normal-case focus:outline-white default-animation"
-        onClick={connect}
-      >
+      <>
         {(walletConnected && (
           <Dropdown.Button 
-            style={{ backgroundColor: "#FFFFFF00" }} 
+            style={{ 
+              backgroundColor: "#FFFFFF00",
+            }}
+            className='w-full h-12 hover:bg-zinc-700 bg-zinc-900 rounded-full items-center flex px-3 justify-center mx-auto text-sm md:text-base normal-case focus:outline-white default-animation'
           >
             <span>
               {ANS?.currentLabel ? `${ANS?.currentLabel}.ar` : shortenAddress(address)}
@@ -69,16 +69,18 @@ export default function ArConnect() {
             }
           </Dropdown.Button>
         )) || (
-          <>
+          <button 
+            className="w-full h-12 btn-base-color items-center flex px-3 justify-center mx-auto text-sm md:text-base normal-case focus:outline-white default-animation"
+            onClick={connect}
+          >
             🦔 {t("connector.login")}
-          </>
+          </button>
         )}
-      </button>
+      </>
       <Dropdown.Menu 
         aria-label="Dynamic Actions" 
         items={menuItems} 
-        css={{ backgroundColor: "#18181B" }}
-        
+        css={{ backgroundColor: "#18181B", width: '48px' }}
       >
         {(item) => (
             <Dropdown.Item
@@ -88,6 +90,7 @@ export default function ArConnect() {
               color={item.key === "delete" ? "error" : "default"}
               //@ts-ignore
               css={{ backgroundColor: "#18181B", color: "white" }}
+              className='hover:bg-zinc-700'
             >
               {/*ts-ignore*/}
               <Link href={
