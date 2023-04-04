@@ -19,7 +19,7 @@ interface LayoutInterface {
 export const AppStyling = "select-none h-full bg-black overflow-hidden";
 export const AppInnerStyling = "flex h-screen overflow-x-hidden relative";
 export const BackgroundWrapperStyling = "w-screen overflow-y-scroll overflow-x-hidden z-[1]";
-export const InnerLayoutStyling = "ml-8 pr-8 pt-9 z-[3]";
+export const InnerLayoutStyling = "ml-0 lg:ml-8 lg:pr-8 pt-2 lg:pt-9 z-[3]";
 export const ParentStyling = "w-full overflow-hidden z-[3]";
 
 const Layout: FC<LayoutInterface> = ({ children }) => {

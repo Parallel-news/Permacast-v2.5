@@ -61,12 +61,14 @@ interface Podcast {
 }
 
 // 2. Stylings
+//flex flex-col lg:justify-start w-[100%] lg:w-[60%] space-y-2 m-0
 export const podcastInfoDescStyling = "text-neutral-400 text-[12px]"
-export const podcastInfoStyling = "flex flex-row items-center space-x-16 select-text"
-export const podcastInfoTitleStyling = "text-3xl font-semibold select-text"
-export const podcastButtonsStyling = "flex flex-row items-center space-x-6"
-export const podcastBannerStyling = "flex flex-row w-full justify-between px-24"
-export const podcastInfoTitleDivStyling = "flex flex-col justify-start w-[60%] space-y-2"
+export const podcastInfoMobileStyling = "flex flex-col lg:flex-row items-center space-x-16 justify-start lg:justify-start lg:hidden"
+export const podcastInfoStyling = "items-center space-x-16 justify-start lg:justify-start hidden lg:flex lg:flex-row"
+export const podcastInfoTitleStyling = "text-3xl font-semibold select-text items-start justify-start"
+export const podcastButtonsStyling = "flex flex-row items-center space-x-6 justify-center lg:justify-start"
+export const podcastBannerStyling = "flex flex-col lg:flex-row w-full justify-between px-0.5 sm:px-8 lg:px-24 space-y-8 lg:space-y-0 text-center lg:text-left w-full"
+export const podcastInfoTitleDivStyling = "flex flex-col ml-0 m-0 mr-[64px]"
 
 // 3. Custom Functions
 
@@ -92,6 +94,28 @@ export const PodcastInfo = (props: PodcastInfoInter) => {
                 <p className={podcastInfoTitleStyling}>{props.title}</p>
                 <MarkdownRenderer markdownText={markdownText} color={props.color === "rgb(0, 0, 0)" ? 'text-black' : 'text-white'}/>
             </div>
+        </div>
+    )
+}
+export const PodcastInfoMobile = (props: PodcastInfoInter) => {
+
+    const [markdownText, setMarkdownText] = useState('');
+
+    useEffect(() => {
+        queryMarkdownByTX(props.description).then(setMarkdownText);
+    }, []);
+
+    return (
+        <div className="flex flex-col justify-center items-center px-4 lg:hidden space-y-6">
+            <Image
+                src={props.imgSrc}
+                alt="Podcast Cover"
+                height={25}
+                width={150}
+                className="object-cover rounded-3xl"
+            />
+            <p className="text-3xl text-white select-text">{props.title}</p>
+            <MarkdownRenderer markdownText={markdownText} color={props.color === "rgb(0, 0, 0)" ? 'text-black' : 'text-white'}/>
         </div>
     )
 }
@@ -140,6 +164,12 @@ export const PodcastBanner = (props: PodcastBannerInter) => {
     return (
         <div className={podcastBannerStyling}>
             <PodcastInfo 
+                imgSrc={props.imgSrc}
+                title={props.title}
+                description={props.description}
+                color={props.color}
+            />
+            <PodcastInfoMobile 
                 imgSrc={props.imgSrc}
                 title={props.title}
                 description={props.description}
