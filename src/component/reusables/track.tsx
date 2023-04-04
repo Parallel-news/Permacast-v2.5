@@ -4,7 +4,7 @@ import React, { FC, useState, useMemo } from "react";
 import { useTranslation } from "next-i18next";
 import { shortenAddress } from "react-arconnect";
 
-import { arweaveTX, FullEpisodeInfo } from "../../interfaces";
+import { ANSMapped, arweaveTX, FullEpisodeInfo } from "../../interfaces";
 import { determinePodcastURL, fetchDominantColor, getButtonRGBs, getCoverColorScheme, RGBAstringToObject, RGBobjectToString, RGBstringToObject } from "../../utils/ui";
 import { useShikwasa } from "../../hooks";
 import { showShikwasaPlayerArguments } from "../../interfaces/playback";
@@ -14,6 +14,8 @@ import { queryMarkdownByTX } from "../../utils/markdown";
 import { ARSEED_URL } from "../../constants";
 import { trimChars } from "../../utils/filters";
 import { flexCenter } from "../creator/featuredCreators";
+import { allANSUsersAtom } from "../../atoms";
+import { useRecoilState } from "recoil";
 
 /**
  * Index
@@ -82,6 +84,7 @@ export const trackEpisodeLinkableTitleStyling = `cursor-pointer line-clamp-1 pr-
 export const trackByStyling = `text-zinc-400 text-[10px] mr-2 `;
 export const trackBackgroundColorStyling = `rounded-full cursor-pointer flex items-center min-w-max text-[10px] gap-x-1 px-2 py-0.5 focus:brightness-150 hover:brightness-125 default-animation `;
 export const trackDescriptionStyling = `mx-1.5 w-full line-clamp-1 text-xs `;
+export const trackMainInfoStyling = `ml-4 flex flex-col min-w-[160px] `;
 
 // 3. Custom Functions
 
@@ -127,7 +130,7 @@ export const TrackCreatorLink: FC<TrackCreatorLinkProps> = ({ uploader, buttonSt
         className="h-2.5 w-2.5 rounded-full"
         style={{backgroundColor: coverColor}}
       ></div>
-      <div>{shortenAddress(uploader || author || "", 8)}</div>
+      <div>{uploader || author || ""}</div>
     </Link>
   );
 };
@@ -201,10 +204,20 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
 
   const coverUsed = minifiedCover || cover;
 
+  const [allANSUsers, setAllANSUsers] = useRecoilState(allANSUsersAtom);
+
   const [coverColor, setCoverColor] = useState<string>('');
   const [textColor, setTextColor] = useState<string>('');
   const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({backgroundColor: '', color: ''})
   const [markdown, setMarkdown] = useState<string>('');
+  const [artist, setArtist] = useState<string>('');
+
+  useMemo(() => {
+    const ANS = allANSUsers.find((user: ANSMapped) => user.address === uploader);
+    console.log(ANS)
+    if (ANS) setArtist(ANS.primary + ".ar");
+    else setArtist(shortenAddress(uploader || author || "", 8));
+  }, []);
 
   useMemo(() => {
     const fetchData = async () => {
@@ -230,7 +243,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     accentColor: textColor,
     openFullscreen, 
     title: episodeName,
-    artist: shortenAddress(uploader || author || "", 8),
+    artist,
     cover: coverUsed,
     src: contentTx,
   };
@@ -241,11 +254,11 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     <div className={trackFlexCenterBothStyling}>
       <div className={trackFlexCenterPaddedYStyling}>
         <PodcastCover {...{ podcastURL, cover: coverUsed, alt: podcastName }} />
-        <div className="ml-4 flex flex-col min-w-[100px]">
+        <div className={trackMainInfoStyling}>
           <EpisodeLinkableTitle {...{ podcastURL, eid, episodeName }} />
           <div className={trackFlexCenterYStyling}>
             <p className={trackByStyling}>{t("track.by")}</p>
-            <TrackCreatorLink {...{ uploader, buttonStyles, coverColor, author }} />
+            <TrackCreatorLink {...{ uploader: artist, buttonStyles, coverColor, author }} />
           </div>
         </div>
         <TrackDescription {...{ includeDescription, description: markdown }} />

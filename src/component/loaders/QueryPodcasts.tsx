@@ -1,7 +1,7 @@
 import { FC, useEffect } from "react";
 import axios from 'axios';
-import { Episode, EXMDevState, FullEpisodeInfo, Podcast } from '../interfaces';
-import { allPodcasts } from '../atoms';
+import { Episode, EXMDevState, FullEpisodeInfo, Podcast } from '../../interfaces';
+import { allPodcasts } from '../../atoms';
 import { useRecoilState } from "recoil";
 
 const QueryPodcasts: FC = () => {
