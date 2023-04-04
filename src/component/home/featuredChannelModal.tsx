@@ -16,6 +16,7 @@ import DateSelector from "../dateSelector";
 import { PermaSpinner } from "../reusables/PermaSpinner";
 import { ConnectButton, containerPodcastModalStyling, SelectPodcast, tipModalStyling } from "../uploadEpisode/uploadEpisodeTools";
 import { GetFeaturedButtonStyling } from "./getFeatured";
+import { getFeaturedChannelsContract } from "../../utils/contract";
 
 interface TipModalInter {
   isVisible: boolean;
@@ -94,7 +95,8 @@ const FeaturedChannelModal: FC<TipModalInter> = ({isVisible, setIsVisible}) => {
   const payAndGetFeatured = async () => {
     setLoading(true)
     const everpay = new Everpay({account: address, chainType: ChainType.arweave, arJWK: 'use_wallet'});
-    const payment_txid = await everpay.transfer({
+    const { isProduction } = getFeaturedChannelsContract()
+    const payment_txid = !isProduction ? "" : await everpay.transfer({
       tag: EVERPAY_AR_TAG,
       amount: String((FEATURE_COST * duration).toFixed(1)),
       to: EVERPAY_FEATURE_TREASURY,
