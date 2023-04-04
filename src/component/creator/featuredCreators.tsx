@@ -96,7 +96,6 @@ export const FeaturedCreators: FC = () => {
   const wl = [
     "kaYP9bJtpqON8Kyy3RbqnqdtDBDUsPTQTNUCvZtKiFI",
     "vZY2XY1RD9HIfWi8ift-1_DnHLDadZMWrufSh-_rKF0",
-    "lIg5mdDMAAIj5Pn2BSYKI8SEo8hRIdh-Zrn_LSy_3Qg",
     "9J5tCNjf1EL7d-E2t8SQlcjMpwEWqMjDiGu0ktRApwY"
   ]
 
@@ -126,7 +125,7 @@ export const FeaturedCreators: FC = () => {
         }
       })
       
-      let sortedCounter = Object.keys(episodeCounter).sort((a, b) => episodeCounter[b] - episodeCounter[a]);
+      let sortedCounter = Object.keys(episodeCounter).sort((a, b) => episodeCounter[b] - episodeCounter[a]).splice(0, 3);
 
       let creators = await Promise.all(
         sortedCounter.map((address: string) => axios.get(`/api/ans/${address}`)
@@ -138,7 +137,7 @@ export const FeaturedCreators: FC = () => {
     fetchCreators();
   }, []);
   return (
-    <div className="h-[325px] overflow-y-auto overflow-x-hidden px-2">
+    <div className="h-[325px] overflow-y-hidden">
       <h2 className={creatorHeadingStyling}>{t("home.featuredcreators")}</h2>
       {loading ?
         <Loading {...{ loading, dummyArray: wl }} />
