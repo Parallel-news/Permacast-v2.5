@@ -14,6 +14,8 @@ export const removeDuplicates = (list: FullEpisodeInfo[]) => {
   return uniquePodcasts;
 };
 
+export const matchFirst12 = (str1: string, str2: string) => str1.slice(0, 12) === str2.slice(0, 12);
+
 export const convertPodcastsToEpisodes = (podcasts: Podcast[]) => podcasts
   .map((podcast: Podcast) => podcast.episodes
     .map((episode: Episode, index: number) => 
