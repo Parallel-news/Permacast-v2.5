@@ -56,9 +56,6 @@ export interface Podcast {
   minifiedCover: arweaveTX;
 }
 
-//! deprecated
-export interface PodcastDev extends Podcast {};
-
 export interface Episode {
   eid:         string;
   episodeName: string;

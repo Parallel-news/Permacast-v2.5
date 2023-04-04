@@ -26,6 +26,14 @@
     "hi": "你好, ",
 		"welcome": "欢迎",
 		"subtext": "让我们看看我们今天有什么",
+		"get-featured": "推广您的播客",
+		"featured-modal": {
+			"days": "天",
+			"cost": "这将花费：",
+			"feature": "推广",
+			"balance": "您的余额：",
+			"insufficient-balance": "余额不足"
+		},
 		"playfeaturedepisode": "播放录音",
 		"viewfeaturedepisode": "查看录音",
 		"episode": "插曲",

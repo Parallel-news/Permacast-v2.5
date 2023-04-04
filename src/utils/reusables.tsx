@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
-import { Podcast } from "../component/uploadEpisode/uploadEpisodeTools";
 import { CONNECT_WALLET, PODCAST_LABEL_MAX_LEN, PODCAST_LABEL_MIN_LEN, TOAST_DARK } from "../constants";
+import { Podcast } from "../interfaces";
 
 interface hexToRgbInter {
     hex: string

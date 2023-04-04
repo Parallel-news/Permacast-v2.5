@@ -1,6 +1,6 @@
 import { MouseEventHandler, useCallback, useEffect, useRef, useState } from "react"
 import { PhotoIcon } from "@heroicons/react/24/outline";
-import { ConnectButton, episodeDescStyling, episodeNameStyling, Podcast, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
+import { ConnectButton, episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
 import { LanguageOptions, CategoryOptions } from "../../utils/languages";
 import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
@@ -19,6 +19,7 @@ import { PermaSpinner } from "../reusables/PermaSpinner";
 import axios from "axios";
 import { useTranslation } from "next-i18next";
 import { Tooltip } from "@nextui-org/react";
+import { Podcast } from "../../interfaces";
 // const { t } = useTranslation();
 
 
