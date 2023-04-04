@@ -7,6 +7,8 @@ import { arweaveAddress } from '../atoms';
 import { Dropdown } from "@nextui-org/react";
 import Link from 'next/link';
 import { shortenAddress } from 'react-arconnect';
+import { ProfileImage } from './creator';
+import { ANS_TEMPLATE } from '../constants/ui';
 
 
 export default function ArConnect() {
@@ -22,6 +24,8 @@ export default function ArConnect() {
     arconnectConnect,
     arconnectDisconnect
   } = useArconnect();
+
+  const { currentLabel, avatar, address_color } = ANS || ANS_TEMPLATE;
 
   useEffect(() => {
     async function fetchData () {
@@ -55,8 +59,8 @@ export default function ArConnect() {
             }}
             className='w-full h-12 hover:bg-zinc-700 bg-zinc-900 rounded-full items-center flex px-3 justify-center mx-auto text-sm md:text-base normal-case focus:outline-white default-animation'
           >
-            <span>
-              {ANS?.currentLabel ? `${ANS?.currentLabel}.ar` : shortenAddress(address)}
+            <span className="mr-2">
+              {ANS?.currentLabel ? `${ANS?.currentLabel}.ar` : shortenAddress(address, 12)}
             </span>
             {
               ANS?.avatar ? (
@@ -64,7 +68,7 @@ export default function ArConnect() {
                   <img src={`https://arweave.net/${ANS?.avatar}`} alt="Profile" width="100%" height="100%" />
                 </div>
               ) : (
-                <div className="rounded-full h-6 w-6 ml-2 btn-secondary" style={{ backgroundColor: ANS?.address_color }}></div>
+                <ProfileImage {...{currentLabel: currentLabel || address, avatar, address_color, size: 20, borderWidth: 3}} linkToArPage={false}  />
               )
             }
           </Dropdown.Button>
