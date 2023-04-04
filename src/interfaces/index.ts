@@ -59,7 +59,7 @@ export interface Podcast {
 export interface Episode {
   eid:         string;
   episodeName: string;
-  description: string;
+  description: arweaveTX; // markdown file tx on arseeding
   contentTx:   arweaveTX;
   size:        number;
   type:        string;
