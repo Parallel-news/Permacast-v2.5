@@ -45,9 +45,8 @@ const Costs: FC<CostsProps> = ({ balance, duration }) => {
     fetchARPriceInUSD().then(setArPrice);
   }, []);
 
-  const ARCost = (FEATURE_COST * duration).toFixed(1);
-  const dollarCost = (arPrice * (FEATURE_COST * duration)).toFixed(2);
-
+  const ARCost = FEATURE_COST_BASE + (FEATURE_COST_PER_DAY * duration).toFixed(1);
+  const dollarCost = FEATURE_COST_BASE + (arPrice * (FEATURE_COST_PER_DAY * duration)).toFixed(2);
 
   return (
     <div className="text-center mt-2 text-lg">
