@@ -179,7 +179,9 @@
 		"latestepisodes": "Latest episodes"
 	},
 	"track": {
-		"by": "by"
+		"by": "by",
+		"video": "This episode contains video content",
+		"audio": "This episode contains audio content"
 	},
 	"tip": "Tip",
 	"loadingpodcasts": "Loading podcasts...",
