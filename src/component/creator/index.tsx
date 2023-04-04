@@ -12,7 +12,7 @@ import TipButton from '../reusables/tip';
 import { flexCenter } from './featuredCreators';
 import Verification from '../reusables/Verification';
 import { TipModal } from '../tipModal';
-import { shortenAddress } from 'react-arconnect';
+import { shortenAddress, useArconnect } from 'react-arconnect';
 
 
 /**
@@ -235,6 +235,8 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
 
   const { ANSuserExists, currentLabel, avatar, address_color, nickname, user, podcasts, episodes } = creator;
 
+  const { address } = useArconnect();
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const tipModalArgs = { ANSorAddress: ANSuserExists ? currentLabel : user, recipientAddress: user, isOpen, setIsOpen };
@@ -249,7 +251,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
         </div>
         <div className={flexItemsCenter + " mr-3"}>
           <ViewANSButton {...{ currentLabel, ANSuserExists }} />
-          <TipButton openModalCallback={() => setIsOpen(prev => !prev)} />
+          {address !== user && <TipButton openModalCallback={() => setIsOpen(prev => !prev)} />}
         </div>
       </div>
       <FeaturedPodcasts {...{ podcasts }} />
