@@ -16,9 +16,10 @@ import { getContractVariables } from "../../../../utils/contract";
 import { findObjectById, formatStringByLen } from "../../../../utils/reusables";
 import { TipModal } from "../../../../component/tipModal";
 import { ShareButtons } from "../../../../component/shareButtons";
-import { fetchDominantColor, getCoverColorScheme, rgba2hex, RGBAstringToObject, RGBobjectToString } from "../../../../utils/ui";
+import { determinePodcastURL, fetchDominantColor, getCoverColorScheme, rgba2hex, RGBAstringToObject, RGBobjectToString } from "../../../../utils/ui";
 import { useTranslation } from "next-i18next";
 import FeaturedPodcastPlayButton from "../../../../component/home/featuredPodcastPlayButton";
+import { findEpisode, findPodcast, trimChars } from "../../../../utils/filters";
 
 export default function EpisodeId({data, status}) {
 
@@ -31,9 +32,9 @@ export default function EpisodeId({data, status}) {
     const [themeColor, setThemeColor] = useState<string>('');
     const [textColor, setTextColor] = useState<string>('');
 
-    const { t } = useTranslation();
     
-    if(data) {
+    if (data) {
+        console.log(data)
         //Serverside Results
         const ts = new Date(data?.obj.uploadedAt);
         const day = ts.getDate().toString().padStart(2, '0'); // get the day and add leading zero if necessary
@@ -61,27 +62,26 @@ export default function EpisodeId({data, status}) {
                 setThemeColor(coverColor);
                 setTextColor(textColor);
             }
-            fetchColor()
-        }, [])
-        console.log("PLAYER INFO: ", playerInfo)
-        console.log("Datos : ", data)
-        console.log("SOCIALS: ", d.episodeName + " - " +data.podcastName)
+            fetchColor();
+        }, []);
+        // console.log("PLAYER INFO: ", playerInfo)
+        // console.log("Datos : ", data)
+        // console.log("SOCIALS: ", d.episodeName + " - " +data.podcastName)
         return (
             <>
                 <Head>
-                    <title>{`Episode | Permacast`}</title> 
+                    <title>{`${data.podcastName} | Permacast`}</title> 
                     <meta name="description" content={`By ${data.podcastName}`} />
-                    <meta name="twitter:image" content={(data.cover !== "") ? `https://arweave.net/${data.cover}` : "https://ar.page/favicon.png"} />
+                    <meta name="twitter:image" content={(data.cover !== "") ? ARSEED_URL + data.cover : "https://permacast.app/favicon.png"} />
                     <meta name="twitter:title" content={`${data.obj.episodeName} | Permacast`} />
-                    <meta name="twitter:url" content={`https://permacast.dev/`}></meta>
+                    <meta name="twitter:url" content={`https://permacast.app/`}></meta>
                     <meta name="twitter:description" content={`By ${data.podcastName}`} />
                     <meta name="og:card" content="summary" />
                     <meta name="description" content={`By ${data.podcastName}`} />
-                    <meta name="og:image" content={(data.cover !== "") ? `https://arweave.net/${data.cover}` : "https://ar.page/favicon.png"} />
+                    <meta name="og:image" content={(data.cover !== "") ? ARSEED_URL + data.cover : "https://permacast.app/favicon.png"} />
                     <meta name="og:title" content={`${data.obj.episodeName} | Permacast`} />
-                    <meta name="og:url" content={`https://permacast.dev/`} />
+                    <meta name="og:url" content={`https://permacast.app/`} />
                     <meta name="og:description" content={`By ${data.podcastName}`} /> 
-
                 </Head>
                 <div className={podcastIdStyling}>
                     {/*Episode Cover & Info*/}
@@ -122,7 +122,7 @@ export default function EpisodeId({data, status}) {
                             isVisible={loadShareModal} 
                             setVisible={setLoadShareModal}
                             title={d.episodeName + " - " +data.podcastName}
-                            url={`${baseUrl}/episode/${data?.pid}/${data?.obj.eid}`}
+                            url={`${baseUrl}/episode/${determinePodcastURL(data?.label, data?.pid)}/${trimChars(data?.obj.eid)}`}
                         />
                     )}
                 </div>
@@ -155,23 +155,23 @@ export async function getServerSideProps(context) {
     const podcastId = params.pid
     const res = await axios.post(EXM_READ_LINK+contractAddress)
     const podcasts = res.data?.podcasts
-    const foundPodcasts = findObjectById(podcasts, podcastId, "pid")
+    const foundPodcast = findPodcast(podcastId, podcasts)
     // Podcast Exists
-    if(foundPodcasts) {
+    if (foundPodcast) {
         const podcastData = {
-            cover: foundPodcasts.obj.cover,
-            podcastName: foundPodcasts.obj.podcastName,
-            owner: foundPodcasts.obj.owner,
-            author: foundPodcasts.obj.author,
-            pid: foundPodcasts.obj.pid,
-            episodes: foundPodcasts.obj.episodes,
-            podcast: foundPodcasts.obj
+            cover: foundPodcast.cover,
+            podcastName: foundPodcast.podcastName,
+            owner: foundPodcast.owner,
+            author: foundPodcast.author,
+            pid: foundPodcast.pid,
+            episodes: foundPodcast.episodes,
+            podcast: foundPodcast
         }
-        const foundEpisode = findObjectById(foundPodcasts.obj.episodes, episodeId, "eid")
+        const foundEpisode = findEpisode(episodeId, foundPodcast.episodes)
         // Episode Exist
-        if(foundEpisode) {
-            const podcastName = foundPodcasts.obj.podcastName
-            const data = { ...podcastData, ...foundEpisode, podcastName}
+        if (foundEpisode) {
+            const podcastName = foundPodcast.podcastName
+            const data = { ...podcastData, obj: foundEpisode, podcastName}
             const status = PAYLOAD_RECEIVED
             return { props: { data, status, ...translations } }
         // Episode Doesnt Exist
