@@ -5,12 +5,13 @@ import { useTranslation } from "next-i18next";
 import { dimColorString } from "../../utils/ui";
 import { useRecoilState } from "recoil";
 import {
+  allPodcasts,
   creatorsAtom,
   currentThemeColorAtom,
 } from "../../atoms";
 import Link from 'next/link';
 import { CreatorNamesSmall, flexCol, ProfileImage } from './';
-import { Ans } from '../../interfaces';
+import { Ans, Podcast } from '../../interfaces';
 
 /**
  * Index
@@ -91,12 +92,12 @@ export const FeaturedCreators: FC = () => {
 
   const { t } = useTranslation();
   const [currentThemeColor, setcurrentThemeColor] = useRecoilState(currentThemeColorAtom);
-  const [fetchError, setFetchError] = useState<boolean>(false)
+  const [allPodcasts_, setAllPodcasts_] = useRecoilState(allPodcasts);
+  const [fetchError, setFetchError] = useState<boolean>(false);
 
   const wl = [
     "kaYP9bJtpqON8Kyy3RbqnqdtDBDUsPTQTNUCvZtKiFI",
     "vZY2XY1RD9HIfWi8ift-1_DnHLDadZMWrufSh-_rKF0",
-    "lIg5mdDMAAIj5Pn2BSYKI8SEo8hRIdh-Zrn_LSy_3Qg",
     "9J5tCNjf1EL7d-E2t8SQlcjMpwEWqMjDiGu0ktRApwY"
   ]
 
@@ -109,16 +110,8 @@ export const FeaturedCreators: FC = () => {
     const fetchCreators = async () => {
       setFetchError(false)
       // fetch the creators from EXM
-      let payload
-      try {
-        payload = await axios.get(`/api/exm/read`)
-        console.log("payload: ", payload.data.podcasts)
-      } catch(e) {
-        console.log(e)
-        setFetchError(true)
-      }
 
-      payload.data.podcasts.map((item: any, index: any) => {
+      allPodcasts_.map((item: Podcast, index: number) => {
         if(episodeCounter[item.owner]) {
           episodeCounter[item.owner] += item.episodes.length
         } else {
@@ -126,7 +119,7 @@ export const FeaturedCreators: FC = () => {
         }
       })
       
-      let sortedCounter = Object.keys(episodeCounter).sort((a, b) => episodeCounter[b] - episodeCounter[a]);
+      let sortedCounter = Object.keys(episodeCounter).sort((a, b) => episodeCounter[b] - episodeCounter[a]).splice(0, 3);
 
       let creators = await Promise.all(
         sortedCounter.map((address: string) => axios.get(`/api/ans/${address}`)
@@ -138,7 +131,7 @@ export const FeaturedCreators: FC = () => {
     fetchCreators();
   }, []);
   return (
-    <div className="h-[325px] overflow-y-auto overflow-x-hidden px-2">
+    <div className="h-[325px] overflow-y-hidden">
       <h2 className={creatorHeadingStyling}>{t("home.featuredcreators")}</h2>
       {loading ?
         <Loading {...{ loading, dummyArray: wl }} />

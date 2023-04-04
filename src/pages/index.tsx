@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
 import { Greeting } from "../component/featured";
+import FeaturedChannelModal from '../component/home/featuredChannelModal';
 import FeaturedPodcast, { featuredPocastCarouselStyling } from '../component/home/featuredPodcast';
 import FeaturedCreators from '../component/creator/featuredCreators';
 import Loading from '../component/reusables/loading';
@@ -15,9 +16,10 @@ import {
   podcastsAtom
 } from "../atoms/index";
 
-import { Episode, EXMDevState, FullEpisodeInfo, Podcast, PodcastDev } from '../interfaces';
+import { Episode, EXMDevState, FullEpisodeInfo, Podcast } from '../interfaces';
 import Track from '../component/reusables/track';
 import { getContractVariables } from '../utils/contract';
+import GetFeatured from '../component/home/getFeatured';
 
 interface props {isProduction: string, contractAddress: string};
 
@@ -25,18 +27,22 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
 
   const { t } = useTranslation();
 
-  const [loading, setLoading] = useState(false);
 
   const [podcasts_, setPodcasts_] = useRecoilState(podcastsAtom);
   const [featuredEpisode_, setFeaturedEpisode_] = useRecoilState(featuredEpisode);
   const [latestEpisodes, setLatestEpisodes] = useRecoilState(latestEpisodesAtom);
 
 
+  const [featuredState, setFeaturedState] = useState<any>({});
+  const [loading, setLoading] = useState(false);
+
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       const exmState: EXMDevState = (await axios.get('/api/exm/read')).data;
+
       const { podcasts } = exmState;
       const episodes: FullEpisodeInfo[] = podcasts
         .map((podcast: Podcast) => podcast.episodes
@@ -45,10 +51,14 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
               .flat();
       const sorted = episodes.sort((episodeA, episodeB) => episodeB.episode.uploadedAt - episodeA.episode.uploadedAt);
       setLatestEpisodes(sorted.splice(0, 3));
-      setPodcasts_(podcasts.splice(0, 4));
+      setPodcasts_([...(featuredState?.featured_channels || []) ,...podcasts].splice(0, 4));
       setLoading(false);
     };
-
+    const fetchFeatured = async () => {
+      const featuredPodcasts = (await axios.get('/api/exm/featured-channels/read')).data;
+      setFeaturedState(featuredPodcasts.state);
+    };
+    fetchFeatured()
     fetchData();
   }, []);
 
@@ -57,16 +67,20 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
       <Greeting />
       {isProduction !== "true" &&
         <div className="select-text">
-          <p className='text-red-500 font-bold'>Warning: this is staging build!</p>
+          <p className='text-yellow-500 font-bold'>Heads up: isProduction !== "true"</p>
           <p className="text-teal-300">Address: {contractAddress}</p>
         </div>
       }
       {podcasts_.length > 0 ? (
-        <div className={featuredPocastCarouselStyling}>
-          {podcasts_.map((podcast: PodcastDev, index: number) =>
-            <FeaturedPodcast {...podcast} key={index} />
-          )}
-        </div>
+        <>
+          <GetFeatured onClick={() => setIsVisible(true)} />
+          {isVisible && <FeaturedChannelModal {...{ isVisible, setIsVisible }} />}
+          <div className={featuredPocastCarouselStyling}>
+            {podcasts_.map((podcast: Podcast, index: number) =>
+              <FeaturedPodcast {...podcast} key={index} />
+            )}
+          </div>
+        </>
       ) : <Loading />}
 
       {/* {Object.keys(secondaryData_).length > 0 ? (
@@ -92,11 +106,11 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
           )}
         </div>
         {!loading ? (
-          <div className="w-[30%] xl:w-[27%]">
+          <div className="w-full xl:w-[27%]">
             <FeaturedCreators />
           </div>
         ) : (
-          <div className="w-[30%] xl:w-[27%]"><Loading /></div>
+          <div className="w-full xl:w-[27%]"><Loading /></div>
         )}
       </div>
     </div>

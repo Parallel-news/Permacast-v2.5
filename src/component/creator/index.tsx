@@ -12,7 +12,7 @@ import TipButton from '../reusables/tip';
 import { flexCenter } from './featuredCreators';
 import Verification from '../reusables/Verification';
 import { TipModal } from '../tipModal';
-import { shortenAddress } from 'react-arconnect';
+import { shortenAddress, useArconnect } from 'react-arconnect';
 
 
 /**
@@ -107,8 +107,8 @@ export const sortByDate = (episodes: FullEpisodeInfo[], descending = false): Ful
 
 // 4. Reusable Components
 export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, address_color, size, squared, linkToArPage }) => {
-  const borderColor = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "rgb(0, 0, 0)" : "rgb(255, 255, 255)";
-  const hex = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "#000000" : "#ffffff";
+  const borderColor = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "rgb(169, 169, 169)" : "rgb(255, 255, 255)";
+  const hex = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "#A9A9A9" : "#ffffff";
   const imageSize = size || 120;
   const squaredOuterBorderRadius = squared ? '12px' : '999px';
   const squaredInnerBorderRadius = squared ? '8px' : '999px';
@@ -235,6 +235,8 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
 
   const { ANSuserExists, currentLabel, avatar, address_color, nickname, user, podcasts, episodes } = creator;
 
+  const { address } = useArconnect();
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const tipModalArgs = { ANSorAddress: ANSuserExists ? currentLabel : user, recipientAddress: user, isOpen, setIsOpen };
@@ -249,7 +251,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
         </div>
         <div className={flexItemsCenter + " mr-3"}>
           <ViewANSButton {...{ currentLabel, ANSuserExists }} />
-          <TipButton openModalCallback={() => setIsOpen(prev => !prev)} />
+          {address !== user && <TipButton openModalCallback={() => setIsOpen(prev => !prev)} />}
         </div>
       </div>
       <FeaturedPodcasts {...{ podcasts }} />

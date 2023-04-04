@@ -1,10 +1,11 @@
-import React, { useEffect, useCallback, FC, useState, useMemo } from "react";
-
-import { arweaveTX, FullEpisodeInfo } from "../../interfaces";
 import Image from "next/image";
 import Link from "next/link";
+import React, { FC, useState, useMemo } from "react";
+import { useTranslation } from "next-i18next";
+import { shortenAddress } from "react-arconnect";
+
+import { arweaveTX, FullEpisodeInfo } from "../../interfaces";
 import { fetchDominantColor, getButtonRGBs, getCoverColorScheme, RGBAstringToObject, RGBobjectToString, RGBstringToObject } from "../../utils/ui";
-import { useTranslation } from "react-i18next";
 import { useShikwasa } from "../../hooks";
 import { showShikwasaPlayerArguments } from "../../interfaces/playback";
 import PlayButton from "./playButton";
@@ -137,7 +138,7 @@ export const TrackCreatorLink: FC<TrackCreatorLinkProps> = ({ uploader, buttonSt
         className="h-2.5 w-2.5 rounded-full"
         style={{backgroundColor: coverColor}}
       ></div>
-      <div>{author}</div>
+      <div>{shortenAddress(uploader || author || "", 8)}</div>
     </Link>
   );
 };
@@ -190,13 +191,13 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     cover,
     minifiedCover,
     author,
-    description,
     podcastName,
     pid,
   } = episode.podcast;
   const {
     episodeName,
     contentTx,
+    description,
     eid,
     uploader,
   } = episode.episode;
@@ -259,7 +260,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     accentColor: textColor,
     openFullscreen, 
     title: episodeName,
-    artist: author,
+    artist: shortenAddress(uploader || author || "", 8),
     cover: coverUsed,
     src: contentTx,
   };

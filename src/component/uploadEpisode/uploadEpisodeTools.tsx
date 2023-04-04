@@ -16,6 +16,7 @@ import { allFieldsFilled, byteSize, checkConnection, determineMediaType, handleE
 import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, DESCRIPTION_UPLOAD_ERROR, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EP_UPLOAD_SUCCESS, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, MEDIA_UPLOAD_ERROR, MIN_UPLOAD_PAYMENT, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from '../../constants';
 import { useTranslation } from 'react-i18next';
 import { transferFunds } from '../../utils/everpay';
+import { Podcast } from '../../interfaces';
 
 export default function uploadEpisode() {
     return false
@@ -46,25 +47,6 @@ interface EpisodeFormInter {
     pid: string;
 }
 
-export interface Podcast { 
-    pid: string;
-    label: string;
-    createdAt: number;
-    index: number;
-    owner: string;
-    podcastName: string;
-    author: string;
-    email: string;
-    description: string;
-    language: string;
-    explicit: string;
-    categories: string[];
-    maintainers: any[]; // Replace 'any' with a specific type if you have more information about the maintainers' structure
-    cover: string;
-    minifiedCover: string;
-    isVisible: boolean;
-    episodes: any[]; // Replace 'any' with a specific type if you have more information about the episodes' structure
-}
 interface PodcastSelectOptionsInter {
     imgSrc: string;
     title: string;

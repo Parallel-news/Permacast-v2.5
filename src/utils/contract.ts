@@ -16,3 +16,7 @@ export const getContractVariables = (): ContractVariables => {
   //! DO NOT RETURN API TOKEN TO AVOID EXPOSING IT!
   return { contractAddress, isProduction };
 };
+
+export const getFeaturedChannelsContract = (): ContractVariables => {
+  return { contractAddress: "zyeTjKzVgKS6iu6g7JIeoXwOIBgpu_7LW8pRSjtKzPI", isProduction: true };
+}
