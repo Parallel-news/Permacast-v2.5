@@ -82,9 +82,9 @@ export const selectPodcastModalStyling = "absolute inset-0 top-0 flex justify-ce
 export const tipModalStyling = "absolute inset-0 top-0 flex justify-center items-center z-50"
 export const podcastOptionsContainer = "w-full flex flex-col px-5 overflow-auto h-[120%] mb-[40px]"
 export const podcastOptionBaseStyling = "w-full flex justify-start items-center space-x-4"
-export const episodeFormStyling = "w-[50%] flex flex-col justify-center items-center space-y-4"
+export const episodeFormStyling = "w-[90%] md:w-[75%] w-[50%] flex flex-col justify-center items-center space-y-4"
 export const showErrorTag = "flex justify-center items-center m-auto text-white font-semibold text-xl"
-export const containerPodcastModalStyling = "w-[50%] h-[420px] bg-zinc-800 rounded-3xl flex flex-col z-10 mb-0"
+export const containerPodcastModalStyling = "w-[98%] lg:w-[50%] h-[420px] bg-zinc-800 rounded-3xl flex flex-col z-10 mb-0"
 export const uploadEpisodeStyling = "flex flex-col justify-center items-center m-auto space-y-3 relative pb-[250px]"
 export const podcastOptionHoverStyling = "cursor-pointer hover:bg-zinc-600/30 transition duration-650 ease-in-out rounded-3xl p-3"
 export const xMarkStyling = "h-5 w-5 mt-1 cursor-pointer hover:text-red-400 hover:bg-red-400/10 transition duration-400 ease-in-out rounded-full"
@@ -287,7 +287,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                 )}
                 {!address && (
                     <ConnectButton 
-                        width="w-[50%]"
+                        width="w-[75%] md:w-[50%]"
                         disable={false}
                         click={() => connect()}
                     />

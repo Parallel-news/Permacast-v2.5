@@ -379,7 +379,7 @@ export const ShowForm = (props: ShowFormInter) => {
                         )}
                         {!address && (
                             <ConnectButton 
-                                width="w-[50%]"
+                                width="w-[75%] md:w-[50%]"
                                 disable={false}
                                 click={() => connect()}
                             />
