@@ -137,6 +137,3 @@ export const NO_SHOW = "Unable to fetch shows. Refresh and try again."
 export const SHOW_UPLOAD_SUCCESS = "Show Uploaded. Redirecting."
 export const EP_UPLOAD_SUCCESS = "Episode Uploaded. Redirecting."
 
-
-// EXM
-export const EXM_PROD_CONTRACT = "PkYlJofH0Vz0oVpoPB67KrKq0rPzPBg7O4I28eNFmzM"
