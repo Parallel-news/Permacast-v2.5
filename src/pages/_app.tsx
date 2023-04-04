@@ -14,7 +14,7 @@ import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import '../styles/globals.css';
 import { PERMISSIONS } from '../constants/arconnect';
-import QueryPodcasts from '../component/QueryPodcasts';
+import QueryPodcasts from '../component/loaders/QueryPodcasts';
 
 // fetch data in _app.tsx -> populate recoil -> re-write search to query from that recoil state, if it fails then fuse.js
 function App({ Component, pageProps }) {
