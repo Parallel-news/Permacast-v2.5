@@ -107,8 +107,8 @@ export const sortByDate = (episodes: FullEpisodeInfo[], descending = false): Ful
 
 // 4. Reusable Components
 export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, address_color, size, squared, linkToArPage }) => {
-  const borderColor = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "rgb(0, 0, 0)" : "rgb(255, 255, 255)";
-  const hex = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "#000000" : "#ffffff";
+  const borderColor = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "rgb(169, 169, 169)" : "rgb(255, 255, 255)";
+  const hex = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "#A9A9A9" : "#ffffff";
   const imageSize = size || 120;
   const squaredOuterBorderRadius = squared ? '12px' : '999px';
   const squaredInnerBorderRadius = squared ? '8px' : '999px';
