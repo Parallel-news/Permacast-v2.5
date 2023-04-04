@@ -102,3 +102,8 @@ export interface OwnedLabel {
   acquisationBlock: number;
   mintedFor:        number;
 }
+
+export interface ANSMapped {
+  address: string,
+  primary: string
+}
