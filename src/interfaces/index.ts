@@ -22,7 +22,7 @@ export interface EXMState {
 }
 
 export interface EXMDevState {
-  podcasts:              PodcastDev[];
+  podcasts:              Podcast[];
   admins:                string[];
   isPaused:              boolean;
   user_sig_messages:     signature[];
@@ -41,12 +41,11 @@ export interface Podcast {
   label:       string;
   contentType: string;
   createdAt:   number;
-  index:       number;
   owner:       string;
   podcastName: string;
   author:      string;
   email:       string;
-  description: string;
+  description: arweaveTX; // markdown file tx on arseeding
   language:    string;
   explicit:    string;
   categories:  string[];
@@ -54,25 +53,30 @@ export interface Podcast {
   cover:       arweaveTX;
   isVisible:   boolean;
   episodes:    Episode[];
-}
-
-export interface PodcastDev extends Podcast {
   minifiedCover: arweaveTX;
 }
 
 export interface Episode {
   eid:         string;
   episodeName: string;
-  description: string;
+  description: arweaveTX; // markdown file tx on arseeding
   contentTx:   arweaveTX;
   size:        number;
   type:        string;
   uploader:    string;
   uploadedAt:  number;
-  isVisible:   boolean;
+  isVisible?:  boolean;
+  order?:      number; // UI only
 }
 
+export interface FullEpisodeInfo {
+  episode: Episode,
+  podcast: Podcast,
+};
+
 export interface Ans {
+  ANSuserExists?: boolean; // only on UI
+  userIsAddress?: boolean; // only on UI
   user:           string;
   currentLabel:   string;
   ownedLabels:    OwnedLabel[];
@@ -86,10 +90,10 @@ export interface Ans {
 }
 
 export interface Links {
-  github:    string;
-  twitter:   string;
-  customUrl: string;
-  instagram: string;
+  github?:    string;
+  twitter?:   string;
+  customUrl?: string;
+  instagram?: string;
 }
 
 export interface OwnedLabel {

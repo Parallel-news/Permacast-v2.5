@@ -1,5 +1,8 @@
 {
 	"language": "语言",
+	"tooltip": {
+		"coming-soon": "即将推出"
+	},
 	"navbar": {
 		"home": "主页",
 		"help": "获取帮助",
@@ -23,13 +26,22 @@
     "hi": "你好, ",
 		"welcome": "欢迎",
 		"subtext": "让我们看看我们今天有什么",
+		"get-featured": "推广您的播客",
+		"featured-modal": {
+			"days": "天",
+			"cost": "这将花费：",
+			"feature": "推广",
+			"balance": "您的余额：",
+			"insufficient-balance": "余额不足"
+		},
 		"playfeaturedepisode": "播放录音",
 		"viewfeaturedepisode": "查看录音",
 		"episode": "插曲",
 		"episodes": "剧集",
 		"recentlyadded": "最近添加",
-		"featuredcreators": "精选创作者"
-
+		"featuredcreators": "精选创作者",
+		"add-podcast": "添加播客",
+		"add-episode": "添加剧集"
   },
 	"search" : {
 		"placeholder": "搜索播客",
@@ -49,7 +61,8 @@
 		"addpodcast": "添加播客",
 		"title": "添加新的节目",
 		"uploadstitle": "上传",
-		"label": "之后您可在节目中添加剧集",
+		"label": "短网址",
+		"label-explanation": "这是一个可选参数，但如果您选择使用它，将创建一个短链接",
 		"name": "节目名称",
 		"description": "节目描述",
 		"image": "封面图片",
@@ -60,7 +73,8 @@
 		"explicit": "少儿不宜",
 		"contentaudio": "仅音频",
 		"contentvideo": "仅视频",
-		"disabled": "连接钱包以继续",
+		"connect-wallet": "连接钱包",
+		"no-shows": "您没有任何播客",
 		"upload": "上传",
 		"uploading": "加工...",
 		"cancel": "取消",
@@ -70,7 +84,11 @@
 			"description": "描述必须介于 {{minLength}} 和 {{maxLength}} 个字符之间",
 			"author": "作者必须在 {{minLength}} 和 {{maxLength}} 个字符之间",
 			"email": "请输入有效的邮箱",
-			"success": "播客上传成功！"
+			"success": "播客上传成功！",
+			"label": {
+				"limit": "子域名长度必须介于1和35个字符之间。",
+				"in-use": "此子域名已被使用。"
+			}
 		},
 		"swal": {
 			"showadded": {
@@ -115,6 +133,7 @@
 		"title": "添加新的剧集到",
 		"name": "剧集名称",
 		"description": "剧集描述",
+		"select-show": "选择播客",
 		"file": "音频文件",
 		"verto": "是否在 Verto 上展示原子 NFT ？",
 		"toupload": "来进行上传",
@@ -126,21 +145,37 @@
 		"newepisode": "添加新剧集"
 	},
 	"episode": {
-    "number": "数字",
+    	"number": "数字",
 		"download": "下载",
 		"nextepisode": "下一集",
 		"share": "分享",
 		"copied": "已复制",
-		"nodescription": "无描述"
+		"nodescription": "无描述",
+		"fetching": "取",
+		"noneToShow": "没有显示..."
   },
 	"creator": {
 		"ans": "ANS 地址",
+		"verification": {
+			"verified": {
+				"text": "已验证",
+				"explanation": "此用户是 ANS 上经过验证的收件人"
+			},
+			"unverified": {
+				"text": "未验证",
+				"explanation": "该用户在 ANS 上不存在。请务必仔细检查您汇款给的人。"
+			}
+		},
 		"podcasts": "播客",
 		"nopodcasts": "未找到播客。",
 		"address": "地址",
-		"notfound": "在 ANS 上找不到"
+		"notfound": "在 ANS 上找不到",
+		"latestepisodes": "最新剧集"
 	},
 	"tip": "打赏",
+	"track": {
+		"by": "经过"
+	},
 	"loadingpodcasts": "正在加载播客...",
 	"loadingepisodes": "加载剧集...",
 	"nopodcasts": "这里还没有播客，请上传一个!",
@@ -152,5 +187,13 @@
 	"fullscreen": {
 		"episode": "剧集"
 	},
-	"view": "看法"
+	"view": "看法",
+	"share": {
+		"Checkthis": "看一下这个",
+		"share": "分享"
+	},
+	"tipModal": {
+		"submitTip": "提交提示",
+		"balance": "平衡"
+	}
 }

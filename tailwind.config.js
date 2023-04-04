@@ -6,7 +6,12 @@ module.exports = {
     './src/**/*.{js,jsx,ts,tsx}'
   ],
   theme: {
-    extend: {},
+    extend: {
+      transitionDuration: {
+        '3500': '3500ms',
+        '5000': '5000ms',
+      }
+    },
   },
   daisyui: {
     themes: [

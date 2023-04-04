@@ -1,5 +1,8 @@
 {
 	"language": "Language",
+	"tooltip": {
+		"coming-soon": "Coming soon"
+	},
 	"navbar": {
 		"home": "Home",
 		"help": "Get help",
@@ -23,12 +26,22 @@
     "hi": "Hi, ",
 		"welcome": "Welcome!",
 		"subtext": "Let's see what we have for today",
+		"get-featured": "Feature your podcast",
+		"featured-modal": {
+			"days": "days",
+			"cost": "This will cost:",
+			"feature": "Feature",
+			"balance": "Your balance:",
+			"insufficient-balance": "Insufficient balance"
+		},
 		"playfeaturedepisode": "Play",
 		"viewfeaturedepisode": "View",
 		"episode": "Episode",
 		"episodes": "Episodes",
 		"recentlyadded": "Recently added",
-		"featuredcreators": "Featured creators"
+		"featuredcreators": "Featured creators",
+		"add-podcast": "Add podcast",
+		"add-episode": "Add episode"
   },
 	"search" : {
 		"placeholder": "Search for a podcast",
@@ -45,13 +58,14 @@
 		"emptyqueue": "Your queue is empty, add some episodes to it!"
 	},
 	"uploadshow": {
-		"addpodcast": "New Show",
+		"addpodcast": "Add Podcast",
 		"title": "New Show",
 		"uploadstitle": "Uploads",
-		"label": "You'll add episodes to the show next.",
-		"name": "Show name",
-		"description": "Show description",
-		"image": "Cover image",
+		"label": "Short URL",
+		"label-explanation": "This is an optional parameter, but if you choose to use it, a short url will be created",
+		"name": "Podcast name",
+		"description": "Podcast description",
+		"image": "Cover Image",
 		"author": "Author",
 		"email": "Email",
 		"language": "Podcast language",
@@ -59,7 +73,7 @@
 		"explicit": "Contains explicit content",
 		"contentaudio": "Audio only",
 		"contentvideo": "Video only",
-		"disabled": "Connect wallets to continue",
+		"connect-wallet": "Connect wallet",
 		"upload": "Create",
 		"uploading": "Processing...",
 		"cancel": "Cancel",
@@ -70,6 +84,10 @@
 			"description": "Description must be between {{minLength}} and {{maxLength}} characters",
 			"author": "Author must be between {{minLength}} and {{maxLength}} characters",
 			"email": "Please enter a valid email",
+			"label": {
+				"limit": "Label Length must be between 1 and 35 characters.",
+				"in-use": "Label already being used."
+			},
 			"success": "Podcast uploaded successfully!"
 		},
 		"swal": {
@@ -111,10 +129,12 @@
 			}
 		},
 		"feetext": "Uploading the episode will cost: ",
-		"title": "Add new episode",
+		"title": "Upload Episode",
 		"name": "Episode name",
 		"description": "Episode description",
-		"file": "Episode media",
+		"select-show": "Select show",
+		"no-shows": "You don't have any podcasts",
+		"file": "Episode Content",
 		"verto": "Upload to Verto",
 		"toupload": "to upload",
 		"upload": "Upload",
@@ -130,14 +150,30 @@
 		"nextepisode": "Next Episode",
 		"share": "Share",
 		"copied": "Copied to clipboard",
-		"nodescription": "No description provided"
+		"nodescription": "No description provided",
+		"fetching": "fetching",
+		"noneToShow": "None to show..."
 	},
 	"creator": {
 		"ans": "View on ANS",
+		"verification": {
+			"verified": {
+				"text": "Verified",
+				"explanation": "This user is a verified recipient on ANS"
+			},
+			"unverified": {
+				"text": "Unverified",
+				"explanation": "This user does not exist on ANS. Always double check who you send money to."
+			}
+		},
 		"podcasts": "Podcasts",
 		"nopodcasts": "No podcasts found",
 		"address": "Address",
-		"notfound": "not found on ANS"
+		"notfound": "not found on ANS",
+		"latestepisodes": "Latest episodes"
+	},
+	"track": {
+		"by": "by"
 	},
 	"tip": "Tip",
 	"loadingpodcasts": "Loading podcasts...",
@@ -152,5 +188,17 @@
 	"fullscreen": {
 		"episode": "Episode"
 	},
-	"view": "View"
+	"view": "View",
+	"textTruncate": {
+		"showMore": "Show More",
+		"showLess": "Show Less"
+	},
+	"share": {
+		"Checkthis": "Check this out",
+		"share": "Share"
+	},
+	"tipModal": {
+		"submitTip": "Submit Tip",
+		"balance": "Balance"
+	}
 }

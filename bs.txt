@@ -1,0 +1,140 @@
+// DESCRIPTION
+/*
+{
+    "everHash": "0x177070a2796cc98d90aa08c8a1d84ddcf1e16baba9ae1a12fcab5d1975447d86",
+    "order": {
+        "itemId": "5TKKx0-_GyvH5hZ3pKjSox8LcYfoRlufo1yJeicJZAY",
+        "size": 1091,
+        "bundler": "uDA8ZblC-lyEFfsYXKewpwaX-kkNDDw8az3IW9bDL68",
+        "currency": "AR",
+        "decimals": 12,
+        "fee": "210797217",
+        "paymentExpiredTime": 1679023161,
+        "expectedBlock": 1138863
+    }
+}
+
+//AUDIO m4a
+{
+    "everHash": "0xb9bc595edd23675a37c652a665cbd6bda9db767294e57e972cf315778c8a6097",
+    "order": {
+        "itemId": "4xUWbi9nRziW0gAeUaKUGg1onPD5VXvfscBbfrFIGJo",
+        "size": 107133,
+        "bundler": "uDA8ZblC-lyEFfsYXKewpwaX-kkNDDw8az3IW9bDL68",
+        "currency": "AR",
+        "decimals": 12,
+        "fee": "210797217",
+        "paymentExpiredTime": 1679080099,
+        "expectedBlock": 1139318
+    }
+}
+
+AUDIO MP3
+{
+    "everHash": "0x5254646cbdfa60be1ac286e9929c2daa37bb780b27b479384ae07d019e9c4ecc",
+    "order": {
+        "itemId": "PDjIxrwvc9HX2Iaf3VFqtuiKy9C-Cp5kGj-iEPetAFQ",
+        "size": 136284,
+        "bundler": "uDA8ZblC-lyEFfsYXKewpwaX-kkNDDw8az3IW9bDL68",
+        "currency": "AR",
+        "decimals": 12,
+        "fee": "210797217",
+        "paymentExpiredTime": 1679081759,
+        "expectedBlock": 1139333
+    }
+}
+
+// VIDEO MP4
+{
+    "everHash": "0x1516d73345ab7fbc1da95477290617494975ed00d55af0ed680e396cdda12262",
+    "order": {
+        "itemId": "oz7zITe4FE73tW4p2kFH1cn72NX1mZ5gAI18wojRA1U",
+        "size": 4062722,
+        "bundler": "uDA8ZblC-lyEFfsYXKewpwaX-kkNDDw8az3IW9bDL68",
+        "currency": "AR",
+        "decimals": 12,
+        "fee": "3334505112",
+        "paymentExpiredTime": 1679085272,
+        "expectedBlock": 1139363
+    }
+}
+
+//Image 
+{
+    "everHash": "0x098db23a2ee2a38ebc4e25b54650cb2369c6df29cb7e3476bea9e091a075d7da",
+    "order": {
+        "itemId": "VhR924DdS0BKokinDkOrBhkfxVHaY6F8dB_c_QP0N-M",
+        "size": 182272,
+        "bundler": "uDA8ZblC-lyEFfsYXKewpwaX-kkNDDw8az3IW9bDL68",
+        "currency": "AR",
+        "decimals": 12,
+        "fee": "210797217",
+        "paymentExpiredTime": 1679087162,
+        "expectedBlock": 1139377
+    }
+}
+*/
+//First Image Full
+{
+    "everHash": "0x546cba9191e8232c4ecfe0da84b0d188af54143edf0e45559acce6c6bae4c7d7",
+    "order": {
+        "itemId": "I-O1jqFhPN8Tk2KQu4HRYcMhrdXvq73IIiz38zq36O0",
+        "size": 61505,
+        "bundler": "uDA8ZblC-lyEFfsYXKewpwaX-kkNDDw8az3IW9bDL68",
+        "currency": "AR",
+        "decimals": 12,
+        "fee": "210160368",
+        "paymentExpiredTime": 1679237838,
+        "expectedBlock": 1140482
+    }
+}
+
+//Second Image Mini
+{
+    "everHash": "0xbd6222bfb48a982a8b04861ee1673ebade9284824c902e156f002b5a5b0bf111",
+    "order": {
+        "itemId": "HSQbUBxT1Cgs9XsWmXg_SPCJQBZtMSKFsdr0m9Pny9Y",
+        "size": 59588,
+        "bundler": "uDA8ZblC-lyEFfsYXKewpwaX-kkNDDw8az3IW9bDL68",
+        "currency": "AR",
+        "decimals": 12,
+        "fee": "210160368",
+        "paymentExpiredTime": 1679237842,
+        "expectedBlock": 1140482
+    }
+}
+
+
+//First Image 
+{
+    "everHash": "0xaa744d0ac6250a4392afeae49261250f92a29877b997b0468e9b80c2db9780a9",
+    "order": {
+        "itemId": "MrTMVDYru07sl8M1mGIqHe-GloN0tzJatMMdqBC9stQ",
+        "size": 59359,
+        "bundler": "uDA8ZblC-lyEFfsYXKewpwaX-kkNDDw8az3IW9bDL68",
+        "currency": "AR",
+        "decimals": 12,
+        "fee": "210160368",
+        "paymentExpiredTime": 1679238478,
+        "expectedBlock": 1140484
+    }
+}
+
+// Full Payload
+{
+    "function": "createPodcast",
+    "name": "upfp3idkNkz32OBNxL5451JtectNI2AKBTBWA3Mn5yw",
+    "desc": "MUSPNH-XUgyyMewNWs7uLqNEm4m1D-Q6IWZ4u3zmP28",
+    "author": "Sebs Steele",
+    "lang": "en",
+    "isExplicit": "yes",
+    "categories": "art",
+    "email": "n@n.com",
+    "contentType": "a",
+    "cover": "VdO0G-y0EO1dZczhFQsO-Fh9U8ilNdSbufjHKAEEQ7c",
+    "minifiedCover": "uPvfJxsDVSedvNQn8CEe4MWhlk7_2PdAcBg_zdfTayo",
+    "label": "null1",
+    "jwk_n": "vBxHYO9sFsPi2FsLpz5AGPC79TrsmBg6nh7x-8wUE3jRF6-km81nfN7-8e9z9xC8WbPQ9GgdpL8JyfcTZK4WCXo692TfYrZCl-nzK6535xVr_zRyVCquotN9dRdKrfteTahFCSnDqjR10CccF8BloJBogXXx9ygAHnySw6gDH_e0ih2KWCRYEBGz8kylQ7vsKFD_UrtcljHMoFv0P9W1kNHFcG1ONlDt-rOEkk-yboVo4safzKh9DaiW9n__vRNpvT7Zz2EG3bTp__NZ_CfzvOEkY2QOKtLOOOvGfDqaRpODMwjzd5gZTEk-et9Zm4FZ8yv05gOHu9zjagNUMJW86sooL3SD1GqWDGQL0meCxRz2YT8I-0ShrhLFR3NTGdgBApZz5VxvaQyN-e6auQY0zAXjvp7uSJ3G1hOAlaeKHbFdQc-k_VCbcj7tqlM004kfNlUdlI4xkN7wJHq4r34TA9GW3Xjl6pg1lqnNDBuCnxCHbkjCUSVubLNCaKrDb-0Bdq9AqXuN4IhCsLey35JD4mbFdkIeQPheAVsPj_XWu8HSn08GSX9SL-IRNVPP4gykL35LVQugcjHVN_UWMkORz3x6ER5k9GmnHKvriQgv_fJPt9AyrMj7KSjFufGD8iH0I-Qz5p-12piyPS9iep0i9c_IGU6SNGHvVmmueR7gNO8",
+    "txid": "0x04a4e70d35ad8063ebc64d71dc6b66ef1ca0927767142bfd7d0e3dbbce00a20f",
+    "sig": "JxZjUEZMtMys02+RunPnHim1tVnzm1Rts2W18M4I8CgshK3Xeahv+p6IkfWfjP/z22ufJWTtd5i5ywLYlMN3T87nzmus/2+nLaV0k7XmEqlcq+EyzvHbbgvqSGBBpputEPVv6AAO2deG7VsrIAiDGHscYrscFxBLFn3ZNE8Xfnp4RZUK9f54GVUG4xXGduaHPTNPrNoKa+P3S9Tkbj05o9M3aDR+HVPdo4cyi38miA2TmGzL5pUR4a7//OJQ4ZbLqk4QL/w/aRS/g0aEXJI8tuKF1MVyDLnFhXFroc0RfkP+jer2JdUg4CU4DUpP1CbOMTF9AAwDwaytb6zsHoauBSwddmBsRX8hQCRDenS13wzmrakYJAB9Y8SOARSvMVzWOuLaTbXFqIRkj3mAXGRLLooqNZg8vPy0Ps4ajazkOREwr3Ux0Eqv4Vh6gdp47U0yOrS642TtUap/HJ8QN+BqmlqwpdT0KDz8iXl425g02bBR+02GpsVZ/YlrAw9pEjGaXOX3rkQu2BTqy2//6q8hKpRPHMLRlSdJyCf8zquIdt681uUXarxRtjDlUF/s5MSUass8PNlBWOypPiugLv9tidnvn2eY8TyzDLrKYlA/AqhXiLKbdHoBhwoK81DXE1lMBnj5o6gmQB8jtdbLf9UqnMztBZzoxkd+EXkK7ZsQ338="
+}

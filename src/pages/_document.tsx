@@ -11,12 +11,24 @@ export default class _document extends Document {
     return (
       <Html lang={currentLocale}>
         <Head>
-          {/* <meta name="viewport" content="width=device-width, initial-scale=1" /> */}
-        </Head>
+            <meta name="description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
+            <meta name="twitter:image" content={`https://permacast-v2-5.vercel.app/favicon.ico`} />
+            <meta name="twitter:title" content={`Permacast`} />
+            <meta name="twitter:url" content={`https://permacast.dev/`}></meta>
+            <meta name="twitter:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
+
+            <meta name="og:card" content="summary" />
+            <meta name="description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
+            <meta name="og:image" content={`https://permacast-v2-5.vercel.app/favicon.ico`} />
+            <meta name="og:title" content={`Permacast`} />
+            <meta name="og:url" content={`https://permacast.dev/`} />
+            <meta name="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} /> 
+          </Head>
         <body>
           <Main />
           <NextScript />
         </body>
+        <div className="absolute bottom-0 bg-zinc-900 w-screen rounded-t-xl z-50" id="podcast-player"></div>
       </Html>
     );
   };

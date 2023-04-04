@@ -1,39 +1,41 @@
 import { useEffect, ReactNode } from "react";
 import { useRouter } from "next/router";
 import { useRecoilState } from "recoil";
-import { backgroundColor, podcastColor, themeColor } from '../atoms/index';
-import { dimColor } from "../utils/ui";
+import { backgroundColorAtom, currentThemeColorAtom, podcastColorAtom } from '../atoms/index';
+import { dimColorString } from "../utils/ui";
+import { DEFAULT_BACKGROUND_COLOR } from "../constants/ui";
 
 interface BackgroundInterface {
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 const Background: React.FC<BackgroundInterface> = ({ children }) => {
 
   const router = useRouter();
   const { pathname, asPath, query } = router;
-  const [themeColor_, _] = useRecoilState(themeColor);
-  const [backgroundColor_, setBackgroundColor_] = useRecoilState(backgroundColor);
-  const [podcastColor_, setPodcastColor_] = useRecoilState(podcastColor)
+  const [currentThemeColor, _] = useRecoilState(currentThemeColorAtom);
+  const [backgroundColor, setbackgroundColor] = useRecoilState(backgroundColorAtom);
+  const [podcastColor, setPodcastColor] = useRecoilState(podcastColorAtom);
 
   const useDefaultBackground = [
     "/",
     "/search",
     "/upload-podcast",
-  ]
+    "/upload-episode"
+  ];
 
   useEffect(() => {
     // console.log("background.tsx useEffect");
-    if (useDefaultBackground.includes(pathname)) setBackgroundColor_(dimColor(themeColor_, 0.2));
-    else setBackgroundColor_(dimColor(podcastColor_, 0.4))
-  }, [pathname])
+    if (useDefaultBackground.includes(pathname)) setbackgroundColor(dimColorString(currentThemeColor, 0.4));
+    else setbackgroundColor(dimColorString(podcastColor, 0.5));
+  }, [pathname, podcastColor]);
 
-  // finish the animation for this transition later on
-  const styles = {transition: 'opacity 2.5s ease', backgroundImage: `linear-gradient(${backgroundColor_}, black)`};
+
+  const styles = {backgroundImage: `linear-gradient(transparent, black, black)`};
 
   return (
-    <div className="w-screen overflow-scroll" style={true ? styles : {}}>
-      {children}
+    <div className="w-screen h-3/4 absolute overflow-hidden default-animation-slow pointer-events-none" style={{backgroundColor: backgroundColor, zIndex: -1}}>
+      <div className=" w-full h-full z-[1]" style={styles}></div>
     </div>
   )
 }

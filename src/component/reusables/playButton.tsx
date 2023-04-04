@@ -1,50 +1,37 @@
-import { getButtonRGBs } from '../../utils/ui';
-import { PlayIcon, PauseIcon } from '@heroicons/react/24/outline';
-import { useRecoilState } from 'recoil';
-import { switchFocus, videoSelection } from '../../atoms';
-import { FC } from 'react';
-import { Episode } from '../../interfaces';
+import React, { FC } from "react";
 
-interface PlayButtonInterface {
-  episode:       Episode;
-  episodeNumber: number;
-  color:         string;
-}
+import { dimColorString } from "../../utils/ui";
 
-const PlayButton:FC<PlayButtonInterface> = ({episode, episodeNumber, color}) => {
-  
-  // const { currentEpisode, playEpisode } = appState.queue;
-  // const { isPaused, setIsPaused } = appState.playback;
-  // const c = color ? color : episode?.rgb;
+import { PauseIcon } from "@heroicons/react/24/outline";
+import { PlayIcon } from "@heroicons/react/24/solid";
+import { RGBorRGBAstring, RGBstring } from "../../interfaces/ui";
 
-  // const episodeIsCurrent = (currentEpisode?.contentTx === episode.contentTx) || (currentEpisode?.contentTx === episode?.eid);
-  // const { player } = appState;
 
-  // const playCurrentTrack = () => {
-  //   if (!player) return;
-  //   player.toggle()
-  //   setIsPaused(!isPaused)
-  // }
+interface PlayButtonProps {
+  size: number;
+  iconSize: number; // the size of the play/pause icon
+  buttonColor: RGBstring; // the color of the background
+  accentColor: RGBorRGBAstring; // the color of the play/pause icon
+  isPlaying?: boolean; // pass the player playback state here
+  onClick?: () => void;
+};
 
-  const playEpisode = (episode:any, eid: number|string) => {
-    // global method
-  }
-  
-  const [switchFocus_, setSwitchFocus_] = useRecoilState(switchFocus);
+const playButtonStyling = `flex rounded-full justify-center items-center shrink-0 default-animation hover:scale-[1.1] outline-none focus:ring-2 focus:ring-white`;
 
-  const [vs_, setVS_] = useRecoilState(videoSelection);
-
+const PlayButton: FC<PlayButtonProps> = ({ size, iconSize, buttonColor, accentColor, isPlaying, onClick }) => {
   return (
-    <div onClick={() => playEpisode(episode, episode.eid)}>
-      <div className="cursor-pointer rounded-[34px] p-3" > {/* style={getButtonRGBs(c)} */}
-        {false ? ( //episodeIsCurrent && !isPaused
-          <PauseIcon className="w-4 h-4 fill-current stroke-[3]" />
-        ) : (
-          <PlayIcon className="w-4 h-4 fill-current" />
-        )}
-      </div>
-    </div>
-  )
-}
+    <button
+      style={{ backgroundColor: dimColorString(buttonColor, 0.2), width: size, height: size }}
+      className={playButtonStyling}
+      onClick={onClick}
+    >
+      {isPlaying ? (
+        <PauseIcon className="stroke-[3]" style={{ width: iconSize, height: iconSize, color: accentColor }} />
+      ): (
+        <PlayIcon className="stroke-[3]" style={{ width: iconSize, height: iconSize, color: accentColor }} />
+      )}
+    </button>
+  );
+};
 
 export default PlayButton;

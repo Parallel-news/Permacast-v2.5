@@ -27,10 +27,27 @@ if (typeof window !== 'undefined') {
 }
 const addPassive = supportsPassive && isMobile
 
+
+function rehoistVideo (v) {
+  document.getElementById("video-player")?.appendChild(v)
+}
+
+function Video(src, append) {
+  var v = document.createElement("video");
+  v.className = "ml-[92px] w-[100%] object-cover";
+  if (src != "") {
+    v.src = src;
+  }
+  if (append == true) {
+    setTimeout(() => rehoistVideo(v), 1)
+  }
+  return v;
+}
+
 class Player {
   constructor(options) {
     this.id = playerArr.length
-    playerArr.push(this)
+    playerArr.push(this) // TODO: consider prunning unused players
     this.comps = {}
     this._audio = {}
     this._hasMediaSession = false
@@ -40,6 +57,7 @@ class Player {
     this._dragging = false
     this.events = new Events()
     this.options = handleOptions(options)
+    this.rehoistVideo = rehoistVideo
     this.renderComponents()
     this.initUI(this.options)
     this.initAudio()
@@ -192,7 +210,13 @@ class Player {
 
   initAudio() {
     if (this.options.audio.src) {
-      this.audio = new Audio()
+      // this.audio = new Audio()
+      let video = new Video(this.options.audio.src, true)
+      this.audio = video
+
+      this.audio.height = 280;
+      this.audio.width = 500;
+      console.log(video)
       this.initAudioEvents()
       this.events.audioEvents.forEach((name) => {
         this.audio.addEventListener(name, (e) => {

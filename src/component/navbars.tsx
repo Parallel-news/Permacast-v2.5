@@ -3,8 +3,7 @@ import Link from "next/link";
 import { useRouter } from 'next/router'
 import { useTranslation } from "next-i18next";
 import { Disclosure } from "@headlessui/react";
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { SIDENAV_BUTTON } from '../styles/constants';
+import { SIDENAV_BUTTON, SIDENAV_BUTTON_BASE } from '../styles/constants';
 
 import {
   HomeIcon,
@@ -17,14 +16,17 @@ import {
 } from "@heroicons/react/24/outline";
 import { Cooyub } from "./reusables/icons";
 import ArConnect from "./arconnect";
-import { Searchbar } from "./searchbar";
+import Searchbar from "./searchbar";
 import LANGUAGES from "../utils/languages";
 import { UploadCount } from "./upload_count";
 import { useRecoilState } from "recoil";
-import { isFullscreen } from "../atoms";
+import { arweaveAddress, isFullscreenAtom } from "../atoms";
+import { PermaSpinner } from "./reusables/PermaSpinner";
+import { SPINNER_COLOR } from "../constants";
+import { EverPayBalance } from "../utils/everpay/EverPayBalance";
 
 export function Sidenav() {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation();
   const router = useRouter();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -34,10 +36,11 @@ export function Sidenav() {
   };
 
   const [showUploadOptions,setUploadOptions] = useState(false);
-  const [isFullscreen_, setIsFullscreen_] = useRecoilState(isFullscreen);
+  const [isFullscreen, setIsFullscreen] = useRecoilState(isFullscreenAtom);
 
   const isHome = router.pathname === "/";
   const isUploadPodcast = router.pathname === "/upload-podcast";
+  const isUploadEpisode = router.pathname === "/upload-episode";
   const isFeed = router.pathname === "feed";
 
   interface INavButton {
@@ -58,7 +61,7 @@ export function Sidenav() {
             <button
               className={SIDENAV_BUTTON}
               onClick={() => {
-                setIsFullscreen_(false)
+                setIsFullscreen(false)
               }}
             >
               {icon}
@@ -86,7 +89,7 @@ export function Sidenav() {
             <li key={l.code}>
               <span 
                 onClick={() => {
-                  setIsFullscreen_(false)
+                  setIsFullscreen(false)
                   changeLanguage(l.code)
                 }}
               >{l.name}</span>
@@ -96,6 +99,71 @@ export function Sidenav() {
       </div>
     )
   }
+
+  const spinnerClass = "w-full flex justify-center"
+  const uploadDropdownStyling = "dropdown-content menu p-2 shadow bg-zinc-900 rounded-box w-36"
+  
+  const UploadDropdown: FC = () => {
+    const [showClickLoad, setShowClickLoad] = useState<boolean>(false)
+    const [episodeClickLoad, setEpisodeClickLoad] = useState<boolean>(false)
+
+    const clickSwitch = (type: string) => {
+      if(!showClickLoad && !episodeClickLoad) {
+        if (type === "show") setShowClickLoad(true) 
+        if (type === "episode") setEpisodeClickLoad(true) 
+      } else if(showClickLoad) {
+        setShowClickLoad(false)
+        setEpisodeClickLoad(true)
+      } else if(episodeClickLoad) {
+        setShowClickLoad(true)
+        setEpisodeClickLoad(false)
+      }
+    }
+
+    return (
+      <div className="dropdown dropdown-hover mb-[-6px]">
+        {!(isUploadEpisode || isUploadPodcast) ? (
+          <button
+            tabIndex={0}
+            className={SIDENAV_BUTTON + " w-9 hover:text-zinc-200 "}
+          >
+            <PlusIcon />
+          </button>
+        ): (
+          <button className={SIDENAV_BUTTON_BASE + " text-white"}>
+            <PlusIcon />
+          </button>
+        )}
+        <ul
+          tabIndex={0}
+          className={uploadDropdownStyling}
+        >
+          <li key={1}>
+            {showClickLoad ?
+            <PermaSpinner
+              spinnerColor={SPINNER_COLOR}
+              size={10}
+              divClass={spinnerClass}
+            />
+            :
+            <Link href="/upload-podcast" onClick={()=>clickSwitch("show")}>{t("home.add-podcast")}</Link>
+            }
+          </li>
+          <li key={2}>
+            {episodeClickLoad ?
+            <PermaSpinner
+              spinnerColor={SPINNER_COLOR}
+              size={10}
+              divClass={spinnerClass}
+            />
+            :
+            <Link href="/upload-episode" onClick={()=>clickSwitch("episode")}>{t("home.add-episode")}</Link>
+            }
+          </li>
+        </ul>
+      </div>
+    );
+  };
 
   return (
     <div className="h-full pt-[42px]">
@@ -109,7 +177,8 @@ export function Sidenav() {
           <RectangleStackIcon />
         </div>
         <LanguageDropdown />
-        <NavButton url={'/upload-podcast'} condition={isUploadPodcast} icon={<PlusIcon />} />
+        <UploadDropdown />
+        {/*<NavButton url={'/upload-podcast'} condition={isUploadPodcast} icon={<PlusIcon />} />*/}
         {/* <UploadCount /> */}
         <a
           target="_blank"
@@ -126,7 +195,8 @@ export function Sidenav() {
 
 export function NavBar() {
   const { t } = useTranslation();
-
+  const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
+  const everPayStyling = "flex justify-center items-center text-sm text-white wallet-button font-semibold bg-zinc-900 rounded-full w-[12%] mx-2"
   return (
     <>
       <div className="md:hidden">
@@ -137,17 +207,14 @@ export function NavBar() {
           <div className="w-4/5">
             <Searchbar />
           </div>
-          <div className="ml-8 w-72 flex flex-col bg-zinc-900 dropdown rounded-full">
-            <label tabIndex={0} className="btn-default ">{t("navbar.wallets")}</label>
-            <ul tabIndex={0} className="w-full dropdown-content menu p-2 rounded-box mt-12 bg-zinc-800 overflow-hidden">
-              <li className="mt-2">
-                <ConnectButton showBalance={true} />
-              </li>
-              <li className="mt-2">
-                <ArConnect />
-              </li>
-            </ul>
+          <div className="w-64">
+            <ArConnect />
           </div>
+          {arweaveAddress_ && arweaveAddress_.length > 0 && (
+          <EverPayBalance
+            textClassname={everPayStyling}
+          />
+          )}
         </div>
       </div>
     </>
@@ -166,7 +233,7 @@ export function NavBarMobile() {
 
   return (
     <div className="text-white">
-      <div className="flex gap-x-8 justify-center">
+      <div className="flex gap-x-12 justify-center">
         <Disclosure as="nav" className="rounded-box w-full">
           {({ open }) => (
             <>
@@ -246,7 +313,6 @@ export function NavBarMobile() {
                   <Disclosure.Button as="div" className="block py-2 rounded-md">
                     <ArConnect />
                   </Disclosure.Button>
-                  <ConnectButton showBalance={true} />
                 </div>
               </Disclosure.Panel>
             </>

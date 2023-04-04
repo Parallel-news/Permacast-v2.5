@@ -1,13 +1,10 @@
-import { PlayIcon } from "@heroicons/react/24/outline";
 import { FC } from 'react'
-import Track from "./track";
 import { useTranslation } from "next-i18next";
 import TipButton from "./reusables/tip";
 import { FaRss, FaRegGem } from "react-icons/fa";
 import { PlusIcon } from "@heroicons/react/24/solid";
-import UploadEpisode from "./uploadEpisode";
 import UploadVideo from "./uploadVideo";
-import { CheckAuthHook, getButtonRGBs } from "../utils/ui.js";
+import { getButtonRGBs } from "../utils/ui";
 import { useRecoilState } from "recoil";
 
 import { globalModalOpen, switchFocus } from "../atoms";
@@ -55,7 +52,7 @@ const PodcastHeader:FC<PodcastHeaderInterface> = ({
             <div className="flex items-center justify-between">
               <button
                 className="btn btn-primary btn-sm normal-case rounded-full border-0"
-                style={getButtonRGBs(currentPodcastColor)}
+                // style={getButtonRGBs(currentPodcastColor)}
                 onClick={() => loadRss()}
               >
                 <FaRss className="mr-2 w-3 h-3" />
@@ -63,7 +60,7 @@ const PodcastHeader:FC<PodcastHeaderInterface> = ({
               </button>
               {!isOwner && (
                 <div className="ml-4">
-                  <TipButton />
+                  {/* <TipButton /> */}
                 </div>
               )}
               {/* {secondaryData_ && isOwner && (
