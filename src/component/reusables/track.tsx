@@ -138,7 +138,7 @@ export const TrackCreatorLink: FC<TrackCreatorLinkProps> = ({ uploader, buttonSt
         className="h-2.5 w-2.5 rounded-full"
         style={{backgroundColor: coverColor}}
       ></div>
-      <div>{shortenAddress(uploader, 8)}</div>
+      <div>{shortenAddress(uploader || author || "", 8)}</div>
     </Link>
   );
 };
@@ -260,7 +260,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     accentColor: textColor,
     openFullscreen, 
     title: episodeName,
-    artist: shortenAddress(uploader, 8),
+    artist: shortenAddress(uploader || author || "", 8),
     cover: coverUsed,
     src: contentTx,
   };
