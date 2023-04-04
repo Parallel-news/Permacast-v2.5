@@ -3,7 +3,7 @@ import { HexString, HSL, replaceColorsInterface, RGB, RGBA, RGBAstring, RGBorRGB
 import { ShowShikwasaPlayerInterface } from '../interfaces/playback';
 import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
 import { podcastCoverColorManager } from './localstorage';
-import { ARSEED_URL } from '../constants/index.js';
+import { ARSEED_URL, ARWEAVE_READ_LINK } from '../constants/index.js';
 import { arweaveTX, Podcast } from '../interfaces/index.js';
 import { trimChars } from './filters';
 
@@ -266,7 +266,7 @@ export const showShikwasaPlayer: ShowShikwasaPlayerInterface = ({
       title: title,
       artist: artist,
       cover: ARSEED_URL + cover,
-      src: ARSEED_URL + src,
+      src: ARWEAVE_READ_LINK + src,
       color: playerColorScheme,
     },
     download: true
