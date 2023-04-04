@@ -17,7 +17,7 @@ import { TipModal } from "../../component/tipModal";
 import { useEffect, useState } from "react";
 import { ShareButtons } from "../../component/shareButtons";
 import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import FeaturedPodcastPlayButton from "../../component/home/featuredPodcastPlayButton";
 import { FullEpisodeInfo } from "../../interfaces";
 import Track from "../../component/reusables/track";

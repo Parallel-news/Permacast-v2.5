@@ -5,7 +5,7 @@ import { containerPodcastModalStyling, tipModalStyling } from '../uploadEpisode/
 import { FADE_IN_STYLE, FADE_OUT_STYLE } from '../../constants'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { xMarkModalStyling } from '../tipModal'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 interface ShareButtonsInter {
     url: string;

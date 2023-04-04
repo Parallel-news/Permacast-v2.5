@@ -13,7 +13,7 @@ import Link from "next/link";
 import { useRecoilState } from "recoil";
 import { loadTipModal } from "../../atoms";
 import { useArconnect } from "react-arconnect";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { queryMarkdownByTX } from "../../utils/markdown";
 import { RssIcon } from "@heroicons/react/24/solid";
 import { PERMACAST_HELPER_URL, RSS_FEED_URL } from "../../constants";

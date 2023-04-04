@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useArconnect } from "react-arconnect";
 import toast from "react-hot-toast";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { useRecoilState } from "recoil";
 import { arweaveAddress, everPayBalance } from "../../atoms";
 import { FADE_IN_STYLE, FADE_OUT_STYLE, SPINNER_COLOR } from "../../constants";

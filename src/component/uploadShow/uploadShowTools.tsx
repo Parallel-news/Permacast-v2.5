@@ -180,6 +180,9 @@ export const ShowForm = (props: ShowFormInter) => {
         "cat": podcastCategory_.length > 0,
         "cover": podcastCover_ !== null
     }
+    useEffect(() => console.log("allFieldsFilled: ", allFieldsFilled(validationObject)), [validationObject]);
+    useEffect(() => console.log("object: ", validationObject), [validationObject]);
+
     // Hook Calculating Upload Cost
     useEffect(() => {
         setUploadCost(0)
