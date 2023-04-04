@@ -14,13 +14,18 @@ const FeaturedPodcastPlayButton: FC<FeaturedPodcastPlayButtonInterface> = ({ pla
   const { playerColorScheme, buttonColor, accentColor, title, artist, cover, src, } = playerInfo;
 
   const { playerState, launchPlayer, togglePlay } = useShikwasa();
-  const { currentPodcast, isPlaying } = playerState;
+  let currentPodcast, isPlaying;
+
+  if (playerState) {
+    currentPodcast = playerState?.currentPodcast;
+    isPlaying = playerState?.isPlaying;
+  };
 
   const [localIsPlaying, setLocalIsPlaying] = useState<boolean>(false);
   const openFullscreen = true;
 
   useEffect(() => {
-    if (currentPodcast.pid === podcastInfo.pid && isPlaying) {
+    if ((currentPodcast?.pid === podcastInfo?.pid) && isPlaying) {
       setLocalIsPlaying(true);
     } else {
       setLocalIsPlaying(false);
@@ -28,7 +33,7 @@ const FeaturedPodcastPlayButton: FC<FeaturedPodcastPlayButtonInterface> = ({ pla
   }, [currentPodcast, isPlaying]);
 
   const handlePlay = () => {
-    if (!(currentPodcast.pid === podcastInfo.pid)) {
+    if (!(currentPodcast?.pid === podcastInfo?.pid)) {
       launchPlayer({ playerColorScheme, buttonColor, openFullscreen, title, artist, cover, src }, podcastInfo, episodes);
     } else {
       togglePlay();

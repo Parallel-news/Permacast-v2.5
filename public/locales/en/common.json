@@ -3,6 +3,12 @@
 	"tooltip": {
 		"coming-soon": "Coming soon"
 	},
+	"arconnect": {
+		"profile": "View Profile",
+		"arpage": "View on ar.page",
+		"everpay": "Top up with Everpay",
+		"disconnect": "Disconnect"
+	},
 	"navbar": {
 		"home": "Home",
 		"help": "Get help",
