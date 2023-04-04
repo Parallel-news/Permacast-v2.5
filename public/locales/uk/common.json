@@ -3,6 +3,12 @@
 	"tooltip": {
 		"coming-soon": "Незабаром"
 	},
+  "arconnect": {
+    "profile": "Переглянути профіль",
+    "arpage": "Переглянути на ar.page",
+		"everpay": "Поповнити за допомогою Everpay",
+    "disconnect": "Відключити ArConnect"
+  },
 	"navbar": {
 		"home": "Головна",
 		"help": "Отримати допомогу",
@@ -205,10 +211,10 @@
 	"view": "Переглянути",
 	"share": {
 		"Checkthis": "Заціни",
-		"share": "частка"
+		"share": "Поділитись"
 	},
 	"tipModal": {
-		"submitTip": "Надіслати підказку",
+		"submitTip": "Надіслати чайові",
 		"balance": "Баланс"
 	}
 }
