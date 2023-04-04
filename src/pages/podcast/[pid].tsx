@@ -72,7 +72,7 @@ export default function PodcastId({data, status, fullEpisodeInfo}) {
         return (
             <>
                 <Head>
-                        <title>{`Show | Permacast`}</title> 
+                        <title>{`${data.obj.podcastName} | Permacast`}</title> 
                         <meta name="description" content={`By ${data.obj.author}`} />
                         <meta name="twitter:image" content={(data.obj.cover !== "") ? `https://arweave.net/${data.obj.cover}` : "https://ar.page/favicon.png"} />
                         <meta name="twitter:title" content={`${data.obj.podcastName} | Permacast`} />
