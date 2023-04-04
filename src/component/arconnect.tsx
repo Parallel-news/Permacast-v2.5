@@ -60,11 +60,11 @@ export default function ArConnect() {
                 <ProfileImage {...{currentLabel: currentLabel || address, avatar, address_color, size: 20, borderWidth: 3}} linkToArPage={false}  />
               )
             }
-            <span className="ml-1">
+            <span className="ml-2">
               {ANS?.currentLabel ? `${ANS?.currentLabel}.ar` : shortenAddress(address, 8)}
             </span>
             {arweaveAddress_ && arweaveAddress_.length > 0 && (
-              <EverPayBalance textClassname={"ml-3 rounded-full"} />
+              <EverPayBalance textClassname={"ml-4 rounded-full"} />
             )}
           </Dropdown.Button>
         )) || (

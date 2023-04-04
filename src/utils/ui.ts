@@ -4,7 +4,10 @@ import { ShowShikwasaPlayerInterface } from '../interfaces/playback';
 import { FastAverageColor, FastAverageColorResult } from 'fast-average-color';
 import { podcastCoverColorManager } from './localstorage';
 import { ARSEED_URL } from '../constants/index.js';
-import { arweaveTX } from '../interfaces/index.js';
+import { arweaveTX, Podcast } from '../interfaces/index.js';
+import { trimChars } from './filters';
+
+export const determinePodcastURL = (label: string, pid: string) => label || trimChars(pid);
 
 // Allows for Alpha
 export function rgba2hex(orig) {
