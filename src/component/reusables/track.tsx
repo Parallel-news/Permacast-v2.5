@@ -155,7 +155,14 @@ export const TrackPlayButton: FC<TrackPlayButtonProps> = ({ playerInfo, episode,
 
   const { playerState, launchPlayer, togglePlay } = useShikwasa();
 
-  const { currentPodcast, currentEpisode, isPlaying } = playerState;
+  let currentPodcast, currentEpisode, isPlaying;
+
+  if (playerState) {
+    currentPodcast = playerState?.currentPodcast;
+    currentEpisode = playerState?.currentEpisode;
+    isPlaying = playerState?.isPlaying;
+  }
+  
   const episodeInfo = episode.episode;
   const podcastInfo = episode.podcast;
 
@@ -227,33 +234,6 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     fetchData();
   }, []);
 
-  const MemoizedTrackInfo: React.FC<MemoizedComponentProps> = React.memo(({
-    pid,
-    coverUsed,
-    podcastName,
-    eid,
-    episodeName,
-    uploader,
-    coverColor,
-    author,
-    includeDescription,
-    description,
-  }) => {
-    return (
-      <div className={trackFlexCenterPaddedYStyling}>
-        <PodcastCover {...{ pid, cover: coverUsed, alt: podcastName }} />
-        <div className="ml-4 flex flex-col min-w-[100px]">
-          <EpisodeLinkableTitle {...{ pid, eid, episodeName }} />
-          <div className={trackFlexCenterYStyling}>
-            <p className={trackByStyling}>{t("track.by")}</p>
-            <TrackCreatorLink {...{ uploader, buttonStyles, coverColor, author }} />
-          </div>
-        </div>
-        <TrackDescription {...{ includeDescription, description: markdown }} />
-      </div>
-    );
-  });
-
   const playerInfo = {
     playerColorScheme: coverColor,
     buttonColor: textColor,
@@ -267,7 +247,17 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
 
   return (
     <div className={trackFlexCenterBothStyling}>
-      <MemoizedTrackInfo {...{ pid, coverUsed, podcastName, eid, episodeName, uploader, coverColor, author, description, includeDescription }} />
+      <div className={trackFlexCenterPaddedYStyling}>
+        <PodcastCover {...{ pid, cover: coverUsed, alt: podcastName }} />
+        <div className="ml-4 flex flex-col min-w-[100px]">
+          <EpisodeLinkableTitle {...{ pid, eid, episodeName }} />
+          <div className={trackFlexCenterYStyling}>
+            <p className={trackByStyling}>{t("track.by")}</p>
+            <TrackCreatorLink {...{ uploader, buttonStyles, coverColor, author }} />
+          </div>
+        </div>
+        <TrackDescription {...{ includeDescription, description: markdown }} />
+      </div>
       <TrackPlayButton {...{ playerInfo, episode, includePlayButton, buttonColor: coverColor, accentColor: coverColor }} />
     </div>
   );
