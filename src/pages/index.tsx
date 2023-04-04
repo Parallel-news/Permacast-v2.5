@@ -41,6 +41,7 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+      // re-write to use internal state
       const exmState: EXMDevState = (await axios.get('/api/exm/read')).data;
 
       const { podcasts } = exmState;
@@ -51,7 +52,8 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
               .flat();
       const sorted = episodes.sort((episodeA, episodeB) => episodeB.episode.uploadedAt - episodeA.episode.uploadedAt);
       setLatestEpisodes(sorted.splice(0, 3));
-      setPodcasts_([...(featuredState?.featured_channels || []) ,...podcasts].splice(0, 4));
+      const sortedPodcasts = podcasts.filter((podcast: Podcast) => podcast.episodes.length > 0 && !podcast.podcastName.includes("Dick"));
+      setPodcasts_([...(featuredState?.featured_channels || []) ,...sortedPodcasts].splice(0, 4));
       setLoading(false);
     };
     const fetchFeatured = async () => {
