@@ -17,7 +17,7 @@ import { findObjectById, formatStringByLen } from "../../../../utils/reusables";
 import { TipModal } from "../../../../component/tipModal";
 import { ShareButtons } from "../../../../component/shareButtons";
 import { fetchDominantColor, getCoverColorScheme, rgba2hex, RGBAstringToObject, RGBobjectToString } from "../../../../utils/ui";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import FeaturedPodcastPlayButton from "../../../../component/home/featuredPodcastPlayButton";
 
 export default function EpisodeId({data, status}) {

@@ -4,7 +4,7 @@ import Everpay, { ChainType } from "everpay";
 import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import { defaultSignatureParams, useArconnect } from "react-arconnect";
 import toast from "react-hot-toast";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { useRecoilState } from "recoil";
 import { allPodcasts, arweaveAddress, everPayBalance } from "../../atoms";
 import { EVERPAY_AR_TAG, EVERPAY_FEATURE_TREASURY, FADE_IN_STYLE, FADE_OUT_STYLE, FEATURE_COST, SPINNER_COLOR, USER_SIG_MESSAGES } from "../../constants";

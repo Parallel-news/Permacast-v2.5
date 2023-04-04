@@ -11,7 +11,7 @@ import { formatStringByLen, hexToRGB } from "../../utils/reusables";
 import { ARWEAVE_READ_LINK, STR_LEN_EPISODE_BOX, STR_LEN_EPISODE_DESC, ARSEED_URL } from "../../constants";
 import { useState } from "react";
 import { getTypeFromMime } from "../../utils/fileTools";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import FeaturedPodcastPlayButton from "../home/featuredPodcastPlayButton";
 
 
