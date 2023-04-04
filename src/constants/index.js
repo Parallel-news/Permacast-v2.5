@@ -58,6 +58,7 @@ export const EXM_READ_LINK = "https://api.exm.dev/read/";
 // !Please use ARSEED_URL insead of ARWEAVE_READ_LINK for instant retrieval on user-uploaded content
 export const ARWEAVE_READ_LINK = "https://arweave.net/";
 export const PERMACAST_HELPER_URL = "https://permacast-bloodstone-helper.herokuapp.com/";
+export const ANS_MAPPED_STATE_URL = "https://ans-metrics.herokuapp.com/mapped-state/";
 export const RSS_FEED_URL = PERMACAST_HELPER_URL + "feeds/rss/"; // requires PID at the end
 export const EXM_ANS_CONTRACT_ADDRESS = "VGWeJLDLJ9ify3ezl9tW-9fhB0G-GIUd60FE-5Q-_VI";
 
