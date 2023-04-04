@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 import { CURRENT_EPISODE_TEMPLATE, CURRENT_PODCAST_TEMPLATE, DEFAULT_BACKGROUND_COLOR, DEFAULT_PODCAST_COLOR, DEFAULT_THEME_COLOR } from '../constants/ui';
-import { Ans, Episode, FullEpisodeInfo, Podcast } from '../interfaces';
+import { ANSMapped, Ans, Episode, FullEpisodeInfo, Podcast } from '../interfaces';
 import { RGBorRGBAstring } from '../interfaces/ui';
 
 export const uploadPercent = atom({
@@ -64,6 +64,11 @@ export const allPodcasts = atom<Podcast[]>({
     key: "allPodcasts",
     default: [],
 });
+
+export const allANSUsersAtom = atom<ANSMapped[]>({
+    key: "allANSUsersAtom",
+    default: [],
+})
 
 export const searchInputAtom = atom<string>({
     key: "searchInputAtom",
