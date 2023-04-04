@@ -281,7 +281,7 @@ export const ShowForm = (props: ShowFormInter) => {
             }, 500)
         }, 5000)
     }
-    
+
     return (
         <div className={showFormStyling}>
             {/*First Row*/}
@@ -452,6 +452,7 @@ export const CoverContainer = (props: CoverContainerInter) => {
               setShowCrop(true);
             } else {
               setImg(URL.createObjectURL(event.target.files[0]));
+              props.setCover(URL.createObjectURL(event.target.files[0]))
             }
           };
         }
