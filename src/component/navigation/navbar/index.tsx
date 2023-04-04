@@ -9,6 +9,7 @@ import {
 import ArConnect from "../../arconnect";
 import Searchbar from "../../searchbar";
 import LANGUAGES from "../../../utils/languages";
+import Link from "next/link";
 
 export const NavBar: FC = () => {
   return (
@@ -91,34 +92,27 @@ export function NavBarMobile() {
                     as="div"
                     className="block px-3 py-2 rounded-md"
                   >
-                    <div onClick={() => ""}>{t("navbar.home")}</div>
-                  </Disclosure.Button>
-                  <Disclosure.Button
-                    as="a"
-                    href="https://t.me/permacast"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="block px-3 py-2 rounded-md"
-                  >
-                    {t("navbar.help")}
+                    <Link href="/">
+                      {t("navbar.home")}
+                    </Link>
                   </Disclosure.Button>
                   <Disclosure.Button
                     as="a"
                     className="block px-3 py-2 rounded-md cursor-pointer"
                   >
-                    <span onClick={() => console.log('')}>
-                      {t("navbar.new")}
-                    </span>
-                  </Disclosure.Button>
-                  <Disclosure.Button
-                    as="a"
-                    className="block px-3 py-2 rounded-md cursor-pointer"
-                  >
-                    <div onClick={() => ("uploadpodcast")}>
+                    <Link href="/upload-podcast">
                       {t("uploadshow.addpodcast")}
-                    </div>
+                      </Link>
                   </Disclosure.Button>
 
+                  <Disclosure.Button
+                    as="a"
+                    className="block px-3 py-2 rounded-md cursor-pointer"
+                  >
+                    <Link href="/upload-episode">
+                      {t("podcast.newepisode")}
+                    </Link>
+                  </Disclosure.Button>
                   <Disclosure.Button as="div" className="block py-2 rounded-md">
                     <ArConnect />
                   </Disclosure.Button>

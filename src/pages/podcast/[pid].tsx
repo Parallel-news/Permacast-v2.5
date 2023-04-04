@@ -91,7 +91,7 @@ const PodcastId: NextPage<{ podcast: Podcast }> = ({ podcast }) => {
                     <p className={nextEpisodeTitleStyling + " pt-10"}>Episodes</p>
                     {/*Episode Track*/}
                     {fullEpisodeInfo.map((episode: FullEpisodeInfo, index: number) => (
-                        <div className="hidden md:block" key={index}>
+                        <div key={index}>
                             <Track {...{ episode }} includeDescription includePlayButton />
                         </div>
                     )) || <Loading />}
