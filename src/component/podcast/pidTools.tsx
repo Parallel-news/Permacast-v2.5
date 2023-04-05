@@ -66,8 +66,8 @@ export const podcastInfoDescStyling = "text-neutral-400 text-[12px]"
 export const podcastInfoMobileStyling = "flex flex-col xl:flex-row items-center space-x-16 justify-start xl:justify-start xl:hidden"
 export const podcastInfoStyling = "items-center space-x-16 justify-start xl:justify-start hidden xl:flex xl:flex-row"
 export const podcastInfoTitleStyling = "text-3xl font-semibold select-text items-start justify-start"
-export const podcastButtonsStyling = "flex flex-row items-center space-x-6 justify-center xl:justify-start"
-export const podcastBannerStyling = "flex flex-col xl:flex-row w-full justify-between px-0.5 sm:px-8 xl:px-24 space-y-8 xl:space-y-0 text-center xl:text-left w-full"
+export const podcastButtonsStyling = "flex flex-row items-center space-x-6 justify-start"
+export const podcastBannerStyling = "flex flex-col xl:flex-row w-full justify-between px-0 xl:px-24 space-y-8 xl:space-y-0 text-center xl:text-left w-full"
 export const podcastInfoTitleDivStyling = "flex flex-col ml-0 m-0 mr-[64px]"
 
 // 3. Custom Functions
@@ -106,7 +106,7 @@ export const PodcastInfoMobile = (props: PodcastInfoInter) => {
     }, []);
 
     return (
-        <div className="flex flex-col justify-center items-center px-4 xl:hidden space-y-6">
+        <div className="flex flex-col justify-start items-start px-0 xl:px-4 xl:hidden space-y-6">
             <Image
                 src={props.imgSrc}
                 alt="Podcast Cover"
@@ -114,8 +114,8 @@ export const PodcastInfoMobile = (props: PodcastInfoInter) => {
                 width={150}
                 className="object-cover rounded-3xl"
             />
-            <p className="text-3xl text-white select-text">{props.title}</p>
-            <MarkdownRenderer markdownText={markdownText} color={props.color === "rgb(0, 0, 0)" ? 'text-black' : 'text-white'}/>
+            <p className="text-3xl text-white select-text flex items-start justify-start">{props.title}</p>
+            <MarkdownRenderer markdownText={markdownText} color={props.color === "rgb(0, 0, 0)" ? 'text-black' : 'text-white'} align="text-left"/>
         </div>
     )
 }
