@@ -72,7 +72,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
     fetchFeatured()
     fetchData();
   }, []);
-
+ 
   return (
     <div className="w-full pb-10 mb-10">
       <Greeting />

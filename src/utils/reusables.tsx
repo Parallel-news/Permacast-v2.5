@@ -126,3 +126,6 @@ export function detectTimestampType(timestamp) {
     return 'milliseconds';
   }
 }
+
+// Checks if we should use Arweave or Arseeding gateway
+export const hasBeen10Min = (timestamp: number) => (Date.now() - timestamp) > (10 * 60 * 1000) ? true : false
