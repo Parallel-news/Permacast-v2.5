@@ -22,9 +22,13 @@ import { getContractVariables, getFeaturedChannelsContract } from '../utils/cont
 import GetFeatured from '../component/home/getFeatured';
 import { findPodcast } from '../utils/filters';
 
-interface props {isProduction: boolean, contractAddress: string};
+interface HomeProps {
+  isProduction: boolean,
+  contractAddress: string,
+  featuredContractAddress: string
+};
 
-const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
+const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredContractAddress }) => {
 
   const { t } = useTranslation();
 
@@ -34,7 +38,7 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
   const [latestEpisodes, setLatestEpisodes] = useRecoilState(latestEpisodesAtom);
 
 
-  const [featuredState, setFeaturedState] = useState<any>({});
+  const [featuredChannels, setFeaturedChannels] = useState<FeaturedChannel[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [isVisible, setIsVisible] = useState(false);
@@ -54,16 +58,16 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
       const sorted = episodes.sort((episodeA, episodeB) => episodeB.episode.uploadedAt - episodeA.episode.uploadedAt);
       setLatestEpisodes(sorted.splice(0, 3));
       const sortedPodcasts = podcasts.filter((podcast: Podcast) => podcast.episodes.length > 0 && !podcast.podcastName.includes("Dick"));
-      const featuredChannels = featuredState?.featured_channels
+      const foundFeaturedChannels = featuredChannels
         .map(
           (channel: FeaturedChannel) => findPodcast(channel.pid, podcasts))
-            .filter((channel: FeaturedChannel) => channel);
-      setPodcasts_([...(featuredChannels || []) ,...sortedPodcasts].splice(0, 4));
+            .filter((channel: Podcast) => channel);
+      setPodcasts_([...(foundFeaturedChannels || []) ,...sortedPodcasts].splice(0, 4));
       setLoading(false);
     };
     const fetchFeatured = async () => {
       const featuredPodcasts = (await axios.get('/api/exm/featured-channels/read')).data;
-      setFeaturedState(featuredPodcasts.state);
+      setFeaturedChannels(featuredPodcasts?.state?.featured_channels || []);
     };
     fetchFeatured()
     fetchData();
@@ -75,7 +79,8 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
       {isProduction !== true &&
         <div className="select-text">
           <p className='text-yellow-500 font-bold'>Heads up: isProduction !== "true"</p>
-          <p className="text-teal-300">Address: {contractAddress}</p>
+          <div className="text-teal-300 flex gap-x-1">EXM Main Address: <p className="underline font-medium">{contractAddress}</p></div>
+          <div className="text-indigo-300 flex gap-x-1">EXM Feature Channel Address: <p className="underline font-medium">{featuredContractAddress}</p></div>
         </div>
       }
       {podcasts_.length > 0 ? (
@@ -126,7 +131,7 @@ const Home: NextPage<props> = ({ isProduction, contractAddress }) => {
 
 export async function getStaticProps({ locale }) {
   const { isProduction, contractAddress } = await getContractVariables();
-  const { isProduction: featuredIsProduction, contractAddress: featuredContractAddress } = await getFeaturedChannelsContract();
+  const { contractAddress: featuredContractAddress } = await getFeaturedChannelsContract();
 
   return {
     props: {
@@ -135,7 +140,6 @@ export async function getStaticProps({ locale }) {
       ])),
       isProduction,
       contractAddress,
-      featuredIsProduction,
       featuredContractAddress,
     },
   }
