@@ -13,7 +13,7 @@ import {
  } from "../../../../component/episode/eidTools";
 import { EXM_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND, ARSEED_URL } from "../../../../constants";
 import { getContractVariables } from "../../../../utils/contract";
-import { findObjectById, formatStringByLen } from "../../../../utils/reusables";
+import { detectTimestampType, findObjectById, formatStringByLen } from "../../../../utils/reusables";
 import { TipModal } from "../../../../component/tipModal";
 import { ShareButtons } from "../../../../component/shareButtons";
 import { determinePodcastURL, fetchDominantColor, getCoverColorScheme, rgba2hex, RGBAstringToObject, RGBobjectToString } from "../../../../utils/ui";
@@ -34,15 +34,18 @@ export default function EpisodeId({data, status}) {
 
     
     if (data) {
-        console.log(data)
+        console.log("Look data: ", data)
         //Serverside Results
-        const ts = new Date(data?.obj.uploadedAt);
+        detectTimestampType(data?.obj.uploadedAt)
+        console.log("DETECT: ", detectTimestampType(data?.obj.uploadedAt))
+        let ts = new Date(detectTimestampType(data?.obj.uploadedAt) === "milliseconds" ? data?.obj.uploadedAt : data?.obj.uploadedAt* 1000);
         const day = ts.getDate().toString().padStart(2, '0'); // get the day and add leading zero if necessary
         const month = (ts.getMonth() + 1).toString().padStart(2, '0'); // get the month (adding 1 because getMonth() returns 0-indexed) and add leading zero if necessary
         const year = ts.getFullYear().toString(); // get the year
         const formattedDate = `${day}/${month}/${year}`;
         const d = data?.obj
         const date = formattedDate
+        console.log("Look DATE: ", date)
         const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
         console.log("Episodes: ", data?.episodes)
         

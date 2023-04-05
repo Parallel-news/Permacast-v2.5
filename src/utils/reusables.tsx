@@ -116,3 +116,13 @@ export function validateLabel(label, podcasts: Podcast[]) {
     return {res: true, msg: label};
   }
 }
+
+export function detectTimestampType(timestamp) {
+  const now = Date.now();
+  const maxSeconds = now / 1000; // convert current timestamp to seconds
+  if (timestamp < maxSeconds) {
+    return 'seconds';
+  } else {
+    return 'milliseconds';
+  }
+}
