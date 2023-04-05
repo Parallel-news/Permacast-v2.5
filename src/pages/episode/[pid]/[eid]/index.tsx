@@ -31,10 +31,16 @@ export default function EpisodeId({data, status}) {
 
     const [themeColor, setThemeColor] = useState<string>('');
     const [textColor, setTextColor] = useState<string>('');
-
+    let index;
     
     if (data) {
-        console.log("Look data: ", data)
+        // Find Episode Number
+        for(let i = 0; i < data.episodes.length; i++) {
+            //@ts-ignore
+            if(data.episodes[i].eid === data.obj.eid) {
+                index = i
+            }
+        }
         //Serverside Results
         detectTimestampType(data?.obj.uploadedAt)
         console.log("DETECT: ", detectTimestampType(data?.obj.uploadedAt))
@@ -92,7 +98,7 @@ export default function EpisodeId({data, status}) {
                         title={d.episodeName}
                         imgSrc={ARSEED_URL + data?.cover}
                         color={color}
-                        episodeNum={data?.index+1}
+                        episodeNum={index+1}
                         date={date}
                         setLoadTipModal={() => setLoadTipModal(true)}
                         setLoadShareModal={() => setLoadShareModal(true)}
