@@ -11,9 +11,9 @@ import {
     ErrorTag,
     podcastIdStyling,
  } from "../../../../component/episode/eidTools";
-import { EXM_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND, ARSEED_URL } from "../../../../constants";
+import { EXM_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND, ARSEED_URL, ARWEAVE_READ_LINK } from "../../../../constants";
 import { getContractVariables } from "../../../../utils/contract";
-import { detectTimestampType, findObjectById, formatStringByLen } from "../../../../utils/reusables";
+import { detectTimestampType, findObjectById, formatStringByLen, hasBeen10Min } from "../../../../utils/reusables";
 import { TipModal } from "../../../../component/tipModal";
 import { ShareButtons } from "../../../../component/shareButtons";
 import { determinePodcastURL, fetchDominantColor, getCoverColorScheme, rgba2hex, RGBAstringToObject, RGBobjectToString } from "../../../../utils/ui";
@@ -97,7 +97,7 @@ export default function EpisodeId({data, status}) {
                         date={date}
                         setLoadTipModal={() => setLoadTipModal(true)}
                         setLoadShareModal={() => setLoadShareModal(true)}
-                        mediaLink={ARSEED_URL + data.obj.contentTx}
+                        mediaLink={hasBeen10Min(data?.obj.uploadedAt) ? ARWEAVE_READ_LINK+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx}
                         podcastOwner={data?.obj.owner}
                         playButton={playButton}
                     />

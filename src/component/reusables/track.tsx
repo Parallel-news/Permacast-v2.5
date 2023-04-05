@@ -11,13 +11,14 @@ import { showShikwasaPlayerArguments } from "../../interfaces/playback";
 import PlayButton from "./playButton";
 import MarkdownRenderer from "../markdownRenderer";
 import { queryMarkdownByTX } from "../../utils/markdown";
-import { ARSEED_URL } from "../../constants";
+import { ARSEED_URL, ARWEAVE_READ_LINK } from "../../constants";
 import { trimChars } from "../../utils/filters";
 import { flexCenter } from "../creator/featuredCreators";
 import { allANSUsersAtom } from "../../atoms";
 import { useRecoilState } from "recoil";
 import { MicrophoneIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 import { Tooltip } from "@nextui-org/react";
+import { detectTimestampType, hasBeen10Min } from "../../utils/reusables";
 
 /**
  * Index
@@ -44,6 +45,7 @@ export interface PodcastCoverProps {
   podcastURL?: string;
   cover?: string;
   alt: string;
+  timestamp: number;
 };
 
 export interface ButtonStyle {
@@ -96,14 +98,14 @@ export const trackMainInfoStyling = `ml-4 flex flex-col min-w-fit `;
 
 // 4. Reusable Components
 
-export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt }) => {
+export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, timestamp }) => {
   if (cover) return (
     <Link href={`/podcast/${podcastURL}`} className={`w-14 h-14 shrink-0`}>
       <Image
         width={56}
         height={56}
         className="rounded-lg aspect-square object-cover w-14 h-14"
-        src={ARSEED_URL + cover}
+        src={hasBeen10Min(timestamp) ? ARWEAVE_READ_LINK+ cover : ARSEED_URL + cover }
         alt={alt}
       />
     </Link>
@@ -204,6 +206,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     type,
     eid,
     uploader,
+    uploadedAt
   } = episode.episode;
 
   const coverUsed = minifiedCover || cover;
@@ -259,7 +262,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
   return (
     <div className={trackFlexCenterBothStyling}>
       <div className={trackFlexCenterPaddedYStyling}>
-        <PodcastCover {...{ podcastURL, cover: coverUsed, alt: podcastName }} />
+        <PodcastCover {...{ podcastURL, cover: coverUsed, alt: podcastName, timestamp: detectTimestampType(uploadedAt) === "seconds" ? uploadedAt * 1000 : uploadedAt}} />
         <div className={trackMainInfoStyling}>
           <EpisodeLinkableTitle {...{ podcastURL, eid, episodeName }} />
           <div className={trackFlexCenterYStyling}>
