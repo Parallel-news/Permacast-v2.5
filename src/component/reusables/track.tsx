@@ -16,6 +16,8 @@ import { trimChars } from "../../utils/filters";
 import { flexCenter } from "../creator/featuredCreators";
 import { allANSUsersAtom } from "../../atoms";
 import { useRecoilState } from "recoil";
+import { MicrophoneIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
+import { Tooltip } from "@nextui-org/react";
 
 /**
  * Index
@@ -84,7 +86,7 @@ export const trackEpisodeLinkableTitleStyling = `cursor-pointer line-clamp-1 pr-
 export const trackByStyling = `text-zinc-400 text-[10px] mr-2 `;
 export const trackBackgroundColorStyling = `rounded-full cursor-pointer flex items-center min-w-max text-[10px] gap-x-1 px-2 py-0.5 focus:brightness-150 hover:brightness-125 default-animation `;
 export const trackDescriptionStyling = `mx-1.5 w-full line-clamp-1 text-xs `;
-export const trackMainInfoStyling = `ml-4 flex flex-col min-w-[160px] `;
+export const trackMainInfoStyling = `ml-4 flex flex-col min-w-fit `;
 
 // 3. Custom Functions
 
@@ -198,6 +200,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     episodeName,
     contentTx,
     description,
+    type,
     eid,
     uploader,
   } = episode.episode;
@@ -249,7 +252,9 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
   };
 
   const podcastURL =  determinePodcastURL(label, pid);
-
+  const isVideo = type.includes("video");
+  const className = 'w-4 h-4 hover:white zinc-600'
+  
   return (
     <div className={trackFlexCenterBothStyling}>
       <div className={trackFlexCenterPaddedYStyling}>
@@ -258,7 +263,12 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
           <EpisodeLinkableTitle {...{ podcastURL, eid, episodeName }} />
           <div className={trackFlexCenterYStyling}>
             <p className={trackByStyling}>{t("track.by")}</p>
-            <TrackCreatorLink {...{ uploader: artist, buttonStyles, coverColor, author }} />
+            <div className={flexCenter}>
+              <TrackCreatorLink {...{ uploader: artist, buttonStyles, coverColor, author }} />
+              <Tooltip color='invert' content={t(isVideo ? "track.video" : t("track.audio"))}>
+                {isVideo ? <VideoCameraIcon {...{className}} /> : <MicrophoneIcon {...{className}} />}
+              </Tooltip>
+            </div>
           </div>
         </div>
         <TrackDescription {...{ includeDescription, description: markdown }} />

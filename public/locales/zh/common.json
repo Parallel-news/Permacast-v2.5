@@ -180,7 +180,9 @@
 	},
 	"tip": "打赏",
 	"track": {
-		"by": "经过"
+		"by": "通过",
+		"video": "本集包含视频内容",
+		"audio": "本集包含音频内容"
 	},
 	"loadingpodcasts": "正在加载播客...",
 	"loadingepisodes": "加载剧集...",
