@@ -214,7 +214,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
   const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({backgroundColor: '', color: ''})
   const [markdown, setMarkdown] = useState<string>('');
   const [artist, setArtist] = useState<string>('');
-
+  console.log("contentTx: ", contentTx)
   useMemo(() => {
     const ANS = allANSUsers.find((user: ANSMapped) => user.address === uploader);
     console.log(ANS)
@@ -253,7 +253,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
 
   const podcastURL =  determinePodcastURL(label, pid);
   const isVideo = type.includes("video");
-  const className = 'w-4 h-4 hover:white zinc-600'
+  const className = 'w-4 h-4 hover:white zinc-600 mx-1'
   
   return (
     <div className={trackFlexCenterBothStyling}>

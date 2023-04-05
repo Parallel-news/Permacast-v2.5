@@ -130,7 +130,10 @@ export async function getServerSideProps(context) {
     const EXM: EXMState = (await axios.post(EXM_READ_LINK + contractAddress)).data;
     const { podcasts } = EXM;
 
-    const podcast = findPodcast(podcastId, podcasts);
+    let podcast = findPodcast(podcastId, podcasts);
+    if(!podcast) {
+        podcast = null
+    }
 
     return { props: { podcast, ...translations } };
 }

@@ -43,7 +43,6 @@ export default function EpisodeId({data, status}) {
         }
         //Serverside Results
         detectTimestampType(data?.obj.uploadedAt)
-        console.log("DETECT: ", detectTimestampType(data?.obj.uploadedAt))
         let ts = new Date(detectTimestampType(data?.obj.uploadedAt) === "milliseconds" ? data?.obj.uploadedAt : data?.obj.uploadedAt* 1000);
         const day = ts.getDate().toString().padStart(2, '0'); // get the day and add leading zero if necessary
         const month = (ts.getMonth() + 1).toString().padStart(2, '0'); // get the month (adding 1 because getMonth() returns 0-indexed) and add leading zero if necessary
@@ -51,10 +50,8 @@ export default function EpisodeId({data, status}) {
         const formattedDate = `${day}/${month}/${year}`;
         const d = data?.obj
         const date = formattedDate
-        console.log("Look DATE: ", date)
         const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
-        console.log("Episodes: ", data?.episodes)
-        
+
         // Assemble Player Data
         const podcastInfo = data.podcast
         const episodes = data?.episodes
@@ -73,9 +70,7 @@ export default function EpisodeId({data, status}) {
             }
             fetchColor();
         }, []);
-        // console.log("PLAYER INFO: ", playerInfo)
-        // console.log("Datos : ", data)
-        // console.log("SOCIALS: ", d.episodeName + " - " +data.podcastName)
+
         return (
             <>
                 <Head>

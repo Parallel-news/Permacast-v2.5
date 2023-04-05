@@ -131,8 +131,10 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
 
 export async function getStaticProps({ locale }) {
   const { isProduction, contractAddress } = await getContractVariables();
-  const { contractAddress: featuredContractAddress } = await getFeaturedChannelsContract();
-
+  let { contractAddress: featuredContractAddress } = await getFeaturedChannelsContract();
+  if(!featuredContractAddress) {
+    featuredContractAddress = null
+  }
   return {
     props: {
       ...(await serverSideTranslations(locale, [
