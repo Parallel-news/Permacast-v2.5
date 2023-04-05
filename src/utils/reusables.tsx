@@ -116,3 +116,16 @@ export function validateLabel(label, podcasts: Podcast[]) {
     return {res: true, msg: label};
   }
 }
+
+export function detectTimestampType(timestamp) {
+  const now = Date.now();
+  const maxSeconds = now / 1000; // convert current timestamp to seconds
+  if (timestamp < maxSeconds) {
+    return 'seconds';
+  } else {
+    return 'milliseconds';
+  }
+}
+
+// Checks if we should use Arweave or Arseeding gateway
+export const hasBeen10Min = (timestamp: number) => (Date.now() - timestamp) > (10 * 60 * 1000) ? true : false

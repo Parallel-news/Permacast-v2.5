@@ -29,7 +29,7 @@ export const findPodcast = (id: string, podcasts: Podcast[]) =>
 );
 
 export const findEpisode = (id: string, episodes: Episode[]) =>
-  episodes.find((episode: Episode) => (
+  episodes.find((episode: Episode, index: number) => (
     id === episode.eid ||
     matchFirstChars(id, episode.eid)
   )

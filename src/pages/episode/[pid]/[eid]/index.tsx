@@ -11,9 +11,9 @@ import {
     ErrorTag,
     podcastIdStyling,
  } from "../../../../component/episode/eidTools";
-import { EXM_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND, ARSEED_URL } from "../../../../constants";
+import { EXM_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND, ARSEED_URL, ARWEAVE_READ_LINK } from "../../../../constants";
 import { getContractVariables } from "../../../../utils/contract";
-import { findObjectById, formatStringByLen } from "../../../../utils/reusables";
+import { detectTimestampType, findObjectById, formatStringByLen, hasBeen10Min } from "../../../../utils/reusables";
 import { TipModal } from "../../../../component/tipModal";
 import { ShareButtons } from "../../../../component/shareButtons";
 import { determinePodcastURL, fetchDominantColor, getCoverColorScheme, rgba2hex, RGBAstringToObject, RGBobjectToString } from "../../../../utils/ui";
@@ -31,12 +31,19 @@ export default function EpisodeId({data, status}) {
 
     const [themeColor, setThemeColor] = useState<string>('');
     const [textColor, setTextColor] = useState<string>('');
-
+    let index;
     
     if (data) {
-        console.log(data)
+        // Find Episode Number
+        for(let i = 0; i < data.episodes.length; i++) {
+            //@ts-ignore
+            if(data.episodes[i].eid === data.obj.eid) {
+                index = i
+            }
+        }
         //Serverside Results
-        const ts = new Date(data?.obj.uploadedAt);
+        detectTimestampType(data?.obj.uploadedAt)
+        let ts = new Date(detectTimestampType(data?.obj.uploadedAt) === "milliseconds" ? data?.obj.uploadedAt : data?.obj.uploadedAt* 1000);
         const day = ts.getDate().toString().padStart(2, '0'); // get the day and add leading zero if necessary
         const month = (ts.getMonth() + 1).toString().padStart(2, '0'); // get the month (adding 1 because getMonth() returns 0-indexed) and add leading zero if necessary
         const year = ts.getFullYear().toString(); // get the year
@@ -44,8 +51,7 @@ export default function EpisodeId({data, status}) {
         const d = data?.obj
         const date = formattedDate
         const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
-        console.log("Episodes: ", data?.episodes)
-        
+
         // Assemble Player Data
         const podcastInfo = data.podcast
         const episodes = data?.episodes
@@ -64,9 +70,7 @@ export default function EpisodeId({data, status}) {
             }
             fetchColor();
         }, []);
-        // console.log("PLAYER INFO: ", playerInfo)
-        // console.log("Datos : ", data)
-        // console.log("SOCIALS: ", d.episodeName + " - " +data.podcastName)
+
         return (
             <>
                 <Head>
@@ -89,11 +93,11 @@ export default function EpisodeId({data, status}) {
                         title={d.episodeName}
                         imgSrc={ARSEED_URL + data?.cover}
                         color={color}
-                        episodeNum={data?.index+1}
+                        episodeNum={index+1}
                         date={date}
                         setLoadTipModal={() => setLoadTipModal(true)}
                         setLoadShareModal={() => setLoadShareModal(true)}
-                        mediaLink={ARSEED_URL + data.obj.contentTx}
+                        mediaLink={hasBeen10Min(data?.obj.uploadedAt) ? ARWEAVE_READ_LINK+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx}
                         podcastOwner={data?.obj.owner}
                         playButton={playButton}
                     />

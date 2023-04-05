@@ -72,7 +72,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
     fetchFeatured()
     fetchData();
   }, []);
-
+ 
   return (
     <div className="w-full pb-10 mb-10">
       <Greeting />
@@ -131,8 +131,10 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
 
 export async function getStaticProps({ locale }) {
   const { isProduction, contractAddress } = await getContractVariables();
-  const { contractAddress: featuredContractAddress } = await getFeaturedChannelsContract();
-
+  let { contractAddress: featuredContractAddress } = await getFeaturedChannelsContract();
+  if(!featuredContractAddress) {
+    featuredContractAddress = null
+  }
   return {
     props: {
       ...(await serverSideTranslations(locale, [
