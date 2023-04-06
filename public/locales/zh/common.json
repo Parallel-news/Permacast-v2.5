@@ -4,6 +4,7 @@
 		"coming-soon": "即将推出"
 	},
 	"arconnect": {
+		"load-failed": "Everpay加载失败。请稍后再试。",
     "profile": "查看个人资料",
     "arpage": "在 ar.page 上查看",
 		"everpay": "使用 Everpay 充值",

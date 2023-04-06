@@ -4,6 +4,7 @@
 		"coming-soon": "Coming soon"
 	},
 	"arconnect": {
+		"load-failed": "Everpay failed to load. Please try again later.",
 		"profile": "View Profile",
 		"arpage": "View on ar.page",
 		"everpay": "Top up with Everpay",
