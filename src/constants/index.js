@@ -119,6 +119,9 @@ export const EPISODE_UPLOAD_FEE = .01 // 10000000000 winston
 export const FEATURE_COST_BASE = 0.3 //  300000000000 winston
 export const FEATURE_COST_PER_DAY = 0.1 //100000000000 winston
 
+// MEASUREMENTS
+export const GIGABYTE = 1024 ** 3;
+
 // TOAST
 export const TOAST_POSITION = "top-center"
 export const MINT_DURATION = 5000
