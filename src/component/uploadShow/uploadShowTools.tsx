@@ -1,10 +1,10 @@
-import { MouseEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { MouseEventHandler, useCallback, useEffect, useRef, useState } from "react"
 import { PhotoIcon } from "@heroicons/react/24/outline";
 import { ConnectButton, episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
 import { LanguageOptions, CategoryOptions } from "../../utils/languages";
 import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
-import { AR_DECIMALS, CONNECT_WALLET, COVER_UPLOAD_ERROR, DESCRIPTION_UPLOAD_ERROR, EVERPAY_AR_TAG, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, GIGABYTE, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SHOW_UPLOAD_SUCCESS, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
+import { AR_DECIMALS, CONNECT_WALLET, COVER_UPLOAD_ERROR, DESCRIPTION_UPLOAD_ERROR, EVERPAY_AR_TAG, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SHOW_UPLOAD_SUCCESS, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
 import { isValidEmail, ValMsg } from "../reusables/formTools";
 import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
 import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
@@ -20,7 +20,6 @@ import axios from "axios";
 import { useTranslation } from "next-i18next";
 import { Tooltip } from "@nextui-org/react";
 import { Podcast } from "../../interfaces";
-import { flexCenter } from "../creator/featuredCreators";
 // const { t } = useTranslation();
 
 
@@ -77,13 +76,13 @@ interface ShowFormInter {
 export const showTitleStyling = "text-white text-xl mb-4"
 export const spinnerClass = "w-full flex justify-center mt-4"
 export const photoIconStyling = "h-11 w-11 text-zinc-400"
-export const explicitLabelStyling = "flex items-center mr-5 text-lg"
+export const explicitLabelStyling = "flex items-center mr-5"
 export const mediaSwitcherLabelStyling = "flex items-center label"
 export const imgStyling = "h-48 w-48 text-slate-400 rounded-[20px]"
 export const selectDropdownRowStyling = "flex flex-col sm:flex-row w-full justify-between space-y-2 sm:space-y-0"
 export const explicitCheckBoxStyling = "checkbox mr-2 border-2 border-zinc-600"
 export const emptyCoverIconTextStyling = "text-lg tracking-wider pt-2 text-zinc-400"
-export const explicitTextStyling = "label-text cursor-pointer text-zinc-400 font-medium"
+export const explicitTextStyling = "label-text cursor-pointer text-zinc-400 font-semibold"
 export const showFormStyling = "w-full flex flex-col justify-center items-center space-y-2"
 export const coverContainerInputStyling = "opacity-0 z-index-[-1] absolute pointer-events-none"
 export const cropScreenDivStyling = "relative w-[800px] h-[400px] rounded-[6px] overflow-hidden"
@@ -146,13 +145,9 @@ export const ShowForm = (props: ShowFormInter) => {
     const { t } = useTranslation();
     const { address, ANS, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
-
-    const [arweaveAddress_, ] = useRecoilState(arweaveAddress);
-    const [submittingShow, setSubmittingShow] = useState<boolean>(false);
-    const [uploadCost, setUploadCost] = useState<Number>(0);
-    const [arseedCost, setArseedCost] = useState<string>('');
-    const [coverCost, setCoverCost] = useState<number>(0);
-    const [minifiedCoverCost, setMinifiedCoverCost] = useState<number>(0);
+    const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
+    const [submittingShow, setSubmittingShow] = useState<boolean>(false)
+    const [uploadCost, setUploadCost] = useState<Number>(0)
 
     // inputs
     const [podcastDescription_, setPodcastDescription_] = useState("");
@@ -190,38 +185,28 @@ export const ShowForm = (props: ShowFormInter) => {
 
     // Hook Calculating Upload Cost
     useEffect(() => {
-        getBundleArFee(String(GIGABYTE)).then(setArseedCost);
-    }, []);
-
-    useEffect(() => {
-        const covers = async () => {
-            if (!podcastCover_) return;
-            const minCover = await minifyPodcastCover(podcastCover_);
-            const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt");
-            const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
-            const coverCost = Number(arseedCost) * (convertedCover.size / GIGABYTE);
-            const minifiedCoverCost = Number(arseedCost) * (fileMini.size / GIGABYTE);
-            setCoverCost(coverCost);
-            setMinifiedCoverCost(minifiedCoverCost);
-        }
-        covers();
-    }, [podcastCover_]);
-
-    useEffect(() => {
         setUploadCost(0)
-
-        function calculateTotal() {
+        
+        async function calculateTotal() {
             const descBytes = byteSize(podcastDescription_)
-            const descFee = Number(arseedCost) * (descBytes / GIGABYTE);
-            return (descFee + coverCost + minifiedCoverCost);
+            const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
+            const minCover = await minifyPodcastCover(podcastCover_); 
+            const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
+
+            const descFee = await getBundleArFee(String(descBytes))
+            const coverFee = await getBundleArFee(String(convertedCover.size))
+            const miniFee = await getBundleArFee(String(fileMini.size))
+
+            return Number(descFee) + Number(coverFee) + Number(miniFee)
         }
         if(podcastDescription_.length > 0 && podcastCover_ !== null) {
-            const total = calculateTotal();
-            const formattedTotal = Number(total) / AR_DECIMALS;
-            setUploadCost(formattedTotal+MIN_UPLOAD_PAYMENT);
+            calculateTotal().then(async total => {
+                const formattedTotal = total / AR_DECIMALS
+                setUploadCost(formattedTotal+MIN_UPLOAD_PAYMENT)
+            })
         } else {
             setUploadCost(0)
-        };
+        }
     }, [podcastDescription_, podcastCover_])
 
     //EXM 
@@ -256,30 +241,32 @@ export const ShowForm = (props: ShowFormInter) => {
         payloadObj["jwk_n"] = await getPublicKey()
         
         // Description to Arseeding
+        const toastDesc = toast.loading('Uploading Episode Description', {style: TOAST_DARK, duration: 10000000});
         try {
-            const toastId = toast.loading('Uploading Episode Description', {style: TOAST_DARK, duration: 10000000});
             const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
-            toast.dismiss(toastId);
+            toast.dismiss(toastDesc);
             //const name = await upload2DMedia(podcastName_); payloadObj["name"] = name?.order?.itemId
         } catch (e) {
+            toast.dismiss(toastDesc);
             console.log(e); handleErr(DESCRIPTION_UPLOAD_ERROR, setSubmittingShow); return;
         }
 
         // Covers to Arseeding
+        const toastCover = toast.loading('Uploading Episode Cover', {style: TOAST_DARK, duration: 10000000});
         try {
-            const toastId = toast.loading('Uploading Episode Cover', {style: TOAST_DARK, duration: 10000000});
             const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
             const cover = await upload3DMedia(convertedCover, convertedCover.type); payloadObj["cover"] = cover?.order?.itemId
             const minCover = await minifyPodcastCover(podcastCover_); const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
             const miniCover = await upload3DMedia(fileMini, fileMini.type); payloadObj["minifiedCover"] = miniCover?.order?.itemId
-            toast.dismiss(toastId);
+            toast.dismiss(toastCover);
         } catch (e) {
+            toast.dismiss(toastCover);
             console.log(e); handleErr(COVER_UPLOAD_ERROR, setSubmittingShow); return;
         }
 
         // Fee to Everpay
+        const toastFee = toast.loading('Paying Episode Fee', {style: TOAST_DARK, duration: 10000000});
         try {
-            const toastId = toast.loading('Paying Episode Fee', {style: TOAST_DARK, duration: 10000000});
             const everpay = new Everpay({account: address, chainType: ChainType.arweave, arJWK: 'use_wallet',});
             const transaction = await everpay.transfer({
                 tag: EVERPAY_AR_TAG,
@@ -288,23 +275,24 @@ export const ShowForm = (props: ShowFormInter) => {
                 data: {action: "createPodcast", name: podcastName_,}
             })
             payloadObj["txid"] = transaction?.everHash
-            toast.dismiss(toastId);
+            toast.dismiss(toastFee);
         } catch (e) {
+            toast.dismiss(toastFee);
             console.log(e); handleErr(EVERPAY_BALANCE_ERROR, setSubmittingShow); return;
         }
         //Error handling and timeout needed for this to complete redirect
-        const toastId = toast.loading('Saving to Blockchain', {style: TOAST_DARK, duration: 10000000});
+        const toastSaving = toast.loading('Saving to Blockchain', {style: TOAST_DARK, duration: 10000000});
         setTimeout(async function () {
             const result = await axios.post('/api/exm/write', createShowPayload);
             console.log("exm res: ", result)
             setSubmittingShow(false)
             //EXM call, set timeout, then redirect.
-            toast.dismiss(toastId); 
+            toast.dismiss(toastSaving); 
             toast.success(SHOW_UPLOAD_SUCCESS, {style: TOAST_DARK})
             setTimeout(async function () {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
                 window.location.assign(`/creator/${identifier}`);
-            }, 500)
+            }, 2500)
         }, 5000)
     }
 
@@ -376,22 +364,11 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Explicit
                     */}
-                    <div className={flexCenter}>
-                        <ExplicitInput 
-                            setExplicit={setPodcastExplicit_}
-                            explicit={podcastExplicit_}
-                        />
-                        <>
-                            {uploadCost !== 0 && podcastDescription_.length > 0 && podcastCover_ && (
-                                <div className={flexCenter + "justify-between"}>
-                                    <p className="text-zinc-200 font-medium text-lg">{t("uploadshow.feetext")} {Number(uploadCost).toFixed(4)}</p>
-                                    <Tooltip color='invert' content={<p className="font-medium font-white">{t("uploadshow.feeexplanation")}</p>}>
-                                        <div className="helper-tooltip px-1.5 ml-2">?</div>
-                                    </Tooltip>
-                                </div>
-                            )}
-                        </>
-                    </div>
+                    <ExplicitInput 
+                        setExplicit={setPodcastExplicit_}
+                        explicit={podcastExplicit_}
+                    />
+
                     {/*
                         Upload
                     */}
@@ -418,6 +395,12 @@ export const ShowForm = (props: ShowFormInter) => {
                                 click={() => connect()}
                             />
                         )}
+                        {uploadCost === 0 && podcastDescription_.length > 0 && podcastCover_ && (
+                        <p className="mt-2 text-neutral-400">Calculating Fee...</p> 
+                        )}
+                        {uploadCost !== 0 && podcastDescription_.length > 0 && podcastCover_ && (
+                        <p className="mt-2 text-neutral-400">{"Upload Cost: "+(Number(uploadCost)).toFixed(6) +" AR"}</p>
+                        )}
                     </div>
                 </div>
                 <div className="w-[25%]"></div>
@@ -431,45 +414,28 @@ export const LabelInput = (props: LabelInputInter) => {
 //absolute right-2 top-3
     return (
         <>
-            <div className="flex-col">
-                <div className="flex flex-row items-center bg-zinc-800 rounded-xl pr-1">
-                    <input className={episodeNameStyling} required title="Only letters and numbers are allowed" type="text" name="showLabel" placeholder={t("uploadshow.label")}
-                        value={props.labelValue}
-                        onChange={(e) => {
-                            const val = e.target.value.trim();
-                            const pattern = /^[a-zA-Z0-9]*$/;
-                            const isValid = pattern.test(val);
-                            console.log("isValid: ", isValid)
-                
-                            if (isValid) {
-                                if (val.length === 0) {
-                                    props.setLabel(val);
-                                } else {
-                                    props.setLabelMsg(handleValMsg(val, "podLabel", props.podcasts));
-                                    props.setLabel(val);
-                                }    
-                            }
-                        }}
-                    />
-                    <Tooltip 
-                        rounded 
-                        color="invert"
-                        content={
-                            <div className="max-w-[240px]">
-                                <span className="mr-1">{t("uploadshow.label-explanation")}:</span>
-                                <a
-                                    className="underline"
-                                    href={`https://${props.labelValue || "yourshow"}.pc.show`}
-                                >{props.labelValue || "yourshow"}.pc.show</a>
-                            </div>
-                        }
-                    >
-                        <div className="helper-tooltip">?</div>
-                    </Tooltip>
-                </div>
-                <ValMsg valMsg={props.labelMsg} className="pl-2" />
+        <div className="flex-col">
+            <div className="flex flex-row items-center bg-zinc-800 rounded-xl pr-1">
+            <input className={episodeNameStyling} required title="Only letters and numbers are allowed" type="text" name="showLabel" placeholder={t("uploadshow.label")}
+            value={props.labelValue}
+            onChange={(e) => {
+            const pattern = /^[a-zA-Z0-9]*$/;
+            const isValid = pattern.test(e.target.value.trim());
+            console.log("isValid: ", isValid)
+  
+            if (isValid) {
+                props.setLabelMsg(handleValMsg(e.target.value.trim(), "podLabel", props.podcasts));
+                props.setLabel(e.target.value.trim());
+                console.log(e.target.value.trim())
+            }
+            }}/>
+            <Tooltip rounded color="invert" content={<div className="max-w-[240px]">{t("uploadshow.label-explanation")} <a href={`https://${props.labelValue}.pc.show`}>{props.labelValue}.pc.show</a></div>}>
+                <div className="helper-tooltip">?</div>
+            </Tooltip>
             </div>
-        </>
+            <ValMsg valMsg={props.labelMsg} className="pl-2" />
+        </div>
+        </>       
     )
 }
 
