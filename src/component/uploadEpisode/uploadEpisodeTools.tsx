@@ -13,7 +13,7 @@ import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
 import { ArrowUpTrayIcon, XMarkIcon, WalletIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
 import { getBundleArFee, upload2DMedia, upload3DMedia } from '../../utils/arseeding';
 import { allFieldsFilled, byteSize, checkConnection, determineMediaType, handleError } from '../../utils/reusables';
-import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, DESCRIPTION_UPLOAD_ERROR, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EP_UPLOAD_SUCCESS, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, MEDIA_UPLOAD_ERROR, MIN_UPLOAD_PAYMENT, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from '../../constants';
+import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, DESCRIPTION_UPLOAD_ERROR, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EP_UPLOAD_SUCCESS, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, GIGABYTE, MEDIA_UPLOAD_ERROR, MIN_UPLOAD_PAYMENT, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from '../../constants';
 import { useTranslation } from 'next-i18next';
 import { transferFunds } from '../../utils/everpay';
 import { Podcast } from '../../interfaces';
@@ -133,7 +133,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         // explainer: get arseed cost per gig
         // no one's going to legitimately upload a gig, so the cost will remain the same
         // some floating errors to be expeted but copable for now
-        getBundleArFee(String(1024**3)).then(setArseedCost);
+        getBundleArFee(String(GIGABYTE)).then(setArseedCost);
     }, []);
 
 
@@ -143,8 +143,8 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         
         async function calculateTotal() {
             const descBytes = byteSize(epDesc)
-            const descFee = Number(arseedCost) * (descBytes / 1024**3);
-            const mediaFee = Number(arseedCost) * (epMedia.size / 1024**3);
+            const descFee = Number(arseedCost) * (descBytes / GIGABYTE);
+            const mediaFee = Number(arseedCost) * (epMedia.size / GIGABYTE);
             return Number(descFee) + Number(mediaFee)
         };
 
