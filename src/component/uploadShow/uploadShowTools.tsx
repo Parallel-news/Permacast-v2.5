@@ -242,7 +242,7 @@ export const ShowForm = (props: ShowFormInter) => {
         
         // Description to Arseeding
         try {
-            const toastId = toast.loading('Uploading Episode Description');
+            const toastId = toast.loading('Uploading Episode Description', {style: TOAST_DARK, duration: 10000000});
             const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
             toast.dismiss(toastId);
             //const name = await upload2DMedia(podcastName_); payloadObj["name"] = name?.order?.itemId
@@ -252,7 +252,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
         // Covers to Arseeding
         try {
-            const toastId = toast.loading('Uploading Episode Cover');
+            const toastId = toast.loading('Uploading Episode Cover', {style: TOAST_DARK, duration: 10000000});
             const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
             const cover = await upload3DMedia(convertedCover, convertedCover.type); payloadObj["cover"] = cover?.order?.itemId
             const minCover = await minifyPodcastCover(podcastCover_); const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
@@ -264,7 +264,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
         // Fee to Everpay
         try {
-            const toastId = toast.loading('Paying Episode Fee');
+            const toastId = toast.loading('Paying Episode Fee', {style: TOAST_DARK, duration: 10000000});
             const everpay = new Everpay({account: address, chainType: ChainType.arweave, arJWK: 'use_wallet',});
             const transaction = await everpay.transfer({
                 tag: EVERPAY_AR_TAG,
@@ -278,7 +278,7 @@ export const ShowForm = (props: ShowFormInter) => {
             console.log(e); handleErr(EVERPAY_BALANCE_ERROR, setSubmittingShow); return;
         }
         //Error handling and timeout needed for this to complete redirect
-        const toastId = toast.loading('Saving to Blockchain');
+        const toastId = toast.loading('Saving to Blockchain', {style: TOAST_DARK, duration: 10000000});
         setTimeout(async function () {
             const result = await axios.post('/api/exm/write', createShowPayload);
             console.log("exm res: ", result)
