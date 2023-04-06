@@ -208,27 +208,34 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
 
         // Description to Arseeding
         try {
+            const toastId = toast.loading('Saving Episode Description', {style: TOAST_DARK, duration: 10000000});
             const description = await upload2DMedia(epDesc); epPayload["desc"] = description?.order?.itemId
+            toast.dismiss(toastId); 
         } catch (e) {
             console.log(e); handleErr(DESCRIPTION_UPLOAD_ERROR, setSubmittingEp); return;
         }
 
         // Media to Arseeding
         try {
+            const toastId = toast.loading('Saving Episode Media', {style: TOAST_DARK, duration: 10000000});
             const media = await upload3DMedia(epMedia, epMedia.type); epPayload["content"] = media?.order?.itemId
             epPayload["mimeType"] = determineMediaType(epMedia.type)
+            toast.dismiss(toastId);
         } catch (e) {
             console.log(e); handleErr(MEDIA_UPLOAD_ERROR, setSubmittingEp); return;
         }
 
         // Pay Upload Fee
         try {
+            const toastId = toast.loading('Paying Episode Fee', {style: TOAST_DARK, duration: 10000000});
             const tx = await transferFunds("UPLOAD_EPISODE_FEE", EPISODE_UPLOAD_FEE, EVERPAY_EOA, address)
             //@ts-ignore - refusing to acknowledge everHash
             epPayload["txid"] = tx[1].everHash
+            toast.dismiss(toastId);
         } catch(e) {
             console.log(e); handleErr(EVERPAY_BALANCE_ERROR, setSubmittingEp); return;
         }
+        const toastId = toast.loading('Saving to Blockchain', {style: TOAST_DARK, duration: 10000000});
         // EXM REDIRECT AND ERROR HANDLING NEEDED
         setTimeout(async function () {
             const result = await axios.post('/api/exm/write', createEpPayload);
@@ -236,11 +243,12 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             console.log("exm res: ", result)
             setSubmittingEp(false)
             //EXM call, set timeout, then redirect. 
+            toast.dismiss(toastId);
             toast.success(EP_UPLOAD_SUCCESS, {style: TOAST_DARK})
             setTimeout(async function () {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
                 window.location.assign(`/creator/${identifier}`);
-            }, 500)
+            }, 3500)
         }, 4000)
     }
 
