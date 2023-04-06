@@ -105,7 +105,8 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     const { address, ANS, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
     const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
-    const [uploadCost, setUploadCost] = useState<Number>(0)
+    const [arseedCost, setArseedCost] = useState<Number>(0);
+    const [uploadCost, setUploadCost] = useState<Number>(0);
 
     //Inputs
     const [pid, setPid] = useState<string>("")
@@ -129,7 +130,11 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         if(props.pid.length > 0) {
             setPid(props.pid)
         }
-    }, [])
+        // explainer: get arseed cost per gig
+        // no one's going to legitimately upload a gig, so the cost will remain the same
+        // some floating errors to be expeted but copable for now
+        getBundleArFee(String(1024**3)).then(setArseedCost);
+    }, []);
 
 
     // Hook Calculating Upload Cost
@@ -138,10 +143,10 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         
         async function calculateTotal() {
             const descBytes = byteSize(epDesc)
-            const descFee = await getBundleArFee(String(descBytes))
-            const mediaFee = await getBundleArFee(String(epMedia.size))
+            const descFee = Number(arseedCost) * (descBytes / 1024**3);
+            const mediaFee = Number(arseedCost) * (epMedia.size / 1024**3);
             return Number(descFee) + Number(mediaFee)
-        }
+        };
 
         if(epDesc.length > 0 && epMedia !== null) {
             calculateTotal().then(async total => {
@@ -291,9 +296,6 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                         disable={false}
                         click={() => connect()}
                     />
-                )}
-                {uploadCost === 0 && epDesc.length > 0 && epMedia && (
-                <p className="mt-2 text-neutral-400">Calculating Fee...</p> 
                 )}
                 {uploadCost !== 0 && epDesc.length > 0 && epMedia && (
                 <p className="mt-2 text-neutral-400">{t("uploadepisode.feetext")} {(Number(uploadCost)).toFixed(6) +" AR"}</p>
