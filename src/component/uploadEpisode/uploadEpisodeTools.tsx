@@ -238,6 +238,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             }, 500)
         }, 4000)
     }
+
     //Submit Episode Function
     return(
         <div className={episodeFormStyling}>
