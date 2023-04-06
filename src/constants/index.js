@@ -130,6 +130,7 @@ export const TOAST_DARK = {
     background: '#333',
     color: '#fff',
 }
+export const TOAST_MARGIN = "ml-0 md:ml-[100px] lg:ml-[136px]"
 
 // API ERRORS
 export const EVERPAY_BALANCE_ERROR = "There was an issue with your Everpay Balance/Connection"
