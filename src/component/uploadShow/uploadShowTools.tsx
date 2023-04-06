@@ -12,7 +12,7 @@ import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { allFieldsFilled, byteSize, checkConnection, handleError, validateLabel} from "../../utils/reusables";
 import Everpay, { ChainType } from "everpay";
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 import { useRecoilState } from "recoil";
 import { arweaveAddress } from "../../atoms";
 import { PermaSpinner } from "../reusables/PermaSpinner";
@@ -257,7 +257,9 @@ export const ShowForm = (props: ShowFormInter) => {
         
         // Description to Arseeding
         try {
+            const toastId = toast.loading('Uploading Episode Description', {style: TOAST_DARK, duration: 10000000});
             const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
+            toast.dismiss(toastId);
             //const name = await upload2DMedia(podcastName_); payloadObj["name"] = name?.order?.itemId
         } catch (e) {
             console.log(e); handleErr(DESCRIPTION_UPLOAD_ERROR, setSubmittingShow); return;
@@ -265,16 +267,19 @@ export const ShowForm = (props: ShowFormInter) => {
 
         // Covers to Arseeding
         try {
+            const toastId = toast.loading('Uploading Episode Cover', {style: TOAST_DARK, duration: 10000000});
             const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
             const cover = await upload3DMedia(convertedCover, convertedCover.type); payloadObj["cover"] = cover?.order?.itemId
             const minCover = await minifyPodcastCover(podcastCover_); const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
             const miniCover = await upload3DMedia(fileMini, fileMini.type); payloadObj["minifiedCover"] = miniCover?.order?.itemId
+            toast.dismiss(toastId);
         } catch (e) {
             console.log(e); handleErr(COVER_UPLOAD_ERROR, setSubmittingShow); return;
         }
 
         // Fee to Everpay
         try {
+            const toastId = toast.loading('Paying Episode Fee', {style: TOAST_DARK, duration: 10000000});
             const everpay = new Everpay({account: address, chainType: ChainType.arweave, arJWK: 'use_wallet',});
             const transaction = await everpay.transfer({
                 tag: EVERPAY_AR_TAG,
@@ -283,15 +288,18 @@ export const ShowForm = (props: ShowFormInter) => {
                 data: {action: "createPodcast", name: podcastName_,}
             })
             payloadObj["txid"] = transaction?.everHash
+            toast.dismiss(toastId);
         } catch (e) {
             console.log(e); handleErr(EVERPAY_BALANCE_ERROR, setSubmittingShow); return;
         }
         //Error handling and timeout needed for this to complete redirect
+        const toastId = toast.loading('Saving to Blockchain', {style: TOAST_DARK, duration: 10000000});
         setTimeout(async function () {
             const result = await axios.post('/api/exm/write', createShowPayload);
             console.log("exm res: ", result)
             setSubmittingShow(false)
-            //EXM call, set timeout, then redirect. 
+            //EXM call, set timeout, then redirect.
+            toast.dismiss(toastId); 
             toast.success(SHOW_UPLOAD_SUCCESS, {style: TOAST_DARK})
             setTimeout(async function () {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
