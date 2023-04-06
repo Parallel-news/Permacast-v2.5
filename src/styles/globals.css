@@ -33,7 +33,7 @@
   }
 
   .helper-tooltip {
-    @apply w-6 h-6 rounded-full border-2 flex justify-center cursor-pointer hover:text-zinc-200 text-zinc-400 items-center hover:border-zinc-200 border-zinc-400 default-animation;
+    @apply w-6 h-6 rounded-full border-2 flex justify-center cursor-pointer hover:text-white text-zinc-400 items-center hover:border-zinc-200 border-zinc-400 default-animation;
   }
 
   .hover-up-effect {
