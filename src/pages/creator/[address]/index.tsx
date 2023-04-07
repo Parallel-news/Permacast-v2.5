@@ -100,14 +100,14 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
     <>
       <Head>
         <title>{`${userInfo.nickname} | Creator`}</title> 
-        <meta name="twitter:card" content="summary" />
         <meta name="description" content={`${userInfo.bio}`} />
+        <meta name="twitter:card" content="summary"></meta>
         <meta name="twitter:image" content={(userInfo.avatar !== "") ? ARWEAVE_READ_LINK + userInfo.avatar : "https://permacast.app/favicon.png"} />
         <meta name="twitter:title" content={`${userInfo.nickname} | Permacast Creator`} />
         <meta name="twitter:url" content={`https://permacast.app/`} />
         <meta name="twitter:description" content={`${userInfo.bio}`} />
+        
         <meta property="og:card" content="summary" />
-        <meta name="description" content={`${userInfo.bio}`} />
         <meta property="og:image" content={(userInfo.avatar !== "") ? ARWEAVE_READ_LINK + userInfo.avatar : "https://permacast.app/favicon.png"} />
         <meta property="og:title" content={`${userInfo.nickname} | Permacast Creator`} />
         <meta property="og:url" content={`https://permacast.app/`} />
