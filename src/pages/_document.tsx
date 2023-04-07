@@ -10,7 +10,20 @@ export default class _document extends Document {
 
     return (
       <Html lang={currentLocale}>
+      <Head>
+          <meta name="description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
+          <meta name="twitter:image" content={`https://permacast.app/favicon.ico`} />
+          <meta name="twitter:title" content={`Permacast`} />
+          <meta name="twitter:url" content={`https://permacast.app/`}></meta>
+          <meta name="twitter:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
 
+          <meta name="og:card" content="summary" />
+          <meta name="description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
+          <meta name="og:image" content={`https://permacast.app/favicon.ico`} />
+          <meta name="og:title" content={`Permacast`} />
+          <meta name="og:url" content={`https://permacast.app/`} />
+          <meta name="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} /> 
+      </Head>
         <body>
           <Main />
           <NextScript />
@@ -20,22 +33,3 @@ export default class _document extends Document {
     );
   };
 };
-
-/*
-
-<Head>
-    <meta name="description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
-    <meta name="twitter:image" content={`https://permacast.app/favicon.ico`} />
-    <meta name="twitter:title" content={`Permacast`} />
-    <meta name="twitter:url" content={`https://permacast.app/`}></meta>
-    <meta name="twitter:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
-
-    <meta name="og:card" content="summary" />
-    <meta name="description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
-    <meta name="og:image" content={`https://permacast.app/favicon.ico`} />
-    <meta name="og:title" content={`Permacast`} />
-    <meta name="og:url" content={`https://permacast.app/`} />
-    <meta name="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} /> 
-</Head>
-
-*/
