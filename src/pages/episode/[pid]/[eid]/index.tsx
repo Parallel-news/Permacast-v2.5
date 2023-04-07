@@ -88,12 +88,13 @@ export default function EpisodeId({data, status}) {
                     <meta property="og:type" content="video" />
                     <meta property="og:image" content={(data.cover !== "") ? ARSEED_URL + data.cover : "https://permacast.app/favicon.png"} />
                     <meta property="og:title" content={`${data.obj.episodeName} | Permacast`} />
-                    <meta property="og:url" content={`https://permacast.app/`} />
+                    <meta property="og:url" content={hasBeen10Min(data?.obj.uploadedAt) ? ARWEAVE_READ_LINK+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx} />
                     <meta property="og:description" content={`By ${data.podcastName}`} />
                     <meta property="og:video" content={hasBeen10Min(data?.obj.uploadedAt) ? ARWEAVE_READ_LINK+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx}></meta>
-                    <meta property="og:video:type" content="video/mp4"></meta>
+                    <meta property="og:video:type" content="video/mpeg"></meta>
                     <meta property="og:video:width" content="640"></meta>
                     <meta property="og:video:height" content="360"></meta>
+
                 </Head>
 
                 <div className={podcastIdStyling}>
