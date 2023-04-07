@@ -124,7 +124,7 @@ export interface ErrorTagInter {
 export const episodeIconStyling = "mr-2 w-4 h-4"
 export const creatorTagDivStyling = "flex flex-row space-x-3"
 export const byStyling = "text-neutral-400 text-[12px] inline"
-export const episodeInfoButtonsStyling = "flex flex-row items-center space-x-1 sm:space-x-3 md:space-x-6"
+export const episodeInfoButtonsStyling = "flex flex-row items-center space-x-1 sm:space-x-3 md:space-x-6 pt-3 sm:pt-0"
 export const episodeBoxTitleDataImg = "object-cover h-12 rounded-xl"
 export const errorTagStyle = "w-full flex justify-center items-center"
 export const episodeDateStyling = "text-gray-500 text-[11px] font-bold"
