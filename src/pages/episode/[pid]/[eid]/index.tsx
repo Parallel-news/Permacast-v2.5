@@ -87,7 +87,7 @@ export default function EpisodeId({data, status}) {
 
                     <meta name="twitter:url" content={`https://permacast.app/`}></meta>
 
-                    <meta property="og:card" content="summary" />
+                    <meta property="og:card" content="player" />
                     <meta property="og:image" content={(data.cover !== "") ? ARSEED_URL + data.cover : "https://permacast.app/favicon.png"} />
                     <meta property="og:title" content={`${data.obj.episodeName} | Permacast`} />
                     <meta property="og:url" content={`https://permacast.app/`} />
