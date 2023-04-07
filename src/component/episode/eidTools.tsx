@@ -120,7 +120,7 @@ export interface ErrorTagInter {
 export const episodeIconStyling = "mr-2 w-4 h-4"
 export const creatorTagDivStyling = "flex flex-row space-x-3"
 export const byStyling = "text-neutral-400 text-[12px] inline"
-export const episodeInfoButtonsStyling = "flex flex-row space-x-3 md:space-x-6"
+export const episodeInfoButtonsStyling = "flex flex-row items-center space-x-1 sm:space-x-3 md:space-x-6"
 export const episodeBoxTitleDataImg = "object-cover h-12 rounded-xl"
 export const errorTagStyle = "w-full flex justify-center items-center"
 export const episodeDateStyling = "text-gray-500 text-[11px] font-bold"
@@ -128,7 +128,7 @@ export const creatorTagImgStyling = "object-cover h-4 rounded-full mr-1"
 export const errorTagMsgStyle = "text-neutral-400 text-xl font-semibold"
 export const episodeBoxTitleStyling = "text-lg text-white font-semibold"
 export const episodeBannerStyling = "flex flex-col lg:flex-row w-full space-x-0 lg:space-x-16 space-y-4 lg:space-y-0 items-start justify-start"
-export const episodeInfoStyling = "flex flex-col xl:flex-row justify-start items-start space-y-4 px-0 xl:px-10 xl:space-x-8"
+export const episodeInfoStyling = "flex flex-col xl:flex-row justify-start items-start lg:items-center space-y-4 px-0 xl:px-10 xl:space-x-8"
 export const episodeInfoSubStyling = "flex flex-row items-center space-x-3 justify-start xl:justify-start"
 export const podcastIdStyling = "flex flex-col space-y-8 w-[100%] mb-[200px]"
 export const creatorTagStyling = "flex flex-row items-center p-1.5 rounded-3xl"
@@ -225,7 +225,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
 
     return (
         <div className={episodeInfoButtonsStyling}>
-            {props.playButton}
+            <>{props.playButton}</>
             <DescriptionButton
                 icon={<HeartIcon className={episodeIconStyling} />} 
                 text={t("tip")}
