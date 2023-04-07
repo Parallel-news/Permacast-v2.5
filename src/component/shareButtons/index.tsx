@@ -14,7 +14,7 @@ interface ShareButtonsInter {
     setVisible: (v: any) => void;
 }
 const circleStyling = "bg-black rounded-full p-4"
-const shareColStyling = "flex flex-row justify-center space-x-12"
+const shareColStyling = "flex flex-row justify-center space-x-6 md:space-x-12 lg:space-x-24 px-2"
 const titleStyling = "flex flex-row justify-center text-white text-3xl font-bold p-8 mb-[85px] bg-zinc-900"
 
 export const ShareButtons = (props: ShareButtonsInter) => {
@@ -44,35 +44,37 @@ export const ShareButtons = (props: ShareButtonsInter) => {
                 </div>    
                 <div className={shareColStyling}>
                     <TwitterShareButton url={url} title={title}>
-                        <div className={circleStyling}>
+                        <div className={circleStyling}> 
+                            <div className="bg-black w-fit h-fit p-1">
                             <Image 
-                                src="/twitter_bw.svg"
+                                src="/twitterLogo.svg"
                                 width={width}
                                 height={height}
                                 alt="Twitter Logo"
-                                className="bg-white"
+                                className="p-1"
                             />
+                            </div>
                         </div>
                     </TwitterShareButton>
                     <TelegramShareButton url={url} title={title}>
                         <div className={circleStyling}>
                             <Image 
-                                src="/telegram_bw.svg"
+                                src="/telegramLogo.svg"
                                 width={width}
                                 height={height}
                                 alt="Telegram Logo"
-                                className="bg-white"
+                                className="p-1"
                             />
                         </div>
                     </TelegramShareButton>
                     <FacebookShareButton url={url} title={title}>
                         <div className={circleStyling}>
                             <Image 
-                                src="/facebook_bw.svg"
+                                src="/facebookLogo.svg"
                                 width={width}
                                 height={height}
                                 alt="Facebook Logo"
-                                className="bg-white"
+                                className="p-1"
                             />
                         </div>
                     </FacebookShareButton>
