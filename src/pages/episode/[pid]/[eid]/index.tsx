@@ -76,17 +76,27 @@ export default function EpisodeId({data, status}) {
                 <Head>
                     <title>{`${data.podcastName} | Permacast`}</title> 
                     <meta name="description" content={`By ${data.podcastName}`} />
-                    <meta name="twitter:card" content="summary"></meta>
+                    <meta name="twitter:card" content="player"></meta>
                     <meta name="twitter:image" content={(data.cover !== "") ? ARSEED_URL + data.cover : "https://permacast.app/favicon.png"} />
                     <meta name="twitter:title" content={`${data.obj.episodeName} | Permacast`} />
-                    <meta name="twitter:url" content={`https://permacast.app/`}></meta>
+                    
                     <meta name="twitter:description" content={`By ${data.podcastName}`} />
+                    <meta name="twitter:player:width" content="640"></meta>
+                    <meta name="twitter:player:height" content="360"></meta>
+                    <meta name="twitter:player" content={hasBeen10Min(data?.obj.uploadedAt) ? ARWEAVE_READ_LINK+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx}></meta>
+
+                    <meta name="twitter:url" content={`https://permacast.app/`}></meta>
 
                     <meta property="og:card" content="summary" />
                     <meta property="og:image" content={(data.cover !== "") ? ARSEED_URL + data.cover : "https://permacast.app/favicon.png"} />
                     <meta property="og:title" content={`${data.obj.episodeName} | Permacast`} />
                     <meta property="og:url" content={`https://permacast.app/`} />
-                    <meta property="og:description" content={`By ${data.podcastName}`} /> 
+                    <meta property="og:description" content={`By ${data.podcastName}`} />
+
+                    <meta property="og:video" content={hasBeen10Min(data?.obj.uploadedAt) ? ARWEAVE_READ_LINK+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx}></meta>
+                    <meta property="og:video:type" content="video/mp4"></meta>
+                    <meta property="og:video:width" content="640"></meta>
+                    <meta property="og:video:height" content="360"></meta>
                 </Head>
 
                 <div className={podcastIdStyling}>
