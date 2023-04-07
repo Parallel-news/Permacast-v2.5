@@ -20,8 +20,9 @@ import { determinePodcastURL, fetchDominantColor, getCoverColorScheme, rgba2hex,
 import { useTranslation } from "next-i18next";
 import FeaturedPodcastPlayButton from "../../../../component/home/featuredPodcastPlayButton";
 import { findEpisode, findPodcast, trimChars } from "../../../../utils/filters";
+import { checkContentTypeFromUrl } from "../../../../utils/fileTools";
 
-export default function EpisodeId({data, status}) {
+export default function EpisodeId({data, status, mimeType}) {
 
     const [, setBackgroundColor_] = useRecoilState(backgroundColorAtom);
     const [loadTipModal, setLoadTipModal] = useState<boolean>(false)
@@ -70,7 +71,7 @@ export default function EpisodeId({data, status}) {
             }
             fetchColor();
         }, []);
-
+        console.log("MT: ", mimeType)
         return (
             <>
                 <Head>
@@ -91,9 +92,9 @@ export default function EpisodeId({data, status}) {
                     <meta property="og:url" content={hasBeen10Min(data?.obj.uploadedAt) ? ARWEAVE_READ_LINK+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx} />
                     <meta property="og:description" content={`By ${data.podcastName}`} />
                     <meta property="og:video" content={hasBeen10Min(data?.obj.uploadedAt) ? ARWEAVE_READ_LINK+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx}></meta>
-                    <meta property="og:video:type" content="video/mpeg"></meta>
-                    <meta property="og:video:width" content="640"></meta>
-                    <meta property="og:video:height" content="360"></meta>
+                    <meta property="og:video:type" content={mimeType} />
+                    <meta property="og:video:width" content="640" />
+                    <meta property="og:video:height" content="360" />
 
                 </Head>
 
@@ -184,15 +185,17 @@ export async function getServerSideProps(context) {
         const foundEpisode = findEpisode(episodeId, foundPodcast.episodes)
         // Episode Exist
         if (foundEpisode) {
+            const mimeType = await checkContentTypeFromUrl(hasBeen10Min(foundEpisode.uploadedAt) ? ARWEAVE_READ_LINK+ foundEpisode.contentTx : ARSEED_URL + foundEpisode.contentTx)
             const podcastName = foundPodcast.podcastName
             const data = { ...podcastData, obj: foundEpisode, podcastName}
             const status = PAYLOAD_RECEIVED
-            return { props: { data, status, ...translations } }
+            return { props: { data, status, mimeType, ...translations } }
         // Episode Doesnt Exist
         } else {
             const data = null
             const status = NO_EPISODE_FOUND
-            return { props: { data, status, ...translations } } 
+            const mimeType = ""
+            return { props: { data, status, mimeType, ...translations } } 
         }
     // Podcast Doesnt Exist
     } else {
