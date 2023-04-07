@@ -9,6 +9,9 @@ import { useRecoilState } from 'recoil';
 import { Creator404, CreatorPageComponent, sortByDate } from '../../../component/creator';
 import { ANS_TEMPLATE } from '../../../constants/ui';
 import { removeDuplicates } from '../../../utils/filters';
+import Head from 'next/head';
+import { svgToDataUrl } from '../../../utils/reusables';
+import { ARWEAVE_READ_LINK } from '../../../constants';
 
 // pages/blog/[slug].js
 export async function getStaticPaths() {
@@ -51,7 +54,7 @@ export async function getStaticProps(context) {
       ...(await serverSideTranslations(locale, [
         'common',
       ])),
-      userInfo
+      userInfo,
     },
   };
 };
@@ -66,6 +69,8 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
 
   const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
   const [allPodcasts_, setAllPodcasts_] = useRecoilState(allPodcasts);
+
+  console.log(userInfo)
 
   useEffect(() => {
     const color = RGBobjectToString(hexToRGB(address_color || "#000000"));
@@ -91,7 +96,26 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
     episodes,
   };
 
-  return <CreatorPageComponent {...{ creator }} />;
+  return (
+    <>
+
+        <Head>
+          <title>{`${userInfo.nickname} | Creator`}</title> 
+          <meta name="description" content={`${userInfo.bio}`} />
+          <meta name="twitter:image" content={(userInfo.avatar !== "") ? ARWEAVE_READ_LINK + userInfo.avatar : "https://permacast.app/favicon.png"} />
+          <meta name="twitter:title" content={`${userInfo.nickname} | Permacast Creator`} />
+          <meta name="twitter:url" content={`https://permacast.app/`}></meta>
+          <meta name="twitter:description" content={`${userInfo.bio}`} />
+          <meta name="og:card" content="summary" />
+          <meta name="description" content={`${userInfo.bio}`} />
+          <meta name="og:image" content={(userInfo.avatar !== "") ? ARWEAVE_READ_LINK + userInfo.avatar : "https://permacast.app/favicon.png"} />
+          <meta name="og:title" content={`${userInfo.nickname} | Permacast Creator`} />
+          <meta name="og:url" content={`https://permacast.app/`} />
+          <meta name="og:description" content={`${userInfo.bio}`} /> 
+      </Head>
+      <CreatorPageComponent {...{ creator }}/>;
+    </>
+  )
 };
 
 
