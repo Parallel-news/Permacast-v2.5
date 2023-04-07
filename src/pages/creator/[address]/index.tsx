@@ -101,7 +101,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
       <Head>
         <title>{`${userInfo.nickname} | Creator`}</title> 
         <meta name="description" content={`${userInfo.bio}`} />
-        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:card" content="summary"></meta>
         <meta property="twitter:image" content={(userInfo.avatar !== "") ? ARWEAVE_READ_LINK + userInfo.avatar : "https://permacast.app/favicon.png"} />
         <meta property="twitter:title" content={`${userInfo.nickname} | Permacast Creator`} />
         <meta property="twitter:url" content={`https://permacast.app/`} />
