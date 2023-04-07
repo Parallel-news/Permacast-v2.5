@@ -10,6 +10,20 @@ export default class _document extends Document {
 
     return (
       <Html lang={currentLocale}>
+        <Head>
+          <meta name="description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
+        </Head>
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+        <div className="absolute bottom-0 bg-zinc-900 w-screen rounded-t-xl z-50" id="podcast-player"></div>
+      </Html>
+    );
+  };
+};
+
+/*
       <Head>
           <meta name="description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
           <meta name="twitter:image" content={`https://permacast.app/favicon.ico`} />
@@ -24,12 +38,6 @@ export default class _document extends Document {
           <meta name="og:url" content={`https://permacast.app/`} />
           <meta name="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} /> 
       </Head>
-        <body>
-          <Main />
-          <NextScript />
-        </body>
-        <div className="absolute bottom-0 bg-zinc-900 w-screen rounded-t-xl z-50" id="podcast-player"></div>
-      </Html>
-    );
-  };
-};
+
+
+*/
