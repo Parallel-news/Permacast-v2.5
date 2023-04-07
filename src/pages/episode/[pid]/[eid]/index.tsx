@@ -76,18 +76,19 @@ export default function EpisodeId({data, status}) {
                 <Head>
                     <title>{`${data.podcastName} | Permacast`}</title> 
                     <meta name="description" content={`By ${data.podcastName}`} />
-                    <meta name="twitter:card" content="summary" />
-                    <meta property="twitter:image" content={(data.cover !== "") ? ARSEED_URL + data.cover : "https://permacast.app/favicon.png"} />
-                    <meta property="twitter:title" content={`${data.obj.episodeName} | Permacast`} />
-                    <meta property="twitter:url" content={`https://permacast.app/`}></meta>
-                    <meta property="twitter:description" content={`By ${data.podcastName}`} />
+                    <meta name="twitter:card" content="summary"></meta>
+                    <meta name="twitter:image" content={(data.cover !== "") ? ARSEED_URL + data.cover : "https://permacast.app/favicon.png"} />
+                    <meta name="twitter:title" content={`${data.obj.episodeName} | Permacast`} />
+                    <meta name="twitter:url" content={`https://permacast.app/`}></meta>
+                    <meta name="twitter:description" content={`By ${data.podcastName}`} />
+
                     <meta property="og:card" content="summary" />
-                    <meta name="description" content={`By ${data.podcastName}`} />
                     <meta property="og:image" content={(data.cover !== "") ? ARSEED_URL + data.cover : "https://permacast.app/favicon.png"} />
                     <meta property="og:title" content={`${data.obj.episodeName} | Permacast`} />
                     <meta property="og:url" content={`https://permacast.app/`} />
                     <meta property="og:description" content={`By ${data.podcastName}`} /> 
                 </Head>
+
                 <div className={podcastIdStyling}>
                     {/*Episode Cover & Info*/}
                     <EpisodeBanner 
