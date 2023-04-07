@@ -148,7 +148,6 @@ export const TrackDescription: FC<TrackDescriptionProps> = ({ includeDescription
 };
 
 export const TrackPlayButton: FC<TrackPlayButtonProps> = ({ playerInfo, episode, includePlayButton, buttonColor, accentColor }) => {
-  console.log("Player Info: ", playerInfo)
 
   const { playerState, launchPlayer, togglePlay } = useShikwasa();
 

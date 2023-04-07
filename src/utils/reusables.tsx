@@ -129,3 +129,10 @@ export function detectTimestampType(timestamp) {
 
 // Checks if we should use Arweave or Arseeding gateway
 export const hasBeen10Min = (timestamp: number) => (Date.now() - timestamp) > (10 * 60 * 1000) ? true : false
+
+// SVG Conversion for Twitter Metadata
+export function svgToDataUrl(svg) {
+  const svgString = new XMLSerializer().serializeToString(svg)
+  const encodedSVG = encodeURIComponent(svgString);
+  return `data:image/svg_xml,${encodedSVG}`
+}
