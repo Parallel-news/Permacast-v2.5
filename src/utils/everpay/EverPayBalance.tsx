@@ -18,7 +18,7 @@ export const EverPayBalance = (props: everpayBalanceInterface) => {
     const [_arweaveAddress, _setArweaveAddress] = useRecoilState<String>(arweaveAddress);
     const [balanceError, setBalanceError] = useState<boolean>(false)
     const [balanceLoading, setBalanceLoading] = useState<boolean>(true)
-
+  
     const LOADER_COLOR="#d4e5e1"
     const LOADER_SIZE=20
     // When everpay recalculation requested, perform hook
@@ -51,19 +51,23 @@ export const EverPayBalance = (props: everpayBalanceInterface) => {
             everBalance()
         }
 
-    }, [_calculateEverPayBalance, _arweaveAddress])
+    }, [_calculateEverPayBalance, _arweaveAddress]);
 
     return (
-        (balanceError ?
-            <Tooltip color='invert' className="helper-tooltip px-1.5 ml-2" content={<div className="text-zinc-200">{t("arconnect.load-failed")}</div>}>?</Tooltip>
-            : balanceLoading ?
-                <div className={`${textClassname} flex justify-center items-center z-50 bg-zinc-900`}>
-                    <MoonLoader 
-                        size={LOADER_SIZE}
-                        color={LOADER_COLOR}
-                    />
-                </div>
-                : <a href="https://app.everpay.io/" target="_blank" rel="noreferrer" className={`${textClassname}`}>{Number(_everPayBalance).toFixed(2) + ' AR'}</a>
-        )
+        <>
+            {_arweaveAddress && _arweaveAddress.length > 0 && (
+                (balanceError ?
+                    <Tooltip color='invert' className="helper-tooltip px-1.5 ml-2" content={<div className="text-zinc-200">{t("arconnect.load-failed")}</div>}>?</Tooltip>
+                    : balanceLoading ?
+                        <div className={`${textClassname} flex justify-center items-center z-50 bg-zinc-900`}>
+                            <MoonLoader 
+                                size={LOADER_SIZE}
+                                color={LOADER_COLOR}
+                            />
+                        </div>
+                        : <div className={`${textClassname}`}>{Number(_everPayBalance).toFixed(2) + ' AR'}</div>
+                )
+            )}
+        </>
     )
 }
