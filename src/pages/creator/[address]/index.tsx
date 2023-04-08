@@ -44,10 +44,10 @@ export async function getStaticProps(context) {
       userInfo.currentLabel = address;
       userInfo.userIsAddress = isAddress ? true: false;
       userInfo.ANSuserExists = false;
-    };
+    }
   } catch (error) {
     console.log(error);
-  };
+  }
 
   return {
     props: {
@@ -60,7 +60,7 @@ export async function getStaticProps(context) {
 };
 
 const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
-  if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) return <Creator404 address={userInfo?.user || ''} />;
+  if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) return <Creator404 address={userInfo?.user || ''} />
 
   const { user, address_color } = userInfo;
 
@@ -83,9 +83,10 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
       const podcasts: Podcast[] = allPodcasts_.filter((podcast: Podcast) => podcast.owner === user);
       const userEpisodes = podcasts.map((podcast: Podcast) => 
         podcast.episodes.map((episode: Episode) => ({episode, podcast}))
-      ).flat(1).splice(0, 3);
+      ).flat(1).splice(-3, 3);
       setPodcasts(podcasts);
-      setEpisodes(sortByDate(userEpisodes));
+      const sortedEpisodes = sortByDate(userEpisodes)
+      setEpisodes(sortedEpisodes.slice().reverse());
     };
     fetchUserData();
   }, [allPodcasts_])
@@ -113,7 +114,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
         <meta property="og:url" content={`https://permacast.app/`} />
         <meta property="og:description" content={`${userInfo.bio}`} /> 
       </Head>
-      <CreatorPageComponent {...{ creator }}/>;
+      <CreatorPageComponent {...{ creator }}/>
     </>
   )
 };

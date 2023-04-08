@@ -33,6 +33,7 @@ export default function EpisodeId({data, status, mimeType}) {
     const [themeColor, setThemeColor] = useState<string>('');
     const [textColor, setTextColor] = useState<string>('');
     let index;
+    console.log("Look: ", data)
     
     if (data) {
         // Find Episode Number
@@ -71,7 +72,7 @@ export default function EpisodeId({data, status, mimeType}) {
             }
             fetchColor();
         }, []);
-        console.log("MT: ", mimeType)
+
         return (
             <>
                 <Head>
@@ -111,6 +112,8 @@ export default function EpisodeId({data, status, mimeType}) {
                         mediaLink={hasBeen10Min(data?.obj.uploadedAt) ? ARWEAVE_READ_LINK+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx}
                         podcastOwner={data?.obj.owner}
                         playButton={playButton}
+                        podcastName={data?.podcastName}
+                        pid={data?.pid}
                     />
                     {/*Episode Description*/}
                     <EpisodeDescription
