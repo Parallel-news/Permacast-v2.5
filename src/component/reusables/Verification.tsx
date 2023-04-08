@@ -42,7 +42,7 @@ const Verification: FC<VerificationInterface> = (props) => {
 
   const Icon: FC<VerificationInterface> = ({ ANSuserExists }) => (
     <div className="rounded-full">
-      {ANSuserExists ? <CheckIcon className="w-6 h-6 text-green-500" /> : <XCircleIcon className="w-6 h-6 text-red-500" />}
+      {ANSuserExists ? <CheckIcon className="w-6 h-6 text-emerald-500" /> : <XCircleIcon className="w-6 h-6 text-red-500" />}
     </div>
   );
 
