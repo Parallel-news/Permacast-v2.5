@@ -25,8 +25,9 @@ export interface ViewANSButtonProps {
 }
 
 export const flexCenter = `flex items-center `;
+export const flexCenterGap = flexCenter + `gap-x-2 `;
 export const borderCreatorStyling = `flex flex-row justify-between items-center p-3 my-4 w-full border-2 border-zinc-600 border rounded-2xl `;
-export const viewANSButtonStyling = `px-3 py-2 rounded-full text-sm ml-5 cursor-pointer hover:brightness-[5] default-animation `;
+export const viewANSButtonStyling = `px-3 py-2 rounded-full text-sm ml-5 cursor-pointer hover:brightness-[5] default-animation outline-inherit `;
 export const creatorLoadingStyling = `bg-gray-300/30 animate-pulse w-full h-20 mb-4 rounded-full `;
 export const creatorHeadingStyling = `text-zinc-400 mb-4 `;
 
