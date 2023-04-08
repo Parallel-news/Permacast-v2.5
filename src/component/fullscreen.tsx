@@ -74,7 +74,7 @@ export const FullscreenVideo: FC<FullscreenStaticImageProps> = ({ episodeName, c
 
   return (
     <div className={FullscreenVideoWrapperStyling}>
-      <div id="video-player"></div>
+      <div id="video-player" className="h-full"></div>
       <div className={FullscreenEpisodeTextStyling + (loaded ? "hover:opacity-100 opacity-0": "opacity-100") }>
         <FullscreenEpisodeText {...{ currentEpisodeIndex, episodeName }} />
       </div>
