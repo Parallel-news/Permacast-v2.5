@@ -71,13 +71,13 @@ interface ShowFormInter {
 }
 
 // 2. Stylings
+
 export const showTitleStyling = "text-white text-xl mb-4"
 export const spinnerClass = "w-full flex justify-center mt-4"
 export const photoIconStyling = "h-11 w-11 text-zinc-400"
 export const explicitLabelStyling = "flex items-center mr-5"
 export const mediaSwitcherLabelStyling = "flex items-center label"
 export const imgStyling = "h-48 w-48 text-slate-400 rounded-[20px]"
-export const selectDropdownRowStyling = "flex flex-col sm:flex-row w-full justify-between space-y-2 sm:space-y-0"
 export const explicitCheckBoxStyling = "checkbox mr-2 border-2 border-zinc-600"
 export const emptyCoverIconTextStyling = "text-lg tracking-wider pt-2 text-zinc-400"
 export const explicitTextStyling = "label-text cursor-pointer text-zinc-400 font-semibold"
@@ -89,6 +89,8 @@ export const mediaSwitcherVideoStyling = "mr-2 cursor-pointer label-text text-zi
 export const mediaSwitchedAudioStyling = "ml-2 cursor-pointer label-text text-zinc-400 font-semibold"
 export const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
 export const uploadShowStyling = "w-full flex flex-col justify-center items-center space-y-1 pb-[200px]"
+export const selectDropdownRowStyling = "flex flex-col sm:flex-row w-full justify-between space-y-2 sm:space-y-0"
+export const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex flex-row justify-start items-start"
 export const selectDropdownStyling="select select-secondary w-[30%] py-2 px-5 text-base font-normal input-styling bg-zinc-800"
 export const cropScreenStyling = "absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center backdrop-blur-md"
 export const coverContainerLabelStyling = "cursor-pointer transition duration-300 ease-in-out text-zinc-600 hover:text-white flex md:block h-fit w-48"
@@ -320,7 +322,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Episode Description
                     */}
-                    <div className="w-[100%] h-32 rounded-xl bg-zinc-800 flex flex-row justify-start items-start">
+                    <div className={descContainerStyling}>
                         <textarea className={"w-[93%] "+episodeDescStyling + " h-32 "} required title="Between 1 and 5000 characters" name="showShowNotes" placeholder={t("uploadshow.description")}                     
                         onChange={(e) => {
                         setPodDescMsg(handleValMsg(e.target.value, "podDesc"));
