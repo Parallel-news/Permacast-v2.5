@@ -57,7 +57,7 @@ const ArConnect: FC = () => {
             style={{ 
               backgroundColor: "#FFFFFF00",
             }}
-            className='w-full h-12 hover:bg-zinc-700 bg-zinc-900 rounded-full items-center flex px-4 justify-center mx-auto text-sm md:text-base normal-case focus:outline-white focus:outline-2 default-animation z-0'
+            className='w-full h-12 hover:bg-zinc-700 bg-zinc-900 rounded-full items-center flex px-4 justify-center mx-auto text-sm md:text-base normal-case default-no-outline-ringed default-animation z-0'
           >
             {
               ANS?.avatar ? (
@@ -81,7 +81,7 @@ const ArConnect: FC = () => {
           </Dropdown.Button>
         )) || (
           <button 
-            className="w-full h-12 btn-base-color items-center flex px-3 justify-center mx-auto text-sm md:text-base normal-case focus:outline-white default-animation"
+            className="w-full h-12 btn-base-color items-center flex px-3 justify-center mx-auto text-sm md:text-base normal-case default-no-outline-ringed  default-animation"
             onClick={connect}
           >
             🦔 {t("connector.login")}
