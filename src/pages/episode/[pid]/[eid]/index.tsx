@@ -52,7 +52,6 @@ export default function EpisodeId({data, status, mimeType}) {
         const formattedDate = `${day}/${month}/${year}`;
         const d = data?.obj
         const date = formattedDate
-        const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
 
         // Assemble Player Data
         const podcastInfo = data.podcast
@@ -124,7 +123,7 @@ export default function EpisodeId({data, status, mimeType}) {
                         containerTitle={"Next Episode"} 
                         imgSrc={ARSEED_URL + data?.cover}
                         color={'rgb(255, 255, 255)'}
-                        episodes={[]}
+                        episodes={data?.episodes[index+1] ? [data?.episodes[index+1]] : undefined}
                         podcastId={data?.obj.pid}
                     />
                     {loadTipModal && (

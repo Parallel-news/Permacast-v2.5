@@ -294,11 +294,12 @@ export const EpisodeDescription = (props: DescriptionContainerInter) => {
 export const Episodes = (props: EpisodesInter) => {
     const episodeList = props.episodes
     const { t } = useTranslation()
+    console.log("Episode List: ", episodeList)
     return (
         <div className={nextEpisodeStyling}>
             <p className={nextEpisodeTitleStyling}>{props.containerTitle}</p>
             {/*Loop Episodes*/}
-            {episodeList.length > 0 ?
+            {episodeList && episodeList.length > 0 ?
                 episodeList.map((item, index) => (
                     <EpisodeBox
                         key={index}
