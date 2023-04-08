@@ -1,5 +1,7 @@
 import { useTranslation } from 'next-i18next';
 
+export const defaultLanguage = 'en';
+
 export const categories_en = [
   "Arts",
   "Business",
@@ -570,18 +572,18 @@ export const useLanguageHook = () => {
   );
 
   const langsArray = Object.entries(currentLanguage.languages);
+  // example return [ '0', 'Arts' ]
   const categoriesArray = Object.entries(currentLanguage.categories);
-  return [langsArray, categoriesArray]
-}
+  return [langsArray, categoriesArray];
+};
 
 export const LanguageOptions = () => {
   const [langsArray, _] = useLanguageHook();
-  //<option disabled defaultValue>Language</option>
 
   return (
     <>
       {langsArray.map((lang: string[]) => 
-        <option value={lang[0]} key={lang[1]}>
+        <option value={lang[0]} key={lang[1]} selected={lang[0] === defaultLanguage}>
           {lang[1]}
         </option>
       )}
