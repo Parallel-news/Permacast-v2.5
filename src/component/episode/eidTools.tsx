@@ -14,6 +14,8 @@ import { getTypeFromMime } from "../../utils/fileTools";
 import { useTranslation } from "next-i18next";
 import FeaturedPodcastPlayButton from "../home/featuredPodcastPlayButton";
 import Link from "next/link";
+import Track from "../reusables/track";
+import { FullEpisodeInfo } from "../../interfaces";
 
 
 export default function eidTools() {
@@ -98,7 +100,7 @@ export interface EpisodeBoxInter {
 
 export interface EpisodesInter {
     containerTitle: string;
-    episodes: Episode[]
+    episodes: FullEpisodeInfo[]
     color: string; 
     imgSrc: string;
     podcastId: string;
@@ -299,15 +301,9 @@ export const Episodes = (props: EpisodesInter) => {
         <div className={nextEpisodeStyling}>
             <p className={nextEpisodeTitleStyling}>{props.containerTitle}</p>
             {/*Loop Episodes*/}
-            {episodeList && episodeList.length > 0 ?
-                episodeList.map((item, index) => (
-                    <EpisodeBox
-                        key={index}
-                        episode={item}
-                        imgSrc={props.imgSrc}
-                        color={props.color}
-                        podcastId={props.podcastId}
-                    />
+            {episodeList.length > 0 ?
+                episodeList.map((episode: FullEpisodeInfo, index) => (
+                    <Track {...{ episode }} includeDescription includePlayButton />
                 ))
             :
                 <p className="text-neutral-400">None to Show.</p>
@@ -316,6 +312,15 @@ export const Episodes = (props: EpisodesInter) => {
     )
 }
 
+/*
+<EpisodeBox
+    key={index}
+    episode={item}
+    imgSrc={props.imgSrc}
+    color={props.color}
+    podcastId={props.podcastId}
+/>
+*/
 export const EpisodeBox = (props: EpisodeBoxInter) => {
     const uploader = props.episode.uploader
     return  (
