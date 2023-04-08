@@ -1,7 +1,8 @@
 {
 	"language": "Language",
 	"tooltip": {
-		"coming-soon": "Coming soon"
+		"coming-soon": "Coming soon",
+		"markdown-supported": "Markdown Supported"
 	},
 	"arconnect": {
 		"load-failed": "Everpay failed to load. Please try again later.",

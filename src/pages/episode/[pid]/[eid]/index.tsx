@@ -21,6 +21,7 @@ import { useTranslation } from "next-i18next";
 import FeaturedPodcastPlayButton from "../../../../component/home/featuredPodcastPlayButton";
 import { findEpisode, findPodcast, trimChars } from "../../../../utils/filters";
 import { checkContentTypeFromUrl } from "../../../../utils/fileTools";
+import { FullEpisodeInfo } from "../../../../interfaces";
 
 export default function EpisodeId({data, status, mimeType}) {
 
@@ -52,12 +53,37 @@ export default function EpisodeId({data, status, mimeType}) {
         const formattedDate = `${day}/${month}/${year}`;
         const d = data?.obj
         const date = formattedDate
-        const creator = data?.obj.uploader.length > 15 ? formatStringByLen(data?.obj.uploader, 4, 4) : data?.obj.uploader
 
         // Assemble Player Data
         const podcastInfo = data.podcast
+        console.log("podcastInfo: ", podcastInfo)
         const episodes = data?.episodes
         const cover = data.cover
+        // Create Data for Next Episode
+        //let nextEpisodeInfo: FullEpisodeInfo = {episode: {}, podcast: {}};
+        let nextEpisodeInfo = {
+            episode: null,
+            podcast: {
+                cover: '',
+                minifiedCover: '',
+                label: '',
+                author: '',
+                podcastName: '',
+                pid: '',
+            }
+        } as FullEpisodeInfo
+        
+        if(data?.episodes[index+1]) {
+            nextEpisodeInfo["episode"] = data?.episodes[index+1]
+            let podcastShort = nextEpisodeInfo["podcast"]
+            podcastShort.cover = cover
+            podcastShort.minifiedCover = cover
+            podcastShort.label = data.podcast.label
+            podcastShort.author = data.podcast.author
+            podcastShort.podcastName = data.podcast.podcastName
+            podcastShort.pid = data.podcast.pid
+        } 
+
         const playerInfo = { playerColorScheme: themeColor, buttonColor: themeColor, accentColor: textColor, title: data.obj.episodeName, artist: data.author, cover, src: data.obj.contentTx };
         const playButton = <FeaturedPodcastPlayButton {...{ playerInfo, podcastInfo, episodes }} />
         useEffect(() => {
@@ -120,13 +146,15 @@ export default function EpisodeId({data, status, mimeType}) {
                         text={d.description}
                     />
                     {/*Next Episode*/}
-                    <Episodes
-                        containerTitle={"Next Episode"} 
-                        imgSrc={ARSEED_URL + data?.cover}
-                        color={'rgb(255, 255, 255)'}
-                        episodes={[]}
-                        podcastId={data?.obj.pid}
-                    />
+                    {data?.episodes[index+1] && (
+                        <Episodes
+                            containerTitle={"Next Episode"} 
+                            imgSrc={ARSEED_URL + data?.cover}
+                            color={'rgb(255, 255, 255)'}
+                            episodes={[nextEpisodeInfo]}
+                            podcastId={data?.obj.pid}
+                        />
+                    )}
                     {loadTipModal && (
                         <TipModal
                             to={data?.podcastName}
