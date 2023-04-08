@@ -1,9 +1,37 @@
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 
-const Modal: FC = (props) => {
-  // !TODO - generalized modal
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { FADE_IN_STYLE, FADE_OUT_STYLE } from "../../constants";
+import { containerPodcastModalStyling, tipModalStyling } from "../uploadEpisode/uploadEpisodeTools";
+import { xMarkModalStyling } from "../tipModal";
+
+interface ModalProps {
+  isVisible: boolean;
+  setVisible: Dispatch<SetStateAction<boolean>>;
+  children: ReactNode;
+};
+
+const Modal: FC<ModalProps> = ({ isVisible, setVisible, children }) => {
+  const [showModal, setShowModal] = useState<boolean>(false)
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setShowModal(prev => !prev);
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [isVisible]);
+
   return (
-    <div></div>
+    <div className={tipModalStyling + " backdrop-blur-sm"}>
+      <div className={`${containerPodcastModalStyling + " justify-between relative overflow-hidden"} ${showModal ? FADE_IN_STYLE : FADE_OUT_STYLE}`}>
+        <XMarkIcon className={xMarkModalStyling} onClick={() => setVisible(false)} />
+        {children}
+      </div>
+    </div>
   );
 };
 
