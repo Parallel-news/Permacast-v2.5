@@ -330,7 +330,7 @@ export const ShowForm = (props: ShowFormInter) => {
                             rounded
                             placement={"top"}
                             color="invert"
-                            content={t("tooltip.coming-soon")}
+                            content={t("tooltip.markdown-supported")}
                         >
                             <Image 
                                 src="/markdownLogo.svg"
