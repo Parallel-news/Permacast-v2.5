@@ -5,14 +5,14 @@ export interface Social {
   url: string;
 };
 
-export interface UserProfile {
+export interface PASoMProfile {
   address: string;
-  nickname: string;
-  bio: string;
-  avatar: string;
-  banner: string;
-  websites: string[];
-  socials: Social[];
+  nickname?: string;
+  bio?: string;
+  avatar?: string;
+  banner?: string;
+  websites?: string[];
+  socials?: Social[];
 };
 
 export interface updateWalletMetadata {
