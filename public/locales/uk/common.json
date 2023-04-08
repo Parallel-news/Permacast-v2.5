@@ -1,7 +1,8 @@
 {
 	"language": "Мова",
 	"tooltip": {
-		"coming-soon": "Незабаром"
+		"coming-soon": "Незабаром",
+		"markdown-supported": "Підтримується Markdown"
 	},
   "arconnect": {
 		"load-failed": "Не вдалося завантажити Everpay. Будь ласка, спробуйте знову пізніше.",

@@ -14,6 +14,8 @@ import { getTypeFromMime } from "../../utils/fileTools";
 import { useTranslation } from "next-i18next";
 import FeaturedPodcastPlayButton from "../home/featuredPodcastPlayButton";
 import Link from "next/link";
+import Track from "../reusables/track";
+import { FullEpisodeInfo } from "../../interfaces";
 
 
 export default function eidTools() {
@@ -98,7 +100,7 @@ export interface EpisodeBoxInter {
 
 export interface EpisodesInter {
     containerTitle: string;
-    episodes: Episode[]
+    episodes: FullEpisodeInfo[]
     color: string; 
     imgSrc: string;
     podcastId: string;
@@ -279,7 +281,7 @@ export const EpisodeNumber = (props: EpisodeNumberInter) => {
 
 export const EpisodeDescription = (props: DescriptionContainerInter) => {
     return (
-        <div className="w-full pt-3 lg:pt-10 text-start select-text">
+        <div className="w-[100%] md:w-[80%] lg:w-[75%] pt-3 lg:pt-10 text-start select-text">
             <TextTruncate 
                 text={ARWEAVE_READ_LINK+props.text}
                 limit={STR_LEN_EPISODE_DESC}
@@ -294,19 +296,14 @@ export const EpisodeDescription = (props: DescriptionContainerInter) => {
 export const Episodes = (props: EpisodesInter) => {
     const episodeList = props.episodes
     const { t } = useTranslation()
+    console.log("Episode List: ", episodeList)
     return (
         <div className={nextEpisodeStyling}>
             <p className={nextEpisodeTitleStyling}>{props.containerTitle}</p>
             {/*Loop Episodes*/}
             {episodeList.length > 0 ?
-                episodeList.map((item, index) => (
-                    <EpisodeBox
-                        key={index}
-                        episode={item}
-                        imgSrc={props.imgSrc}
-                        color={props.color}
-                        podcastId={props.podcastId}
-                    />
+                episodeList.map((episode: FullEpisodeInfo, index) => (
+                    <Track {...{ episode }} includeDescription includePlayButton />
                 ))
             :
                 <p className="text-neutral-400">None to Show.</p>
@@ -315,6 +312,15 @@ export const Episodes = (props: EpisodesInter) => {
     )
 }
 
+/*
+<EpisodeBox
+    key={index}
+    episode={item}
+    imgSrc={props.imgSrc}
+    color={props.color}
+    podcastId={props.podcastId}
+/>
+*/
 export const EpisodeBox = (props: EpisodeBoxInter) => {
     const uploader = props.episode.uploader
     return  (

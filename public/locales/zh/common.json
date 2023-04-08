@@ -1,7 +1,8 @@
 {
 	"language": "语言",
 	"tooltip": {
-		"coming-soon": "即将推出"
+		"coming-soon": "即将推出",
+		"markdown-supported": "支持降价"
 	},
 	"arconnect": {
 		"load-failed": "Everpay加载失败。请稍后再试。",
