@@ -37,6 +37,7 @@ export const TipModal = (props: TipModalInter) => {
     const [showModal, setShowModal] = useState<boolean>(false)
     const [_arweaveAddress, _setArweaveAddress] = useRecoilState(arweaveAddress)
     const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
+    const [arPrice, setArPrice] = useState(0);
     const [tipAmount, setTipAmount] = useState<string>("0")
     const [tipUSD, setTipUSD] = useState<Number>(0)
     const [calculatingTip, setCalculatingTip] = useState<boolean>(false)
@@ -53,19 +54,20 @@ export const TipModal = (props: TipModalInter) => {
         return () => {
             clearTimeout(timeoutId);
         };
-    }, [props.isVisible])
+    }, [props.isVisible]);
+
+    useEffect(() => {fetchARPriceInUSD().then(setArPrice)}, []);
 
     // Calculate Tip USD
     useEffect(() => {
         const calculateTipUSD = async () => {
-            setCalculatingTip(true)
-            setTipUSD(0)
-            const arPrice = await fetchARPriceInUSD()
-            setTipUSD(Number(tipAmount)*arPrice)
-            setCalculatingTip(false)
-        }
+            setCalculatingTip(true);
+            setTipUSD(0);
+            setTipUSD(Number(tipAmount)*arPrice);
+            setCalculatingTip(false);
+        };
         if(tipAmount.trim().length > 0) calculateTipUSD()
-    }, [tipAmount])
+    }, [tipAmount]);
 
     const submitTip = async () => {
         const numTipAmount = Number(tipAmount)
