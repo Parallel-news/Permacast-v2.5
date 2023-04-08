@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next';
+import { FC } from 'react';
 
-export const defaultLanguage = 'en';
+export const DEFAULT_LANGUAGE = 'en';
 
 export const categories_en = [
   "Arts",
@@ -577,13 +578,13 @@ export const useLanguageHook = () => {
   return [langsArray, categoriesArray];
 };
 
-export const LanguageOptions = () => {
+export const LanguageOptions: FC = ({ }) => {
   const [langsArray, _] = useLanguageHook();
 
   return (
     <>
       {langsArray.map((lang: string[]) => 
-        <option value={lang[0]} key={lang[1]} selected={lang[0] === defaultLanguage}>
+        <option value={lang[0]} key={lang[1]}>
           {lang[1]}
         </option>
       )}
@@ -591,7 +592,8 @@ export const LanguageOptions = () => {
   )
 };
 
-export const CategoryOptions = () => {
+
+export const CategoryOptions: FC = ({ }) => {
   const [_, categoriesArray] = useLanguageHook();
 
   // <option disabled defaultValue>Category</option>

@@ -1,7 +1,7 @@
 import { MouseEventHandler, useCallback, useEffect, useRef, useState } from "react"
 import { PhotoIcon } from "@heroicons/react/24/outline";
 import { ConnectButton, episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
-import { LanguageOptions, CategoryOptions } from "../../utils/languages";
+import { LanguageOptions, CategoryOptions, categories_en, DEFAULT_LANGUAGE } from "../../utils/languages";
 import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
 import { AR_DECIMALS, CONNECT_WALLET, COVER_UPLOAD_ERROR, DESCRIPTION_UPLOAD_ERROR, EVERPAY_AR_TAG, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SHOW_UPLOAD_SUCCESS, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
@@ -153,7 +153,7 @@ export const ShowForm = (props: ShowFormInter) => {
     const [podcastDescription_, setPodcastDescription_] = useState("");
     const [podcastAuthor_, setPodcastAuthor_] = useState("");
     const [podcastEmail_, setPodcastEmail_] = useState("");
-    const [podcastCategory_, setPodcastCategory_] = useState("art");
+    const [podcastCategory_, setPodcastCategory_] = useState<number>(0);
     const [podcastName_, setPodcastName_] = useState("");
     const [podcastCover_, setPodcastCover_] = useState(null);
     const [podcastLanguage_, setPodcastLanguage_] = useState('en');
@@ -177,7 +177,7 @@ export const ShowForm = (props: ShowFormInter) => {
         "auth": podcastAuthor_.length > 0,
         "email": podcastEmail_.length > 0,
         "lang": podcastLanguage_.length > 0,
-        "cat": podcastCategory_.length > 0,
+        "cat": true, // default is 0 which always defaults to Arts
         "cover": podcastCover_ !== null
     }
     useEffect(() => console.log("allFieldsFilled: ", allFieldsFilled(validationObject)), [validationObject]);
@@ -217,7 +217,7 @@ export const ShowForm = (props: ShowFormInter) => {
         "author": podcastAuthor_,
         "lang": podcastLanguage_,
         "isExplicit": podcastExplicit_ ? "yes" : "no",
-        "categories": podcastCategory_,
+        "categories": categories_en[podcastCategory_],
         "email": podcastEmail_,
         "cover": "",
         "minifiedCover": "",
@@ -556,7 +556,7 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                     className={`${selectDropdownStyling} sm:mr-[2%] w-[47%]`}
                     id="podcastCategory"
                     name="category"
-                    onChange={(e) => props.setCategory(e.target.value)}
+                    onChange={(e) => props.setCategory(e.target.selectedIndex)}
                 >
                     <CategoryOptions />
                 </select>
@@ -564,6 +564,7 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 <select
                     className={`${selectDropdownStyling} sm:mr-[2%] w-[47%]`}
                     id="podcastLanguage"
+                    defaultValue={DEFAULT_LANGUAGE}
                     name="language"
                     onChange={(e) => props.setLanguage(e.target.value)}
                 >
@@ -571,22 +572,23 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 </select>
             </div>
             <select
-                    className={`${selectDropdownStyling} hidden sm:flex mr-[2%]`}
-                    id="podcastCategory"
-                    name="category"
-                    onChange={(e) => props.setCategory(e.target.value)}
-                >
-                    <CategoryOptions />
-                </select>
-                {/*Languages*/}
-                <select
-                    className={`${selectDropdownStyling} hidden sm:flex mr-[2%]`}
-                    id="podcastLanguage"
-                    name="language"
-                    onChange={(e) => props.setLanguage(e.target.value)}
-                >
-                    <LanguageOptions />
-                </select>
+                className={`${selectDropdownStyling} hidden sm:flex mr-[2%]`}
+                id="podcastCategory"
+                name="category"
+                onChange={(e) => props.setCategory(e.target.selectedIndex)}
+            >
+                <CategoryOptions />
+            </select>
+            {/*Languages*/}
+            <select
+                className={`${selectDropdownStyling} hidden sm:flex mr-[2%]`}
+                id="podcastLanguage"
+                defaultValue={DEFAULT_LANGUAGE}
+                name="language"
+                onChange={(e) => props.setLanguage(e.target.value)}
+            >
+                <LanguageOptions />
+            </select>
             {/*Label*/}
             <LabelInput 
                 setLabel={props.setLabel}
