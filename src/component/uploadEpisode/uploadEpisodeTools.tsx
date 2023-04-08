@@ -481,7 +481,7 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
             clearTimeout(timeoutId);
         };
     }, [props.isVisible])
-
+    console.log("BEN LOOK HERE: ", props.shows)
     return(
         <div className={selectPodcastModalStyling}>
             <div className={`${containerPodcastModalStyling + " p-6"} ${showModal ? FADE_IN_STYLE :FADE_OUT_STYLE}`}>
