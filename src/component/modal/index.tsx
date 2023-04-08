@@ -8,11 +8,11 @@ import { xMarkModalStyling } from "../tipModal";
 
 interface ModalProps {
   isVisible: boolean;
-  setVisible: Dispatch<SetStateAction<boolean>>;
+  setIsVisible: Dispatch<SetStateAction<boolean>>;
   children: ReactNode;
 };
 
-const Modal: FC<ModalProps> = ({ isVisible, setVisible, children }) => {
+const Modal: FC<ModalProps> = ({ isVisible, setIsVisible, children }) => {
   const [showModal, setShowModal] = useState<boolean>(false)
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const Modal: FC<ModalProps> = ({ isVisible, setVisible, children }) => {
   return (
     <div className={tipModalStyling + " backdrop-blur-sm"}>
       <div className={`${containerPodcastModalStyling + " justify-between relative overflow-hidden"} ${showModal ? FADE_IN_STYLE : FADE_OUT_STYLE}`}>
-        <XMarkIcon className={xMarkModalStyling} onClick={() => setVisible(false)} />
+        <XMarkIcon className={xMarkModalStyling} onClick={() => setIsVisible(false)} />
         {children}
       </div>
     </div>
