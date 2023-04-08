@@ -20,9 +20,7 @@ import axios from "axios";
 import { useTranslation } from "next-i18next";
 import { Tooltip } from "@nextui-org/react";
 import { Podcast } from "../../interfaces";
-// const { t } = useTranslation();
-
-
+import Image from "next/image";
 
 export default function uploadShowTools() {
     return false
@@ -322,11 +320,20 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Episode Description
                     */}
-                    <textarea className={episodeDescStyling + " h-32"} required title="Between 1 and 5000 characters" name="showShowNotes" placeholder={t("uploadshow.description")}                     
-                    onChange={(e) => {
-                      setPodDescMsg(handleValMsg(e.target.value, "podDesc"));
-                      setPodcastDescription_(e.target.value);
-                    }}></textarea>
+                    <div className="w-[100%] h-32 bg-red-400 rounded-xl relative">
+                        <Image 
+                            src="/markdownLogo.svg"
+                            alt="Markdown Logo"
+                            height={35}
+                            width={35}
+                            className="absolute top-2 right-2"
+                        />
+                        <textarea className={"w-[93%] "+episodeDescStyling + " h-32 "} required title="Between 1 and 5000 characters" name="showShowNotes" placeholder={t("uploadshow.description")}                     
+                        onChange={(e) => {
+                        setPodDescMsg(handleValMsg(e.target.value, "podDesc"));
+                        setPodcastDescription_(e.target.value);
+                        }}></textarea>
+                    </div>
                     <ValMsg valMsg={podDescMsg} className="pl-2" />
 
                     {/*
