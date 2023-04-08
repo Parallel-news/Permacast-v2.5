@@ -6,7 +6,7 @@ import { useRecoilState } from 'recoil';
 import { arweaveAddress } from '../../atoms';
 import { ValMsg } from '../reusables/formTools';
 import { PermaSpinner } from '../reusables/PermaSpinner';
-import { spinnerClass } from '../uploadShow/uploadShowTools';
+import { descContainerStyling, spinnerClass } from '../uploadShow/uploadShowTools';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
@@ -17,6 +17,7 @@ import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, DESCRIPTION_UPLOAD_ERROR, EPIS
 import { useTranslation } from 'next-i18next';
 import { transferFunds } from '../../utils/everpay';
 import { Podcast } from '../../interfaces';
+import { MarkDownToolTip } from '../reusables/tooltip';
 
 export default function uploadEpisode() {
     return false
@@ -274,11 +275,17 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             }}/>
             {epNameMsg.length > 0 && <ValMsg valMsg={epNameMsg} className="pl-2" />}
             {/*Episode Description*/}
-            <textarea className={episodeDescStyling} required title="Between 1 and 5000 characters" name="episodeShowNotes" placeholder={t("uploadepisode.description")} 
-            onChange={(e) => {
-                setEpDescMsg(handleValMsg(e.target.value, "epDesc"));
-                setEpDesc(e.target.value);
-            }}/>
+            <div className={descContainerStyling}>
+                <textarea className={"w-[93%] "+episodeDescStyling} required title="Between 1 and 5000 characters" name="episodeShowNotes" placeholder={t("uploadepisode.description")} 
+                onChange={(e) => {
+                    setEpDescMsg(handleValMsg(e.target.value, "epDesc"));
+                    setEpDesc(e.target.value);
+                }}/>
+                <MarkDownToolTip 
+                    placement="top"
+                    size={40}
+                />
+            </div>
             {epNameMsg.length > 0 && <ValMsg valMsg={epDescMsg} className="pl-2" />}
             {/*Episode Media*/}
             <EpisodeMedia
