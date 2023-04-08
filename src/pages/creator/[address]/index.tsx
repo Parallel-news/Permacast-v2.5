@@ -11,6 +11,7 @@ import { Creator404, CreatorPageComponent, sortByDate } from '../../../component
 import { ANS_TEMPLATE } from '../../../constants/ui';
 import { ARWEAVE_READ_LINK } from '../../../constants';
 import { shortenAddress } from 'react-arconnect';
+import { PASoMProfile } from '../../../interfaces/pasom';
 
 // pages/blog/[slug].js
 export async function getStaticPaths() {
@@ -63,6 +64,8 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
 
   const { user, nickname, currentLabel, address_color, bio, avatar } = userInfo;
 
+  const [PASoMProfile, setPASoMProfile] = useState<PASoMProfile | undefined>();
+
   const creatorName = nickname || currentLabel || shortenAddress(user);
 
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
@@ -77,6 +80,16 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
     const color = RGBobjectToString(hexToRGB(address_color || "#000000"));
     setPodcastColor(color);
   }, [userInfo]);
+
+  useEffect(() => {
+    const fetchPASOM = async () => {
+      const state = (await axios.get('/api/exm/PASoM/read')).data;
+      const profiles: PASoMProfile[] = state.profiles;
+      const profile = profiles.find((profile: PASoMProfile) => profile.address === user);
+      setPASoMProfile(profile);
+    };
+    fetchPASOM();
+  }, []);
 
   useEffect(() => {
     if (!allPodcasts_) return;
@@ -94,6 +107,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
 
   const creator = {
     ...userInfo,
+    PASoMProfile,
     podcasts,
     episodes,
   };
