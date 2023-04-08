@@ -1,17 +1,16 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { Ans, Episode, EXMDevState, FullEpisodeInfo, Podcast } from '../../../interfaces';
+import Head from 'next/head';
 import { NextPage } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import React, { useState, useEffect } from 'react';
+import { useRecoilState } from 'recoil';
+import { Ans, Episode, FullEpisodeInfo, Podcast } from '../../../interfaces';
 import { hexToRGB, RGBobjectToString } from '../../../utils/ui';
 import { allPodcasts, podcastColorAtom } from '../../../atoms';
-import { useRecoilState } from 'recoil';
 import { Creator404, CreatorPageComponent, sortByDate } from '../../../component/creator';
 import { ANS_TEMPLATE } from '../../../constants/ui';
-import { removeDuplicates } from '../../../utils/filters';
-import Head from 'next/head';
-import { svgToDataUrl } from '../../../utils/reusables';
 import { ARWEAVE_READ_LINK } from '../../../constants';
+import { shortenAddress } from 'react-arconnect';
 
 // pages/blog/[slug].js
 export async function getStaticPaths() {
@@ -62,7 +61,9 @@ export async function getStaticProps(context) {
 const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) return <Creator404 address={userInfo?.user || ''} />
 
-  const { user, address_color } = userInfo;
+  const { user, nickname, currentLabel, address_color, bio, avatar } = userInfo;
+
+  const creatorName = nickname || currentLabel || shortenAddress(user);
 
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [episodes, setEpisodes] = useState<FullEpisodeInfo[]>([]);
@@ -70,7 +71,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
   const [allPodcasts_, setAllPodcasts_] = useRecoilState(allPodcasts);
 
-  console.log(userInfo)
+  // console.log(userInfo);
 
   useEffect(() => {
     const color = RGBobjectToString(hexToRGB(address_color || "#000000"));
@@ -89,7 +90,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
       setEpisodes(sortedEpisodes.slice().reverse());
     };
     fetchUserData();
-  }, [allPodcasts_])
+  }, [allPodcasts_]);
 
   const creator = {
     ...userInfo,
@@ -100,19 +101,19 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   return (
     <>
       <Head>
-        <title>{`${userInfo.nickname} | Creator`}</title> 
-        <meta name="description" content={`${userInfo.bio}`} />
+        <title>{`${creatorName} | Creator`}</title> 
+        <meta name="description" content={`${bio}`} />
         <meta name="twitter:card" content="summary"></meta>
-        <meta name="twitter:image" content={(userInfo.avatar !== "") ? ARWEAVE_READ_LINK + userInfo.avatar : "https://permacast.app/favicon.png"} />
-        <meta name="twitter:title" content={`${userInfo.nickname} | Permacast Creator`} />
+        <meta name="twitter:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
+        <meta name="twitter:title" content={`${creatorName} | Permacast Creator`} />
         <meta name="twitter:url" content={`https://permacast.app/`} />
-        <meta name="twitter:description" content={`${userInfo.bio}`} />
+        <meta name="twitter:description" content={`${bio}`} />
         
         <meta property="og:card" content="summary" />
-        <meta property="og:image" content={(userInfo.avatar !== "") ? ARWEAVE_READ_LINK + userInfo.avatar : "https://permacast.app/favicon.png"} />
-        <meta property="og:title" content={`${userInfo.nickname} | Permacast Creator`} />
+        <meta property="og:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
+        <meta property="og:title" content={`${creatorName} | Permacast Creator`} />
         <meta property="og:url" content={`https://permacast.app/`} />
-        <meta property="og:description" content={`${userInfo.bio}`} /> 
+        <meta property="og:description" content={`${bio}`} /> 
       </Head>
       <CreatorPageComponent {...{ creator }}/>
     </>
