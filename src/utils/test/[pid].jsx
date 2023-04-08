@@ -23,6 +23,7 @@ import {
   globalModalOpen,
   backgroundColor
 } from "../../atoms";
+import { MESON_ENDPOINT } from "../../constants/index.js";
 
 const Podcast = (props) => {
   const { t } = useTranslation();
@@ -77,7 +78,7 @@ const Podcast = (props) => {
                   </svg>
                 </button>
                 <a
-                  href={`https://arweave.net/${e.contentTx}`}
+                  href={`${MESON_ENDPOINT}${e.contentTx}`}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -159,7 +160,7 @@ const Podcast = (props) => {
         title: e.episodeName,
         artist: podcast.podcastName,
         cover: `https://arweave.net/${podcast?.cover}`,
-        src: `https://arweave.net/${e.contentTx}`,
+        src: `${MESON_ENDPOINT}${e.contentTx}`,
       },
       download: true,
     });
@@ -304,7 +305,7 @@ const Podcast = (props) => {
                           // Minor video control..
                           if (
                             playerObj_.src ===
-                            "https://arweave.net/" + e.contentTx
+                            MESON_ENDPOINT + e.contentTx
                           ) {
                             if (isPlaying) {
                               playerObj_.pause();
@@ -316,7 +317,7 @@ const Podcast = (props) => {
                           } else {
                             // setCurrentVideo(e)
                             playerObj_.src =
-                              "https://arweave.net/" + e.contentTx;
+                            MESON_ENDPOINT + e.contentTx;
                             playerObj_.pause();
                           }
                         }}

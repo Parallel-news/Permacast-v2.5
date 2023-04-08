@@ -11,7 +11,7 @@ import { showShikwasaPlayerArguments } from "../../interfaces/playback";
 import PlayButton from "./playButton";
 import MarkdownRenderer from "../markdownRenderer";
 import { queryMarkdownByTX } from "../../utils/markdown";
-import { ARSEED_URL, ARWEAVE_READ_LINK } from "../../constants";
+import { ARSEED_URL, ARWEAVE_READ_LINK, MESON_ENDPOINT } from "../../constants";
 import { trimChars } from "../../utils/filters";
 import { flexCenter } from "../creator/featuredCreators";
 import { allANSUsersAtom } from "../../atoms";
@@ -105,7 +105,7 @@ export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, ti
         width={56}
         height={56}
         className="rounded-lg aspect-square object-cover w-14 h-14"
-        src={hasBeen10Min(timestamp) ? ARWEAVE_READ_LINK+ cover : ARSEED_URL + cover }
+        src={hasBeen10Min(timestamp) ? MESON_ENDPOINT+ cover : ARSEED_URL + cover }
         alt={alt}
       />
     </Link>
