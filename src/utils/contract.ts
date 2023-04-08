@@ -20,3 +20,9 @@ export const getFeaturedChannelsContract = (): ContractVariables => {
   const contractAddress = isProduction ? process.env.EXM_FEATURED_CHANNEL_PROD_ADDRESS: process.env.EXM_FEATURED_CHANNEL_DEV_ADDRESS;
   return { contractAddress, isProduction };
 };
+
+export const getPASOMContract = (): ContractVariables => {
+  const isProduction = true; // we are using the official PASOM contract
+  const contractAddress = "4CbuDUBSiWTKmzq8e5NNFnwqR2Pt5wsuIOXHyvhHzBw";
+  return { contractAddress, isProduction };
+};
