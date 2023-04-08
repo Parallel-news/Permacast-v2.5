@@ -497,7 +497,7 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
                 <div className={podcastOptionsContainer}>
                     {props.shows && props.shows.map((item, index) => (
                         <PodcastSelectOptions 
-                            imgSrc={item.minifiedCover}
+                            imgSrc={item.cover}
                             title={item.podcastName}
                             disable={false}
                             setPid={props.setPid}
