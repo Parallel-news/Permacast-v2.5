@@ -10,6 +10,8 @@ import { arweaveAddress } from '../atoms';
 import { ProfileImage } from './creator';
 import { ANS_TEMPLATE } from '../constants/ui';
 import { EverPayBalance } from '../utils/everpay/EverPayBalance';
+import { ArrowLeftOnRectangleIcon, BanknotesIcon, NewspaperIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { flexCenter } from './creator/featuredCreators';
 
 
 const ArConnect: FC = () => {
@@ -34,11 +36,17 @@ const ArConnect: FC = () => {
   const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
   const ta = "arconnect.";
 
+  const className = 'text-white w-4 h-4 ';
+  const TopupIcon = () => <BanknotesIcon {...{ className }} />;
+  const ProfileIcon = () => <UserCircleIcon {...{ className }} />;
+  const ArPage = () => <NewspaperIcon {...{ className }} />;
+  const DisconnectIcon = () => <ArrowLeftOnRectangleIcon {...{ className }} />;
+
   const menuItems = [
-    { key: "viewProfile", name: ta + "profile",  href: ANS?.currentLabel ? `/creator/${ANS?.currentLabel}` : `/creator/${address}`},
-    { key: "viewArPage", name: ta + "arpage",  href: ANS?.currentLabel ? `https://${ANS?.currentLabel}.ar.page` : "https://ar.page/"},
-    { key: "goToEverpay", name: ta + "everpay",  href: "https://app.everpay.io"},
-    { key: "disconnect", name: ta + "disconnect",  href: ""},
+    { icon: <TopupIcon />, key: "goToEverpay", name: ta + "everpay",  href: "https://app.everpay.io"},
+    { icon: <ProfileIcon />, key: "viewProfile", name: ta + "profile",  href: ANS?.currentLabel ? `/creator/${ANS?.currentLabel}` : `/creator/${address}`},
+    { icon: <ArPage />, key: "viewArPage", name: ta + "arpage",  href: ANS?.currentLabel ? `https://${ANS?.currentLabel}.ar.page` : "https://ar.page/"},
+    { icon: <DisconnectIcon />, key: "disconnect", name: ta + "disconnect",  href: ""},
   ];
 
   return (
@@ -49,7 +57,7 @@ const ArConnect: FC = () => {
             style={{ 
               backgroundColor: "#FFFFFF00",
             }}
-            className='w-full h-12 hover:bg-zinc-700 bg-zinc-900 rounded-full items-center flex px-4 justify-center mx-auto text-sm md:text-base normal-case focus:outline-white focus:outline-2 default-animation'
+            className='w-full h-12 hover:bg-zinc-700 bg-zinc-900 rounded-full items-center flex px-4 justify-center mx-auto text-sm md:text-base normal-case focus:outline-white focus:outline-2 default-animation z-0'
           >
             {
               ANS?.avatar ? (
@@ -93,11 +101,19 @@ const ArConnect: FC = () => {
             className='hover:bg-zinc-700'
           >
             <>
-              {item.key === "disconnect" && <button onClick={() => arconnectDisconnect()}>{t(item.name)}</button>}
-              {item.key !== "disconnect" && (
-                <Link href={item.href}>
+              {item.key === "disconnect" && (
+                <button className={flexCenter + 'gap-x-2'} onClick={() => arconnectDisconnect()}>
+                  {item.icon}
                   {t(item.name)}
-                </Link>
+                </button>
+              )}
+              {item.key !== "disconnect" && (
+                <div className={flexCenter + 'gap-x-2'}> 
+                  {item.icon}
+                  <Link href={item.href}>
+                    {t(item.name)}
+                  </Link>
+                </div>
               )}
             </>
           </Dropdown.Item>
