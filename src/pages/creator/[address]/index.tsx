@@ -83,9 +83,10 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
       const podcasts: Podcast[] = allPodcasts_.filter((podcast: Podcast) => podcast.owner === user);
       const userEpisodes = podcasts.map((podcast: Podcast) => 
         podcast.episodes.map((episode: Episode) => ({episode, podcast}))
-      ).flat(1).splice(0, 3);
+      ).flat(1).splice(-3, 3);
       setPodcasts(podcasts);
-      setEpisodes(sortByDate(userEpisodes));
+      const sortedEpisodes = sortByDate(userEpisodes)
+      setEpisodes(sortedEpisodes.slice().reverse());
     };
     fetchUserData();
   }, [allPodcasts_])
