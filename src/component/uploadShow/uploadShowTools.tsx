@@ -20,7 +20,7 @@ import axios from "axios";
 import { useTranslation } from "next-i18next";
 import { Tooltip } from "@nextui-org/react";
 import { Podcast } from "../../interfaces";
-import Image from "next/image";
+import { MarkDownToolTip } from "../reusables/tooltip";
 
 export default function uploadShowTools() {
     return false
@@ -326,20 +326,10 @@ export const ShowForm = (props: ShowFormInter) => {
                         setPodDescMsg(handleValMsg(e.target.value, "podDesc"));
                         setPodcastDescription_(e.target.value);
                         }}></textarea>
-                        <Tooltip
-                            rounded
-                            placement={"top"}
-                            color="invert"
-                            content={t("tooltip.markdown-supported")}
-                        >
-                            <Image 
-                                src="/markdownLogo.svg"
-                                alt="Markdown Logo"
-                                height={40}
-                                width={40}
-                                className="mt-2"
-                            />
-                        </Tooltip>
+                        <MarkDownToolTip 
+                            placement="top"
+                            size={40}
+                        />
                     </div>
                     <ValMsg valMsg={podDescMsg} className="pl-2" />
 
