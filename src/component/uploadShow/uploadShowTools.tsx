@@ -320,19 +320,26 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Episode Description
                     */}
-                    <div className="w-[100%] h-32 bg-red-400 rounded-xl relative">
-                        <Image 
-                            src="/markdownLogo.svg"
-                            alt="Markdown Logo"
-                            height={35}
-                            width={35}
-                            className="absolute top-2 right-2"
-                        />
+                    <div className="w-[100%] h-32 rounded-xl bg-zinc-800 flex flex-row justify-start items-start">
                         <textarea className={"w-[93%] "+episodeDescStyling + " h-32 "} required title="Between 1 and 5000 characters" name="showShowNotes" placeholder={t("uploadshow.description")}                     
                         onChange={(e) => {
                         setPodDescMsg(handleValMsg(e.target.value, "podDesc"));
                         setPodcastDescription_(e.target.value);
                         }}></textarea>
+                        <Tooltip
+                            rounded
+                            placement={"top"}
+                            color="invert"
+                            content={t("tooltip.coming-soon")}
+                        >
+                            <Image 
+                                src="/markdownLogo.svg"
+                                alt="Markdown Logo"
+                                height={40}
+                                width={40}
+                                className="mt-2"
+                            />
+                        </Tooltip>
                     </div>
                     <ValMsg valMsg={podDescMsg} className="pl-2" />
 
