@@ -481,7 +481,7 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
             clearTimeout(timeoutId);
         };
     }, [props.isVisible])
-
+    console.log("BEN LOOK HERE: ", props.shows)
     return(
         <div className={selectPodcastModalStyling}>
             <div className={`${containerPodcastModalStyling + " p-6"} ${showModal ? FADE_IN_STYLE :FADE_OUT_STYLE}`}>
@@ -495,13 +495,14 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
                 <hr className={hrPodcastStyling}/>
                 {/*Options*/}
                 <div className={podcastOptionsContainer}>
-                    {props.shows && props.shows.map((item) => (
+                    {props.shows && props.shows.map((item, index) => (
                         <PodcastSelectOptions 
                             imgSrc={item.minifiedCover}
                             title={item.podcastName}
                             disable={false}
                             setPid={props.setPid}
                             pid={item.pid}
+                            key={index}
                         />
                     ))}
                     {props.shows.length === 0 && <p className="text-white text-lg text-center">{t("uploadepisode.no-shows")}</p>}
