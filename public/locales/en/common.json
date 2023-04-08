@@ -163,6 +163,14 @@
 	},
 	"creator": {
 		"ans": "View on ANS",
+		"edit": "Edit",
+		"edit-modal": {
+			"header": "Edit Profile",
+			"nickname": "Nickname",
+			"bio": "Bio",
+			"banner": "Banner",
+			"avatar": "Avatar"
+		},
 		"verification": {
 			"verified": {
 				"text": "Verified",
