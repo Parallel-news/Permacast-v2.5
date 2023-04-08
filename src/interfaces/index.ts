@@ -21,7 +21,7 @@ export interface EXMState {
   paid_fees:             tx[];
   signatures:            signature[];
 }
-
+// !deprecated
 export interface EXMDevState {
   podcasts:              Podcast[];
   admins:                string[];
