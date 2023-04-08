@@ -169,4 +169,9 @@ export const arweaveAddress = atom({
   key: 'arweaveAddress',
   default: ""
 });
+
+export const userBannerImageAtom = atom<string>({
+    key: 'userBannerImageAtom',
+    default: ""
+});
 // *** ------- ***
