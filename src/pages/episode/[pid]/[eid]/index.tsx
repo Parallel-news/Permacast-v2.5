@@ -33,7 +33,6 @@ export default function EpisodeId({data, status, mimeType}) {
     const [themeColor, setThemeColor] = useState<string>('');
     const [textColor, setTextColor] = useState<string>('');
     let index;
-    console.log("Look: ", data)
     
     if (data) {
         // Find Episode Number

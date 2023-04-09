@@ -5,7 +5,7 @@ import { arweaveTX, Podcast } from "../../interfaces/index";
 import Link from "next/link";
 import FeaturedPodcastPlayButton from "./featuredPodcastPlayButton";
 import Image from "next/image";
-import { ARSEED_URL } from "../../constants";
+import { ARSEED_URL, startId } from "../../constants";
 import MarkdownRenderer from "../markdownRenderer";
 import { queryMarkdownByTX } from "../../utils/markdown";
 import { convertPodcastsToEpisodes } from "../../utils/filters";
@@ -160,7 +160,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
   return (
     <Link 
       passHref
-      href={`/podcast/${determinePodcastURL(label, pid)}#start`}
+      href={`/podcast/${determinePodcastURL(label, pid)}${startId}`}
       className={podcastOuterBackgroundStyling}
       style={{ backgroundColor: themeColor }}
       onClick={() => window.scrollTo(0, 0) }
