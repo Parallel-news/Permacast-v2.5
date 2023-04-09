@@ -16,7 +16,7 @@ import { TipModal } from '../tipModal';
 import { defaultSignatureParams, shortenAddress, useArconnect } from 'react-arconnect';
 import Modal from '../modal';
 import { CameraIcon, PencilIcon, UserPlusIcon } from '@heroicons/react/24/outline';
-import { PASOM_SIG_MESSAGES, USER_SIG_MESSAGES } from '../../constants';
+import { ARSEED_URL, PASOM_SIG_MESSAGES, USER_SIG_MESSAGES } from '../../constants';
 import { PASoMProfile, updateWalletMetadata } from '../../interfaces/pasom';
 import { ArConnectButtonStyling } from '../arconnect';
 import { hoverableLinkButton } from '../reusables/themedButton';
@@ -149,7 +149,7 @@ export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, addr
       tabIndex={unclickable ? -1 : 0}
       className="default-no-outline-ringed default-animation"
     >
-      {avatar && <Image width={imageSize} height={imageSize} alt={avatar} src={avatar} className="object-fit aspect-square rounded-full" />}
+      {avatar && <Image width={imageSize} height={imageSize} alt={avatar} src={ARSEED_URL + avatar} className="object-fit aspect-square rounded-full" />}
       {!avatar && (
         <div style={{
           width: imageSize,
@@ -263,7 +263,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
 
   const { ANSuserExists, currentLabel, address_color, user, PASoMProfile, podcasts, episodes } = creator;
   const nickname = PASoMProfile?.nickname || creator.nickname;
-  const avatar = '/mizuki.jpg'//PASoMProfile?.avatar || creator.avatar;
+  const avatar = PASoMProfile?.avatar || creator.avatar || '';
   const banner = PASoMProfile?.banner || '/user.avif';
   const bio = PASoMProfile?.bio || '';
   

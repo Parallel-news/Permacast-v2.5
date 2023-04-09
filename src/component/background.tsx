@@ -5,6 +5,7 @@ import { useRecoilState } from "recoil";
 import { backgroundColorAtom, currentThemeColorAtom, podcastColorAtom, userBannerImageAtom } from '../atoms/index';
 import { dimColorString } from "../utils/ui";
 import { DEFAULT_BACKGROUND_COLOR } from "../constants/ui";
+import { ARSEED_URL } from "../constants";
 
 interface BackgroundInterface {
   children?: ReactNode;
@@ -40,7 +41,7 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
     <div className="w-screen h-3/4 absolute overflow-hidden default-animation-slow pointer-events-none" style={{backgroundColor: backgroundColor, zIndex: -1}}>
       {userBannerImage && (
         <div className="absolute">
-          <Image src={userBannerImage} width={1350} height={450} alt="Profile banner" className="opacity-25 w-screen h-[150px] md:h-[55vh] " />
+          <Image src={ARSEED_URL + userBannerImage} width={1350} height={450} alt="Profile banner" className="opacity-25 w-screen h-[150px] md:h-[55vh] " />
           <div className="absolute w-full h-full z-[1] top-0" style={{backgroundImage: `linear-gradient(transparent, transparent, black)`}}></div>
         </div>
       )}

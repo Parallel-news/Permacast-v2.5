@@ -16,7 +16,7 @@ import { TipModal } from '../tipModal';
 import { defaultSignatureParams, shortenAddress, useArconnect } from 'react-arconnect';
 import Modal from '../modal';
 import { CameraIcon, PencilIcon, UserPlusIcon } from '@heroicons/react/24/outline';
-import { PASOM_SIG_MESSAGES, USER_SIG_MESSAGES } from '../../constants';
+import { GIGABYTE, PASOM_SIG_MESSAGES, USER_SIG_MESSAGES } from '../../constants';
 import { PASoMProfile, updateWalletMetadata } from '../../interfaces/pasom';
 import { ArConnectButtonStyling } from '../arconnect';
 import ThemedButton from '../reusables/themedButton';
@@ -35,6 +35,7 @@ import { arweaveAddress } from "../../atoms";
 import { PermaSpinner } from "../reusables/PermaSpinner";
 import { Tooltip } from "@nextui-org/react";
 import { MarkDownToolTip } from "../reusables/tooltip";
+import validatePASoMForm from '../../utils/validation/PASoM';
 
 // 1. Interfaces
 interface EditButtonProps {};
@@ -139,21 +140,55 @@ export const EditModalHeader: FC = () => {
 export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, className }) => {
 
   const { t } = useTranslation();
+  const { address, getPublicKey, createSignature } = useArconnect();
 
   const [nickname, setNickname] = useState<string>("");
   const [bio, setBio] = useState<string>("");
-  const [banner, setBanner] = useState(null);
-  const [avatar, setAvatar] = useState(null);
+  const [banner, setBanner] = useState<string>("");
+  const [avatar, setAvatar] = useState<string>("");
 
-  const { address, getPublicKey, createSignature } = useArconnect();
+  const [arseedGigabyteCost, setArseedGigabyteCost] = useState<number>(0);
+  const [avatarSize, setAvatarSize] = useState<number>(0);
+  const [bannerSize, setBannerSize] = useState<number>(0);
+  const [totalImageCost, setTotalImageCost] = useState<number>(0);
 
-  const validate = () => true;
+  useEffect(() => {getBundleArFee(String(GIGABYTE)).then(setArseedGigabyteCost)}, []);
+  useEffect(() => {calculateImagesUploadCost().then(setTotalImageCost)}, [avatarSize, bannerSize]);
 
-  const uploadBanner = async () => '0x';
+  const calculateImagesUploadCost = async () => {
+    const bannerCost = Number(arseedGigabyteCost) * (bannerSize / GIGABYTE);
+    const avatarCost = Number(arseedGigabyteCost) * (avatarSize / GIGABYTE);
+    return Number(bannerCost) + Number(avatarCost);
+  };
 
-  const uploadAvatar = async () => '0x';
+  // TODO: add validation
+  const validate = () => {
+    // validatePASoMForm({nickname, bio, banner, avatar})
+    return true
+  };
+
+  const uploadImage = async (fileURL: string, name: string, setSize: Dispatch<SetStateAction<number>>) => {
+    const toastUploadImage = toast.loading(`Uploading ${name}`, {style: TOAST_DARK, duration: 10000000});
+    let finalTX;
+    try {
+      const file = await createFileFromBlobUrl(fileURL, name);
+      setSize(file.size);
+      const arseedTX = await upload3DMedia(file, file.type);
+      finalTX = arseedTX?.order?.itemId;
+      toast.dismiss(toastUploadImage);
+    } catch (e) {
+      finalTX = null;
+      toast.dismiss(toastUploadImage);
+    };
+    return finalTX 
+  };
+
+  const uploadBanner = async () => await uploadImage(banner, "banner", setBannerSize);
+  const uploadAvatar = async () => await uploadImage(avatar, "avatar", setAvatarSize);
 
   const uploadEdits = async () => {
+    const toastBanner = toast.loading('Uploading Banner Cover', {style: TOAST_DARK, duration: 10000000});
+
     console.log('uploading edits');
     console.log(nickname, bio, banner, avatar)
     if (!validate()) return;
@@ -174,9 +209,11 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
       sig,
       jwk_n,
     };
-    console.log(payloadObj)
-    // const res = await axios.post('/api/exm/PASoM/write', payloadObj);
-    // console.log(res.data);
+    console.log(payloadObj);
+    const res = await axios.post('/api/exm/PASoM/write', payloadObj);
+    console.log(res.data);
+    setIsVisible(false);
+    toast.dismiss(toastBanner);
   };
 
   return (
@@ -186,9 +223,11 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
         <ProfileImages {...{ banner, avatar, setBanner, setAvatar }} />
         <ProfileInfo {...{ nickname, setNickname, bio, setBio }} />
         <div className={CreatorModalFooterStyling}>
-          <div className={flexCenter + `bg-zinc-700 text-white rounded-xl w-48 h-12 pl-3`}>
-            {t("home.featured-modal.cost")} {0.004} AR
-          </div>
+          {totalImageCost > 0 && (
+            <div className={flexCenter + `bg-zinc-700 text-white rounded-xl w-48 h-12 pl-3`}>
+              {t("home.featured-modal.cost")} {totalImageCost} AR
+            </div>
+          )}
           <button onClick={uploadEdits} className={ArConnectButtonStyling + `w-24 `}>
             {t("creator.edit")}
           </button>
