@@ -83,7 +83,7 @@ export interface TrackPlayButtonProps {
 // 2. Stylings
 
 export const trackFlexCenterYStyling = `${flexCenter} mt-1 `;
-export const trackFlexCenterPaddedYStyling = `${flexCenter} flex-col md:flex-row p-3 space-y-3 md:space-y-0`;
+export const trackFlexCenterPaddedYStyling = `${flexCenter} flex-col md:flex-row justify-center p-3 space-y-3 md:space-y-0 w-[75%]`;
 export const trackFlexCenterBothStyling = `${flexCenter} justify-between border-zinc-600 border-2 rounded-2xl pr-4 `;
 export const trackEpisodeLinkableTitleStyling = `cursor-pointer line-clamp-1 pr-2 text-sm hover:underline `;
 export const trackByStyling = `text-zinc-400 text-[10px] mr-2 `;
@@ -264,22 +264,23 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
   return (
     <div className={trackFlexCenterBothStyling}>
       <div className={trackFlexCenterPaddedYStyling}>
-        <span className="flex flex-row items-center">
-        <PodcastCover {...{ podcastURL, cover: coverUsed, alt: podcastName, timestamp: detectTimestampType(uploadedAt) === "seconds" ? uploadedAt * 1000 : uploadedAt}} />
-        <div className={trackMainInfoStyling}>
-          <EpisodeLinkableTitle {...{ podcastURL, eid, episodeName }} />
-          <div className={trackFlexCenterYStyling}>
-            <p className={trackByStyling}>{t("track.by")}</p>
-            <div className={flexCenter}>
-              <TrackCreatorLink {...{ uploader: artist, buttonStyles, coverColor, author }} />
-              <Tooltip color='invert' content={t(isVideo ? "track.video" : t("track.audio"))}>
-                {isVideo ? <VideoCameraIcon {...{className}} /> : <MicrophoneIcon {...{className}} />}
-              </Tooltip>
+        <span className="flex flex-row md:items-center w-full md:min-w-[45%]">
+          <PodcastCover {...{ podcastURL, cover: coverUsed, alt: podcastName, timestamp: detectTimestampType(uploadedAt) === "seconds" ? uploadedAt * 1000 : uploadedAt}} />
+          <div className={trackMainInfoStyling}>
+            <EpisodeLinkableTitle {...{ podcastURL, eid, episodeName }} />
+            <div className={trackFlexCenterYStyling}>
+              <p className={trackByStyling}>{t("track.by")}</p>
+              <div className={flexCenter}>
+                <TrackCreatorLink {...{ uploader: artist, buttonStyles, coverColor, author }} />
+                <Tooltip color='invert' content={t(isVideo ? "track.video" : t("track.audio"))}>
+                  {isVideo ? <VideoCameraIcon {...{className}} /> : <MicrophoneIcon {...{className}} />}
+                </Tooltip>
+              </div>
             </div>
           </div>
-        </div>
         </span>
-        <div className="flex justify-start w-full" id='xx'>
+        
+        <div className="flex justify-start w-full md:pl-4 lg:pl-0">
           <TrackDescription {...{ includeDescription, description: markdown }} />
         </div>
       </div>
