@@ -181,7 +181,7 @@ const info = `
 
 const PlayerTemplate = /* template */ `
   <div class="shk-template max-w-screen">
-    <div class="shk-inner-template flex flex-row items-center">
+    <div class="shk-inner-template flex flex-row items-center justify-center sm:justify-start space-x-4 sm:space-x-0">
       ${info}
       <div class="shk-primary">
         <div class="shk-controls_basic flex items-center pb-1">
