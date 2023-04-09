@@ -14,6 +14,8 @@ import { ArrowLeftOnRectangleIcon, BanknotesIcon, NewspaperIcon, UserCircleIcon 
 import { flexCenter } from './creator/featuredCreators';
 
 
+export const ArConnectButtonStyling = `h-12 btn-base-color items-center flex px-3 justify-center text-sm md:text-base normal-case default-no-outline-ringed default-animation hover:text-white focus:text-white `;
+
 const ArConnect: FC = () => {
   const { t } = useTranslation();
 
@@ -81,7 +83,7 @@ const ArConnect: FC = () => {
           </Dropdown.Button>
         )) || (
           <button 
-            className="w-full h-12 btn-base-color items-center flex px-3 justify-center mx-auto text-sm md:text-base normal-case default-no-outline-ringed  default-animation"
+            className={ArConnectButtonStyling + `w-full mx-auto `}
             onClick={connect}
           >
             🦔 {t("connector.login")}

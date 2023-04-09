@@ -17,7 +17,7 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
   const [currentThemeColor, _] = useRecoilState(currentThemeColorAtom);
   const [backgroundColor, setbackgroundColor] = useRecoilState(backgroundColorAtom);
   const [podcastColor, setPodcastColor] = useRecoilState(podcastColorAtom);
-  const [userImage, setUserImage] = useRecoilState(userBannerImageAtom);
+  const [userBannerImage, setUserBannerImage] = useRecoilState(userBannerImageAtom);
 
   const useDefaultBackground = [
     "/",
@@ -38,9 +38,9 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
 
   return (
     <div className="w-screen h-3/4 absolute overflow-hidden default-animation-slow pointer-events-none" style={{backgroundColor: backgroundColor, zIndex: -1}}>
-      {userImage && (
+      {userBannerImage && (
         <div className="absolute">
-          <Image src="/user.avif" width={1350} height={450} alt="Profile banner" className="opacity-25 w-screen h-[450px] " />
+          <Image src={userBannerImage} width={1350} height={450} alt="Profile banner" className="opacity-25 w-screen h-[150px] md:h-[55vh] " />
           <div className="absolute w-full h-full z-[1] top-0" style={{backgroundImage: `linear-gradient(transparent, transparent, black)`}}></div>
         </div>
       )}
