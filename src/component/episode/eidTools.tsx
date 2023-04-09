@@ -275,7 +275,7 @@ export const EpisodeNumber = (props: EpisodeNumberInter) => {
     const { t } = useTranslation();
 
     return (
-        <p className={episodeNumberStyling} style={{color: props.color}}>{"Episode"+" "+props.episodeNum}</p>
+        <p className={episodeNumberStyling} style={{color: props.color}}>{t("episode.number")+" "+props.episodeNum}</p>
     )
 }
 
