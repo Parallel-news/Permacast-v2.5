@@ -30,7 +30,9 @@ const Modal: FC<ModalProps> = ({ isVisible, setIsVisible, className, children })
   return (
     <div className={tipModalStyling + " backdrop-blur-sm"}>
       <div className={className + ` justify-between relative overflow-hidden ` + (showModal ? FADE_IN_STYLE : FADE_OUT_STYLE)}>
-        <XMarkIcon className={xMarkModalStyling} onClick={() => setIsVisible(false)} />
+        <button className={xMarkModalStyling} onClick={() => setIsVisible(false)}>
+          <XMarkIcon />
+        </button>
         {children}
       </div>
     </div>

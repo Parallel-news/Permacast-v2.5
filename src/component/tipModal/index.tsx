@@ -23,7 +23,7 @@ interface TipModalInter {
 export const tipAmountDivStyling = "w-full flex flex-row justify-center items-center mx-auto space-x-2"
 export const titleCornerStyling = "absolute top-0 left-0 bg-black h-[150px] w-[150px] flex justify-center items-center rounded-br-full z-30"
 export const benefactorBannerStyling = "absolute top-0 bg-zinc-900 w-full h-[100px] z-30 flex flex-row items-center"
-export const xMarkModalStyling = "h-7 w-7 mt-1 cursor-pointer hover:text-red-400 hover:bg-red-400/10 transition duration-400 ease-in-out rounded-full z-30 absolute top-3 right-3"
+export const xMarkModalStyling = "h-7 w-7 mt-1 cursor-pointer focus:text-red-400 focus:bg-red-400/10 hover:text-red-400 hover:bg-red-400/10 transition duration-400 ease-in-out rounded-full z-30 absolute top-3 right-3"
 export const tipInputStyling = "input input-secondary px-4 bg-zinc-700/80 border-0 rounded-lg outline-none focus:ring-2 focus:ring-inset focus:ring-white w-[200px] h-[100px] placeholder:text-5xl placeholder:font-bold text-5xl font-bold text-center" 
 export const tipAmountAbsStyling = "absolute inset-0 top-0 flex justify-center items-center flex flex-col z-20"
 export const benefactorNameStyling = "text-white text-3xl font-bold flex justify-center w-full text-center"
