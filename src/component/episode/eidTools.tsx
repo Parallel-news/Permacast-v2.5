@@ -255,7 +255,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
             :
             <DescriptionButton
                 icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
-                text={"Download"}
+                text={t("episode.download")}
                 color={color}
                 onClick={() => downloadFile()}
             />
@@ -263,7 +263,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
 
             <DescriptionButton
                 icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
-                text={"Share"}
+                text={t("episode.share")}
                 color={color}
                 onClick={props.setLoadShareModal}
             />
