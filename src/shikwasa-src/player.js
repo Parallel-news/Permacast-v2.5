@@ -34,7 +34,7 @@ function rehoistVideo (v) {
 
 function Video(src, append) {
   var v = document.createElement("video");
-  v.className = "ml-[92px] w-[100%] object-cover";
+  v.className = "md:ml-[92px] w-[100%] h-[50%] sm:h-[100%] object-cover";
   if (src != "") {
     v.src = src;
   }
