@@ -20,6 +20,7 @@ import { MicrophoneIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 import { Tooltip } from "@nextui-org/react";
 import { detectTimestampType, hasBeen10Min } from "../../utils/reusables";
 import { useRouter } from "next/router";
+import ScrollUpLink from "./ScrollUpLink";
 
 /**
  * Index
@@ -115,29 +116,13 @@ export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, ti
 
 export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ podcastURL, eid, episodeName }) => {
 
-  const router = useRouter();
-
-  useEffect(() => {
-    const handleRouteChange = (url) => {
-      if (url !== router.asPath) {
-        window.scrollTo(0, 0);
-      }
-    };
-
-    router.events.on('beforeHistoryChange', handleRouteChange);
-
-    return () => {
-      router.events.off('beforeHistoryChange', handleRouteChange);
-    };
-  }, [router.events]);
-
   return (
-    <Link
-      href={`/episode/${podcastURL}/${trimChars(eid)}`}
+    <ScrollUpLink 
+      href={`/episode/${podcastURL}/${trimChars(eid)}`} 
       className={trackEpisodeLinkableTitleStyling}
     >
       {episodeName}
-    </Link>
+    </ScrollUpLink>
   );
 };
 
