@@ -9,6 +9,7 @@ import { ARSEED_URL } from "../../constants";
 import MarkdownRenderer from "../markdownRenderer";
 import { queryMarkdownByTX } from "../../utils/markdown";
 import { convertPodcastsToEpisodes } from "../../utils/filters";
+import { useRouter } from "next/router";
 
 
 
@@ -162,6 +163,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
       href={`/podcast/${determinePodcastURL(label, pid)}`}
       className={podcastOuterBackgroundStyling}
       style={{ backgroundColor: themeColor }}
+      onClick={() => window.scrollTo(0, 0) }
     >
       <div className={podcastInnerBackgroundStyling}>
         <div>

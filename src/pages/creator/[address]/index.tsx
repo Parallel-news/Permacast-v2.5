@@ -74,8 +74,6 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
   const [allPodcasts_, setAllPodcasts_] = useRecoilState(allPodcasts);
 
-  // console.log(userInfo);
-
   useEffect(() => {
     const color = RGBobjectToString(hexToRGB(address_color || "#000000"));
     setPodcastColor(color);

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { FC, useState, useMemo } from "react";
+import React, { FC, useState, useMemo, useEffect } from "react";
 import { useTranslation } from "next-i18next";
 import { shortenAddress } from "react-arconnect";
 
@@ -19,6 +19,7 @@ import { useRecoilState } from "recoil";
 import { MicrophoneIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 import { Tooltip } from "@nextui-org/react";
 import { detectTimestampType, hasBeen10Min } from "../../utils/reusables";
+import { useRouter } from "next/router";
 
 /**
  * Index
@@ -113,6 +114,23 @@ export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, ti
 };
 
 export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ podcastURL, eid, episodeName }) => {
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      if (url !== router.asPath) {
+        window.scrollTo(0, 0);
+      }
+    };
+
+    router.events.on('beforeHistoryChange', handleRouteChange);
+
+    return () => {
+      router.events.off('beforeHistoryChange', handleRouteChange);
+    };
+  }, [router.events]);
+
   return (
     <Link
       href={`/episode/${podcastURL}/${trimChars(eid)}`}
