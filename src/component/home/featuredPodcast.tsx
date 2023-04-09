@@ -160,7 +160,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
   return (
     <Link 
       passHref
-      href={`/podcast/${determinePodcastURL(label, pid)}`}
+      href={`/podcast/${determinePodcastURL(label, pid)}#start`}
       className={podcastOuterBackgroundStyling}
       style={{ backgroundColor: themeColor }}
       onClick={() => window.scrollTo(0, 0) }

@@ -11,16 +11,15 @@ import { showShikwasaPlayerArguments } from "../../interfaces/playback";
 import PlayButton from "./playButton";
 import MarkdownRenderer from "../markdownRenderer";
 import { queryMarkdownByTX } from "../../utils/markdown";
-import { ARSEED_URL, ARWEAVE_READ_LINK, MESON_ENDPOINT } from "../../constants";
+import { ARSEED_URL, ARWEAVE_READ_LINK, MESON_ENDPOINT, startId } from "../../constants";
 import { trimChars } from "../../utils/filters";
 import { flexCenter } from "../creator/featuredCreators";
 import { allANSUsersAtom } from "../../atoms";
 import { useRecoilState } from "recoil";
 import { MicrophoneIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 import { Tooltip } from "@nextui-org/react";
-import { detectTimestampType, hasBeen10Min } from "../../utils/reusables";
+import { detectTimestampType, hasBeen10Min, reRoute} from "../../utils/reusables";
 import { useRouter } from "next/router";
-import ScrollUpLink from "./ScrollUpLink";
 
 /**
  * Index
@@ -116,13 +115,14 @@ export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, ti
 
 export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ podcastURL, eid, episodeName }) => {
 
+
   return (
-    <ScrollUpLink 
-      href={`/episode/${podcastURL}/${trimChars(eid)}`} 
+    <Link
+    href={`/episode/${podcastURL}/${trimChars(eid)}${startId}`}
       className={trackEpisodeLinkableTitleStyling}
     >
       {episodeName}
-    </ScrollUpLink>
+    </Link>
   );
 };
 

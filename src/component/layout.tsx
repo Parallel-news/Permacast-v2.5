@@ -37,7 +37,7 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
         {isFullscreen && <Fullscreen />}
         <div className={BackgroundWrapperStyling}>
           <Background />
-          <div className={InnerLayoutStyling}>
+          <div className={InnerLayoutStyling} id="start">
             <Toaster
               position={TOAST_POSITION}
               reverseOrder={false}
