@@ -3,7 +3,7 @@ import Head from "next/head";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { backgroundColorAtom, loadTipModal } from "../../../../atoms";
+import { backgroundColorAtom } from "../../../../atoms";
 import { 
     EpisodeBanner,
     EpisodeDescription,
@@ -11,13 +11,12 @@ import {
     ErrorTag,
     podcastIdStyling,
  } from "../../../../component/episode/eidTools";
-import { EXM_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND, ARSEED_URL, ARWEAVE_READ_LINK } from "../../../../constants";
+import { EXM_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND, ARSEED_URL, ARWEAVE_READ_LINK, MESON_ENDPOINT } from "../../../../constants";
 import { getContractVariables } from "../../../../utils/contract";
-import { detectTimestampType, findObjectById, formatStringByLen, hasBeen10Min } from "../../../../utils/reusables";
+import { detectTimestampType, hasBeen10Min } from "../../../../utils/reusables";
 import { TipModal } from "../../../../component/tipModal";
 import { ShareButtons } from "../../../../component/shareButtons";
-import { determinePodcastURL, fetchDominantColor, getCoverColorScheme, rgba2hex, RGBAstringToObject, RGBobjectToString } from "../../../../utils/ui";
-import { useTranslation } from "next-i18next";
+import { determinePodcastURL, fetchDominantColor, getCoverColorScheme } from "../../../../utils/ui";
 import FeaturedPodcastPlayButton from "../../../../component/home/featuredPodcastPlayButton";
 import { findEpisode, findPodcast, trimChars } from "../../../../utils/filters";
 import { checkContentTypeFromUrl } from "../../../../utils/fileTools";
@@ -110,15 +109,15 @@ export default function EpisodeId({data, status, mimeType}) {
                     <meta name="twitter:description" content={`By ${data.podcastName}`} />
                     <meta name="twitter:player:width" content="640"></meta>
                     <meta name="twitter:player:height" content="360"></meta>
-                    <meta name="twitter:player" content={hasBeen10Min(data?.obj.uploadedAt) ? ARWEAVE_READ_LINK+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx}></meta>
+                    <meta name="twitter:player" content={hasBeen10Min(data?.obj.uploadedAt) ? MESON_ENDPOINT+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx}></meta>
                     <meta name="twitter:url" content={`https://permacast.app/`}></meta>
 
                     <meta property="og:type" content="video" />
                     <meta property="og:image" content={(data.cover !== "") ? ARSEED_URL + data.cover : "https://permacast.app/favicon.png"} />
                     <meta property="og:title" content={`${data.obj.episodeName} | Permacast`} />
-                    <meta property="og:url" content={hasBeen10Min(data?.obj.uploadedAt) ? ARWEAVE_READ_LINK+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx} />
+                    <meta property="og:url" content={hasBeen10Min(data?.obj.uploadedAt) ? MESON_ENDPOINT+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx} />
                     <meta property="og:description" content={`By ${data.podcastName}`} />
-                    <meta property="og:video" content={hasBeen10Min(data?.obj.uploadedAt) ? ARWEAVE_READ_LINK+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx}></meta>
+                    <meta property="og:video" content={hasBeen10Min(data?.obj.uploadedAt) ? MESON_ENDPOINT+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx}></meta>
                     <meta property="og:video:type" content={mimeType} />
                     <meta property="og:video:width" content="640" />
                     <meta property="og:video:height" content="360" />
@@ -135,7 +134,7 @@ export default function EpisodeId({data, status, mimeType}) {
                         date={date}
                         setLoadTipModal={() => setLoadTipModal(true)}
                         setLoadShareModal={() => setLoadShareModal(true)}
-                        mediaLink={hasBeen10Min(data?.obj.uploadedAt) ? ARWEAVE_READ_LINK+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx}
+                        mediaLink={hasBeen10Min(data?.obj.uploadedAt) ? MESON_ENDPOINT+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx}
                         podcastOwner={data?.obj.owner}
                         playButton={playButton}
                         podcastName={data?.podcastName}
@@ -216,7 +215,7 @@ export async function getServerSideProps(context) {
         const foundEpisode = findEpisode(episodeId, foundPodcast.episodes)
         // Episode Exist
         if (foundEpisode) {
-            const mimeType = await checkContentTypeFromUrl(hasBeen10Min(foundEpisode.uploadedAt) ? ARWEAVE_READ_LINK+ foundEpisode.contentTx : ARSEED_URL + foundEpisode.contentTx)
+            const mimeType = await checkContentTypeFromUrl(hasBeen10Min(foundEpisode.uploadedAt) ? MESON_ENDPOINT+ foundEpisode.contentTx : ARSEED_URL + foundEpisode.contentTx)
             const podcastName = foundPodcast.podcastName
             const data = { ...podcastData, obj: foundEpisode, podcastName}
             const status = PAYLOAD_RECEIVED
