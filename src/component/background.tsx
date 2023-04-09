@@ -1,9 +1,11 @@
-import { useEffect, ReactNode } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
+import { useEffect, ReactNode } from "react";
 import { useRecoilState } from "recoil";
-import { backgroundColorAtom, currentThemeColorAtom, podcastColorAtom } from '../atoms/index';
+import { backgroundColorAtom, currentThemeColorAtom, podcastColorAtom, userBannerImageAtom } from '../atoms/index';
 import { dimColorString } from "../utils/ui";
 import { DEFAULT_BACKGROUND_COLOR } from "../constants/ui";
+import { ARSEED_URL } from "../constants";
 
 interface BackgroundInterface {
   children?: ReactNode;
@@ -16,6 +18,7 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
   const [currentThemeColor, _] = useRecoilState(currentThemeColorAtom);
   const [backgroundColor, setbackgroundColor] = useRecoilState(backgroundColorAtom);
   const [podcastColor, setPodcastColor] = useRecoilState(podcastColorAtom);
+  const [userBannerImage, setUserBannerImage] = useRecoilState(userBannerImageAtom);
 
   const useDefaultBackground = [
     "/",
@@ -25,8 +28,9 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
   ];
 
   useEffect(() => {
-    // console.log("background.tsx useEffect");
+    console.log("background.tsx useEffect");
     if (useDefaultBackground.includes(pathname)) setbackgroundColor(dimColorString(currentThemeColor, 0.4));
+    else if (pathname.includes("/creator")) setbackgroundColor(dimColorString(currentThemeColor, 0));
     else setbackgroundColor(dimColorString(podcastColor, 0.5));
   }, [pathname, podcastColor]);
 
@@ -35,9 +39,15 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
 
   return (
     <div className="w-screen h-3/4 absolute overflow-hidden default-animation-slow pointer-events-none" style={{backgroundColor: backgroundColor, zIndex: -1}}>
-      <div className=" w-full h-full z-[1]" style={styles}></div>
+      {userBannerImage && (
+        <div className="absolute">
+          <Image src={ARSEED_URL + userBannerImage} width={1350} height={450} alt="Profile banner" className="opacity-25 w-screen h-[150px] md:h-[55vh] " />
+          <div className="absolute w-full h-full z-[1] top-0" style={{backgroundImage: `linear-gradient(transparent, transparent, black)`}}></div>
+        </div>
+      )}
+      <div className="w-full h-full z-[1]" style={styles}></div>
     </div>
-  )
-}
+  );
+};
 
 export default Background;

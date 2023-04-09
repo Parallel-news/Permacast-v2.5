@@ -179,6 +179,14 @@
   },
 	"creator": {
 		"ans": "Подивитися на ANS",
+		"edit": "Редагувати",
+		"edit-modal": {
+			"header": "Редагувати профіль",
+			"nickname": "Псевдонім",
+			"bio": "Біографія",
+			"banner": "Банер",
+			"avatar": "Аватар"
+		},		
 		"verification": {
 			"verified": {
 				"text": "Перевірено",

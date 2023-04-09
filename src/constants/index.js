@@ -111,6 +111,9 @@ export const TEXTMARKDOWN = {
 // PK
 export const USER_SIG_MESSAGES = ["my Arweave PK for Permacast is "]
 
+// PASOM
+export const PASOM_SIG_MESSAGES = ["so-ans-profile-metadata"]
+
 // EVERPAY
 export const EVERPAY_EOA = '0x6c05FdF443A5c9520af46976A24546191068afbe';
 export const EVERPAY_FEATURE_TREASURY = "0x6c05FdF443A5c9520af46976A24546191068afbe";

@@ -164,6 +164,14 @@
   },
 	"creator": {
 		"ans": "ANS 地址",
+		"edit": "编辑",
+		"edit-modal": {
+			"header": "编辑个人资料",
+			"nickname": "昵称",
+			"bio": "简介",
+			"banner": "横幅",
+			"avatar": "头像"
+		},		
 		"verification": {
 			"verified": {
 				"text": "已验证",

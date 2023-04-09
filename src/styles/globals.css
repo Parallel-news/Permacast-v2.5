@@ -32,7 +32,15 @@ html, body {
   }
 
   .default-outline {
-    @apply focus:outline-white focus:outline-2
+    @apply focus:outline-white focus:outline-2;
+  }
+
+  .default-no-outline-ringed {
+    @apply outline-none focus:outline-none focus:ring-2 focus:ring-white;
+  }
+
+  .text-input-generic {
+    @apply input input-secondary w-full bg-zinc-900 border-0 rounded-xl default-no-outline-ringed focus:ring-inset;
   }
 
   .helper-tooltip {
