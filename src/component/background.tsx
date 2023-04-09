@@ -29,9 +29,15 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
 
   useEffect(() => {
     console.log("background.tsx useEffect");
+    if (!pathname.includes("/creator")) setUserBannerImage('');
     if (useDefaultBackground.includes(pathname)) setbackgroundColor(dimColorString(currentThemeColor, 0.4));
-    else if (pathname.includes("/creator")) setbackgroundColor(dimColorString(currentThemeColor, 0));
-    else setbackgroundColor(dimColorString(podcastColor, 0.5));
+    else if (pathname.includes("/creator")) {
+      if (userBannerImage) {
+        setbackgroundColor(dimColorString(currentThemeColor, 0))
+        return
+      };
+      setbackgroundColor(dimColorString(currentThemeColor, 0.6))
+    } else setbackgroundColor(dimColorString(podcastColor, 0.5));
   }, [pathname, podcastColor]);
 
 
@@ -41,7 +47,7 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
     <div className="w-screen h-3/4 absolute overflow-hidden default-animation-slow pointer-events-none" style={{backgroundColor: backgroundColor, zIndex: -1}}>
       {userBannerImage && (
         <div className="absolute">
-          <Image src={ARSEED_URL + userBannerImage} width={1350} height={450} alt="Profile banner" className="opacity-25 w-screen h-[150px] md:h-[55vh] " />
+          <Image src={ARSEED_URL + userBannerImage} width={1350} height={450} alt="Profile banner" className="opacity-40 w-screen md:w-[93.5vw] h-[180px] md:h-[30vw]" />
           <div className="absolute w-full h-full z-[1] top-0" style={{backgroundImage: `linear-gradient(transparent, transparent, black)`}}></div>
         </div>
       )}

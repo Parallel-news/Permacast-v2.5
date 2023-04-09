@@ -1,24 +1,20 @@
-import axios from 'axios';
 import Image from 'next/image';
-import { Dispatch, FC, ReactNode, SetStateAction, useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
-import { FullEpisodeInfo, Podcast } from '../../interfaces';
-import { dimColorString, hexToRGB, isTooDark, isTooLight, stringToHexColor } from '../../utils/ui';
-import { currentThemeColorAtom, userBannerImageAtom } from '../../atoms';
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
+import { shortenAddress, useArconnect } from 'react-arconnect';
 import { useRecoilState } from 'recoil';
+import { FullEpisodeInfo, Podcast } from '../../interfaces';
+import { dimColorString, hexToRGB, isTooLight, stringToHexColor } from '../../utils/ui';
+import { currentThemeColorAtom, userBannerImageAtom } from '../../atoms';
 import FeaturedPodcast from '../home/featuredPodcast';
 import Track from '../reusables/track';
-import Link from 'next/link';
 import TipButton from '../reusables/tip';
-import { flexCenter, flexCenterGap } from './featuredCreators';
+import { flexCenter } from './featuredCreators';
 import Verification from '../reusables/Verification';
 import { TipModal } from '../tipModal';
-import { defaultSignatureParams, shortenAddress, useArconnect } from 'react-arconnect';
-import Modal from '../modal';
-import { CameraIcon, PencilIcon, UserPlusIcon } from '@heroicons/react/24/outline';
-import { ARSEED_URL, PASOM_SIG_MESSAGES, USER_SIG_MESSAGES } from '../../constants';
+import { ARSEED_URL } from '../../constants';
 import { PASoMProfile, updateWalletMetadata } from '../../interfaces/pasom';
-import { ArConnectButtonStyling } from '../arconnect';
 import { hoverableLinkButton } from '../reusables/themedButton';
 import { EditButton } from './edit';
 
@@ -83,13 +79,6 @@ interface CreatorTipModalInterface {
   recipientAddress: string;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-};
-
-interface ThemedButtonInterface {
-  children: ReactNode;
-  onClick: () => void;
-  disabled?: boolean;
-  className?: string;
 };
 
 interface FollowButtonProps {
@@ -283,7 +272,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
         <div className={CreatorProfileParentStyling}>
           <ProfileImage {...{ currentLabel, avatar, address_color }} linkToArPage={ANSuserExists} />
           <div className={flexCol}>
-            <div className={flexCenter}>
+            <div className={flexCenter + `justify-center md:justify-start `}>
               <CreatorNames {...{ nickname, currentLabel, ANSuserExists }} />
             </div>
             <div className={CreatorBioStyling}>{bio}</div>
@@ -292,7 +281,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
             <Verification {...{ANSuserExists}} includeText />
           </div>
         </div>
-        <div className={flexItemsCenter + "mr-3"}>
+        <div className={flexItemsCenter + `mr-3 `}>
           {ANSuserExists && <ViewANSButton {...{ currentLabel }} />}
           {address !== user && <TipButton {...{ openModalCallback }} />}
           {address !== user && <FollowButton {...{user}} />}
