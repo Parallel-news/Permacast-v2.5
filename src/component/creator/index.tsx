@@ -253,7 +253,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
   const { ANSuserExists, currentLabel, address_color, user, PASoMProfile, podcasts, episodes } = creator;
   const nickname = PASoMProfile?.nickname || creator.nickname;
   const avatar = PASoMProfile?.avatar || creator.avatar || '';
-  const banner = PASoMProfile?.banner || '/user.avif';
+  const banner = PASoMProfile?.banner || '';
   const bio = PASoMProfile?.bio || '';
   
   const { address } = useArconnect();

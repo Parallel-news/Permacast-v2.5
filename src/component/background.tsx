@@ -32,7 +32,8 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
     if (!pathname.includes("/creator")) setUserBannerImage('');
     if (useDefaultBackground.includes(pathname)) setbackgroundColor(dimColorString(currentThemeColor, 0.4));
     else if (pathname.includes("/creator")) {
-      if (userBannerImage) {
+      if (userBannerImage.length > 0) {
+        console.log('userBannerImage ', userBannerImage)
         setbackgroundColor(dimColorString(currentThemeColor, 0))
         return
       };
