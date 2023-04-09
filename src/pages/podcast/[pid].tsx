@@ -21,6 +21,7 @@ import Track from "../../component/reusables/track";
 import Loading from "../../component/reusables/loading";
 import { convertPodcastsToEpisodes, findPodcast, matchFirstChars, trimChars } from "../../utils/filters";
 import { NextPage } from "next";
+import { useTranslation } from "next-i18next";
 
 
 const PodcastId: NextPage<{ podcast: Podcast }> = ({ podcast }) => {
@@ -33,6 +34,8 @@ const PodcastId: NextPage<{ podcast: Podcast }> = ({ podcast }) => {
 
     const [themeColor, setThemeColor] = useState<string>('');
     const [textColor, setTextColor] = useState<string>('');
+
+    const { t } = useTranslation();
 
     if (podcast) {
         //State Calls Here
@@ -93,7 +96,7 @@ const PodcastId: NextPage<{ podcast: Podcast }> = ({ podcast }) => {
                         }
                     />
                     {/*Title Track*/}
-                    <p className={nextEpisodeTitleStyling + " pt-10"}>Episodes</p>
+                    <p className={nextEpisodeTitleStyling + " pt-10"}>{t("episode.number")}</p>
                     {/*Episode Track*/}
                     {fullEpisodeInfo.map((episode: FullEpisodeInfo, index: number) => (
                         <div key={index}>

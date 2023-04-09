@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { FC, useState, useMemo } from "react";
+import React, { FC, useState, useMemo, useEffect } from "react";
 import { useTranslation } from "next-i18next";
 import { shortenAddress } from "react-arconnect";
 
@@ -11,14 +11,15 @@ import { showShikwasaPlayerArguments } from "../../interfaces/playback";
 import PlayButton from "./playButton";
 import MarkdownRenderer from "../markdownRenderer";
 import { queryMarkdownByTX } from "../../utils/markdown";
-import { ARSEED_URL, ARWEAVE_READ_LINK, MESON_ENDPOINT } from "../../constants";
+import { ARSEED_URL, ARWEAVE_READ_LINK, MESON_ENDPOINT, startId } from "../../constants";
 import { trimChars } from "../../utils/filters";
 import { flexCenter } from "../creator/featuredCreators";
 import { allANSUsersAtom } from "../../atoms";
 import { useRecoilState } from "recoil";
 import { MicrophoneIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 import { Tooltip } from "@nextui-org/react";
-import { detectTimestampType, hasBeen10Min } from "../../utils/reusables";
+import { detectTimestampType, hasBeen10Min, reRoute} from "../../utils/reusables";
+import { useRouter } from "next/router";
 
 /**
  * Index
@@ -82,13 +83,14 @@ export interface TrackPlayButtonProps {
 // 2. Stylings
 
 export const trackFlexCenterYStyling = `${flexCenter} mt-1 `;
-export const trackFlexCenterPaddedYStyling = `${flexCenter} p-3 `;
+export const trackFlexCenterPaddedYStyling = `${flexCenter} flex-col md:flex-row justify-center p-3 space-y-3 md:space-y-0 w-[85%]`;
 export const trackFlexCenterBothStyling = `${flexCenter} justify-between border-zinc-600 border-2 rounded-2xl pr-4 `;
 export const trackEpisodeLinkableTitleStyling = `cursor-pointer line-clamp-1 pr-2 text-sm hover:underline `;
 export const trackByStyling = `text-zinc-400 text-[10px] mr-2 `;
 export const trackBackgroundColorStyling = `rounded-full cursor-pointer flex items-center min-w-max text-[10px] gap-x-1 px-2 py-0.5 focus:brightness-150 hover:brightness-125 default-animation `;
 export const trackDescriptionStyling = `mx-1.5 w-full line-clamp-1 text-xs `;
-export const trackMainInfoStyling = `ml-4 flex flex-col min-w-fit `;
+export const trackMainInfoStyling = `ml-4 flex flex-col text-wrap `;
+export const trackPodcastInfoContainer = "flex flex-row md:items-center w-full md:min-w-[25%]"
 
 // 3. Custom Functions
 
@@ -113,9 +115,11 @@ export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, ti
 };
 
 export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ podcastURL, eid, episodeName }) => {
+
+
   return (
     <Link
-      href={`/episode/${podcastURL}/${trimChars(eid)}`}
+    href={`/episode/${podcastURL}/${trimChars(eid)}${startId}`}
       className={trackEpisodeLinkableTitleStyling}
     >
       {episodeName}
@@ -261,20 +265,25 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
   return (
     <div className={trackFlexCenterBothStyling}>
       <div className={trackFlexCenterPaddedYStyling}>
-        <PodcastCover {...{ podcastURL, cover: coverUsed, alt: podcastName, timestamp: detectTimestampType(uploadedAt) === "seconds" ? uploadedAt * 1000 : uploadedAt}} />
-        <div className={trackMainInfoStyling}>
-          <EpisodeLinkableTitle {...{ podcastURL, eid, episodeName }} />
-          <div className={trackFlexCenterYStyling}>
-            <p className={trackByStyling}>{t("track.by")}</p>
-            <div className={flexCenter}>
-              <TrackCreatorLink {...{ uploader: artist, buttonStyles, coverColor, author }} />
-              <Tooltip color='invert' content={t(isVideo ? "track.video" : t("track.audio"))}>
-                {isVideo ? <VideoCameraIcon {...{className}} /> : <MicrophoneIcon {...{className}} />}
-              </Tooltip>
+        <span className={trackPodcastInfoContainer}>
+          <PodcastCover {...{ podcastURL, cover: coverUsed, alt: podcastName, timestamp: detectTimestampType(uploadedAt) === "seconds" ? uploadedAt * 1000 : uploadedAt}} />
+          <div className={trackMainInfoStyling}>
+            <EpisodeLinkableTitle {...{ podcastURL, eid, episodeName }} />
+            <div className={trackFlexCenterYStyling}>
+              <p className={trackByStyling}>{t("track.by")}</p>
+              <div className={flexCenter}>
+                <TrackCreatorLink {...{ uploader: artist, buttonStyles, coverColor, author }} />
+                <Tooltip color='invert' content={t(isVideo ? "track.video" : t("track.audio"))}>
+                  {isVideo ? <VideoCameraIcon {...{className}} /> : <MicrophoneIcon {...{className}} />}
+                </Tooltip>
+              </div>
             </div>
           </div>
+        </span>
+        
+        <div className="flex justify-start w-full md:pl-4 lg:pl-0">
+          <TrackDescription {...{ includeDescription, description: markdown }} />
         </div>
-        <TrackDescription {...{ includeDescription, description: markdown }} />
       </div>
       <TrackPlayButton {...{ playerInfo, episode, includePlayButton, buttonColor: coverColor, accentColor: coverColor }} />
     </div>

@@ -147,3 +147,5 @@ export const NO_SHOW = "Unable to fetch shows. Refresh and try again."
 export const SHOW_UPLOAD_SUCCESS = "Show Uploaded. Redirecting."
 export const EP_UPLOAD_SUCCESS = "Episode Uploaded. Redirecting."
 
+// ID
+export const startId = "#start"

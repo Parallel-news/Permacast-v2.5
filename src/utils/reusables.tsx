@@ -6,6 +6,7 @@ interface hexToRgbInter {
     hex: string
     alpha: number
 }
+
 export function hexToRGB(hex, alpha) {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
@@ -136,3 +137,7 @@ export function svgToDataUrl(svg) {
   const encodedSVG = encodeURIComponent(svgString);
   return `data:image/svg_xml,${encodedSVG}`
 }
+
+export const reRoute = (url, router) => {
+  router.push(url, undefined, { scroll: true });
+};
