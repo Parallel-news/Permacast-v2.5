@@ -20,7 +20,7 @@ import { PASOM_SIG_MESSAGES, USER_SIG_MESSAGES } from '../../constants';
 import { PASoMProfile, updateWalletMetadata } from '../../interfaces/pasom';
 import { ArConnectButtonStyling } from '../arconnect';
 import ThemedButton from '../reusables/themedButton';
-import { UploadImageContainer } from './croppingTools';
+import { UploadImageContainer } from '../reusables/croppingTools';
 import { ConnectButton, episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
 import { LanguageOptions, CategoryOptions, categories_en, DEFAULT_LANGUAGE } from "../../utils/languages";
 import { AR_DECIMALS, CONNECT_WALLET, COVER_UPLOAD_ERROR, DESCRIPTION_UPLOAD_ERROR, EVERPAY_AR_TAG, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SHOW_UPLOAD_SUCCESS, SPINNER_COLOR, TOAST_DARK } from "../../constants";
