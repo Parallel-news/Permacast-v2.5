@@ -1,26 +1,8 @@
-import { FC, MouseEventHandler, ReactNode, useCallback, useEffect, useRef, useState } from "react"
+import { FC, MouseEventHandler, ReactNode, useCallback, useRef, useState } from "react"
 import { PhotoIcon } from "@heroicons/react/24/outline";
-import { ConnectButton, episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
-import { LanguageOptions, CategoryOptions, categories_en, DEFAULT_LANGUAGE } from "../../utils/languages";
 import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
-import { AR_DECIMALS, CONNECT_WALLET, COVER_UPLOAD_ERROR, DESCRIPTION_UPLOAD_ERROR, EVERPAY_AR_TAG, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SHOW_UPLOAD_SUCCESS, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
-import { isValidEmail, ValMsg } from "../reusables/formTools";
-import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
-import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
-import { defaultSignatureParams, useArconnect } from 'react-arconnect';
-import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
-import { allFieldsFilled, byteSize, checkConnection, handleError, validateLabel } from "../../utils/reusables";
-import Everpay, { ChainType } from "everpay";
-import toast from 'react-hot-toast';
-import { useRecoilState } from "recoil";
-import { arweaveAddress } from "../../atoms";
-import { PermaSpinner } from "../reusables/PermaSpinner";
-import axios from "axios";
 import { useTranslation } from "next-i18next";
-import { Tooltip } from "@nextui-org/react";
-import { Podcast } from "../../interfaces";
-import { MarkDownToolTip } from "../reusables/tooltip";
 import { cropScreenDivStyling, cropScreenStyling, cropSelectionDivStyling, cropSelectionTextStyling } from "../uploadShow/uploadShowTools";
 
 
@@ -103,18 +85,13 @@ export const UploadImageContainer: FC<UploadImageContainerInterface> = ({ fileNa
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<boolean>(null);
   const [rotation, setRotation] = useState<number>(0);
 
-  const handleChangeImage = async (e: any) => {
-    isImageSquared(e);
-  };
-
-  const isImageSquared = (event) => {
+  const handleChangeImage = (event, cropAspect) => {
     if (event.target.files.length !== 0) {
       const imageToUpload = new Image();
       const fileURL = window.URL.createObjectURL(event.target.files[0]);
       imageToUpload.src = fileURL;
       imageToUpload.onload = () => {
-        console.log(imageToUpload.width, imageToUpload.height, fileURL)
-        if (imageToUpload.width !== imageToUpload.height) {
+        if (imageToUpload.width / imageToUpload.height !== cropAspect) {
           setInputImg(fileURL);
           setShowCrop(true);
         } else {
@@ -167,7 +144,7 @@ export const UploadImageContainer: FC<UploadImageContainerInterface> = ({ fileNa
         accept="image/*"
         className={inputClassName || hidden}
         ref={imageRef}
-        onChange={(e) => handleChangeImage(e)}
+        onChange={(e) => handleChangeImage(e, cropAspect)}
         name={fileName}
         id={fileName}
       />
