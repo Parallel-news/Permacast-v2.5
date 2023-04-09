@@ -89,7 +89,7 @@ export const trackEpisodeLinkableTitleStyling = `cursor-pointer line-clamp-1 pr-
 export const trackByStyling = `text-zinc-400 text-[10px] mr-2 `;
 export const trackBackgroundColorStyling = `rounded-full cursor-pointer flex items-center min-w-max text-[10px] gap-x-1 px-2 py-0.5 focus:brightness-150 hover:brightness-125 default-animation `;
 export const trackDescriptionStyling = `mx-1.5 w-full line-clamp-1 text-xs `;
-export const trackMainInfoStyling = `ml-4 flex flex-col min-w-fit `;
+export const trackMainInfoStyling = `ml-4 flex flex-col text-wrap `;
 
 // 3. Custom Functions
 
