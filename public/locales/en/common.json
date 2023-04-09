@@ -218,5 +218,25 @@
 	"tipModal": {
 		"submitTip": "Submit Tip",
 		"balance": "Balance"
+	},
+	"errors": { 
+		"everpayError": "There was an issue with your Everpay Balance/Connection",
+		"coverUploadError": "There was an issue uploading your cover. Try Again.",
+		"mediaUploadError": "There was an issue uploading your media. Try Again.",
+		"descUploadError": "There was an issue uploading description. Try Again.",
+		"noShowError": "Unable to fetch shows. Refresh and try again."
+	},
+	"success": {
+		"showUploaded": "Show Uploaded. Redirecting.",
+		"episodeUploaded": "Episode Uploaded. Redirecting."
+	},
+	"loadingToast": {
+		"savingDesc": "Uploading Description",
+		"savingMedia": "Uploading Media",
+		"payingFee": "Paying Fee",
+		"savingChain": "Saving to Blockchain",
+		"savingCover": "Uploading Cover",
+		"savingBanner": "Uploading Banner Cover",
+		"uploading": "Uploading"
 	}
 }

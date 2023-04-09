@@ -4,7 +4,7 @@ import { ConnectButton, episodeDescStyling, episodeNameStyling, UploadButton } f
 import { LanguageOptions, CategoryOptions, categories_en, DEFAULT_LANGUAGE } from "../../utils/languages";
 import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
-import { AR_DECIMALS, CONNECT_WALLET, COVER_UPLOAD_ERROR, DESCRIPTION_UPLOAD_ERROR, EVERPAY_AR_TAG, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SHOW_UPLOAD_SUCCESS, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
+import { AR_DECIMALS, CONNECT_WALLET, EVERPAY_AR_TAG, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
 import { isValidEmail, ValMsg } from "../reusables/formTools";
 import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
 import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
@@ -241,18 +241,18 @@ export const ShowForm = (props: ShowFormInter) => {
         payloadObj["jwk_n"] = await getPublicKey()
         
         // Description to Arseeding
-        const toastDesc = toast.loading('Uploading Episode Description', {style: TOAST_DARK, duration: 10000000});
+        const toastDesc = toast.loading(t("loadingToast.savingDesc"), {style: TOAST_DARK, duration: 10000000});
         try {
             const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
             toast.dismiss(toastDesc);
             //const name = await upload2DMedia(podcastName_); payloadObj["name"] = name?.order?.itemId
         } catch (e) {
             toast.dismiss(toastDesc);
-            console.log(e); handleErr(DESCRIPTION_UPLOAD_ERROR, setSubmittingShow); return;
+            console.log(e); handleErr(t("errors.descUploadError"), setSubmittingShow); return;
         }
 
         // Covers to Arseeding
-        const toastCover = toast.loading('Uploading Episode Cover', {style: TOAST_DARK, duration: 10000000});
+        const toastCover = toast.loading(t("loadingToast.savingCover"), {style: TOAST_DARK, duration: 10000000});
         try {
             const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
             const cover = await upload3DMedia(convertedCover, convertedCover.type); payloadObj["cover"] = cover?.order?.itemId
@@ -261,11 +261,11 @@ export const ShowForm = (props: ShowFormInter) => {
             toast.dismiss(toastCover);
         } catch (e) {
             toast.dismiss(toastCover);
-            console.log(e); handleErr(COVER_UPLOAD_ERROR, setSubmittingShow); return;
+            console.log(e); handleErr(t("errors.coverUploadError"), setSubmittingShow); return;
         }
 
         // Fee to Everpay
-        const toastFee = toast.loading('Paying Episode Fee', {style: TOAST_DARK, duration: 10000000});
+        const toastFee = toast.loading(t("loadingToast.payingFee"), {style: TOAST_DARK, duration: 10000000});
         try {
             const everpay = new Everpay({account: address, chainType: ChainType.arweave, arJWK: 'use_wallet',});
             const transaction = await everpay.transfer({
@@ -278,17 +278,17 @@ export const ShowForm = (props: ShowFormInter) => {
             toast.dismiss(toastFee);
         } catch (e) {
             toast.dismiss(toastFee);
-            console.log(e); handleErr(EVERPAY_BALANCE_ERROR, setSubmittingShow); return;
+            console.log(e); handleErr(t("error.everpayError"), setSubmittingShow); return;
         }
         //Error handling and timeout needed for this to complete redirect
-        const toastSaving = toast.loading('Saving to Blockchain', {style: TOAST_DARK, duration: 10000000});
+        const toastSaving = toast.loading(t("loadingToast.savingChain"), {style: TOAST_DARK, duration: 10000000});
         setTimeout(async function () {
             const result = await axios.post('/api/exm/write', createShowPayload);
             console.log("exm res: ", result)
             setSubmittingShow(false)
             //EXM call, set timeout, then redirect.
             toast.dismiss(toastSaving); 
-            toast.success(SHOW_UPLOAD_SUCCESS, {style: TOAST_DARK})
+            toast.success(t("success.showUploaded"), {style: TOAST_DARK})
             setTimeout(async function () {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
                 window.location.assign(`/creator/${identifier}`);

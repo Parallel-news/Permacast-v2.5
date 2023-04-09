@@ -1,42 +1,19 @@
 import axios from 'axios';
-import Image from 'next/image';
-import { Dispatch, FC, ReactNode, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import { FullEpisodeInfo, Podcast } from '../../interfaces';
-import { dimColorString, hexToRGB, isTooDark, isTooLight, stringToHexColor } from '../../utils/ui';
-import { currentThemeColorAtom } from '../../atoms';
-import { useRecoilState } from 'recoil';
-import FeaturedPodcast from '../home/featuredPodcast';
-import Track from '../reusables/track';
-import Link from 'next/link';
-import TipButton from '../reusables/tip';
 import { flexCenter, flexCenterGap } from './featuredCreators';
-import Verification from '../reusables/Verification';
-import { TipModal } from '../tipModal';
-import { defaultSignatureParams, shortenAddress, useArconnect } from 'react-arconnect';
+import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import Modal from '../modal';
-import { CameraIcon, PencilIcon, UserPlusIcon } from '@heroicons/react/24/outline';
-import { GIGABYTE, PASOM_SIG_MESSAGES, USER_SIG_MESSAGES } from '../../constants';
-import { PASoMProfile, updateWalletMetadata } from '../../interfaces/pasom';
+import { CameraIcon, PencilIcon } from '@heroicons/react/24/outline';
+import { GIGABYTE, PASOM_SIG_MESSAGES, } from '../../constants';
+import { updateWalletMetadata } from '../../interfaces/pasom';
 import { ArConnectButtonStyling } from '../arconnect';
 import ThemedButton from '../reusables/themedButton';
 import { UploadImageContainer } from '../reusables/croppingTools';
-import { ConnectButton, episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
-import { LanguageOptions, CategoryOptions, categories_en, DEFAULT_LANGUAGE } from "../../utils/languages";
-import { AR_DECIMALS, CONNECT_WALLET, COVER_UPLOAD_ERROR, DESCRIPTION_UPLOAD_ERROR, EVERPAY_AR_TAG, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SHOW_UPLOAD_SUCCESS, SPINNER_COLOR, TOAST_DARK } from "../../constants";
-import { isValidEmail, ValMsg } from "../reusables/formTools";
-import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
-import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
-import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
-import { allFieldsFilled, byteSize, checkConnection, handleError, validateLabel } from "../../utils/reusables";
-import Everpay, { ChainType } from "everpay";
+import {  TOAST_DARK } from "../../constants";
+import { getBundleArFee, upload3DMedia } from "../../utils/arseeding";
+import { createFileFromBlobUrl, } from "../../utils/fileTools";
 import toast from 'react-hot-toast';
-import { arweaveAddress } from "../../atoms";
-import { PermaSpinner } from "../reusables/PermaSpinner";
-import { Tooltip } from "@nextui-org/react";
-import { MarkDownToolTip } from "../reusables/tooltip";
-import validatePASoMForm from '../../utils/validation/PASoM';
-
 // 1. Interfaces
 interface EditButtonProps {};
 
@@ -168,7 +145,7 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
   };
 
   const uploadImage = async (fileURL: string, name: string, setSize: Dispatch<SetStateAction<number>>) => {
-    const toastUploadImage = toast.loading(`Uploading ${name}`, {style: TOAST_DARK, duration: 10000000});
+    const toastUploadImage = toast.loading(`${t("loadingToast.uploading")} ${name}`, {style: TOAST_DARK, duration: 10000000});
     let finalTX;
     try {
       const file = await createFileFromBlobUrl(fileURL, name);
@@ -187,7 +164,7 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
   const uploadAvatar = async () => await uploadImage(avatar, "avatar", setAvatarSize);
 
   const uploadEdits = async () => {
-    const toastBanner = toast.loading('Uploading Banner Cover', {style: TOAST_DARK, duration: 10000000});
+    const toastBanner = toast.loading(t("loadingToast.savingBanner"), {style: TOAST_DARK, duration: 10000000});
 
     console.log('uploading edits');
     console.log(nickname, bio, banner, avatar)

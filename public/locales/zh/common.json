@@ -213,5 +213,25 @@
 	"tipModal": {
 		"submitTip": "提交提示",
 		"balance": "平衡"
+	},
+	"errors": { 
+		"everpayError": "您的 Everpay 余额/连接有问题",
+		"coverUploadError": "上传您的封面时出现问题。再试一次。",
+		"mediaUploadError": "上传您的媒体时出现问题。再试一次。",
+		"descUploadError": "上传说明时出现问题。再试一次。",
+		"noShowError": "无法获取节目。刷新并重试。"
+	},
+	"success": {
+		"showUploaded": "显示已上传。重定向。",
+		"episodeUploaded": "剧集上传。重定向。"
+	},
+	"loadingToast": {
+		"savingDesc": "上传说明",
+		"savingMedia": "上传媒体",
+		"payingFee": "支付费用",
+		"savingChain": "保存到区块链",
+		"savingCover": "上传封面",
+		"savingBanner": "上传横幅封面",
+		"uploading": "上传中"
 	}
 }
