@@ -42,7 +42,7 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
 
 
   const styles = {backgroundImage: `linear-gradient(transparent, black, black)`};
-
+  console.log("userBannerImage: ", userBannerImage)
   return (
     <div className="w-screen h-3/4 absolute overflow-hidden default-animation-slow pointer-events-none" style={{backgroundColor: backgroundColor, zIndex: -1}}>
       {userBannerImage && (

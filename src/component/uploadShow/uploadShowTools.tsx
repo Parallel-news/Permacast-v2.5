@@ -21,6 +21,7 @@ import { useTranslation } from "next-i18next";
 import { Tooltip } from "@nextui-org/react";
 import { Podcast } from "../../interfaces";
 import { MarkDownToolTip } from "../reusables/tooltip";
+import { useRouter } from "next/router";
 
 export default function uploadShowTools() {
     return false
@@ -148,6 +149,7 @@ export const ShowForm = (props: ShowFormInter) => {
     const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
     const [submittingShow, setSubmittingShow] = useState<boolean>(false)
     const [uploadCost, setUploadCost] = useState<Number>(0)
+    const router = useRouter();
 
     // inputs
     const [podcastDescription_, setPodcastDescription_] = useState("");
@@ -229,6 +231,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
     async function submitShow(payloadObj: any) {
         // Check Connection
+        
         if (!checkConnection(arweaveAddress_)) {
             toast.error(CONNECT_WALLET, {style: TOAST_DARK})
             return false
@@ -291,7 +294,8 @@ export const ShowForm = (props: ShowFormInter) => {
             toast.success(t("success.showUploaded"), {style: TOAST_DARK})
             setTimeout(async function () {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
-                window.location.assign(`/creator/${identifier}`);
+                const { locale } = router;
+                router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
             }, 2500)
         }, 5000)
     }

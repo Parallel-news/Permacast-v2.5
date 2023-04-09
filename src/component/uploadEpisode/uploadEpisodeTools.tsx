@@ -18,6 +18,7 @@ import { useTranslation } from 'next-i18next';
 import { transferFunds } from '../../utils/everpay';
 import { Podcast } from '../../interfaces';
 import { MarkDownToolTip } from '../reusables/tooltip';
+import router from 'next/router';
 
 export default function uploadEpisode() {
     return false
@@ -251,7 +252,8 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             toast.success(t("success.episodeUploaded"), {style: TOAST_DARK, className:TOAST_MARGIN})
             setTimeout(async function () {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
-                window.location.assign(`/creator/${identifier}`);
+                const { locale } = router;
+                router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
             }, 3500)
         }, 4000)
     }
