@@ -184,8 +184,6 @@ export const TrackPlayButton: FC<TrackPlayButtonProps> = ({ playerInfo, episode,
 
   if (!includePlayButton) return <></>;
 
-  console.log(buttonColor)
-
   return <PlayButton isPlaying={isPlaying && (currentEpisode.eid === episodeInfo.eid)} onClick={handlePlay} {...buttonStyleArgs} />;
 };
 
@@ -221,10 +219,9 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
   const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({backgroundColor: '', color: ''})
   const [markdown, setMarkdown] = useState<string>('');
   const [artist, setArtist] = useState<string>('');
-  console.log("contentTx: ", contentTx)
+
   useMemo(() => {
     const ANS = allANSUsers.find((user: ANSMapped) => user.address === uploader);
-    console.log(ANS)
     if (ANS) setArtist(ANS.primary + ".ar");
     else setArtist(shortenAddress(uploader || author || "", 8));
   }, []);
