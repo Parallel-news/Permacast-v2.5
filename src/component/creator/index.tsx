@@ -257,6 +257,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
   const bio = PASoMProfile?.bio || '';
   
   const { address } = useArconnect();
+  console.log(PASoMProfile)
   const [userBannerImage, setUserBannerImage] = useRecoilState(userBannerImageAtom);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -285,7 +286,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
           {ANSuserExists && <ViewANSButton {...{ currentLabel }} />}
           {address !== user && <TipButton {...{ openModalCallback }} />}
           {address !== user && <FollowButton {...{user}} />}
-          {address === user && <EditButton />}
+          {address === user && <EditButton {...{ PASoMProfile }} />}
         </div>
       </div>
       <FeaturedPodcasts {...{ podcasts }} />
