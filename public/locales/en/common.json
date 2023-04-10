@@ -165,6 +165,11 @@
 	"creator": {
 		"ans": "View on ANS",
 		"edit": "Edit Profile",
+		"follow": "Follow",
+		"unfollow": "Unfollow",
+		"followed": "Followed",
+		"followers": "Followers",
+		"following": "Following",
 		"edit-modal": {
 			"header": "Edit Profile",
 			"save-changes": "Save changes",
