@@ -176,7 +176,7 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
   useEffect(() => {
     const error = validatePASoMForm({nickname, bio});
     setError(error);
-    if (PASoMProfile?.nickname === nickname && PASoMProfile?.bio === bio) {
+    if (PASoMProfile?.nickname === nickname && PASoMProfile?.bio === bio && PASoMProfile?.banner === banner && PASoMProfile?.avatar === avatar) {
       setSameInfo(true);
     } else setSameInfo(false)
   }, [bio, nickname]);
