@@ -33,7 +33,7 @@ export const Sidenav: FC = () => {
         <Cooyub svgStyle={IconSizeStyling} rectStyle={IconSizeStyling} fill={currentThemeColor} />
       </Link>
       <NavButton url="/" condition={isHome} icon={<HomeIcon />} />
-      <NavButton url="/view-podcasts" condition={isViewPodcasts} icon={<RectangleStackIcon className={IconSizeStyling} />} />
+      <NavButton url="/view-podcasts/feed" condition={isViewPodcasts} icon={<RectangleStackIcon className={IconSizeStyling} />} />
       <LanguageDropdown />
       <UploadDropdown routeMatches={isUpload} />
       <HelpDropdown />
