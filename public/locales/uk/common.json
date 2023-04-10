@@ -250,6 +250,8 @@
 		"uploading": "Завантаження"
 	},
 	"viewPodcasts": {
-		"allpodcasts": "Усі подкасти"
+		"allpodcasts": "Усі подкасти",
+		"showNewest": "Показати найновіші",
+		"showOldest": "Показати найстаріший"
 	}
 }

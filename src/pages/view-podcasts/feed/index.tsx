@@ -10,35 +10,41 @@ import {
 } from '@heroicons/react/24/outline';
 import { Dropdown, DropdownButtonProps } from "@nextui-org/react";
 import { flexCenter } from "../../../component/creator/featuredCreators";
+import { useEffect, useState } from "react";
+import { detectTimestampType } from "../../../utils/reusables";
 
 export default function ViewPodcasts({yourShows}) {
 
     const titleRow = "flex flex-row justify-between items-end mb-10"
     const allPodcastHeader = "text-3xl text-neutral-300/90 font-semibold pt-10 text-center md:text-start"
-    const podcastContainer = "grid grid-cols-1 justify-items-center md:justify-items-start md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1 gap-y-10"
+    const podcastContainer = "grid grid-cols-1 justify-items-center md:justify-items-start md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1 gap-y-10 mb-10"
+	const filterStyling = "w-12 h-12 text-zinc-600 cursor-pointer hover:bg-zinc-700 rounded-full default-no-outline-ringed default-animation px-2"
 
     console.log("Your Shows: ", yourShows)
     const { t } = useTranslation();
+	const [chronStatus, setChronStatus] = useState<number>(1)
 
 	const className = 'text-white w-4 h-4 ';
 	const Clock = () => <ClockIcon {...{ className }} />;
 
 	const menuItems = [
-		{ icon: <Clock />, key: "sortChron", name: "Sort",  href: ""},
-	  ];
+		{ icon: <Clock />, key: "showNewest", name: "Show Newest",  href: ""},
+	];
 
+	//yourShows = yourShows.sort((a, b) => a.createdAt - b.createdAt); //oldest to newest
+	//const sortedShows = yourShows.sort((b, a) => b.createdAt - a.createdAt);
+	const sortedShows = yourShows.sort((a, b) => b.createdAt - a.createdAt);
+	console.log(sortedShows)
     return (
         <>
 			<div className={titleRow}>
+				{/*Header*/}
 				<div className="flex md:hidden"></div>
 				<h2 className={allPodcastHeader}>{t("viewPodcasts.allpodcasts")}</h2>
 				<Dropdown>
-					<Dropdown.Trigger
-
-					>
-						<Bars3BottomRightIcon className="w-10 h-10 text-zinc-600 cursor-pointer"/>
+					<Dropdown.Trigger>
+						<Bars3BottomRightIcon className={filterStyling}/>
 					</Dropdown.Trigger>
-
 					<Dropdown.Menu 
 						aria-label="Dynamic Actions" 
 						items={menuItems} 
@@ -52,21 +58,22 @@ export default function ViewPodcasts({yourShows}) {
 							className='hover:bg-zinc-700'
 						>
 							<>
-							{item.key === "sortChron" && (
-								<button className={flexCenter + 'gap-x-2'} onClick={() => alert("hi")}>
-								{item.icon}
-								{t(item.name)}
+								<button className={flexCenter + 'gap-x-2'} onClick={() => {
+									// Timeout so text doesnt change mid-click
+									setTimeout(() => setChronStatus(prev => prev + 1), 500)
+								}}>
+									{item.icon}
+									{chronStatus % 2 ? t("viewPodcasts.showNewest") : t("viewPodcasts.showOldest")}
 								</button>
-							)}
 							</>
 						</Dropdown.Item>
 						)}
 					</Dropdown.Menu>
-					</Dropdown>
-				
+				</Dropdown>
 			</div>
+			{/*Podcasts*/}
             <div className={podcastContainer}>
-                {yourShows.map((podcast: Podcast, index: number) =>
+                {sortedShows.map((podcast: Podcast, index: number) =>
                     <FeaturedPodcast {...podcast} key={index} />
                 )}
             </div>
@@ -82,6 +89,12 @@ export async function getStaticProps({ locale }) {
     try {
       const res = await axios.get(EXM_READ_LINK+contractAddress)
       yourShows = res.data?.podcasts
+	  yourShows.map(item => {
+		if(detectTimestampType(item.createdAt) === "seconds") {
+			item.createdAt = item.createdAt*1000
+			return item;
+		}
+	  })
     } catch(e) {
       error = NO_SHOW
     }

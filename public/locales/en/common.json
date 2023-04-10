@@ -241,7 +241,9 @@
 		"uploading": "Uploading"
 	},
 	"viewPodcasts": {
-		"allpodcasts": "All Podcasts"
+		"allpodcasts": "All Podcasts",
+		"showNewest": "Show Newest",
+		"showOldest": "Show Oldest"
 	}
 	
 }
