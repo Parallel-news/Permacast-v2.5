@@ -23,6 +23,6 @@ export const getFeaturedChannelsContract = (): ContractVariables => {
 
 export const getPASOMContract = (): ContractVariables => {
   const isProduction = true; // we are using the official PASOM contract
-  const contractAddress = "4CbuDUBSiWTKmzq8e5NNFnwqR2Pt5wsuIOXHyvhHzBw";
+  const contractAddress = "RwH6UF6fmmCZrtYAu0HKc-_sK31RHlRZThutK0PD5_Y";
   return { contractAddress, isProduction };
 };
