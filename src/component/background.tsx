@@ -35,11 +35,9 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
       if (userBannerImage.length > 0) {
         console.log('userBannerImage ', userBannerImage)
         setbackgroundColor(dimColorString(currentThemeColor, 0))
-        return
-      };
-      setbackgroundColor(dimColorString(currentThemeColor, 0.6))
+      } else setbackgroundColor(dimColorString(currentThemeColor, 0.6))
     } else setbackgroundColor(dimColorString(podcastColor, 0.5));
-  }, [pathname, podcastColor]);
+  }, [pathname, podcastColor, userBannerImage]);
 
 
   const styles = {backgroundImage: `linear-gradient(transparent, black, black)`};
