@@ -164,9 +164,10 @@
 	},
 	"creator": {
 		"ans": "View on ANS",
-		"edit": "Edit",
+		"edit": "Edit Profile",
 		"edit-modal": {
 			"header": "Edit Profile",
+			"save-changes": "Save changes",
 			"nickname": "Nickname",
 			"bio": "Bio",
 			"banner": "Banner",

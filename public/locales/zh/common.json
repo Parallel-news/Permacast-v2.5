@@ -164,9 +164,10 @@
   },
 	"creator": {
 		"ans": "ANS 地址",
-		"edit": "编辑",
+		"edit": "编辑个人资料",
 		"edit-modal": {
 			"header": "编辑个人资料",
+			"save-changes": "保存更改",
 			"nickname": "昵称",
 			"bio": "简介",
 			"banner": "横幅",
