@@ -15,8 +15,9 @@ import Verification from '../reusables/Verification';
 import { TipModal } from '../tipModal';
 import { ARSEED_URL } from '../../constants';
 import { PASoMProfile, updateWalletMetadata } from '../../interfaces/pasom';
-import { hoverableLinkButton } from '../reusables/themedButton';
+import { hoverableLinkButtonStyling } from '../reusables/themedButton';
 import { EditButton } from './edit';
+import { FollowButton } from './follow';
 
 
 /**
@@ -82,10 +83,6 @@ interface CreatorTipModalInterface {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-interface FollowButtonProps {
-  user: string;  
-};
-
 
 // 2. Stylings
 export const creatorHeaderStyling = `flex flex-col md:flex-row items-center justify-between `;
@@ -100,7 +97,7 @@ export const flexItemsCenter = `flex flex-col gap-y-2 md:gap-y-0 md:flex-row ite
 export const CreatorPageStyling = `mt-12 h-full pb-40 `;
 export const CreatorProfileParentStyling = flexItemsCenter + `gap-x-7 ml-2 text-center md:text-left `;
 export const CreatorUploadPhotoIconStyling = `h-8 w-8 text-inherit `;
-export const CreatorVerificationParentStyling = `mb-2 md:mb-0 ml-2 md:ml-6 `;
+export const CreatorVerificationParentStyling = `ml-2 md:ml-3 mt-1`;
 export const CreatorBioStyling = `h-8 select-text `;
 export const TransparentHidden = `absolute opacity-0 pointer-events-none `;
 export const InputFocusStyling = `focus:opacity-0 focus:z-20 `;
@@ -164,7 +161,7 @@ export const CreatorNames: FC<CreatorNamesProps> = ({ nickname, currentLabel, AN
     <div className={flexCenter}>
       <div className={creatorNicknameStyling}>{shortenAddress(nickname)}</div>
       {ANSuserExists && <div className={CreatorVerificationParentStyling}>
-        <Verification {...{ANSuserExists}} />
+        <Verification {...{size: 20, ANSuserExists}} />
       </div>}
     </div>
     {currentLabel && (<div className={creatorLabelStyling}>@{currentLabel}</div>)}
@@ -176,7 +173,7 @@ export const LinkButton: FC<LinkButtonInterface> = ({ url, text }) => {
 
   return (
     <a
-      className={hoverableLinkButton}
+      className={hoverableLinkButtonStyling}
       href={url}
       target="_blank"
       rel="noopener noreferrer"
@@ -248,10 +245,6 @@ export const CreatorTipModal: FC<CreatorTipModalInterface> = ({ ANSorAddress, re
   } else {
     return <></>
   };
-};
-
-export const FollowButton: FC<FollowButtonProps> = ({ user }) => {
-  return (<></>)
 };
 
 export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = ({ creator }) => {
