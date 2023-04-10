@@ -15,13 +15,23 @@ export interface PASoMProfile {
   socials?: Social[];
 };
 
-export interface updateWalletMetadata {
+export interface EXMauth {
+  jwk_n: string;
+  sig: string;
+};
+
+export interface EXMBase extends EXMauth {}
+
+export interface updateWalletMetadata extends EXMBase {
   function: "updateWalletMetadata";
   nickname?: string;
   avatar?: string;
   banner?: string;
   bio?: string;
   websites?: string[];
-  jwk_n: string;
-  sig: string;
+};
+
+export interface follow extends EXMBase {
+  function: "follow";
+  address: string;
 };
