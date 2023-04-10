@@ -31,10 +31,14 @@ export default function ViewPodcasts({yourShows}) {
 		{ icon: <Clock />, key: "showNewest", name: "Show Newest",  href: ""},
 	];
 
-	//yourShows = yourShows.sort((a, b) => a.createdAt - b.createdAt); //oldest to newest
-	//const sortedShows = yourShows.sort((b, a) => b.createdAt - a.createdAt);
-	const sortedShows = yourShows.sort((a, b) => b.createdAt - a.createdAt);
-	console.log(sortedShows)
+	let sortedShows;
+	// On Load
+	sortedShows = yourShows.sort((a, b) => chronStatus % 2 ? b.createdAt - a.createdAt : a.createdAt - b.createdAt);
+	// On Button Click
+	useEffect(() => {
+		sortedShows = yourShows.sort((a, b) => chronStatus % 2 ? b.createdAt - a.createdAt : a.createdAt - b.createdAt);
+	}, [chronStatus])
+
     return (
         <>
 			<div className={titleRow}>
