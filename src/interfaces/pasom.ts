@@ -1,3 +1,5 @@
+import { arweaveAddress } from ".";
+
 export type SupportedSocial = "twitter" | "github" | "telegram" | "instagram" | "discord";
 
 export interface Social {
@@ -13,6 +15,8 @@ export interface PASoMProfile {
   banner?: string;
   websites?: string[];
   socials?: Social[];
+  followers?: arweaveAddress[];
+  followings?: arweaveAddress[];
 };
 
 export interface EXMauth {
@@ -33,5 +37,10 @@ export interface updateWalletMetadata extends EXMBase {
 
 export interface follow extends EXMBase {
   function: "follow";
+  address: string;
+};
+
+export interface unfollow extends EXMBase {
+  function: "unfollow";
   address: string;
 };
