@@ -20,7 +20,7 @@ export default function ViewPodcasts({yourShows}) {
     const podcastContainer = "grid grid-cols-1 justify-items-center md:justify-items-start md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1 gap-y-10 mb-10"
 	const filterStyling = "w-12 h-12 text-zinc-600 cursor-pointer hover:bg-zinc-700 rounded-full default-no-outline-ringed default-animation px-2"
 
-    console.log("Your Shows: ", yourShows)
+    
     const { t } = useTranslation();
 	const [chronStatus, setChronStatus] = useState<number>(0)
 	const [shows, setShows] = useState<Podcast[]>([])
@@ -33,14 +33,15 @@ export default function ViewPodcasts({yourShows}) {
 	];
 
 	useEffect(() => {
-		const shows = yourShows.sort((a, b) =>  a.createdAt - b.createdAt)
+		const showsCopy = [...yourShows];
+		const shows = showsCopy.sort((a, b) =>  a.createdAt - b.createdAt)
 		if(chronStatus % 2) {
 			setShows(shows.reverse()) 
 		} else {
 			setShows(shows)
 		}
 	}, [chronStatus])
-
+	console.log("Shows: ", shows)
     return (
         <>
 			<div className={titleRow}>
@@ -69,7 +70,7 @@ export default function ViewPodcasts({yourShows}) {
 									setTimeout(() => setChronStatus(prev => prev + 1), 500)
 								}}>
 									{item.icon}
-									{chronStatus % 2 ? t("viewPodcasts.showNewest") : t("viewPodcasts.showOldest")}
+									{chronStatus % 2 ? t("viewPodcasts.showOldest") : t("viewPodcasts.showNewest")}
 								</button>
 							</>
 						</Dropdown.Item>

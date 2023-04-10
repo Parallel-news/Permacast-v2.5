@@ -184,7 +184,7 @@ export const TrackPlayButton: FC<TrackPlayButtonProps> = ({ playerInfo, episode,
 
   if (!includePlayButton) return <></>;
 
-  return <PlayButton isPlaying={isPlaying && (currentEpisode.eid === episodeInfo.eid)} onClick={handlePlay} {...buttonStyleArgs} />;
+  return <PlayButton isPlaying={isPlaying && currentEpisode && (currentEpisode.eid === episodeInfo.eid)} onClick={handlePlay} {...buttonStyleArgs} />;
 };
 
 const Track: FC<TrackProps> = (props: TrackProps) => {
