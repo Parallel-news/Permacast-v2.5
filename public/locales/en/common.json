@@ -164,9 +164,15 @@
 	},
 	"creator": {
 		"ans": "View on ANS",
-		"edit": "Edit",
+		"edit": "Edit Profile",
+		"follow": "Follow",
+		"unfollow": "Unfollow",
+		"followed": "Followed",
+		"followers": "Followers",
+		"following": "Following",
 		"edit-modal": {
 			"header": "Edit Profile",
+			"save-changes": "Save changes",
 			"nickname": "Nickname",
 			"bio": "Bio",
 			"banner": "Banner",

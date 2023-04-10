@@ -90,7 +90,7 @@ export const ProfileInfo: FC<CreatorEditInfoProps> = ({ error, nickname, setNick
             onChange={(e) => setNickname(e.target.value)}
             placeholder={t('creator.edit-modal.nickname')}
           />
-          <Tooltip className={`absolute top-3 right-2 default-animation ` + (error === "nickname" ? "opacity-100": "opacity-0")} rounded color="invert" content={<NicknameError />}>
+          <Tooltip className={`absolute top-3 right-2 default-animation ` + (error === "nickname" ? "opacity-100": "opacity-0 pointer-events-none")} rounded color="invert" content={<NicknameError />}>
             <div className="error-tooltip">?</div>
           </Tooltip>
         </div>
@@ -101,7 +101,7 @@ export const ProfileInfo: FC<CreatorEditInfoProps> = ({ error, nickname, setNick
             className={`text-input-generic resize-none pl-4 pr-7 h-20 mt-4 pt-2 mr-0.5 `}
             placeholder={t('creator.edit-modal.bio')}
           ></textarea>
-          <Tooltip className={`absolute bottom-3 right-2 ` + (error === "bio" ? "opacity-100": "opacity-0")} rounded color="invert" content={<BioError />}>
+          <Tooltip className={`absolute bottom-3 right-2 ` + (error === "bio" ? "opacity-100": "opacity-0 pointer-events-none")} rounded color="invert" content={<BioError />}>
             <div className="error-tooltip">?</div>
           </Tooltip>
         </div>
@@ -176,7 +176,7 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
   useEffect(() => {
     const error = validatePASoMForm({nickname, bio});
     setError(error);
-    if (PASoMProfile?.nickname === nickname && PASoMProfile?.bio === bio) {
+    if (PASoMProfile?.nickname === nickname && PASoMProfile?.bio === bio && PASoMProfile?.banner === banner && PASoMProfile?.avatar === avatar) {
       setSameInfo(true);
     } else setSameInfo(false)
   }, [bio, nickname]);
@@ -271,8 +271,8 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
               {t("home.featured-modal.cost")} {totalImageCost} AR
             </div>
           )}
-          <button disabled={!!error || sameInfo} onClick={uploadEdits} className={ArConnectButtonStyling + `w-24 `}>
-            {t("creator.edit")}
+          <button disabled={!!error || sameInfo} onClick={uploadEdits} className={ArConnectButtonStyling + `w-36 `}>
+            {t("creator.edit-modal.save-changes")}
           </button>
         </div>
       </div>

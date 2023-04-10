@@ -18,17 +18,18 @@ import {
 
 import { Episode, EXMDevState, FeaturedChannel, FullEpisodeInfo, Podcast } from '../interfaces';
 import Track from '../component/reusables/track';
-import { getContractVariables, getFeaturedChannelsContract } from '../utils/contract';
+import { getContractVariables, getFeaturedChannelsContract, getPASOMContract } from '../utils/contract';
 import GetFeatured from '../component/home/getFeatured';
 import { findPodcast } from '../utils/filters';
 
 interface HomeProps {
   isProduction: boolean,
-  contractAddress: string,
-  featuredContractAddress: string
+  contractAddress?: string,
+  featuredContractAddress?: string,
+  PASoMContractAddress?: string,
 };
 
-const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredContractAddress }) => {
+const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredContractAddress, PASoMContractAddress }) => {
 
   const { t } = useTranslation();
 
@@ -81,6 +82,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
           <p className='text-yellow-500 font-bold'>Heads up: isProduction !== "true"</p>
           <div className="text-teal-300 flex gap-x-1">EXM Main Address: <p className="underline font-medium">{contractAddress}</p></div>
           <div className="text-indigo-300 flex gap-x-1">EXM Feature Channel Address: <p className="underline font-medium">{featuredContractAddress}</p></div>
+          <div>(PRODUCTION) PASoM Contract Address: {PASoMContractAddress}</div>
         </div>
       }
       {podcasts_.length > 0 ? (
@@ -132,6 +134,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
 export async function getStaticProps({ locale }) {
   const { isProduction, contractAddress } = await getContractVariables();
   let { contractAddress: featuredContractAddress } = await getFeaturedChannelsContract();
+  const {contractAddress: PASoMContractAddress} = getPASOMContract();
   if(!featuredContractAddress) {
     featuredContractAddress = null
   }
@@ -143,6 +146,7 @@ export async function getStaticProps({ locale }) {
       isProduction,
       contractAddress,
       featuredContractAddress,
+      PASoMContractAddress
     },
   }
 }
