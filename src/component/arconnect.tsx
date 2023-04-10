@@ -34,8 +34,7 @@ const ArConnect: FC = () => {
   } = useArconnect();
 
   const { currentLabel, avatar: ANSAvatar, address_color } = ANS || ANS_TEMPLATE;
-  const { avatar: PASoMAvatar } = PASoMProfile;
-  const avatar = PASoMAvatar || ANSAvatar;
+  const avatar = PASoMProfile?.avatar || ANSAvatar;
 
   const fetchPASoM = async () => {
     const state = (await axios.get('/api/exm/PASoM/read')).data;
