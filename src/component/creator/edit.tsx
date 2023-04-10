@@ -166,8 +166,8 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
   useEffect(() => {calculateImagesUploadCost().then(setTotalImageCost)}, [avatarSize, bannerSize]);
   useEffect(() => {
     if (PASoMProfile) {
-      setNickname(PASoMProfile.nickname || "");
-      setBio(PASoMProfile.bio || "");
+      setNickname(PASoMProfile?.nickname || "");
+      setBio(PASoMProfile?.bio || "");
       setBanner(PASoMProfile.banner ? ARSEED_URL + PASoMProfile.banner: "");
       setAvatar(PASoMProfile.avatar ? ARSEED_URL + PASoMProfile.avatar: "");
     }
@@ -176,7 +176,7 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
   useEffect(() => {
     const error = validatePASoMForm({nickname, bio});
     setError(error);
-    if (PASoMProfile.nickname === nickname && PASoMProfile.bio === bio) {
+    if (PASoMProfile?.nickname === nickname && PASoMProfile?.bio === bio) {
       setSameInfo(true);
     } else setSameInfo(false)
   }, [bio, nickname]);
