@@ -2,6 +2,7 @@ import { atom } from 'recoil';
 import { CURRENT_EPISODE_TEMPLATE, CURRENT_PODCAST_TEMPLATE, DEFAULT_BACKGROUND_COLOR, DEFAULT_PODCAST_COLOR, DEFAULT_THEME_COLOR } from '../constants/ui';
 import { ANSMapped, Ans, Episode, FullEpisodeInfo, Podcast } from '../interfaces';
 import { RGBorRGBAstring } from '../interfaces/ui';
+import { PASoMProfile } from '../interfaces/pasom';
 
 export const uploadPercent = atom({
     key: 'uploadPercent',
@@ -168,6 +169,19 @@ export const everPayBalance = atom({
 export const arweaveAddress = atom({
   key: 'arweaveAddress',
   default: ""
+});
+
+export const PASoMProfileAtom = atom<PASoMProfile>({
+    key: 'PASoMProfileAtom',
+    default: {
+        address: "",
+        nickname: "",
+        bio: "",
+        avatar: "",
+        banner: "",
+        socials: [],
+        websites: []
+    }
 });
 
 export const userBannerImageAtom = atom<string>({

@@ -170,7 +170,11 @@
 			"nickname": "Nickname",
 			"bio": "Bio",
 			"banner": "Banner",
-			"avatar": "Avatar"
+			"avatar": "Avatar",
+			"error": {
+				"nickname": "Nickname must be between {{minLength}} and {{maxLength}} characters.",
+				"bio": "Bio must be between {{minLength}} and {{maxLength}} characters."
+			}
 		},
 		"verification": {
 			"verified": {

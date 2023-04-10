@@ -6,7 +6,7 @@ export interface Social {
 };
 
 export interface PASoMProfile {
-  address: string;
+  address?: string;
   nickname?: string;
   bio?: string;
   avatar?: string;

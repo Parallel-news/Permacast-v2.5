@@ -1,3 +1,4 @@
+import axios from 'axios';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslation } from 'next-i18next';
@@ -6,20 +7,23 @@ import { FC, useEffect } from 'react'
 import { useArconnect, shortenAddress } from 'react-arconnect';
 import { useRecoilState } from 'recoil';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../constants/arconnect';
-import { arweaveAddress } from '../atoms';
+import { PASoMProfileAtom, arweaveAddress } from '../atoms';
 import { ProfileImage } from './creator';
 import { ANS_TEMPLATE } from '../constants/ui';
 import { EverPayBalance } from '../utils/everpay/EverPayBalance';
 import { ArrowLeftOnRectangleIcon, BanknotesIcon, NewspaperIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { flexCenter } from './creator/featuredCreators';
+import { PASoMProfile } from '../interfaces/pasom';
+import { ARSEED_URL } from '../constants';
 
 
-export const ArConnectButtonStyling = `h-12 btn-base-color items-center flex px-3 justify-center text-sm md:text-base normal-case default-no-outline-ringed default-animation hover:text-white focus:text-white `;
+export const ArConnectButtonStyling = `h-12 btn-base-color items-center flex px-3 justify-center text-sm md:text-base normal-case default-no-outline-ringed default-animation hover:text-white focus:text-white disabled:text-zinc-400 disabled:bg-zinc-700 disabled:cursor-auto `;
 
 const ArConnect: FC = () => {
   const { t } = useTranslation();
 
-  const [_, setArweaveAddress_] = useRecoilState(arweaveAddress)
+  const [PASoMProfile, setPASoMProfile] = useRecoilState(PASoMProfileAtom);
+  const [_, setArweaveAddress_] = useRecoilState(arweaveAddress);
 
   const {
     walletConnected,
@@ -29,10 +33,22 @@ const ArConnect: FC = () => {
     arconnectDisconnect
   } = useArconnect();
 
-  const { currentLabel, avatar, address_color } = ANS || ANS_TEMPLATE;
+  const { currentLabel, avatar: ANSAvatar, address_color } = ANS || ANS_TEMPLATE;
+  const { avatar: PASoMAvatar } = PASoMProfile;
+  const avatar = PASoMAvatar || ANSAvatar;
+
+  const fetchPASoM = async () => {
+    const state = (await axios.get('/api/exm/PASoM/read')).data;
+    const profiles: PASoMProfile[] = state.profiles;
+    const profile = profiles.find((profile: PASoMProfile) => profile.address === address);
+    setPASoMProfile(profile);
+  };
 
   useEffect(() => {
-    if (address && address.length > 0) setArweaveAddress_(address)
+    if (address && address.length > 0) {
+      fetchPASoM();
+      setArweaveAddress_(address);
+    };
   }, [address, walletConnected]);
 
   const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
@@ -61,21 +77,19 @@ const ArConnect: FC = () => {
             }}
             className='w-full h-12 hover:bg-zinc-700 bg-zinc-900 rounded-full items-center flex px-4 justify-center mx-auto text-sm md:text-base normal-case default-no-outline-ringed default-animation z-0'
           >
-            {
-              ANS?.avatar ? (
-                <div className="rounded-full h-6 w-6 overflow-hidden border-[1px]">
-                  <Image
-                    src={`https://arweave.net/${ANS.avatar}`}
-                    width={24}
-                    height={24}
-                    alt="Profile"
-                    className="rounded-full"
-                  />
-                </div>
-              ) : (
-                <ProfileImage {...{currentLabel: currentLabel || address, avatar, address_color, size: 20, borderWidth: 3}} unclickable  />
-              )
-            }
+            {avatar ? (
+              <div className="rounded-full h-6 w-6 overflow-hidden border-[2px]">
+                <Image
+                  src={ARSEED_URL + avatar}
+                  width={24}
+                  height={24}
+                  alt="Profile"
+                  className="rounded-full"
+                />
+              </div>
+            ) : (
+              <ProfileImage {...{currentLabel: currentLabel || address, avatar, address_color, size: 20, borderWidth: 3}} unclickable  />
+            )}
             <span className="ml-2">
               {ANS?.currentLabel ? `${ANS?.currentLabel}.ar` : shortenAddress(address, 8)}
             </span>

@@ -43,8 +43,15 @@ html, body {
     @apply input input-secondary w-full bg-zinc-900 border-0 rounded-xl default-no-outline-ringed focus:ring-inset;
   }
 
+  .tooltip-base {
+    @apply w-6 h-6 rounded-full border-2 flex justify-center cursor-pointer items-center default-animation font-bold;
+  }
   .helper-tooltip {
-    @apply w-6 h-6 rounded-full border-2 flex justify-center cursor-pointer hover:text-white text-zinc-400 items-center hover:border-zinc-200 border-zinc-400 default-animation;
+    @apply tooltip-base hover:text-white text-zinc-400 hover:border-zinc-200 border-zinc-400;
+  }
+
+  .error-tooltip {
+    @apply tooltip-base hover:text-red-300 text-red-500 hover:border-red-300 border-red-500;
   }
 
   .hover-up-effect {
