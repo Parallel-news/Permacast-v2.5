@@ -248,5 +248,8 @@
 		"savingCover": "Завантаження обкладинки",
 		"savingBanner": "Завантаження обкладинки банера",
 		"uploading": "Завантаження"
+	},
+	"viewPodcasts": {
+		"allpodcasts": "Усі подкасти"
 	}
 }

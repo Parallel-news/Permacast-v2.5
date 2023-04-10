@@ -233,5 +233,8 @@
 		"savingCover": "上传封面",
 		"savingBanner": "上传横幅封面",
 		"uploading": "上传中"
+	},
+	"viewPodcasts": {
+		"allpodcasts": "所有播客"
 	}
 }

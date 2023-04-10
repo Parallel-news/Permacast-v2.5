@@ -184,6 +184,7 @@
 		},
 		"podcasts": "Podcasts",
 		"nopodcasts": "No podcasts found",
+
 		"address": "Address",
 		"notfound": "not found on ANS",
 		"latestepisodes": "Latest episodes"
@@ -238,5 +239,9 @@
 		"savingCover": "Uploading Cover",
 		"savingBanner": "Uploading Banner Cover",
 		"uploading": "Uploading"
+	},
+	"viewPodcasts": {
+		"allpodcasts": "All Podcasts"
 	}
+	
 }
