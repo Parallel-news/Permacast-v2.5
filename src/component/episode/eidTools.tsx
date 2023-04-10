@@ -13,6 +13,9 @@ import { useState } from "react";
 import { getTypeFromMime } from "../../utils/fileTools";
 import { useTranslation } from "next-i18next";
 import FeaturedPodcastPlayButton from "../home/featuredPodcastPlayButton";
+import Link from "next/link";
+import Track from "../reusables/track";
+import { FullEpisodeInfo } from "../../interfaces";
 
 
 export default function eidTools() {
@@ -52,6 +55,8 @@ export interface EpisodeInfoSubInter {
     date: string;
     color: string;
     episodeNum: string;
+    podcastName: string;
+    pid: string;
 }
 
 export interface EpisodeBannerInter extends EpisodeInfoInter {
@@ -67,6 +72,7 @@ export interface EpisodeInfoInter extends EpisodeInfoSubInter {
     mediaLink: string;
     podcastOwner: string;
     playButton: JSX.Element;
+
 }
 
 export interface CreatorTagInter {
@@ -94,7 +100,7 @@ export interface EpisodeBoxInter {
 
 export interface EpisodesInter {
     containerTitle: string;
-    episodes: Episode[]
+    episodes: FullEpisodeInfo[]
     color: string; 
     imgSrc: string;
     podcastId: string;
@@ -120,7 +126,7 @@ export interface ErrorTagInter {
 export const episodeIconStyling = "mr-2 w-4 h-4"
 export const creatorTagDivStyling = "flex flex-row space-x-3"
 export const byStyling = "text-neutral-400 text-[12px] inline"
-export const episodeInfoButtonsStyling = "flex flex-row space-x-3 md:space-x-6"
+export const episodeInfoButtonsStyling = "flex flex-row items-center space-x-1 sm:space-x-3 md:space-x-6 pt-3 sm:pt-0"
 export const episodeBoxTitleDataImg = "object-cover h-12 rounded-xl"
 export const errorTagStyle = "w-full flex justify-center items-center"
 export const episodeDateStyling = "text-gray-500 text-[11px] font-bold"
@@ -128,14 +134,14 @@ export const creatorTagImgStyling = "object-cover h-4 rounded-full mr-1"
 export const errorTagMsgStyle = "text-neutral-400 text-xl font-semibold"
 export const episodeBoxTitleStyling = "text-lg text-white font-semibold"
 export const episodeBannerStyling = "flex flex-col lg:flex-row w-full space-x-0 lg:space-x-16 space-y-4 lg:space-y-0 items-start justify-start"
-export const episodeInfoStyling = "flex flex-col xl:flex-row justify-start items-start space-y-4 px-0 xl:px-10 xl:space-x-8"
-export const episodeInfoSubStyling = "flex flex-row items-center space-x-3 justify-start xl:justify-start"
+export const episodeInfoStyling = "flex flex-col xl:flex-row justify-start items-start lg:items-center space-y-4 px-0 xl:px-10 xl:space-x-8"
+export const episodeInfoSubStyling = "flex flex-row items-center space-x-3 justify-start xl:justify-start pb-2"
 export const podcastIdStyling = "flex flex-col space-y-8 w-[100%] mb-[200px]"
 export const creatorTagStyling = "flex flex-row items-center p-1.5 rounded-3xl"
 export const episodeBoxTitleDataStyling = "flex flex-row items-center space-x-3 w-[30%]"
 export const nextEpisodeTitleStyling = "text-2xl text-neutral-300/90 font-semibold"
 export const episodeNumberStyling = "rounded-2xl bg-gray-400/30 p-2 py-1 text-[11px]"
-export const episodeTitleStyling = "text-[30px] md:text-[35px] xl:text-[40px] font-medium pb-0 flex items-end text-start pb-0 xl:pb-4"
+export const episodeTitleStyling = "select-text text-[30px] md:text-[35px] xl:text-[40px] font-medium pb-0 flex items-end text-left md:text-center lg:text-start pb-0 xl:pb-4"
 export const nextEpisodeStyling = "w-full flex flex-col space-y-6  overflow-auto overflow-x-hidden h-[425px]"
 export const textTruncateButtonStyling = "text-gray-400 font-bold hover:text-blue-400 transition duration-400 ease-in-out"
 export const episodeBoxStyling = "w-[98%] rounded-2xl border-2 border-gray-400/30 p-3 flex flex-row justify-between items-center bg-black"
@@ -149,8 +155,8 @@ export const EpisodeBanner = (props: EpisodeBannerInter) => {
             <Image
                 src={props.imgSrc}
                 alt="Episode Cover"
-                height={25}
-                width={225}
+                height={36} //25
+                width={242} //225
                 className="object-cover rounded-3xl"
             />
             <EpisodeInfo
@@ -163,6 +169,8 @@ export const EpisodeBanner = (props: EpisodeBannerInter) => {
                 mediaLink={props.mediaLink}
                 podcastOwner={props.podcastOwner}
                 playButton={props.playButton}
+                podcastName={props.podcastName}
+                pid={props.pid}
             />
         </div>
     )
@@ -177,6 +185,8 @@ export const EpisodeInfo = (props: EpisodeInfoInter) => {
                     color={props.color}
                     episodeNum={props.episodeNum}
                     date={props.date}
+                    podcastName={props.podcastName}
+                    pid={props.pid}
                 />
             </div>
             <EpisodeInfoButtons
@@ -194,13 +204,16 @@ export const EpisodeInfo = (props: EpisodeInfoInter) => {
 
 export const EpisodeInfoSub = (props: EpisodeInfoSubInter) => {
     return(
-        <div className={episodeInfoSubStyling}>
-            <EpisodeNumber 
-                episodeNum={props.episodeNum}
-                color={props.color}
-            />
-            <p className={episodeDateStyling}>{props.date}</p>
-        </div>
+        <>
+            <div className={episodeInfoSubStyling}>
+                <EpisodeNumber 
+                    episodeNum={props.episodeNum}
+                    color={props.color}
+                />
+                <p className={episodeDateStyling}>{props.date}</p>
+            </div>
+            <Link href={`/podcast/${props.pid}`} className="text-slate-300 text-[16px] font-semibold hover:text-white transition-colors duration-500 pt-2">{props.podcastName}</Link>
+        </>
     )
 }
 
@@ -225,7 +238,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
 
     return (
         <div className={episodeInfoButtonsStyling}>
-            {props.playButton}
+            <>{props.playButton}</>
             <DescriptionButton
                 icon={<HeartIcon className={episodeIconStyling} />} 
                 text={t("tip")}
@@ -242,7 +255,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
             :
             <DescriptionButton
                 icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
-                text={"Download"}
+                text={t("episode.download")}
                 color={color}
                 onClick={() => downloadFile()}
             />
@@ -250,7 +263,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
 
             <DescriptionButton
                 icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
-                text={"Share"}
+                text={t("episode.share")}
                 color={color}
                 onClick={props.setLoadShareModal}
             />
@@ -262,13 +275,13 @@ export const EpisodeNumber = (props: EpisodeNumberInter) => {
     const { t } = useTranslation();
 
     return (
-        <p className={episodeNumberStyling} style={{color: props.color}}>{"Episode"+" "+props.episodeNum}</p>
+        <p className={episodeNumberStyling} style={{color: props.color}}>{t("episode.number")+" "+props.episodeNum}</p>
     )
 }
 
 export const EpisodeDescription = (props: DescriptionContainerInter) => {
     return (
-        <div className="w-full pt-3 lg:pt-10 text-start">
+        <div className="w-[100%] md:w-[80%] lg:w-[75%] pt-3 lg:pt-10 text-start select-text">
             <TextTruncate 
                 text={ARWEAVE_READ_LINK+props.text}
                 limit={STR_LEN_EPISODE_DESC}
@@ -283,19 +296,14 @@ export const EpisodeDescription = (props: DescriptionContainerInter) => {
 export const Episodes = (props: EpisodesInter) => {
     const episodeList = props.episodes
     const { t } = useTranslation()
+    console.log("Episode List: ", episodeList)
     return (
         <div className={nextEpisodeStyling}>
             <p className={nextEpisodeTitleStyling}>{props.containerTitle}</p>
             {/*Loop Episodes*/}
             {episodeList.length > 0 ?
-                episodeList.map((item, index) => (
-                    <EpisodeBox
-                        key={index}
-                        episode={item}
-                        imgSrc={props.imgSrc}
-                        color={props.color}
-                        podcastId={props.podcastId}
-                    />
+                episodeList.map((episode: FullEpisodeInfo, index) => (
+                    <Track {...{ episode }} includeDescription includePlayButton />
                 ))
             :
                 <p className="text-neutral-400">None to Show.</p>
@@ -304,6 +312,15 @@ export const Episodes = (props: EpisodesInter) => {
     )
 }
 
+/*
+<EpisodeBox
+    key={index}
+    episode={item}
+    imgSrc={props.imgSrc}
+    color={props.color}
+    podcastId={props.podcastId}
+/>
+*/
 export const EpisodeBox = (props: EpisodeBoxInter) => {
     const uploader = props.episode.uploader
     return  (

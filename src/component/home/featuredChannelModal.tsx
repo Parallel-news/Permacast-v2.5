@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import { useRecoilState } from "recoil";
 import { allPodcasts, arweaveAddress, everPayBalance } from "../../atoms";
-import { EVERPAY_AR_TAG, EVERPAY_FEATURE_TREASURY, FADE_IN_STYLE, FADE_OUT_STYLE, FEATURE_COST, SPINNER_COLOR, USER_SIG_MESSAGES } from "../../constants";
+import { EVERPAY_AR_TAG, EVERPAY_FEATURE_TREASURY, FADE_IN_STYLE, FADE_OUT_STYLE, FEATURE_COST_BASE, FEATURE_COST_PER_DAY, SPINNER_COLOR, USER_SIG_MESSAGES } from "../../constants";
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { Podcast } from "../../interfaces";
 import { transferFunds } from "../../utils/everpay";
@@ -16,6 +16,7 @@ import DateSelector from "../dateSelector";
 import { PermaSpinner } from "../reusables/PermaSpinner";
 import { ConnectButton, containerPodcastModalStyling, SelectPodcast, tipModalStyling } from "../uploadEpisode/uploadEpisodeTools";
 import { GetFeaturedButtonStyling } from "./getFeatured";
+import { getFeaturedChannelsContract } from "../../utils/contract";
 
 interface TipModalInter {
   isVisible: boolean;
@@ -27,7 +28,7 @@ export const titleCornerStyling = "absolute top-0 left-0 bg-black h-[150px] w-[1
 export const benefactorBannerStyling = "absolute top-0 bg-zinc-900 w-full h-[100px] z-30 flex flex-row items-center"
 export const xMarkModalStyling = "h-7 w-7 mt-1 cursor-pointer hover:text-red-400 hover:bg-red-400/10 transition duration-400 ease-in-out rounded-full z-30 absolute top-3 right-3"
 export const tipInputStyling = "input input-secondary px-4 bg-zinc-700/80 border-0 rounded-lg outline-none focus:ring-2 focus:ring-inset focus:ring-white w-[200px] h-[100px] placeholder:text-5xl placeholder:font-bold text-5xl font-bold text-center"
-export const tipAmountAbsStyling = "absolute inset-0 top-0 flex justify-center items-center flex flex-col z-20"
+export const tipAmountAbsStyling = "absolute inset-0 bottom-0 flex justify-center items-center flex flex-col z-20 h-[600px]"
 export const benefactorNameStyling = "text-white text-3xl font-bold flex justify-center w-full text-center"
 export const tipStyling = "text-white text-4xl transform -rotate-45 font-bold"
 
@@ -44,9 +45,8 @@ const Costs: FC<CostsProps> = ({ balance, duration }) => {
     fetchARPriceInUSD().then(setArPrice);
   }, []);
 
-  const ARCost = (FEATURE_COST * duration).toFixed(1);
-  const dollarCost = (arPrice * (FEATURE_COST * duration)).toFixed(2);
-
+  const ARCost = FEATURE_COST_BASE + (FEATURE_COST_PER_DAY * duration).toFixed(1);
+  const dollarCost = FEATURE_COST_BASE + (arPrice * (FEATURE_COST_PER_DAY * duration)).toFixed(2);
 
   return (
     <div className="text-center mt-2 text-lg">
@@ -94,9 +94,10 @@ const FeaturedChannelModal: FC<TipModalInter> = ({isVisible, setIsVisible}) => {
   const payAndGetFeatured = async () => {
     setLoading(true)
     const everpay = new Everpay({account: address, chainType: ChainType.arweave, arJWK: 'use_wallet'});
-    const payment_txid = await everpay.transfer({
+    const { isProduction } = getFeaturedChannelsContract()
+    const payment_txid = !isProduction ? "" : await everpay.transfer({
       tag: EVERPAY_AR_TAG,
-      amount: String((FEATURE_COST * duration).toFixed(1)),
+      amount: String((FEATURE_COST_BASE + (FEATURE_COST_PER_DAY * duration)).toFixed(1)),
       to: EVERPAY_FEATURE_TREASURY,
       data: {action: "featureChannel", pid}
     });
@@ -121,7 +122,7 @@ const FeaturedChannelModal: FC<TipModalInter> = ({isVisible, setIsVisible}) => {
     setIsVisible(false);
   };
 
-  const sufficientFunds = _everPayBalance >= (FEATURE_COST * duration);
+  const sufficientFunds = _everPayBalance >= (FEATURE_COST_BASE + (FEATURE_COST_PER_DAY * duration));
 
   return (
     <div className={tipModalStyling + " backdrop-blur-sm"}>

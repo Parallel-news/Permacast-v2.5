@@ -1,22 +1,24 @@
 import axios from 'axios';
 import Image from 'next/image';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import { FiFile } from 'react-icons/fi';
 import { useRecoilState } from 'recoil';
 import { arweaveAddress } from '../../atoms';
 import { ValMsg } from '../reusables/formTools';
 import { PermaSpinner } from '../reusables/PermaSpinner';
-import { spinnerClass } from '../uploadShow/uploadShowTools';
+import { descContainerStyling, spinnerClass } from '../uploadShow/uploadShowTools';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
 import { ArrowUpTrayIcon, XMarkIcon, WalletIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
 import { getBundleArFee, upload2DMedia, upload3DMedia } from '../../utils/arseeding';
 import { allFieldsFilled, byteSize, checkConnection, determineMediaType, handleError } from '../../utils/reusables';
-import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, DESCRIPTION_UPLOAD_ERROR, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EP_UPLOAD_SUCCESS, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, EXM_READ_LINK, FADE_IN_STYLE, FADE_OUT_STYLE, MEDIA_UPLOAD_ERROR, MIN_UPLOAD_PAYMENT, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from '../../constants';
+import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EVERPAY_EOA, FADE_IN_STYLE, FADE_OUT_STYLE, GIGABYTE, MINT_DURATION, MIN_UPLOAD_PAYMENT, SPINNER_COLOR, TOAST_DARK, TOAST_MARGIN, TOAST_POSITION, USER_SIG_MESSAGES } from '../../constants';
 import { useTranslation } from 'next-i18next';
 import { transferFunds } from '../../utils/everpay';
 import { Podcast } from '../../interfaces';
+import { MarkDownToolTip } from '../reusables/tooltip';
+import router from 'next/router';
 
 export default function uploadEpisode() {
     return false
@@ -79,21 +81,21 @@ export const episodeFaFileStyling = "w-7 h-6 cursor-pointer rounded-lg mx-2"
 export const episodeMediaStyling = "bg-zinc-800 rounded-xl cursor-pointer w-full"
 export const buttonColStyling = "w-full flex justify-center items-center flex-col"
 export const selectPodcastModalStyling = "absolute inset-0 top-0 flex justify-center"
-export const tipModalStyling = "absolute inset-0 top-0 flex justify-center items-center z-50"
+export const tipModalStyling = "absolute inset-0 bottom-0 flex justify-center items-center z-50 h-full"
 export const podcastOptionsContainer = "w-full flex flex-col px-5 overflow-auto h-[120%] mb-[40px]"
 export const podcastOptionBaseStyling = "w-full flex justify-start items-center space-x-4"
-export const episodeFormStyling = "w-[90%] md:w-[75%] w-[50%] flex flex-col justify-center items-center space-y-4"
+export const episodeFormStyling = "w-[90%] md:w-[75%] lg:w-[50%] flex flex-col justify-center items-center space-y-4"
 export const showErrorTag = "flex justify-center items-center m-auto text-white font-semibold text-xl"
-export const containerPodcastModalStyling = "w-[98%] lg:w-[50%] h-[420px] bg-zinc-800 rounded-3xl flex flex-col z-10 mb-0"
+export const containerPodcastModalStyling = "w-[98%] sm:w-[75%] lg:w-[50%] h-[420px] bg-zinc-800 rounded-3xl flex flex-col z-10 mb-0"
 export const uploadEpisodeStyling = "flex flex-col justify-center items-center m-auto space-y-3 relative pb-[250px]"
 export const podcastOptionHoverStyling = "cursor-pointer hover:bg-zinc-600/30 transition duration-650 ease-in-out rounded-3xl p-3"
 export const xMarkStyling = "h-5 w-5 mt-1 cursor-pointer hover:text-red-400 hover:bg-red-400/10 transition duration-400 ease-in-out rounded-full"
-export const uploadButtonStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8 z-30"
+export const uploadButtonStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8"
 export const submitModalStyling = "btn btn-secondary transition duration-300 ease-in-out hover:text-white rounded-xl px-8 border-0 text-2xl absolute z-30"
 export const selectPodcastStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8 w-full "
 export const episodeNameStyling = "input input-secondary w-full py-3 pl-5 pr-10 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
 export const labelEpisodeMediaStyling = "flex items-center text-zinc-400 transition duration-300 ease-in-out hover:text-white my-1 py-2 px-3 w-full cursor-pointer w-full"
-export const episodeDescStyling =  "input input-secondary resize-none w-full h-28 pb-12 py-3 px-5 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+export const episodeDescStyling =  "input input-secondary resize-none w-full h-28 pb-12 py-3 px-5 bg-zinc-800 border-0 rounded-xl outline-none"
 
 
 // 3. Custom Functions
@@ -105,7 +107,8 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     const { address, ANS, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
     const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
-    const [uploadCost, setUploadCost] = useState<Number>(0)
+    const [arseedCost, setArseedCost] = useState<Number>(0);
+    const [uploadCost, setUploadCost] = useState<Number>(0);
 
     //Inputs
     const [pid, setPid] = useState<string>("")
@@ -129,7 +132,11 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         if(props.pid.length > 0) {
             setPid(props.pid)
         }
-    }, [])
+        // explainer: get arseed cost per gig
+        // no one's going to legitimately upload a gig, so the cost will remain the same
+        // some floating errors to be expeted but copable for now
+        getBundleArFee(String(GIGABYTE)).then(setArseedCost);
+    }, []);
 
 
     // Hook Calculating Upload Cost
@@ -138,10 +145,10 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         
         async function calculateTotal() {
             const descBytes = byteSize(epDesc)
-            const descFee = await getBundleArFee(String(descBytes))
-            const mediaFee = await getBundleArFee(String(epMedia.size))
+            const descFee = Number(arseedCost) * (descBytes / GIGABYTE);
+            const mediaFee = Number(arseedCost) * (epMedia.size / GIGABYTE);
             return Number(descFee) + Number(mediaFee)
-        }
+        };
 
         if(epDesc.length > 0 && epMedia !== null) {
             calculateTotal().then(async total => {
@@ -191,7 +198,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     const submitEpisode = async (epPayload: any) => {
         // Check Connection
         if (!checkConnection(arweaveAddress_)) {
-            toast.error(CONNECT_WALLET, {style: TOAST_DARK})
+            toast.error(CONNECT_WALLET, {style: TOAST_DARK, className:TOAST_MARGIN})
             return false
         }
         setSubmittingEp(true)
@@ -202,28 +209,38 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         epPayload["jwk_n"] = await getPublicKey()
 
         // Description to Arseeding
+        const toastDesc = toast.loading(t("loadingToast.savingDesc"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
         try {
             const description = await upload2DMedia(epDesc); epPayload["desc"] = description?.order?.itemId
+            toast.dismiss(toastDesc); 
         } catch (e) {
-            console.log(e); handleErr(DESCRIPTION_UPLOAD_ERROR, setSubmittingEp); return;
+            toast.dismiss(toastDesc);
+            console.log(e); handleErr(t("errors.descUploadError"), setSubmittingEp); return;
         }
 
         // Media to Arseeding
+        const toastCover = toast.loading(t("loadingToast.savingMedia"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
         try {
             const media = await upload3DMedia(epMedia, epMedia.type); epPayload["content"] = media?.order?.itemId
             epPayload["mimeType"] = determineMediaType(epMedia.type)
+            toast.dismiss(toastCover);
         } catch (e) {
-            console.log(e); handleErr(MEDIA_UPLOAD_ERROR, setSubmittingEp); return;
+            toast.dismiss(toastCover);
+            console.log(e); handleErr(t("errors.mediaUploadError"), setSubmittingEp); return;
         }
 
         // Pay Upload Fee
+        const toastFee = toast.loading(t("loadingToast.payingFee"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
         try {
             const tx = await transferFunds("UPLOAD_EPISODE_FEE", EPISODE_UPLOAD_FEE, EVERPAY_EOA, address)
             //@ts-ignore - refusing to acknowledge everHash
             epPayload["txid"] = tx[1].everHash
+            toast.dismiss(toastFee);
         } catch(e) {
-            console.log(e); handleErr(EVERPAY_BALANCE_ERROR, setSubmittingEp); return;
+            toast.dismiss(toastFee);
+            console.log(e); handleErr(t("error.everpayError"), setSubmittingEp); return;
         }
+        const toastSaving = toast.loading(t("loadingToast.savingChain"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
         // EXM REDIRECT AND ERROR HANDLING NEEDED
         setTimeout(async function () {
             const result = await axios.post('/api/exm/write', createEpPayload);
@@ -231,13 +248,16 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             console.log("exm res: ", result)
             setSubmittingEp(false)
             //EXM call, set timeout, then redirect. 
-            toast.success(EP_UPLOAD_SUCCESS, {style: TOAST_DARK})
+            toast.dismiss(toastSaving);
+            toast.success(t("success.episodeUploaded"), {style: TOAST_DARK, className:TOAST_MARGIN})
             setTimeout(async function () {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
-                window.location.assign(`/creator/${identifier}`);
-            }, 500)
+                const { locale } = router;
+                router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
+            }, 3500)
         }, 4000)
     }
+
     //Submit Episode Function
     return(
         <div className={episodeFormStyling}>
@@ -257,11 +277,17 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             }}/>
             {epNameMsg.length > 0 && <ValMsg valMsg={epNameMsg} className="pl-2" />}
             {/*Episode Description*/}
-            <textarea className={episodeDescStyling} required title="Between 1 and 5000 characters" name="episodeShowNotes" placeholder={t("uploadepisode.description")} 
-            onChange={(e) => {
-                setEpDescMsg(handleValMsg(e.target.value, "epDesc"));
-                setEpDesc(e.target.value);
-            }}/>
+            <div className={descContainerStyling}>
+                <textarea className={"w-[93%] "+episodeDescStyling} required title="Between 1 and 5000 characters" name="episodeShowNotes" placeholder={t("uploadepisode.description")} 
+                onChange={(e) => {
+                    setEpDescMsg(handleValMsg(e.target.value, "epDesc"));
+                    setEpDesc(e.target.value);
+                }}/>
+                <MarkDownToolTip 
+                    placement="top"
+                    size={40}
+                />
+            </div>
             {epNameMsg.length > 0 && <ValMsg valMsg={epDescMsg} className="pl-2" />}
             {/*Episode Media*/}
             <EpisodeMedia
@@ -291,9 +317,6 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                         disable={false}
                         click={() => connect()}
                     />
-                )}
-                {uploadCost === 0 && epDesc.length > 0 && epMedia && (
-                <p className="mt-2 text-neutral-400">Calculating Fee...</p> 
                 )}
                 {uploadCost !== 0 && epDesc.length > 0 && epMedia && (
                 <p className="mt-2 text-neutral-400">{t("uploadepisode.feetext")} {(Number(uploadCost)).toFixed(6) +" AR"}</p>
@@ -460,7 +483,7 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
             clearTimeout(timeoutId);
         };
     }, [props.isVisible])
-
+    console.log("BEN LOOK HERE: ", props.shows)
     return(
         <div className={selectPodcastModalStyling}>
             <div className={`${containerPodcastModalStyling + " p-6"} ${showModal ? FADE_IN_STYLE :FADE_OUT_STYLE}`}>
@@ -474,13 +497,14 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
                 <hr className={hrPodcastStyling}/>
                 {/*Options*/}
                 <div className={podcastOptionsContainer}>
-                    {props.shows && props.shows.map((item) => (
+                    {props.shows && props.shows.map((item, index) => (
                         <PodcastSelectOptions 
-                            imgSrc={item.minifiedCover}
+                            imgSrc={item.cover}
                             title={item.podcastName}
                             disable={false}
                             setPid={props.setPid}
                             pid={item.pid}
+                            key={index}
                         />
                     ))}
                     {props.shows.length === 0 && <p className="text-white text-lg text-center">{t("uploadepisode.no-shows")}</p>}

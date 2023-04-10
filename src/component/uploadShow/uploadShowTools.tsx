@@ -1,10 +1,10 @@
 import { MouseEventHandler, useCallback, useEffect, useRef, useState } from "react"
 import { PhotoIcon } from "@heroicons/react/24/outline";
 import { ConnectButton, episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
-import { LanguageOptions, CategoryOptions } from "../../utils/languages";
+import { LanguageOptions, CategoryOptions, categories_en, DEFAULT_LANGUAGE } from "../../utils/languages";
 import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
-import { AR_DECIMALS, CONNECT_WALLET, COVER_UPLOAD_ERROR, DESCRIPTION_UPLOAD_ERROR, EVERPAY_AR_TAG, EVERPAY_BALANCE_ERROR, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SHOW_UPLOAD_SUCCESS, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
+import { AR_DECIMALS, CONNECT_WALLET, EVERPAY_AR_TAG, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
 import { isValidEmail, ValMsg } from "../reusables/formTools";
 import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
 import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
@@ -12,7 +12,7 @@ import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { allFieldsFilled, byteSize, checkConnection, handleError, validateLabel} from "../../utils/reusables";
 import Everpay, { ChainType } from "everpay";
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 import { useRecoilState } from "recoil";
 import { arweaveAddress } from "../../atoms";
 import { PermaSpinner } from "../reusables/PermaSpinner";
@@ -20,9 +20,8 @@ import axios from "axios";
 import { useTranslation } from "next-i18next";
 import { Tooltip } from "@nextui-org/react";
 import { Podcast } from "../../interfaces";
-// const { t } = useTranslation();
-
-
+import { MarkDownToolTip } from "../reusables/tooltip";
+import { useRouter } from "next/router";
 
 export default function uploadShowTools() {
     return false
@@ -73,13 +72,13 @@ interface ShowFormInter {
 }
 
 // 2. Stylings
+
 export const showTitleStyling = "text-white text-xl mb-4"
 export const spinnerClass = "w-full flex justify-center mt-4"
 export const photoIconStyling = "h-11 w-11 text-zinc-400"
 export const explicitLabelStyling = "flex items-center mr-5"
 export const mediaSwitcherLabelStyling = "flex items-center label"
 export const imgStyling = "h-48 w-48 text-slate-400 rounded-[20px]"
-export const selectDropdownRowStyling = "flex flex-col sm:flex-row w-full justify-between space-y-2 sm:space-y-0"
 export const explicitCheckBoxStyling = "checkbox mr-2 border-2 border-zinc-600"
 export const emptyCoverIconTextStyling = "text-lg tracking-wider pt-2 text-zinc-400"
 export const explicitTextStyling = "label-text cursor-pointer text-zinc-400 font-semibold"
@@ -91,8 +90,10 @@ export const mediaSwitcherVideoStyling = "mr-2 cursor-pointer label-text text-zi
 export const mediaSwitchedAudioStyling = "ml-2 cursor-pointer label-text text-zinc-400 font-semibold"
 export const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
 export const uploadShowStyling = "w-full flex flex-col justify-center items-center space-y-1 pb-[200px]"
+export const selectDropdownRowStyling = "flex flex-col sm:flex-row w-full justify-between space-y-2 sm:space-y-0"
+export const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex flex-row justify-start items-start focus-within:ring-white focus-within:ring-2"
 export const selectDropdownStyling="select select-secondary w-[30%] py-2 px-5 text-base font-normal input-styling bg-zinc-800"
-export const cropScreenStyling = "absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center backdrop-blur-md"
+export const cropScreenStyling = "absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center backdrop-blur-md z-50"
 export const coverContainerLabelStyling = "cursor-pointer transition duration-300 ease-in-out text-zinc-600 hover:text-white flex md:block h-fit w-48"
 export const cropSelectionDivStyling = "min-w-[50px] min-h-[10px] rounded-[4px] bg-black/10 hover:bg-black/20 border-[1px] border-solid border-white/10 m-2 p-1 px-2 cursor-pointer flex flex-col justify-center items-center"
 export const emptyCoverIconStyling = "input input-secondary flex flex-col items-center justify-center cursor-pointer bg-zinc-800 h-48 w-48 rounded-[20px] outline-none focus:ring-2 focus:ring-inset focus:ring-white hover:bg-zinc-600"
@@ -148,12 +149,13 @@ export const ShowForm = (props: ShowFormInter) => {
     const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
     const [submittingShow, setSubmittingShow] = useState<boolean>(false)
     const [uploadCost, setUploadCost] = useState<Number>(0)
+    const router = useRouter();
 
     // inputs
     const [podcastDescription_, setPodcastDescription_] = useState("");
     const [podcastAuthor_, setPodcastAuthor_] = useState("");
     const [podcastEmail_, setPodcastEmail_] = useState("");
-    const [podcastCategory_, setPodcastCategory_] = useState("art");
+    const [podcastCategory_, setPodcastCategory_] = useState<number>(0);
     const [podcastName_, setPodcastName_] = useState("");
     const [podcastCover_, setPodcastCover_] = useState(null);
     const [podcastLanguage_, setPodcastLanguage_] = useState('en');
@@ -177,7 +179,7 @@ export const ShowForm = (props: ShowFormInter) => {
         "auth": podcastAuthor_.length > 0,
         "email": podcastEmail_.length > 0,
         "lang": podcastLanguage_.length > 0,
-        "cat": podcastCategory_.length > 0,
+        "cat": true, // default is 0 which always defaults to Arts
         "cover": podcastCover_ !== null
     }
     useEffect(() => console.log("allFieldsFilled: ", allFieldsFilled(validationObject)), [validationObject]);
@@ -217,7 +219,7 @@ export const ShowForm = (props: ShowFormInter) => {
         "author": podcastAuthor_,
         "lang": podcastLanguage_,
         "isExplicit": podcastExplicit_ ? "yes" : "no",
-        "categories": podcastCategory_,
+        "categories": categories_en[podcastCategory_],
         "email": podcastEmail_,
         "cover": "",
         "minifiedCover": "",
@@ -229,6 +231,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
     async function submitShow(payloadObj: any) {
         // Check Connection
+        
         if (!checkConnection(arweaveAddress_)) {
             toast.error(CONNECT_WALLET, {style: TOAST_DARK})
             return false
@@ -241,24 +244,31 @@ export const ShowForm = (props: ShowFormInter) => {
         payloadObj["jwk_n"] = await getPublicKey()
         
         // Description to Arseeding
+        const toastDesc = toast.loading(t("loadingToast.savingDesc"), {style: TOAST_DARK, duration: 10000000});
         try {
             const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
+            toast.dismiss(toastDesc);
             //const name = await upload2DMedia(podcastName_); payloadObj["name"] = name?.order?.itemId
         } catch (e) {
-            console.log(e); handleErr(DESCRIPTION_UPLOAD_ERROR, setSubmittingShow); return;
+            toast.dismiss(toastDesc);
+            console.log(e); handleErr(t("errors.descUploadError"), setSubmittingShow); return;
         }
 
         // Covers to Arseeding
+        const toastCover = toast.loading(t("loadingToast.savingCover"), {style: TOAST_DARK, duration: 10000000});
         try {
             const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
             const cover = await upload3DMedia(convertedCover, convertedCover.type); payloadObj["cover"] = cover?.order?.itemId
             const minCover = await minifyPodcastCover(podcastCover_); const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
             const miniCover = await upload3DMedia(fileMini, fileMini.type); payloadObj["minifiedCover"] = miniCover?.order?.itemId
+            toast.dismiss(toastCover);
         } catch (e) {
-            console.log(e); handleErr(COVER_UPLOAD_ERROR, setSubmittingShow); return;
+            toast.dismiss(toastCover);
+            console.log(e); handleErr(t("errors.coverUploadError"), setSubmittingShow); return;
         }
 
         // Fee to Everpay
+        const toastFee = toast.loading(t("loadingToast.payingFee"), {style: TOAST_DARK, duration: 10000000});
         try {
             const everpay = new Everpay({account: address, chainType: ChainType.arweave, arJWK: 'use_wallet',});
             const transaction = await everpay.transfer({
@@ -268,20 +278,25 @@ export const ShowForm = (props: ShowFormInter) => {
                 data: {action: "createPodcast", name: podcastName_,}
             })
             payloadObj["txid"] = transaction?.everHash
+            toast.dismiss(toastFee);
         } catch (e) {
-            console.log(e); handleErr(EVERPAY_BALANCE_ERROR, setSubmittingShow); return;
+            toast.dismiss(toastFee);
+            console.log(e); handleErr(t("error.everpayError"), setSubmittingShow); return;
         }
         //Error handling and timeout needed for this to complete redirect
+        const toastSaving = toast.loading(t("loadingToast.savingChain"), {style: TOAST_DARK, duration: 10000000});
         setTimeout(async function () {
             const result = await axios.post('/api/exm/write', createShowPayload);
             console.log("exm res: ", result)
             setSubmittingShow(false)
-            //EXM call, set timeout, then redirect. 
-            toast.success(SHOW_UPLOAD_SUCCESS, {style: TOAST_DARK})
+            //EXM call, set timeout, then redirect.
+            toast.dismiss(toastSaving); 
+            toast.success(t("success.showUploaded"), {style: TOAST_DARK})
             setTimeout(async function () {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
-                window.location.assign(`/creator/${identifier}`);
-            }, 500)
+                const { locale } = router;
+                router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
+            }, 2500)
         }, 5000)
     }
 
@@ -311,11 +326,17 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Episode Description
                     */}
-                    <textarea className={episodeDescStyling + " h-32"} required title="Between 1 and 5000 characters" name="showShowNotes" placeholder={t("uploadshow.description")}                     
-                    onChange={(e) => {
-                      setPodDescMsg(handleValMsg(e.target.value, "podDesc"));
-                      setPodcastDescription_(e.target.value);
-                    }}></textarea>
+                    <div className={descContainerStyling}>
+                        <textarea className={"w-[93%] "+episodeDescStyling + " h-32 "} required title="Between 1 and 5000 characters" name="showShowNotes" placeholder={t("uploadshow.description")}                     
+                        onChange={(e) => {
+                        setPodDescMsg(handleValMsg(e.target.value, "podDesc"));
+                        setPodcastDescription_(e.target.value);
+                        }}></textarea>
+                        <MarkDownToolTip 
+                            placement="top"
+                            size={40}
+                        />
+                    </div>
                     <ValMsg valMsg={podDescMsg} className="pl-2" />
 
                     {/*
@@ -545,7 +566,7 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                     className={`${selectDropdownStyling} sm:mr-[2%] w-[47%]`}
                     id="podcastCategory"
                     name="category"
-                    onChange={(e) => props.setCategory(e.target.value)}
+                    onChange={(e) => props.setCategory(e.target.selectedIndex)}
                 >
                     <CategoryOptions />
                 </select>
@@ -553,6 +574,7 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 <select
                     className={`${selectDropdownStyling} sm:mr-[2%] w-[47%]`}
                     id="podcastLanguage"
+                    defaultValue={DEFAULT_LANGUAGE}
                     name="language"
                     onChange={(e) => props.setLanguage(e.target.value)}
                 >
@@ -560,22 +582,23 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 </select>
             </div>
             <select
-                    className={`${selectDropdownStyling} hidden sm:flex mr-[2%]`}
-                    id="podcastCategory"
-                    name="category"
-                    onChange={(e) => props.setCategory(e.target.value)}
-                >
-                    <CategoryOptions />
-                </select>
-                {/*Languages*/}
-                <select
-                    className={`${selectDropdownStyling} hidden sm:flex mr-[2%]`}
-                    id="podcastLanguage"
-                    name="language"
-                    onChange={(e) => props.setLanguage(e.target.value)}
-                >
-                    <LanguageOptions />
-                </select>
+                className={`${selectDropdownStyling} hidden sm:flex mr-[2%]`}
+                id="podcastCategory"
+                name="category"
+                onChange={(e) => props.setCategory(e.target.selectedIndex)}
+            >
+                <CategoryOptions />
+            </select>
+            {/*Languages*/}
+            <select
+                className={`${selectDropdownStyling} hidden sm:flex mr-[2%]`}
+                id="podcastLanguage"
+                defaultValue={DEFAULT_LANGUAGE}
+                name="language"
+                onChange={(e) => props.setLanguage(e.target.value)}
+            >
+                <LanguageOptions />
+            </select>
             {/*Label*/}
             <LabelInput 
                 setLabel={props.setLabel}

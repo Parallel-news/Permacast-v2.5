@@ -15,6 +15,7 @@ import TipButton from "../../component/reusables/tip";
 // import PlayButton from "../../../../component/reusables/playButton";
 // import Track from "../../component/track";
 import { switchFocus } from "../../atoms";
+import { MESON_ENDPOINT } from "../../constants";
 
 export default function Episode(props) {
   const { podcastId, episodeNumber } = [2,3]
@@ -40,7 +41,7 @@ export default function Episode(props) {
     const playerObj_ = document.getElementById("hidden-player");
     if (!(playerObj_ === null)) {
       playerObj_.src =
-      "https://arweave.net/" + episode?.contentTx;
+      MESON_ENDPOINT + episode?.contentTx;
     }
     // console.log(episode)
   
@@ -126,7 +127,7 @@ export default function Episode(props) {
                 </div>
                 <div className="flex flex-row items-center gap-x-2">
                   <a
-                    href={`https://arweave.net/${episode.contentTx}`}
+                    href={`${MESON_ENDPOINT}${episode.contentTx}`}
                     className="flex items-center rounded-full btn btn-sm normal-case text-sm font-medium border-0"
                     style={{
                       backgroundColor: rgb?.backgroundColor,

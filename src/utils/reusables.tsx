@@ -6,6 +6,7 @@ interface hexToRgbInter {
     hex: string
     alpha: number
 }
+
 export function hexToRGB(hex, alpha) {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
@@ -116,3 +117,27 @@ export function validateLabel(label, podcasts: Podcast[]) {
     return {res: true, msg: label};
   }
 }
+
+export function detectTimestampType(timestamp) {
+  const now = Date.now();
+  const maxSeconds = now / 1000; // convert current timestamp to seconds
+  if (timestamp < maxSeconds) {
+    return 'seconds';
+  } else {
+    return 'milliseconds';
+  }
+}
+
+// Checks if we should use Arweave or Arseeding gateway
+export const hasBeen10Min = (timestamp: number) => (Date.now() - timestamp) > (10 * 60 * 1000) ? true : false
+
+// SVG Conversion for Twitter Metadata
+export function svgToDataUrl(svg) {
+  const svgString = new XMLSerializer().serializeToString(svg)
+  const encodedSVG = encodeURIComponent(svgString);
+  return `data:image/svg_xml,${encodedSVG}`
+}
+
+export const reRoute = (url, router) => {
+  router.push(url, undefined, { scroll: true });
+};

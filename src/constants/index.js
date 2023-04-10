@@ -61,6 +61,7 @@ export const PERMACAST_HELPER_URL = "https://permacast-bloodstone-helper.herokua
 export const ANS_MAPPED_STATE_URL = "https://ans-metrics.herokuapp.com/mapped-state/";
 export const RSS_FEED_URL = PERMACAST_HELPER_URL + "feeds/rss/"; // requires PID at the end
 export const EXM_ANS_CONTRACT_ADDRESS = "VGWeJLDLJ9ify3ezl9tW-9fhB0G-GIUd60FE-5Q-_VI";
+export const MESON_ENDPOINT = "https://pz-znmpfs.meson.network/"
 
 // SOCIALS
 export const PERMACAST_DISCORD_URL = "https://discord.gg/cQanQVCs7G"
@@ -110,13 +111,20 @@ export const TEXTMARKDOWN = {
 // PK
 export const USER_SIG_MESSAGES = ["my Arweave PK for Permacast is "]
 
+// PASOM
+export const PASOM_SIG_MESSAGES = ["so-ans-profile-metadata"]
+
 // EVERPAY
 export const EVERPAY_EOA = '0x6c05FdF443A5c9520af46976A24546191068afbe';
 export const EVERPAY_FEATURE_TREASURY = "0x6c05FdF443A5c9520af46976A24546191068afbe";
 export const EVERPAY_AR_TAG = 'arweave,ethereum-ar-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,0x4fadc7a98f2dc96510e42dd1a74141eeae0c1543';
 export const MIN_UPLOAD_PAYMENT = .25 // 250000000000 winston
 export const EPISODE_UPLOAD_FEE = .01 // 10000000000 winston
-export const FEATURE_COST = 0.3 //300000000000 winston
+export const FEATURE_COST_BASE = 0.3 //  300000000000 winston
+export const FEATURE_COST_PER_DAY = 0.1 //100000000000 winston
+
+// MEASUREMENTS
+export const GIGABYTE = 1024 ** 3;
 
 // TOAST
 export const TOAST_POSITION = "top-center"
@@ -126,15 +134,10 @@ export const TOAST_DARK = {
     background: '#333',
     color: '#fff',
 }
+export const TOAST_MARGIN = "ml-0 md:ml-[100px] lg:ml-[136px]"
 
 // API ERRORS
-export const EVERPAY_BALANCE_ERROR = "There was an issue with your Everpay Balance/Connection"
-export const COVER_UPLOAD_ERROR = "There was an issue uploading your cover. Try Again."
-export const MEDIA_UPLOAD_ERROR = "There was an issue uploading your media. Try Again."
-export const DESCRIPTION_UPLOAD_ERROR = "There was an issue uploading description. Try Again."
 export const NO_SHOW = "Unable to fetch shows. Refresh and try again."
 
-// API SUCCESS
-export const SHOW_UPLOAD_SUCCESS = "Show Uploaded. Redirecting."
-export const EP_UPLOAD_SUCCESS = "Episode Uploaded. Redirecting."
-
+// ID
+export const startId = "#start"

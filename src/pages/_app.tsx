@@ -2,11 +2,9 @@ import Head from 'next/head';
 import Script from 'next/script';
 import { appWithTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
-import { Toaster } from 'react-hot-toast';
-import { RecoilRoot, useRecoilState } from 'recoil';
+import { RecoilRoot } from 'recoil';
 import { ArconnectProvider } from 'react-arconnect';
 import Layout from '../component/layout';
-import { MINT_DURATION, TOAST_POSITION } from '../constants';
 import { ShikwasaProvider } from '../hooks';
 import localStorageObjectManager, { PODCAST_COVER_COLORS_MANAGER, PODCAST_DESCRIPTION_MANAGER } from '../utils/localstorage';
 
@@ -31,17 +29,17 @@ function App({ Component, pageProps }) {
           <Head>
             <title>Permacast</title>
             <meta name="description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
+            <meta name="twitter:card" content="summary"></meta>
             <meta name="twitter:image" content={`https://permacast.app/favicon.ico`} />
             <meta name="twitter:title" content={`Permacast`} />
             <meta name="twitter:url" content={`https://permacast.app/`}></meta>
             <meta name="twitter:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
 
-            <meta name="og:card" content="summary" />
-            <meta name="description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
-            <meta name="og:image" content={`https://permacast.app/favicon.ico`} />
-            <meta name="og:title" content={`Permacast`} />
-            <meta name="og:url" content={`https://permacast.app/`} />
-            <meta name="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} /> 
+            <meta property="og:card" content="summary" />
+            <meta property="og:image" content={`https://permacast.app/favicon.ico`} />
+            <meta property="og:title" content={`Permacast`} />
+            <meta property="og:url" content={`https://permacast.app/`} />
+            <meta property="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} /> 
           </Head>
         <ArconnectProvider permissions={PERMISSIONS}>
           <QueryPodcasts />
@@ -60,15 +58,6 @@ function App({ Component, pageProps }) {
             `}
           </Script>
           <ShikwasaProvider>
-
-            <Toaster
-              position={TOAST_POSITION}
-              reverseOrder={false}
-              toastOptions={{
-                  duration: MINT_DURATION
-              }}
-            />
-
             <Layout>
               <Component {...pageProps} className="scrollbar-container"/>
             </Layout>

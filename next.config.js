@@ -9,6 +9,7 @@ module.exports = {
       'arweave.net', 
       'img.arweave.dev',
       'arseed.web3infra.dev',
+      'pz-znmpfs.meson.network'
     ],
     minimumCacheTTL: 60,
     formats: ['image/avif', 'image/webp']

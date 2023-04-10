@@ -6,19 +6,23 @@ import { XCircleIcon } from "@heroicons/react/24/outline";
 import { flexCenter } from "../creator/featuredCreators";
 import { flexCol } from "../creator";
 import { dimColorString, isTooDark, RGBstringToObject } from "../../utils/ui";
+import { rFull } from "../creator/edit";
 
 interface VerificationInterface {
+  size: number;
   ANSuserExists: boolean;
   includeText?: boolean;
 };
 
-export const VerificationButtonStyling = "rounded px-2 py-1.5 text-lg font-medium ";
+export const VerificationButtonStyling = rFull + `p-1.5 text-lg font-medium `;
 export const ExplanationTextStyling = "text-gray-500 text-sm ";
 export const LargeBoldFontStyling = "text-lg font-bold ";
 
 const Verification: FC<VerificationInterface> = (props) => {
   const { t } = useTranslation();
   const { ANSuserExists, includeText } = props;
+  const size = props.size || 24;
+  const style = { width: size, height: size };
 
   const UserVerified = () => {
     const { t } = useTranslation();
@@ -40,13 +44,13 @@ const Verification: FC<VerificationInterface> = (props) => {
     );
   };
 
-  const Icon: FC<VerificationInterface> = ({ ANSuserExists }) => (
-    <div className="rounded-full">
-      {ANSuserExists ? <CheckIcon className="w-6 h-6 text-green-500" /> : <XCircleIcon className="w-6 h-6 text-red-500" />}
+  const Icon: FC<VerificationInterface> = ({ size, ANSuserExists }) => (
+    <div className={rFull}>
+      {ANSuserExists ? <CheckIcon {...{ style }} className="text-emerald-500" /> : <XCircleIcon {...{ style }} className="text-red-500" />}
     </div>
   );
 
-  const color = ANSuserExists ? 'rgb(34, 197, 94)' : "rgb(239, 68, 68)";
+  const color = ANSuserExists ? 'rgb(16, 185, 129)' : "rgb(239, 68, 68)";
   const colorWhite = 'rgb(255, 255, 255)';
   const colorBlack = 'rgb(0, 0, 0)';
 
@@ -61,7 +65,7 @@ const Verification: FC<VerificationInterface> = (props) => {
       }}
       content={ANSuserExists ? <UserVerified /> : <UserNotVerified />
     }>
-      <Icon {...{ ANSuserExists }} />
+      <Icon {...{ size, ANSuserExists }} />
       {includeText && <p>{ANSuserExists ? t("creator.verification.verified.text"): t("creator.verification.unverified.text")}</p>}
     </Tooltip>
   );

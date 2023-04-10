@@ -21,6 +21,7 @@ import Track from "../../component/reusables/track";
 import Loading from "../../component/reusables/loading";
 import { convertPodcastsToEpisodes, findPodcast, matchFirstChars, trimChars } from "../../utils/filters";
 import { NextPage } from "next";
+import { useTranslation } from "next-i18next";
 
 
 const PodcastId: NextPage<{ podcast: Podcast }> = ({ podcast }) => {
@@ -33,6 +34,8 @@ const PodcastId: NextPage<{ podcast: Podcast }> = ({ podcast }) => {
 
     const [themeColor, setThemeColor] = useState<string>('');
     const [textColor, setTextColor] = useState<string>('');
+
+    const { t } = useTranslation();
 
     if (podcast) {
         //State Calls Here
@@ -53,22 +56,27 @@ const PodcastId: NextPage<{ podcast: Podcast }> = ({ podcast }) => {
             }
             fetchColor();
         }, []);
-
+//<meta name="og:card" content="summary" />
         return (
             <>
                 <Head>
                     <title>{`${podcastName} | Permacast`}</title>
                     <meta name="description" content={`By ${author}`} />
+                    <meta name="twitter:card" content="summary_large_image"></meta>
                     <meta name="twitter:image" content={(cover !== "") ? imgSrc : "https://permacast.app/favicon.ico"} />
                     <meta name="twitter:title" content={`${podcastName} | Permacast`} />
                     <meta name="twitter:url" content={`https://permacast.app/`}></meta>
                     <meta name="twitter:description" content={`By ${author}`} />
-                    <meta name="og:card" content="summary" />
+                    
+                    <meta property="og:type" content="article" />
                     <meta name="description" content={`By ${author}`} />
                     <meta name="og:image" content={(cover !== "") ? imgSrc : "https://permacast.app/favicon.ico"} />
                     <meta name="og:title" content={`${podcastName} | Permacast`} />
                     <meta name="og:url" content={`https://permacast.app/`} />
                     <meta name="og:description" content={`By ${author}`} />
+                    <meta property="og:image:width" content="1200" />
+                    <meta property="og:image:height" content="630" />
+                    <meta property="og:image:alt" content="Show Cover" />
                 </Head>
                 <div className={podcastIdStyling}>
                     <PodcastBanner
@@ -88,7 +96,7 @@ const PodcastId: NextPage<{ podcast: Podcast }> = ({ podcast }) => {
                         }
                     />
                     {/*Title Track*/}
-                    <p className={nextEpisodeTitleStyling + " pt-10"}>Episodes</p>
+                    <p className={nextEpisodeTitleStyling + " pt-10"}>{t("episode.number")}</p>
                     {/*Episode Track*/}
                     {fullEpisodeInfo.map((episode: FullEpisodeInfo, index: number) => (
                         <div key={index}>
@@ -130,7 +138,10 @@ export async function getServerSideProps(context) {
     const EXM: EXMState = (await axios.post(EXM_READ_LINK + contractAddress)).data;
     const { podcasts } = EXM;
 
-    const podcast = findPodcast(podcastId, podcasts);
+    let podcast = findPodcast(podcastId, podcasts);
+    if(!podcast) {
+        podcast = null
+    }
 
     return { props: { podcast, ...translations } };
 }

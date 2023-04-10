@@ -1,9 +1,11 @@
 {
 	"language": "Language",
 	"tooltip": {
-		"coming-soon": "Coming soon"
+		"coming-soon": "Coming soon",
+		"markdown-supported": "Markdown Supported"
 	},
 	"arconnect": {
+		"load-failed": "Everpay failed to load. Please try again later.",
 		"profile": "View Profile",
 		"arpage": "View on ar.page",
 		"everpay": "Top up with Everpay",
@@ -162,6 +164,24 @@
 	},
 	"creator": {
 		"ans": "View on ANS",
+		"edit": "Edit Profile",
+		"follow": "Follow",
+		"unfollow": "Unfollow",
+		"followed": "Followed",
+		"followers": "Followers",
+		"following": "Following",
+		"edit-modal": {
+			"header": "Edit Profile",
+			"save-changes": "Save changes",
+			"nickname": "Nickname",
+			"bio": "Bio",
+			"banner": "Banner",
+			"avatar": "Avatar",
+			"error": {
+				"nickname": "Nickname must be between {{minLength}} and {{maxLength}} characters.",
+				"bio": "Bio must be between {{minLength}} and {{maxLength}} characters."
+			}
+		},
 		"verification": {
 			"verified": {
 				"text": "Verified",
@@ -174,12 +194,15 @@
 		},
 		"podcasts": "Podcasts",
 		"nopodcasts": "No podcasts found",
+
 		"address": "Address",
 		"notfound": "not found on ANS",
 		"latestepisodes": "Latest episodes"
 	},
 	"track": {
-		"by": "by"
+		"by": "by",
+		"video": "This episode contains video content",
+		"audio": "This episode contains audio content"
 	},
 	"tip": "Tip",
 	"loadingpodcasts": "Loading podcasts...",
@@ -206,5 +229,29 @@
 	"tipModal": {
 		"submitTip": "Submit Tip",
 		"balance": "Balance"
+	},
+	"errors": { 
+		"everpayError": "There was an issue with your Everpay Balance/Connection",
+		"coverUploadError": "There was an issue uploading your cover. Try Again.",
+		"mediaUploadError": "There was an issue uploading your media. Try Again.",
+		"descUploadError": "There was an issue uploading description. Try Again.",
+		"noShowError": "Unable to fetch shows. Refresh and try again."
+	},
+	"success": {
+		"showUploaded": "Show Uploaded. Redirecting.",
+		"episodeUploaded": "Episode Uploaded. Redirecting."
+	},
+	"loadingToast": {
+		"savingDesc": "Uploading Description",
+		"savingMedia": "Uploading Media",
+		"payingFee": "Paying Fee",
+		"savingChain": "Saving to Blockchain",
+		"savingCover": "Uploading Cover",
+		"savingBanner": "Uploading Banner Cover",
+		"uploading": "Uploading"
+	},
+	"viewPodcasts": {
+		"allpodcasts": "All Podcasts"
 	}
+	
 }

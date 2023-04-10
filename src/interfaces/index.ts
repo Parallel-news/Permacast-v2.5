@@ -5,6 +5,7 @@ export type chainName = string;
 export type chainTicker = string;
 export type tx = string;
 export type arweaveTX = string;
+export type everpayTX = string;
 
 export interface EXMState {
   podcasts:              Podcast[];
@@ -20,7 +21,7 @@ export interface EXMState {
   paid_fees:             tx[];
   signatures:            signature[];
 }
-
+// !deprecated
 export interface EXMDevState {
   podcasts:              Podcast[];
   admins:                string[];
@@ -106,4 +107,12 @@ export interface OwnedLabel {
 export interface ANSMapped {
   address: string,
   primary: string
-}
+};
+
+export interface FeaturedChannel {
+  pid: string,
+  payment_txid: everpayTX,
+  paid_by: arweaveAddress,
+  start: number,
+  expiry: number
+};

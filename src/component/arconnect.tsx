@@ -1,21 +1,29 @@
+import axios from 'axios';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTranslation } from 'next-i18next';
 import { Dropdown, DropdownButtonProps } from "@nextui-org/react";
-import { useEffect } from 'react'
+import { FC, useEffect } from 'react'
 import { useArconnect, shortenAddress } from 'react-arconnect';
 import { useRecoilState } from 'recoil';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../constants/arconnect';
-import { arweaveAddress } from '../atoms';
+import { PASoMProfileAtom, arweaveAddress } from '../atoms';
 import { ProfileImage } from './creator';
 import { ANS_TEMPLATE } from '../constants/ui';
 import { EverPayBalance } from '../utils/everpay/EverPayBalance';
+import { ArrowLeftOnRectangleIcon, BanknotesIcon, NewspaperIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { flexCenter } from './creator/featuredCreators';
+import { PASoMProfile } from '../interfaces/pasom';
+import { ARSEED_URL } from '../constants';
 
 
+export const ArConnectButtonStyling = `h-12 btn-base-color items-center flex px-3 justify-center text-sm md:text-base normal-case default-no-outline-ringed default-animation hover:text-white focus:text-white disabled:text-zinc-400 disabled:bg-zinc-700 disabled:cursor-auto `;
 
-export default function ArConnect() {
+const ArConnect: FC = () => {
   const { t } = useTranslation();
 
-  const [arweaveAddress_, setArweaveAddress_] = useRecoilState(arweaveAddress)
+  const [PASoMProfile, setPASoMProfile] = useRecoilState(PASoMProfileAtom);
+  const [_, setArweaveAddress_] = useRecoilState(arweaveAddress);
 
   const {
     walletConnected,
@@ -25,20 +33,37 @@ export default function ArConnect() {
     arconnectDisconnect
   } = useArconnect();
 
-  const { currentLabel, avatar, address_color } = ANS || ANS_TEMPLATE;
+  const { currentLabel, avatar: ANSAvatar, address_color } = ANS || ANS_TEMPLATE;
+  const avatar = PASoMProfile?.avatar || ANSAvatar;
+
+  const fetchPASoM = async () => {
+    const state = (await axios.get('/api/exm/PASoM/read')).data;
+    const profiles: PASoMProfile[] = state.profiles;
+    const profile = profiles.find((profile: PASoMProfile) => profile.address === address);
+    setPASoMProfile(profile);
+  };
 
   useEffect(() => {
-    if (address && address.length > 0) setArweaveAddress_(address)
+    if (address && address.length > 0) {
+      fetchPASoM();
+      setArweaveAddress_(address);
+    };
   }, [address, walletConnected]);
 
   const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
   const ta = "arconnect.";
 
+  const className = 'text-white w-4 h-4 ';
+  const TopupIcon = () => <BanknotesIcon {...{ className }} />;
+  const ProfileIcon = () => <UserCircleIcon {...{ className }} />;
+  const ArPage = () => <NewspaperIcon {...{ className }} />;
+  const DisconnectIcon = () => <ArrowLeftOnRectangleIcon {...{ className }} />;
+
   const menuItems = [
-    { key: "viewProfile", name: ta + "profile",  href: ANS?.currentLabel ? `/creator/${ANS?.currentLabel}` : `/creator/${address}`},
-    { key: "viewArPage", name: ta + "arpage",  href: ANS?.currentLabel ? `https://${ANS?.currentLabel}.ar.page` : "https://ar.page/"},
-    { key: "goToEverpay", name: ta + "everpay",  href: "https://app.everpay.io"},
-    { key: "disconnect", name: ta + "disconnect",  href: ""},
+    { icon: <TopupIcon />, key: "goToEverpay", name: ta + "everpay",  href: "https://app.everpay.io"},
+    { icon: <ProfileIcon />, key: "viewProfile", name: ta + "profile",  href: ANS?.currentLabel ? `/creator/${ANS?.currentLabel}` : `/creator/${address}`},
+    { icon: <ArPage />, key: "viewArPage", name: ta + "arpage",  href: ANS?.currentLabel ? `https://${ANS?.currentLabel}.ar.page` : "https://ar.page/"},
+    { icon: <DisconnectIcon />, key: "disconnect", name: ta + "disconnect",  href: ""},
   ];
 
   return (
@@ -49,27 +74,29 @@ export default function ArConnect() {
             style={{ 
               backgroundColor: "#FFFFFF00",
             }}
-            className='w-full h-12 hover:bg-zinc-700 bg-zinc-900 rounded-full items-center flex px-4 justify-center mx-auto text-sm md:text-base normal-case focus:outline-white default-animation'
+            className='w-full h-12 hover:bg-zinc-700 bg-zinc-900 rounded-full items-center flex px-4 justify-center mx-auto text-sm md:text-base normal-case default-no-outline-ringed default-animation z-0'
           >
-            {
-              ANS?.avatar ? (
-                <div className="rounded-full h-6 w-6 overflow-hidden btn-secondary border-[1px]">
-                  <img src={`https://arweave.net/${ANS?.avatar}`} alt="Profile" width="100%" height="100%" />
-                </div>
-              ) : (
-                <ProfileImage {...{currentLabel: currentLabel || address, avatar, address_color, size: 20, borderWidth: 3}} linkToArPage={false}  />
-              )
-            }
+            {avatar ? (
+              <div className="rounded-full h-6 w-6 overflow-hidden border-[2px]">
+                <Image
+                  src={ARSEED_URL + avatar}
+                  width={24}
+                  height={24}
+                  alt="Profile"
+                  className="rounded-full"
+                />
+              </div>
+            ) : (
+              <ProfileImage {...{currentLabel: currentLabel || address, avatar, address_color, size: 20, borderWidth: 3}} unclickable  />
+            )}
             <span className="ml-2">
               {ANS?.currentLabel ? `${ANS?.currentLabel}.ar` : shortenAddress(address, 8)}
             </span>
-            {arweaveAddress_ && arweaveAddress_.length > 0 && (
-              <EverPayBalance textClassname={"ml-4 rounded-full"} />
-            )}
+            <EverPayBalance textClassname={"ml-4 rounded-full"} />
           </Dropdown.Button>
         )) || (
           <button 
-            className="w-full h-12 btn-base-color items-center flex px-3 justify-center mx-auto text-sm md:text-base normal-case focus:outline-white default-animation"
+            className={ArConnectButtonStyling + `w-full mx-auto `}
             onClick={connect}
           >
             🦔 {t("connector.login")}
@@ -89,18 +116,26 @@ export default function ArConnect() {
             className='hover:bg-zinc-700'
           >
             <>
-              {item.key === "disconnect" && <button onClick={() => arconnectDisconnect()}>{t(item.name)}</button>}
-              {item.key !== "disconnect" && (
-                <Link href={item.href}>
+              {item.key === "disconnect" && (
+                <button className={flexCenter + 'gap-x-2'} onClick={() => arconnectDisconnect()}>
+                  {item.icon}
                   {t(item.name)}
-                </Link>
+                </button>
+              )}
+              {item.key !== "disconnect" && (
+                <div className={flexCenter + 'gap-x-2'}> 
+                  {item.icon}
+                  <Link href={item.href}>
+                    {t(item.name)}
+                  </Link>
+                </div>
               )}
             </>
           </Dropdown.Item>
         )}
       </Dropdown.Menu>
     </Dropdown>
-  )
-}
+  );
+};
 
-//style={{ backgroundColor: '#18181B' }}
+export default ArConnect;

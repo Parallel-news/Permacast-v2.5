@@ -21,6 +21,7 @@ export const Sidenav: FC = () => {
   const router = useRouter();
 
   const isHome = router.pathname === "/";
+  const isViewPodcasts = router.pathname === "/view-podcasts"
   const isUploadPodcast = router.pathname === "/upload-podcast";
   const isUploadEpisode = router.pathname === "/upload-episode";
   const isUpload = isUploadPodcast || isUploadEpisode;
@@ -32,9 +33,7 @@ export const Sidenav: FC = () => {
         <Cooyub svgStyle={IconSizeStyling} rectStyle={IconSizeStyling} fill={currentThemeColor} />
       </Link>
       <NavButton url="/" condition={isHome} icon={<HomeIcon />} />
-      <ComingSoonTooltip placement="right">
-        <RectangleStackIcon className={IconSizeStyling + "text-zinc-600 cursor-not-allowed"} />
-      </ComingSoonTooltip>
+      <NavButton url="/view-podcasts" condition={isViewPodcasts} icon={<RectangleStackIcon className={IconSizeStyling} />} />
       <LanguageDropdown />
       <UploadDropdown routeMatches={isUpload} />
       <HelpDropdown />

@@ -1,14 +1,17 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { Ans, Episode, EXMDevState, FullEpisodeInfo, Podcast } from '../../../interfaces';
+import Head from 'next/head';
 import { NextPage } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import React, { useState, useEffect } from 'react';
+import { useRecoilState } from 'recoil';
+import { Ans, Episode, FullEpisodeInfo, Podcast } from '../../../interfaces';
 import { hexToRGB, RGBobjectToString } from '../../../utils/ui';
 import { allPodcasts, podcastColorAtom } from '../../../atoms';
-import { useRecoilState } from 'recoil';
 import { Creator404, CreatorPageComponent, sortByDate } from '../../../component/creator';
 import { ANS_TEMPLATE } from '../../../constants/ui';
-import { removeDuplicates } from '../../../utils/filters';
+import { ARWEAVE_READ_LINK } from '../../../constants';
+import { shortenAddress } from 'react-arconnect';
+import { PASoMProfile } from '../../../interfaces/pasom';
 
 // pages/blog/[slug].js
 export async function getStaticPaths() {
@@ -41,25 +44,29 @@ export async function getStaticProps(context) {
       userInfo.currentLabel = address;
       userInfo.userIsAddress = isAddress ? true: false;
       userInfo.ANSuserExists = false;
-    };
+    }
   } catch (error) {
     console.log(error);
-  };
+  }
 
   return {
     props: {
       ...(await serverSideTranslations(locale, [
         'common',
       ])),
-      userInfo
+      userInfo,
     },
   };
 };
 
 const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
-  if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) return <Creator404 address={userInfo?.user || ''} />;
+  if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) return <Creator404 address={userInfo?.user || ''} />
 
-  const { user, address_color } = userInfo;
+  const { user, nickname, currentLabel, address_color, bio, avatar } = userInfo;
+
+  const [PASoMProfile, setPASoMProfile] = useState<PASoMProfile | undefined>();
+
+  const creatorName = nickname || currentLabel || shortenAddress(user);
 
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [episodes, setEpisodes] = useState<FullEpisodeInfo[]>([]);
@@ -73,25 +80,56 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   }, [userInfo]);
 
   useEffect(() => {
+    const fetchPASoM = async () => {
+      const state = (await axios.get('/api/exm/PASoM/read')).data;
+      const profiles: PASoMProfile[] = state.profiles;
+      const profile = profiles.find((profile: PASoMProfile) => (profile.address === user));
+      setPASoMProfile(profile);
+    };
+    fetchPASoM();
+  }, []);
+
+  useEffect(() => {
     if (!allPodcasts_) return;
     const fetchUserData = async () => {
       const podcasts: Podcast[] = allPodcasts_.filter((podcast: Podcast) => podcast.owner === user);
       const userEpisodes = podcasts.map((podcast: Podcast) => 
         podcast.episodes.map((episode: Episode) => ({episode, podcast}))
-      ).flat(1).splice(0, 3);
+      ).flat(1).splice(-3, 3);
       setPodcasts(podcasts);
-      setEpisodes(sortByDate(userEpisodes));
+      const sortedEpisodes = sortByDate(userEpisodes)
+      setEpisodes(sortedEpisodes.slice().reverse());
     };
     fetchUserData();
-  }, [allPodcasts_])
+  }, [allPodcasts_]);
 
   const creator = {
     ...userInfo,
+    PASoMProfile,
     podcasts,
     episodes,
   };
 
-  return <CreatorPageComponent {...{ creator }} />;
+  return (
+    <>
+      <Head>
+        <title>{`${creatorName} | Creator`}</title> 
+        <meta name="description" content={`${bio}`} />
+        <meta name="twitter:card" content="summary"></meta>
+        <meta name="twitter:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
+        <meta name="twitter:title" content={`${creatorName} | Permacast Creator`} />
+        <meta name="twitter:url" content={`https://permacast.app/`} />
+        <meta name="twitter:description" content={`${bio}`} />
+        
+        <meta property="og:card" content="summary" />
+        <meta property="og:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
+        <meta property="og:title" content={`${creatorName} | Permacast Creator`} />
+        <meta property="og:url" content={`https://permacast.app/`} />
+        <meta property="og:description" content={`${bio}`} /> 
+      </Head>
+      <CreatorPageComponent {...{ creator }}/>
+    </>
+  )
 };
 
 
