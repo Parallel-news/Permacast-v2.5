@@ -10,11 +10,9 @@ export function Greeting() {
   
   return (
     <div>
-      <h1 className="text-zinc-100 text-xl">
+      <h1 className="text-white text-2xl">
         {ANS?.currentLabel ? (
-          <>
-            {t("home.hi")} {ANS?.currentLabel}!
-          </>
+          <>{t("home.hi")} {ANS?.currentLabel + '.ar'}!</>
         ) : (
           <>{t("home.welcome")}</>
         )}
