@@ -80,13 +80,13 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   }, [userInfo]);
 
   useEffect(() => {
-    const fetchPASOM = async () => {
+    const fetchPASoM = async () => {
       const state = (await axios.get('/api/exm/PASoM/read')).data;
       const profiles: PASoMProfile[] = state.profiles;
-      const profile = profiles.find((profile: PASoMProfile) => profile.address === user);
+      const profile = profiles.find((profile: PASoMProfile) => (profile.address === user));
       setPASoMProfile(profile);
     };
-    fetchPASOM();
+    fetchPASoM();
   }, []);
 
   useEffect(() => {

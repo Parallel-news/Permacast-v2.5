@@ -22,6 +22,7 @@ interface CropScreenInterface {
 };
 
 interface UploadImageContainerInterface {
+  initialImage: string;
   fileName: string; // for the label
   cropAspect: number;
   previewImage: ReactNode;
@@ -76,7 +77,7 @@ export const CropScreen: FC<CropScreenInterface> = ({ inputImg, rotation, cropAs
 };
 
 
-export const UploadImageContainer: FC<UploadImageContainerInterface> = ({ fileName, previewImage, placeholder, cropAspect, inputClassName, labelClassName, setImage }) => {
+export const UploadImageContainer: FC<UploadImageContainerInterface> = ({ initialImage, fileName, previewImage, placeholder, cropAspect, inputClassName, labelClassName, setImage }) => {
 
   const imageRef = useRef<HTMLInputElement | null>(null);
   const [img, setImg] = useState<string>("");
@@ -153,7 +154,7 @@ export const UploadImageContainer: FC<UploadImageContainerInterface> = ({ fileNa
         htmlFor={fileName}
       >
         {/*Show Selected Image or Empty Cover*/}
-        {imageRef?.current?.files?.[0] ? previewImage : placeholder}
+        {(imageRef?.current?.files?.[0] || initialImage) ? previewImage : placeholder}
       </label>
     </>
   );

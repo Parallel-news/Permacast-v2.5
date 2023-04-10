@@ -164,13 +164,23 @@
   },
 	"creator": {
 		"ans": "ANS 地址",
-		"edit": "编辑",
+		"edit": "编辑个人资料",
+		"follow": "关注",
+		"unfollow": "取消关注",
+		"followed": "已关注",
+		"followers": "关注者",
+		"following": "关注中",
 		"edit-modal": {
 			"header": "编辑个人资料",
+			"save-changes": "保存更改",
 			"nickname": "昵称",
 			"bio": "简介",
 			"banner": "横幅",
-			"avatar": "头像"
+			"avatar": "头像",
+			"error": {
+				"nickname": "昵称必须在 {{minLength}} 到 {{maxLength}} 个字符之间。",
+				"bio": "简介必须在 {{minLength}} 到 {{maxLength}} 个字符之间。"
+			}
 		},		
 		"verification": {
 			"verified": {

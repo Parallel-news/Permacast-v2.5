@@ -179,13 +179,23 @@
   },
 	"creator": {
 		"ans": "Подивитися на ANS",
-		"edit": "Редагувати",
+		"edit": "Редагувати профіль",
+		"follow": "Підписатися",
+		"unfollow": "Відписатися",
+		"followed": "Підписано",
+		"followers": "Підписники",
+		"following": "Підписки",
 		"edit-modal": {
 			"header": "Редагувати профіль",
+			"save-changes": "Зберегти зміни",
 			"nickname": "Псевдонім",
 			"bio": "Біографія",
 			"banner": "Банер",
-			"avatar": "Аватар"
+			"avatar": "Аватар",
+			"error": {
+				"nickname": "Псевдонім повинен бути між {{minLength}} та {{maxLength}} символами.",
+				"bio": "Біографія повинна бути між {{minLength}} та {{maxLength}} символами."
+			}
 		},		
 		"verification": {
 			"verified": {

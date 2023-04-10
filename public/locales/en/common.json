@@ -164,13 +164,23 @@
 	},
 	"creator": {
 		"ans": "View on ANS",
-		"edit": "Edit",
+		"edit": "Edit Profile",
+		"follow": "Follow",
+		"unfollow": "Unfollow",
+		"followed": "Followed",
+		"followers": "Followers",
+		"following": "Following",
 		"edit-modal": {
 			"header": "Edit Profile",
+			"save-changes": "Save changes",
 			"nickname": "Nickname",
 			"bio": "Bio",
 			"banner": "Banner",
-			"avatar": "Avatar"
+			"avatar": "Avatar",
+			"error": {
+				"nickname": "Nickname must be between {{minLength}} and {{maxLength}} characters.",
+				"bio": "Bio must be between {{minLength}} and {{maxLength}} characters."
+			}
 		},
 		"verification": {
 			"verified": {

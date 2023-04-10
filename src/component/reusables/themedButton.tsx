@@ -11,7 +11,8 @@ interface ThemedButtonInterface {
   className?: string;
 };
 
-export const hoverableLinkButton = `px-3 py-2 rounded-full text-sm ml-5 cursor-pointer hover:brightness-[3] default-animation outline-inherit `;
+export const hoverableLinkButtonStyling = `px-3 py-2 rounded-full text-sm ml-5 cursor-pointer hover:brightness-[3] default-animation outline-inherit `;
+export const themedButtonIconStyling = `text-inherit w-4 h-4 `;
 
 const ThemedButton: FC<ThemedButtonInterface> = ({ children, onClick, disabled, className }) => {
   const [currentThemeColor] = useRecoilState(currentThemeColorAtom);
@@ -19,7 +20,7 @@ const ThemedButton: FC<ThemedButtonInterface> = ({ children, onClick, disabled, 
   return (
     <button
       {...{disabled, onClick, className}}
-      className={hoverableLinkButton}
+      className={hoverableLinkButtonStyling}
       style={{
         backgroundColor: dimColorString(currentThemeColor, 0.1),
         color: currentThemeColor,

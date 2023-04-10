@@ -23,8 +23,8 @@ const TipButton: FC<TipButtonProps> = (props) => {
       style={{backgroundColor: dimColorString(currentThemeColor, 0.1), color: currentThemeColor}}
       onClick={() => openModalCallback()}
     >
+      <HeartIcon className="mr-2 w-4 h-4" />
       <span>{t("tip")}</span>
-      <HeartIcon className="ml-2 w-4 h-4" />
     </button>
   );
 };
