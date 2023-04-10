@@ -185,7 +185,11 @@
 			"nickname": "Псевдонім",
 			"bio": "Біографія",
 			"banner": "Банер",
-			"avatar": "Аватар"
+			"avatar": "Аватар",
+			"error": {
+				"nickname": "Псевдонім повинен бути між {{minLength}} та {{maxLength}} символами.",
+				"bio": "Біографія повинна бути між {{minLength}} та {{maxLength}} символами."
+			}
 		},		
 		"verification": {
 			"verified": {
