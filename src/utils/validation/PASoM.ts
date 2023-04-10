@@ -1,4 +1,5 @@
 import { PASoMProfile } from "../../interfaces/pasom";
+import { validateArweaveTX } from "./arweave";
 
 export const PASOM_NICKNAME_MIN_LEN = 2;
 export const PASOM_NICKNAME_MAX_LEN = 88;
@@ -20,9 +21,10 @@ export const PASOM_SUPPORTED_SOCIALS = [
 const validatePASoMForm = (PASoMProfile: PASoMProfile) => {
   const { nickname, bio, avatar, banner, websites, socials } = PASoMProfile;
 
-  if (nickname.length !== 0 && !(nickname.length >= PASOM_NICKNAME_MIN_LEN && nickname.length <= PASOM_NICKNAME_MAX_LEN)) return;
-  if (bio.length !== 0 && !(bio.length >= PASOM_BIO_MIN_LEN && bio.length <= PASOM_BIO_MAX_LEN)) return;
-
+  if (nickname && nickname?.length !== 0 && !(nickname.length >= PASOM_NICKNAME_MIN_LEN && nickname.length <= PASOM_NICKNAME_MAX_LEN)) return 'nickname';
+  if (bio && bio?.length !== 0 && !(bio.length >= PASOM_BIO_MIN_LEN && bio.length <= PASOM_BIO_MAX_LEN)) return 'bio';
+  if (banner && banner?.length !== 0 && !validateArweaveTX(banner)) return 'banner';
+  if (avatar && avatar?.length !== 0 && !validateArweaveTX(avatar)) return 'avatar';
   // if (websites) {
   //   const uniqueWebs = [...new Set(websites)];
   //   for (const url of uniqueWebs) {
@@ -37,6 +39,7 @@ const validatePASoMForm = (PASoMProfile: PASoMProfile) => {
   //   }
   //   profile.socials = socials;
   // };
+  return false;
 };
 
 const _isValidUrl = (url: string) => {
