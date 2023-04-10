@@ -161,7 +161,7 @@ export const CreatorNames: FC<CreatorNamesProps> = ({ nickname, currentLabel, AN
     <div className={flexCenter}>
       <div className={creatorNicknameStyling}>{shortenAddress(nickname)}</div>
       {ANSuserExists && <div className={CreatorVerificationParentStyling}>
-        <Verification {...{size: 20, ANSuserExists}} />
+        <Verification {...{size: 10, ANSuserExists}} />
       </div>}
     </div>
     {currentLabel && (<div className={creatorLabelStyling}>@{currentLabel}</div>)}
@@ -247,6 +247,25 @@ export const CreatorTipModal: FC<CreatorTipModalInterface> = ({ ANSorAddress, re
   };
 };
 
+interface FollowersProps {
+  PASoMProfile: PASoMProfile;
+  isFollowing: boolean;
+};
+
+export const Followers: FC<FollowersProps> = ({ PASoMProfile, isFollowing }) => {
+  const { t } = useTranslation();
+
+  const followers = PASoMProfile?.followers ? PASoMProfile?.followers?.length + (isFollowing ? 0 : -1) : 0;
+  const following = PASoMProfile?.followings ? PASoMProfile?.followings?.length : 0;
+
+  return (
+    <div className="flex gap-x-8 text-white select-text">
+      <div className="">{t("creator.followers")} {followers < 0 ? 0: followers}</div>
+      <div className="">{t("creator.following")} {following}</div>
+    </div>
+  );
+};
+
 export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = ({ creator }) => {
 
   const { ANSuserExists, currentLabel, address_color, user, PASoMProfile, podcasts, episodes } = creator;
@@ -255,12 +274,19 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
   const banner = PASoMProfile?.banner || '';
   const bio = PASoMProfile?.bio || '';
   
-  const { address } = useArconnect();
+  const { walletConnected, address } = useArconnect();
 
   const [userBannerImage, setUserBannerImage] = useRecoilState(userBannerImageAtom);
+  
+  const [isFollowing, setIsFollowing] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {setUserBannerImage(banner)}, [banner]);
+  useEffect(() => {
+    const isFollowing = PASoMProfile?.followers?.includes(address);
+    console.log('is following', isFollowing)
+    setIsFollowing(isFollowing);
+  }, [PASoMProfile, address]);
 
   const openModalCallback = () => setIsOpen(prev => !prev);
   const tipModalArgs = { ANSorAddress: ANSuserExists ? currentLabel : user, recipientAddress: user, isOpen, setIsOpen };
@@ -276,12 +302,13 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
               <CreatorNames {...{ nickname, currentLabel, ANSuserExists }} />
             </div>
             <div className={CreatorBioStyling}>{bio}</div>
+            <Followers {...{ PASoMProfile, isFollowing }} />
           </div>
         </div>
         <div className={flexItemsCenter + `mr-3 `}>
           {ANSuserExists && <ViewANSButton {...{ currentLabel }} />}
           {address !== user && <TipButton {...{ openModalCallback }} />}
-          {address !== user && <FollowButton {...{user}} />}
+          {address !== user && <FollowButton {...{ user, walletConnected, isFollowing, setIsFollowing }} />}
           {address === user && <EditButton {...{ PASoMProfile }} />}
         </div>
       </div>
