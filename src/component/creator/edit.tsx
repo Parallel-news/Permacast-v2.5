@@ -53,7 +53,7 @@ export const CreatorUploadPhotoIconStyling = `h-8 w-8 text-inherit `;
 export const TransparentHidden = `absolute opacity-0 pointer-events-none `;
 export const InputFocusStyling = `focus:opacity-0 focus:z-20 `;
 export const CreatorModalHeaderStyling = flexCol + `gap-y-6 px-6 pt-4 `;
-export const CreatorModalFooterStyling = flexCenter + `w-full justify-between `;
+export const CreatorModalFooterStyling = `flex items-center ` + `w-full justify-between `;
 export const CreatorEditBannerInputStyling = TransparentHidden + InputFocusStyling + `top-12 left-40`;
 export const CreatorEditAvatarInputStyling = TransparentHidden + InputFocusStyling + `top-28 left-5 w-24 `;
 export const CreatorEditBannerLabelStyling = flexCol + `w-full h-32 bg-zinc-800 inset-0 border-dotted border-zinc-600 hover:border-white text-zinc-400 hover:text-white rounded-xl border-2 items-center justify-center default-no-outline-ringed inset default-animation focus:ring-white cursor-pointer `;
@@ -267,7 +267,7 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
         <ProfileInfo {...{ error, nickname, setNickname, bio, setBio }} />
         <div className={CreatorModalFooterStyling}>
           {totalImageCost > 0 && (
-            <div className={flexCenter + `bg-zinc-700 text-white rounded-xl w-48 h-12 pl-3`}>
+            <div className={`flex items-center ` + `bg-zinc-700 text-white rounded-xl w-48 h-12 pl-3`}>
               {t("home.featured-modal.cost")} {totalImageCost} AR
             </div>
           )}

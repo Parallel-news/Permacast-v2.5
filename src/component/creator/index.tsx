@@ -158,7 +158,7 @@ export const CreatorNamesSmall: FC<CreatorNamesProps> = ({ nickname, currentLabe
 
 export const CreatorNames: FC<CreatorNamesProps> = ({ nickname, currentLabel, ANSuserExists }) => (
   <div className={flexCol}>
-    <div className={flexCenter}>
+    <div className={`flex items-center `}>
       <div className={creatorNicknameStyling}>{shortenAddress(nickname)}</div>
       {ANSuserExists && <div className={CreatorVerificationParentStyling}>
         <Verification {...{size: 10, ANSuserExists}} />
@@ -298,7 +298,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
         <div className={CreatorProfileParentStyling}>
           <ProfileImage {...{ currentLabel, avatar, address_color }} linkToArPage={ANSuserExists} />
           <div className={flexCol}>
-            <div className={flexCenter + `justify-center md:justify-start `}>
+            <div className={`flex items-center ` + `justify-center md:justify-start `}>
               <CreatorNames {...{ nickname, currentLabel, ANSuserExists }} />
             </div>
             <div className={CreatorBioStyling}>{bio}</div>

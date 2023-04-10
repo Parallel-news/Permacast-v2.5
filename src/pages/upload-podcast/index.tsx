@@ -1,9 +1,15 @@
 import axios from "axios";
-import { ShowForm, uploadShowStyling, showTitleStyling } from "../../component/uploadShow/uploadShowTools"
+import { uploadShowStyling, showTitleStyling } from "../../component/uploadShow/uploadShowTools"
 import { EXM_READ_LINK, NO_SHOW } from "../../constants";
 import { getContractVariables } from "../../utils/contract";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from "next-i18next";
+import dynamic from "next/dynamic";
+
+const ShowForm = dynamic(
+  () => import("../../component/uploadShow/uploadShowTools").then((module) => module.ShowForm),
+  { loading: () => <p>Loading...</p>, ssr: false } 
+);
 
 export default function UploadShow({yourShows, error}) {
 
@@ -39,4 +45,4 @@ export async function getStaticProps({ locale }) {
         error
       },
     }
-  }
+}

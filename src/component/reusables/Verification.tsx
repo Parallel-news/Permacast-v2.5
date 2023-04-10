@@ -58,7 +58,7 @@ const Verification: FC<VerificationInterface> = (props) => {
     <Tooltip
       rounded
       color="invert"
-      className={flexCenter + VerificationButtonStyling + "gap-x-1 "}
+      className={`flex items-center ` + VerificationButtonStyling + "gap-x-1 "}
       style={{
         backgroundColor: dimColorString(color, 0.25),
         color: isTooDark(RGBstringToObject(color), 0.2) ? colorBlack : colorWhite ,

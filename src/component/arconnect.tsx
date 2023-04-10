@@ -117,13 +117,13 @@ const ArConnect: FC = () => {
           >
             <>
               {item.key === "disconnect" && (
-                <button className={flexCenter + 'gap-x-2'} onClick={() => arconnectDisconnect()}>
+                <button className={`flex items-center ` + 'gap-x-2'} onClick={() => arconnectDisconnect()}>
                   {item.icon}
                   {t(item.name)}
                 </button>
               )}
               {item.key !== "disconnect" && (
-                <div className={flexCenter + 'gap-x-2'}> 
+                <div className={`flex items-center ` + 'gap-x-2'}> 
                   {item.icon}
                   <Link href={item.href}>
                     {t(item.name)}

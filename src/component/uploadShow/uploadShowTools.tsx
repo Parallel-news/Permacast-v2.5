@@ -1,5 +1,5 @@
+import dynamic from "next/dynamic";
 import { MouseEventHandler, useCallback, useEffect, useRef, useState } from "react"
-import { PhotoIcon } from "@heroicons/react/24/outline";
 import { ConnectButton, episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
 import { LanguageOptions, CategoryOptions, categories_en, DEFAULT_LANGUAGE } from "../../utils/languages";
 import Cropper, { Area } from "react-easy-crop";
@@ -7,21 +7,34 @@ import getCroppedImg from "../../utils/croppedImage";
 import { AR_DECIMALS, CONNECT_WALLET, EVERPAY_AR_TAG, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
 import { isValidEmail, ValMsg } from "../reusables/formTools";
 import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
-import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob, getImageSizeInBytes } from "../../utils/fileTools";
+import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob } from "../../utils/fileTools";
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { allFieldsFilled, byteSize, checkConnection, handleError, validateLabel} from "../../utils/reusables";
 import Everpay, { ChainType } from "everpay";
-import toast from 'react-hot-toast';
+
 import { useRecoilState } from "recoil";
 import { arweaveAddress } from "../../atoms";
 import { PermaSpinner } from "../reusables/PermaSpinner";
 import axios from "axios";
 import { useTranslation } from "next-i18next";
-import { Tooltip } from "@nextui-org/react";
 import { Podcast } from "../../interfaces";
-import { MarkDownToolTip } from "../reusables/tooltip";
 import { useRouter } from "next/router";
+import toast from "react-hot-toast"
+//import { PhotoIcon } from "@heroicons/react/24/outline";
+const MarkDownToolTip = dynamic(
+    () => import("../reusables/tooltip").then((module) => module.MarkDownToolTip) 
+);
+
+const Tooltip = dynamic(
+    () => import("@nextui-org/react").then((module) => module.Tooltip) 
+);
+
+const PhotoIcon = dynamic(
+    () => import("@heroicons/react/24/outline").then((module) => module.PhotoIcon) 
+);
+
+
 
 export default function uploadShowTools() {
     return false
@@ -332,7 +345,7 @@ export const ShowForm = (props: ShowFormInter) => {
                         setPodDescMsg(handleValMsg(e.target.value, "podDesc"));
                         setPodcastDescription_(e.target.value);
                         }}></textarea>
-                        <MarkDownToolTip 
+                        <MarkDownToolTip
                             placement="top"
                             size={40}
                         />
@@ -625,29 +638,6 @@ export const ExplicitInput = (props: ExplicitInputInter) => {
             <span className={explicitTextStyling}>
                 {t("uploadshow.explicit")}
             </span>
-        </label>
-    )
-}
-
-export const MediaSwitcher = () => {
-    const { t } = useTranslation();
-
-    const [contentType_, setContentType_] = useState<string>("")
-
-    return (
-        <label className={mediaSwitcherLabelStyling}>
-            {/* <div className={mediaSwitcherVideoStyling}>
-                Video
-            </div>
-            <input type="checkbox" className="toggle" checked={contentType_ === "a" ? true: false}
-                onChange={(e) => {
-                    console.log(e)
-                    setContentType_(contentType_ === "a" ? "v": "a")
-                }}
-            />
-            <div className={mediaSwitchedAudioStyling}>
-                Audio
-            </div> */}
         </label>
     )
 }
