@@ -22,7 +22,8 @@ export default function ViewPodcasts({yourShows}) {
 
     console.log("Your Shows: ", yourShows)
     const { t } = useTranslation();
-	const [chronStatus, setChronStatus] = useState<number>(1)
+	const [chronStatus, setChronStatus] = useState<number>(0)
+	const [shows, setShows] = useState<Podcast[]>([])
 
 	const className = 'text-white w-4 h-4 ';
 	const Clock = () => <ClockIcon {...{ className }} />;
@@ -31,12 +32,13 @@ export default function ViewPodcasts({yourShows}) {
 		{ icon: <Clock />, key: "showNewest", name: "Show Newest",  href: ""},
 	];
 
-	let sortedShows;
-	// On Load
-	sortedShows = yourShows.sort((a, b) => chronStatus % 2 ? b.createdAt - a.createdAt : a.createdAt - b.createdAt);
-	// On Button Click
 	useEffect(() => {
-		sortedShows = yourShows.sort((a, b) => chronStatus % 2 ? b.createdAt - a.createdAt : a.createdAt - b.createdAt);
+		const shows = yourShows.sort((a, b) =>  a.createdAt - b.createdAt)
+		if(chronStatus % 2) {
+			setShows(shows.reverse()) 
+		} else {
+			setShows(shows)
+		}
 	}, [chronStatus])
 
     return (
@@ -77,7 +79,7 @@ export default function ViewPodcasts({yourShows}) {
 			</div>
 			{/*Podcasts*/}
             <div className={podcastContainer}>
-                {sortedShows.map((podcast: Podcast, index: number) =>
+                {shows.map((podcast: Podcast, index: number) =>
                     <FeaturedPodcast {...podcast} key={index} />
                 )}
             </div>
