@@ -43,6 +43,7 @@ interface ProfileImageProps {
 interface CreatorNamesProps {
   nickname: string;
   currentLabel: string;
+  ANSuserExists?: boolean;
 };
 
 interface ViewANSButtonProps {
@@ -99,7 +100,7 @@ export const flexItemsCenter = `flex flex-col gap-y-2 md:gap-y-0 md:flex-row ite
 export const CreatorPageStyling = `mt-12 h-full pb-40 `;
 export const CreatorProfileParentStyling = flexItemsCenter + `gap-x-7 ml-2 text-center md:text-left `;
 export const CreatorUploadPhotoIconStyling = `h-8 w-8 text-inherit `;
-export const CreatorVerificationParentStyling = `mb-2 md:mb-0 md:ml-6 `;
+export const CreatorVerificationParentStyling = `mb-2 md:mb-0 ml-2 md:ml-6 `;
 export const CreatorBioStyling = `h-8 select-text `;
 export const TransparentHidden = `absolute opacity-0 pointer-events-none `;
 export const InputFocusStyling = `focus:opacity-0 focus:z-20 `;
@@ -158,9 +159,14 @@ export const CreatorNamesSmall: FC<CreatorNamesProps> = ({ nickname, currentLabe
   </div>
 );
 
-export const CreatorNames: FC<CreatorNamesProps> = ({ nickname, currentLabel }) => (
+export const CreatorNames: FC<CreatorNamesProps> = ({ nickname, currentLabel, ANSuserExists }) => (
   <div className={flexCol}>
-    <div className={creatorNicknameStyling}>{shortenAddress(nickname)}</div>
+    <div className={flexCenter}>
+      <div className={creatorNicknameStyling}>{shortenAddress(nickname)}</div>
+      {ANSuserExists && <div className={CreatorVerificationParentStyling}>
+        <Verification {...{ANSuserExists}} />
+      </div>}
+    </div>
     {currentLabel && (<div className={creatorLabelStyling}>@{currentLabel}</div>)}
   </div>
 );
@@ -257,7 +263,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
   const bio = PASoMProfile?.bio || '';
   
   const { address } = useArconnect();
-  console.log(PASoMProfile)
+
   const [userBannerImage, setUserBannerImage] = useRecoilState(userBannerImageAtom);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -277,9 +283,6 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
               <CreatorNames {...{ nickname, currentLabel, ANSuserExists }} />
             </div>
             <div className={CreatorBioStyling}>{bio}</div>
-          </div>
-          <div className={CreatorVerificationParentStyling}>
-            <Verification {...{ANSuserExists}} includeText />
           </div>
         </div>
         <div className={flexItemsCenter + `mr-3 `}>
