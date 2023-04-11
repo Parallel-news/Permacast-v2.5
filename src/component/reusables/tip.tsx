@@ -19,7 +19,7 @@ const TipButton: FC<TipButtonProps> = (props) => {
 
   return (
     <button
-      className={viewANSButtonStyling + flexCenter}
+      className={viewANSButtonStyling + `flex items-center `}
       style={{backgroundColor: dimColorString(currentThemeColor, 0.1), color: currentThemeColor}}
       onClick={() => openModalCallback()}
     >
