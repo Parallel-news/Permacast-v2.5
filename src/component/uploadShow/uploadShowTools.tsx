@@ -20,14 +20,13 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast"
 import React from "react";
 
-
 const MarkDownToolTip = React.lazy(() => import("../reusables/tooltip").then(module => ({ default: module.MarkDownToolTip })));
 const CoverContainer = React.lazy(() => import("./reusables").then(module => ({ default: module.CoverContainer })));
 const ExplicitInput = React.lazy(() => import("./reusables").then(module => ({ default: module.ExplicitInput })));
 const SelectDropdownRow = React.lazy(() => import("./reusables").then(module => ({ default: module.SelectDropdownRow })));
 const PermaSpinner = React.lazy(() => import("../reusables/PermaSpinner").then(module => ({ default: module.PermaSpinner })));
-const ConnectButton = React.lazy(() => import("../uploadEpisode/uploadEpisodeTools").then(module => ({ default: module.ConnectButton })));
-const UploadButton = React.lazy(() => import("../uploadEpisode/uploadEpisodeTools").then(module => ({ default: module.UploadButton })));
+const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.ConnectButton })));
+const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
 const ValMsg = React.lazy(() => import("../reusables/formTools").then(module => ({default: module.ValMsg})))
 
 export default function uploadShowTools() {

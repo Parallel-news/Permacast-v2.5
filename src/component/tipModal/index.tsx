@@ -11,8 +11,9 @@ import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { transferFunds } from "../../utils/everpay";
 import { fetchARPriceInUSD } from "../../utils/redstone";
 import { PermaSpinner } from "../reusables/PermaSpinner";
-import { ConnectButton, containerPodcastModalStyling, SubmitTipButton, tipModalStyling } from "../uploadEpisode/uploadEpisodeTools";
-
+import { tipModalStyling } from "../uploadEpisode/uploadEpisodeTools";
+import { ConnectButton } from "../uploadEpisode/reusables";
+import { containerPodcastModalStyling, SubmitTipButton } from "../uploadEpisode/reusables";
 interface TipModalInter {
     to?: string;
     toAddress: string;

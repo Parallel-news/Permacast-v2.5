@@ -4,7 +4,7 @@ import { getContractVariables } from "../../utils/contract";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from "next-i18next";
 import React from "react";
-//import { ShowForm } from "../../component/uploadShow/uploadShowTools";
+
 const ShowForm = React.lazy(() => import("../../component/uploadShow/uploadShowTools").then(module => ({ default: module.ShowForm })));
 
 const showTitleStyling = "text-white text-xl mb-4"
