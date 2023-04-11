@@ -35,7 +35,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
   const [podcasts_, setPodcasts_] = useRecoilState(podcastsAtom);
   const [latestEpisodes, setLatestEpisodes] = useRecoilState(latestEpisodesAtom);
   const [featuredChannels, setFeaturedChannels] = useState<FeaturedChannel[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -124,7 +124,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
         )} */}
         <div className="my-9 flex flex-col xl:flex-row md:justify-between space-y-10 xl:space-y-0">
           <div className="w-[100%] xl:w-[71%]">
-            {!loading ? (
+          {!loading ? (
               <>
                 <h2 className="text-zinc-400 text-lg mb-3">{t("home.recentlyadded")}</h2>
                 <div className="grid grid-rows-3 gap-y-4 text-zinc-100">
@@ -151,6 +151,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
     </Suspense>
   );
 };
+
 
 export async function getStaticProps({ locale }) {
   const { isProduction, contractAddress } = getContractVariables();
