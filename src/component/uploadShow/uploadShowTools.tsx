@@ -1,9 +1,7 @@
-import dynamic from "next/dynamic";
-import { MouseEventHandler, useCallback, useEffect, useRef, useState } from "react"
-import { ConnectButton, episodeDescStyling, episodeNameStyling, UploadButton } from "../uploadEpisode/uploadEpisodeTools";
-import { LanguageOptions, CategoryOptions, categories_en, DEFAULT_LANGUAGE } from "../../utils/languages";
-import Cropper, { Area } from "react-easy-crop";
-import getCroppedImg from "../../utils/croppedImage";
+import { useEffect, useState } from "react"
+import { episodeDescStyling, episodeNameStyling } from "../uploadEpisode/uploadEpisodeTools";
+import { categories_en } from "../../utils/languages";
+
 import { AR_DECIMALS, CONNECT_WALLET, EVERPAY_AR_TAG, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
 import { isValidEmail, ValMsg } from "../reusables/formTools";
 import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
@@ -12,64 +10,34 @@ import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { allFieldsFilled, byteSize, checkConnection, handleError, validateLabel} from "../../utils/reusables";
 import Everpay, { ChainType } from "everpay";
-
 import { useRecoilState } from "recoil";
 import { arweaveAddress } from "../../atoms";
-import { PermaSpinner } from "../reusables/PermaSpinner";
+
 import axios from "axios";
 import { useTranslation } from "next-i18next";
 import { Podcast } from "../../interfaces";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast"
-//import { PhotoIcon } from "@heroicons/react/24/outline";
-const MarkDownToolTip = dynamic(
-    () => import("../reusables/tooltip").then((module) => module.MarkDownToolTip) 
-);
+//import { CoverContainer, ExplicitInput, SelectDropdownRow } from "./reusables";
+//import { PermaSpinner } from "../reusables/PermaSpinner";
+import React from "react";
 
-const Tooltip = dynamic(
-    () => import("@nextui-org/react").then((module) => module.Tooltip) 
-);
-
-const PhotoIcon = dynamic(
-    () => import("@heroicons/react/24/outline").then((module) => module.PhotoIcon) 
-);
-
-
+const Tooltip = React.lazy(() => import("@nextui-org/react").then(module => ({ default: module.Tooltip })));
+const MarkDownToolTip = React.lazy(() => import("../reusables/tooltip").then(module => ({ default: module.MarkDownToolTip })));
+const CoverContainer = React.lazy(() => import("./reusables").then(module => ({ default: module.CoverContainer })));
+const ExplicitInput = React.lazy(() => import("./reusables").then(module => ({ default: module.ExplicitInput })));
+const SelectDropdownRow = React.lazy(() => import("./reusables").then(module => ({ default: module.SelectDropdownRow })));
+const PermaSpinner = React.lazy(() => import("../reusables/PermaSpinner").then(module => ({ default: module.PermaSpinner })));
+const ConnectButton = React.lazy(() => import("../uploadEpisode/uploadEpisodeTools").then(module => ({ default: module.ConnectButton })));
+const UploadButton = React.lazy(() => import("../uploadEpisode/uploadEpisodeTools").then(module => ({ default: module.UploadButton })));
 
 export default function uploadShowTools() {
     return false
 }
 
 // 1. Interfaces
-interface ImgCoverInter {
-    img: any;
-}
-
-interface SelectDropdownRowInter {
-    setLanguage: (v: any) => void;
-    setCategory: (v: any) => void;
-    setLabel: (v: any) => void;
-    labelValue: string;
-    setLabelMsg: (v: any) => void;
-    labelMsg: string;
-    podcasts: Podcast[];
-}
-
-interface ExplicitInputInter {
-    setExplicit: (v: any) => void;
-    explicit: boolean;
-}
-
-interface CropScreenInter {
-    inputImg: string;
-    onCropComplete: (croppedArea: Area, croppedAreaPixels: Area) => void;
-    onClickResp: MouseEventHandler<HTMLDivElement>;
-    rotation: number;
-    setRotation: (rotation: number) => void;
-}
-
-interface CoverContainerInter {
-    setCover: (v: any) => void
+interface ShowFormInter {
+    podcasts: Podcast[]
 }
 
 interface LabelInputInter {
@@ -78,10 +46,6 @@ interface LabelInputInter {
     labelValue: string;
     labelMsg: string;
     podcasts: Podcast[];
-}
-
-interface ShowFormInter {
-    podcasts: Podcast[]
 }
 
 // 2. Stylings
@@ -300,7 +264,6 @@ export const ShowForm = (props: ShowFormInter) => {
         const toastSaving = toast.loading(t("loadingToast.savingChain"), {style: TOAST_DARK, duration: 10000000});
         setTimeout(async function () {
             const result = await axios.post('/api/exm/write', createShowPayload);
-            console.log("exm res: ", result)
             setSubmittingShow(false)
             //EXM call, set timeout, then redirect.
             toast.dismiss(toastSaving); 
@@ -459,215 +422,5 @@ export const LabelInput = (props: LabelInputInter) => {
             <ValMsg valMsg={props.labelMsg} className="pl-2" />
         </div>
         </>       
-    )
-}
-
-export const CoverContainer = (props: CoverContainerInter) => {
-
-    const podcastCoverRef = useRef<HTMLInputElement | null>(null);
-    const [img, setImg] = useState("");
-    const [inputImg, setInputImg] = useState("");
-    const [showCrop, setShowCrop] = useState(false);
-    const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-    const [rotation, setRotation] = useState(0);
-
-    const handleChangeImage = async (e: any) => {
-        isPodcastCoverSquared(e);
-    };
-    
-    const isPodcastCoverSquared = (event) => {
-        if (event.target.files.length !== 0) {
-          const podcastCoverImage = new Image();
-          podcastCoverImage.src = window.URL.createObjectURL(event.target.files[0]);
-          podcastCoverImage.onload = () => {
-            if (podcastCoverImage.width !== podcastCoverImage.height) {
-              setInputImg(URL.createObjectURL(event.target.files[0]));
-              setShowCrop(true);
-            } else {
-              setImg(URL.createObjectURL(event.target.files[0]));
-              props.setCover(URL.createObjectURL(event.target.files[0]))
-            }
-          };
-        }
-    };
-
-    const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
-        setCroppedAreaPixels(croppedAreaPixels);
-    }, []);
-
-    const showCroppedImage = useCallback(async () => {
-        try {
-          const croppedImage = await getCroppedImg(
-            inputImg,
-            croppedAreaPixels,
-            rotation
-          );
-
-          setImg(croppedImage);
-          props.setCover(croppedImage)
-        } catch (e) {
-          console.error(e);
-        }
-      }, [croppedAreaPixels, rotation]);
-
-    const finalizeCropResp = () => {
-        showCroppedImage();
-        setShowCrop(false);
-        
-    }
-
-    return (
-        <>
-        {showCrop && (
-            <CropScreen 
-                inputImg={inputImg}
-                onCropComplete={onCropComplete}
-                onClickResp={() => finalizeCropResp()}
-                rotation={rotation}
-                setRotation={setRotation}
-            />
-        )}
-        <input
-            required
-            type="file"
-            accept="image/*"
-            className={coverContainerInputStyling}
-            ref={podcastCoverRef}
-            onChange={(e) => handleChangeImage(e)}
-            name="podcastCover"
-            id="podcastCover"
-        />
-        <label
-            htmlFor="podcastCover"
-            className={coverContainerLabelStyling}
-        >
-            {/*Show Selected Image or Empty Cover*/}
-            {podcastCoverRef?.current?.files?.[0] ? <ImgCover img={img} /> : <EmptyCover />}
-      </label>
-      </>
-    )
-}
-
-export const EmptyCover = () => {
-    const { t } = useTranslation();
-    return (
-        <div className={emptyCoverIconStyling}>
-          {/*Image Logo*/}
-            <PhotoIcon className={photoIconStyling} />
-          {/*Cover Image Text*/}
-            <div className={emptyCoverIconTextStyling}>
-              {t("uploadshow.image")}
-            </div>
-        </div>
-    )
-}
-
-export const ImgCover = (props: ImgCoverInter) => {
-    return (
-        <div className={imgCoverStyling}>
-            <img src={props.img} className={imgStyling} />
-        </div>
-    )
-}
-
-export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
-    return (
-        <div className={`${selectDropdownRowStyling} space-y-3`}>
-            {/*Categories*/}
-            <div className="sm:hidden flex justify-between">
-                <select
-                    className={`${selectDropdownStyling} sm:mr-[2%] w-[47%]`}
-                    id="podcastCategory"
-                    name="category"
-                    onChange={(e) => props.setCategory(e.target.selectedIndex)}
-                >
-                    <CategoryOptions />
-                </select>
-                {/*Languages*/}
-                <select
-                    className={`${selectDropdownStyling} sm:mr-[2%] w-[47%]`}
-                    id="podcastLanguage"
-                    defaultValue={DEFAULT_LANGUAGE}
-                    name="language"
-                    onChange={(e) => props.setLanguage(e.target.value)}
-                >
-                    <LanguageOptions />
-                </select>
-            </div>
-            <select
-                className={`${selectDropdownStyling} hidden sm:flex mr-[2%]`}
-                id="podcastCategory"
-                name="category"
-                onChange={(e) => props.setCategory(e.target.selectedIndex)}
-            >
-                <CategoryOptions />
-            </select>
-            {/*Languages*/}
-            <select
-                className={`${selectDropdownStyling} hidden sm:flex mr-[2%]`}
-                id="podcastLanguage"
-                defaultValue={DEFAULT_LANGUAGE}
-                name="language"
-                onChange={(e) => props.setLanguage(e.target.value)}
-            >
-                <LanguageOptions />
-            </select>
-            {/*Label*/}
-            <LabelInput 
-                setLabel={props.setLabel}
-                setLabelMsg={props.setLabelMsg}
-                labelMsg={props.labelMsg}
-                podcasts={props.podcasts}
-                labelValue={props.labelValue}
-            />
-        </div>
-    )
-}
-
-export const ExplicitInput = (props: ExplicitInputInter) => {
-    const { t } = useTranslation();
-
-    return (
-        <label className={explicitLabelStyling}>
-            <input
-                id="podcastExplicit"
-                type="checkbox"
-                className={explicitCheckBoxStyling}
-                onChange={() => props.setExplicit(!props.explicit)}
-            />
-            <span className={explicitTextStyling}>
-                {t("uploadshow.explicit")}
-            </span>
-        </label>
-    )
-}
-
-export const CropScreen = (props: CropScreenInter) => {
-    const [crop, setCrop] = useState({ x: 0, y: 0 });
-    const [zoom, setZoom] = useState(1);
-    return (
-        <div className={cropScreenStyling}>
-            <div className={cropScreenDivStyling}>
-                <Cropper
-                    image={props.inputImg}
-                    crop={crop}
-                    rotation={props.rotation}
-                    zoom={zoom}
-                    aspect={1}
-                    onCropChange={(setCrop)}
-                    onRotationChange={props.setRotation}
-                    onCropComplete={props.onCropComplete}
-                    onZoomChange={setZoom}
-                />
-            </div>
-            <div
-            className={cropSelectionDivStyling}
-            onClick={props.onClickResp}
-            >
-            <p className={cropSelectionTextStyling}>
-                Crop Selection
-            </p>
-            </div>
-        </div>
     )
 }

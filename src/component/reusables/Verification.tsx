@@ -3,10 +3,9 @@ import { useTranslation } from "next-i18next";
 import { Tooltip } from '@nextui-org/react';
 import { CheckIcon } from "@heroicons/react/24/solid";
 import { XCircleIcon } from "@heroicons/react/24/outline";
-import { flexCenter } from "../creator/featuredCreators";
 import { flexCol } from "../creator";
 import { dimColorString, isTooDark, RGBstringToObject } from "../../utils/ui";
-import { rFull } from "../creator/edit";
+
 
 interface VerificationInterface {
   size: number;
@@ -14,7 +13,7 @@ interface VerificationInterface {
   includeText?: boolean;
 };
 
-export const VerificationButtonStyling = rFull + `p-1.5 text-lg font-medium `;
+export const VerificationButtonStyling = `rounded-full p-1.5 text-lg font-medium `;
 export const ExplanationTextStyling = "text-gray-500 text-sm ";
 export const LargeBoldFontStyling = "text-lg font-bold ";
 
@@ -45,7 +44,7 @@ const Verification: FC<VerificationInterface> = (props) => {
   };
 
   const Icon: FC<VerificationInterface> = ({ size, ANSuserExists }) => (
-    <div className={rFull}>
+    <div className={`rounded-full `}>
       {ANSuserExists ? <CheckIcon {...{ style }} className="text-emerald-500" /> : <XCircleIcon {...{ style }} className="text-red-500" />}
     </div>
   );

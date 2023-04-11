@@ -4,7 +4,6 @@ import { appWithTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
 import { RecoilRoot } from 'recoil';
 import { ArconnectProvider } from 'react-arconnect';
-//import { ShikwasaProvider } from '../hooks';
 import localStorageObjectManager, { PODCAST_COVER_COLORS_MANAGER, PODCAST_DESCRIPTION_MANAGER } from '../utils/localstorage';
 import { PERMISSIONS } from '../constants/arconnect';
 import '../shikwasa-src/css/base.css';
@@ -40,7 +39,7 @@ function App({ Component, pageProps }) {
         <meta property="og:image" content={`https://permacast.app/favicon.ico`} />
         <meta property="og:title" content={`Permacast`} />
         <meta property="og:url" content={`https://permacast.app/`} />
-        <meta property="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} /> 
+        <meta property="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
       </Head>
       <ArconnectProvider permissions={PERMISSIONS}>
         <React.Suspense fallback={<div>Loading...</div>}>

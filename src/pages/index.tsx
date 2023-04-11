@@ -1,26 +1,26 @@
 import axios from 'axios';
+import React from 'react';
 import { NextPage } from "next";
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-
-import { Greeting } from "../component/featured";
-import FeaturedChannelModal from '../component/home/featuredChannelModal';
-import FeaturedPodcast, { featuredPocastCarouselStyling } from '../component/home/featuredPodcast';
-import FeaturedCreators from '../component/creator/featuredCreators';
-import Loading from '../component/reusables/loading';
-import {
-  featuredEpisode,
-  latestEpisodesAtom,
-  podcastsAtom
-} from "../atoms/index";
-
+import { latestEpisodesAtom, podcastsAtom } from "../atoms/index";
 import { Episode, EXMDevState, FeaturedChannel, FullEpisodeInfo, Podcast } from '../interfaces';
-import Track from '../component/reusables/track';
 import { getContractVariables, getFeaturedChannelsContract, getPASOMContract } from '../utils/contract';
-import GetFeatured from '../component/home/getFeatured';
 import { findPodcast } from '../utils/filters';
+
+//import { Greeting } from "../component/featured";
+import { featuredPocastCarouselStyling } from '../component/home/featuredPodcast';
+
+
+const GetFeatured = React.lazy(() => import('../component/home/getFeatured'))
+const Track = React.lazy(() => import('../component/reusables/track'))
+const Loading = React.lazy(() => import('../component/reusables/loading'))
+const FeaturedCreators = React.lazy(() => import('../component/creator/featuredCreators'))
+const FeaturedPodcast = React.lazy(() => import('../component/home/featuredPodcast'))
+const FeaturedChannelModal = React.lazy(()=> import('../component/home/featuredChannelModal'))
+const GreetingLazy = React.lazy(() => import("../component/featured").then(module => ({ default: module.Greeting })));
 
 interface HomeProps {
   isProduction: boolean,
@@ -32,16 +32,10 @@ interface HomeProps {
 const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredContractAddress, PASoMContractAddress }) => {
 
   const { t } = useTranslation();
-
-
   const [podcasts_, setPodcasts_] = useRecoilState(podcastsAtom);
-  const [featuredEpisode_, setFeaturedEpisode_] = useRecoilState(featuredEpisode);
   const [latestEpisodes, setLatestEpisodes] = useRecoilState(latestEpisodesAtom);
-
-
   const [featuredChannels, setFeaturedChannels] = useState<FeaturedChannel[]>([]);
   const [loading, setLoading] = useState(false);
-
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -76,7 +70,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
  
   return (
     <div className="w-full pb-10 mb-10">
-      <Greeting />
+      <GreetingLazy />
       {isProduction !== true &&
         <div className="select-text">
           <p className='text-yellow-500 font-bold'>Heads up: isProduction !== "true"</p>
@@ -132,8 +126,8 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
 };
 
 export async function getStaticProps({ locale }) {
-  const { isProduction, contractAddress } = await getContractVariables();
-  let { contractAddress: featuredContractAddress } = await getFeaturedChannelsContract();
+  const { isProduction, contractAddress } = getContractVariables();
+  let { contractAddress: featuredContractAddress } = getFeaturedChannelsContract();
   const {contractAddress: PASoMContractAddress} = getPASOMContract();
   if(!featuredContractAddress) {
     featuredContractAddress = null
@@ -151,20 +145,4 @@ export async function getStaticProps({ locale }) {
   }
 }
 
-
-// Home.getInitialProps = async () => {
-//   // { query }: { query: { user: string; } })
-//   try {
-//       const res = await axios.get(``);
-//       const userInfo = res.data;  // <-- Access one more data object here
-//       return { pathFullInfo: userInfo };
-//   } catch (error) {
-//       console.log("attempting to use domain routing...")
-//       return { pathFullInfo: false };
-//   };
-// };
-
 export default Home
-
-//xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2
-//xl:col-span-3 lg:col-span-2 md:col-span-1

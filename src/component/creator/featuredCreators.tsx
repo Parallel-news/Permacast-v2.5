@@ -10,7 +10,8 @@ import {
   currentThemeColorAtom,
 } from "../../atoms";
 import Link from 'next/link';
-import { CreatorNamesSmall, flexCol, ProfileImage } from './';
+import { flexCol} from './';
+import { CreatorNamesSmall, ProfileImage } from './reusables';
 import { Ans, Podcast } from '../../interfaces';
 
 /**
@@ -59,7 +60,7 @@ const Loading:FC<{ loading: boolean, dummyArray: any[] }> = ({ loading, dummyArr
   </>
 );
 
-const CreatorsMap: FC<{ creators: Ans[] }> = ({ creators }) => {
+export const CreatorsMap: FC<{ creators: Ans[] }> = ({ creators }) => {
   const creatorLimit = 10
   let creatorCount = 0
   return(

@@ -1,25 +1,23 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { useTranslation } from 'next-i18next';
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
+import React from 'react';
+import { FC, useEffect, useState } from 'react';
 import { shortenAddress, useArconnect } from 'react-arconnect';
 import { useRecoilState } from 'recoil';
 import { FullEpisodeInfo, Podcast } from '../../interfaces';
-import { dimColorString, hexToRGB, isTooLight, stringToHexColor } from '../../utils/ui';
-import { currentThemeColorAtom, userBannerImageAtom } from '../../atoms';
-import FeaturedPodcast from '../home/featuredPodcast';
-import Track from '../reusables/track';
+import { stringToHexColor } from '../../utils/ui';
+import { userBannerImageAtom } from '../../atoms';
+
+import { PASoMProfile } from '../../interfaces/pasom';
 import TipButton from '../reusables/tip';
-import { flexCenter } from './featuredCreators';
-import Verification from '../reusables/Verification';
-import { TipModal } from '../tipModal';
-import { ARSEED_URL } from '../../constants';
-import { PASoMProfile, updateWalletMetadata } from '../../interfaces/pasom';
-import { hoverableLinkButtonStyling } from '../reusables/themedButton';
-import { EditButton } from './edit';
-import { FollowButton } from './follow';
 
-
+const CreatorNames = React.lazy(() => import('./reusables').then(module => ({default: module.CreatorNames})))
+const CreatorTipModal = React.lazy(() => import('./reusables').then(module => ({default: module.CreatorTipModal})))
+const FeaturedPodcasts = React.lazy(() => import('./reusables').then(module => ({default: module.FeaturedPodcasts})))
+const Followers = React.lazy(() => import('./reusables').then(module => ({default: module.Followers})))
+const LatestEpisodes = React.lazy(() => import('./reusables').then(module => ({default: module.LatestEpisodes})))
+const ViewANSButton = React.lazy(() => import('./reusables').then(module => ({default: module.ViewANSButton})))
+const ProfileImage = React.lazy(() => import('./reusables').then(module => ({default: module.ProfileImage})))
+const EditButton = React.lazy(() => import('./edit').then(module => ({default: module.EditButton}))) 
+const FollowButton = React.lazy(() => import('./follow').then(module => ({default: module.FollowButton}))) 
 /**
  * Index
  * 1. Interfaces
@@ -29,36 +27,6 @@ import { FollowButton } from './follow';
  */
 
 // 1. Interfaces
-
-interface ProfileImageProps {
-  currentLabel: string;
-  avatar: string;
-  address_color: string;
-  size?: number;
-  borderWidth?: number;
-  squared?: boolean;
-  linkToArPage?: boolean;
-  unclickable?: boolean;
-};
-
-interface CreatorNamesProps {
-  nickname: string;
-  currentLabel: string;
-  ANSuserExists?: boolean;
-};
-
-interface ViewANSButtonProps {
-  currentLabel: string;
-};
-
-interface FeaturedPodcastProps {
-  podcasts: Podcast[];
-};
-
-interface LatestEpisodesProps {
-  episodes: FullEpisodeInfo[];
-};
-
 interface CreatorPageComponentProps {
   ANSuserExists?: boolean;
   currentLabel: string;
@@ -69,18 +37,6 @@ interface CreatorPageComponentProps {
   PASoMProfile: PASoMProfile | undefined;
   podcasts: Podcast[];
   episodes: FullEpisodeInfo[];
-};
-
-interface LinkButtonInterface {
-  text: string;
-  url: string;
-};
-
-interface CreatorTipModalInterface {
-  ANSorAddress: string;
-  recipientAddress: string;
-  isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 
@@ -107,10 +63,6 @@ export const CreatorEditBannerStyling = flexCol + `w-full h-32 bg-zinc-800 inset
 export const CreatorEditAvatarStyling = flexCol + `items-center justify-center mb-2 mx-3 shrink-0 w-28 h-28 rounded-full bg-zinc-900 text-zinc-400 focus:text-white hover:text-white default-animation absolute -bottom-16 left-0 border-2 border-zinc-900 hover:border-white focus:border-white default-no-outline-ringed cursor-pointer `;
 
 // 3. Custom Functions
-
-export const resolveArDomainToArpage = (currentLabel: string) => `https://${currentLabel}.ar.page`;
-
-
 export const sortByDate = (episodes: FullEpisodeInfo[], descending = false): FullEpisodeInfo[] => {
   return episodes.sort((a, b) => {
     if (descending) {
@@ -119,151 +71,6 @@ export const sortByDate = (episodes: FullEpisodeInfo[], descending = false): Ful
       return a.episode.uploadedAt - b.episode.uploadedAt;
     };
   });
-};
-
-// 4. Reusable Components
-export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, address_color, size, borderWidth, squared, linkToArPage, unclickable }) => {
-  const borderColor = (!avatar && address_color) ? (isTooLight(hexToRGB(address_color), 0.6) ? "rgb(169, 169, 169)" : "rgb(255, 255, 255)"): address_color;
-  const hex = address_color && isTooLight(hexToRGB(address_color), 0.6) ? "#A9A9A9" : "#ffffff";
-  const imageSize = size || 120;
-  const squaredOuterBorderRadius = squared ? '12px' : '999px';
-  const squaredInnerBorderRadius = squared ? '8px' : '999px';
-
-  return (
-    <Link
-      href={!unclickable ? (linkToArPage ? resolveArDomainToArpage(currentLabel) : `/creator/${currentLabel}`): ''}
-      style={{ borderColor: borderColor, borderWidth: borderWidth || '4px', borderRadius: squaredOuterBorderRadius }}
-      tabIndex={unclickable ? -1 : 0}
-      className="default-no-outline-ringed default-animation"
-    >
-      {avatar && <Image width={imageSize} height={imageSize} alt={avatar} src={ARSEED_URL + avatar} className="object-fit aspect-square rounded-full" />}
-      {!avatar && (
-        <div style={{
-          width: imageSize,
-          height: imageSize,
-          borderRadius: squaredInnerBorderRadius,
-          background: `linear-gradient(225deg, ${hex} 10%, ${address_color} 30%)`,
-        }}></div>
-      )}
-    </Link>
-  );
-};
-
-export const CreatorNamesSmall: FC<CreatorNamesProps> = ({ nickname, currentLabel }) => (
-  <div className={flexCol}>
-    <div className={creatorNicknameSmallStyling}>{nickname}</div>
-    <div className={creatorLabelSmallStyling}>@{currentLabel}</div>
-  </div>
-);
-
-export const CreatorNames: FC<CreatorNamesProps> = ({ nickname, currentLabel, ANSuserExists }) => (
-  <div className={flexCol}>
-    <div className={`flex items-center `}>
-      <div className={creatorNicknameStyling}>{shortenAddress(nickname)}</div>
-      {ANSuserExists && <div className={CreatorVerificationParentStyling}>
-        <Verification {...{size: 10, ANSuserExists}} />
-      </div>}
-    </div>
-    {currentLabel && (<div className={creatorLabelStyling}>@{currentLabel}</div>)}
-  </div>
-);
-
-export const LinkButton: FC<LinkButtonInterface> = ({ url, text }) => {
-  const [currentThemeColor, setCurrentThemeColor] = useRecoilState(currentThemeColorAtom);
-
-  return (
-    <a
-      className={hoverableLinkButtonStyling}
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{
-        backgroundColor: dimColorString(currentThemeColor, 0.1),
-        color: currentThemeColor,
-      }}
-    >
-      {text}
-    </a>
-  );
-};
-
-export const ViewANSButton: FC<ViewANSButtonProps> = ({ currentLabel }) => {
-  const { t } = useTranslation();
-
-  return <LinkButton url={`https://${currentLabel}.ar.page`} text={t('creator.ans')} />
-};
-
-export const FeaturedPodcasts: FC<FeaturedPodcastProps> = ({ podcasts }) => {
-
-  const { t } = useTranslation();
-
-  return (
-    <div className="mt-8">
-      <div className={WhiteLargeFont + " mb-8"}>{t("creator.podcasts")}</div>
-      <div>
-        {podcasts.length !== 0 ? (
-          <div className={podcastCarouselStyling}>
-            {podcasts.map((podcast: Podcast, index: number) =>
-              <FeaturedPodcast {...podcast} key={index} />
-            )}
-          </div>
-        ) : <>{t("creator.nopodcasts")}</>}
-      </div>
-    </div>
-  );
-};
-
-export const LatestEpisodes: FC<LatestEpisodesProps> = ({ episodes }) => {
-  const { t } = useTranslation();
-
-  return (
-    <div className="mt-12">
-      <div className={WhiteLargeFont}>{episodes.length !== 0 && t("creator.latestepisodes")}</div>
-      <div className="mt-6">
-        {episodes.map((episode: FullEpisodeInfo, index: number) => (
-          <div className="mb-4" key={index}>
-            <Track {...{ episode }} includeDescription includePlayButton />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-export const CreatorTipModal: FC<CreatorTipModalInterface> = ({ ANSorAddress, recipientAddress, isOpen, setIsOpen }) => {
-  if (isOpen) {
-    return (
-      <>
-        <TipModal
-          to={ANSorAddress}
-          toAddress={recipientAddress} 
-          isVisible={isOpen}
-          setVisible={setIsOpen}
-        />
-      </>
-    );
-  } else {
-    return <></>
-  };
-};
-
-interface FollowersProps {
-  PASoMProfile: PASoMProfile;
-  isFollowing: boolean;
-};
-
-export const Followers: FC<FollowersProps> = ({ PASoMProfile, isFollowing }) => {
-  const { t } = useTranslation();
-
-  const followers = PASoMProfile?.followers ? PASoMProfile?.followers?.length + (isFollowing ? 0 : -1) : 0;
-  const following = PASoMProfile?.followings ? PASoMProfile?.followings?.length : 0;
-
-  return (
-    <div className="flex gap-x-8 text-white select-text">
-      <div className="">{t("creator.followers")} {followers < 0 ? 0: followers}</div>
-      <div className="">{t("creator.following")} {following}</div>
-    </div>
-  );
 };
 
 export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = ({ creator }) => {
@@ -276,7 +83,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
   
   const { walletConnected, address } = useArconnect();
 
-  const [userBannerImage, setUserBannerImage] = useRecoilState(userBannerImageAtom);
+  const [, setUserBannerImage] = useRecoilState(userBannerImageAtom);
   
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);

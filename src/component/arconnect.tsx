@@ -8,11 +8,10 @@ import { useArconnect, shortenAddress } from 'react-arconnect';
 import { useRecoilState } from 'recoil';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../constants/arconnect';
 import { PASoMProfileAtom, arweaveAddress } from '../atoms';
-import { ProfileImage } from './creator';
+import { ProfileImage } from './creator/reusables';
 import { ANS_TEMPLATE } from '../constants/ui';
 import { EverPayBalance } from '../utils/everpay/EverPayBalance';
 import { ArrowLeftOnRectangleIcon, BanknotesIcon, NewspaperIcon, UserCircleIcon } from '@heroicons/react/24/outline';
-import { flexCenter } from './creator/featuredCreators';
 import { PASoMProfile } from '../interfaces/pasom';
 import { ARSEED_URL } from '../constants';
 
