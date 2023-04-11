@@ -106,7 +106,7 @@ export const ForeignURL: FC<{ url: string, children: ReactNode }> = ({ url, chil
     target="_blank"
     rel="noreferrer"
     href={url}
-    className={flexCenter + " gap-x-2"}
+    className={`flex items-center ` + " gap-x-2"}
   >
     {children}
   </a>
@@ -126,7 +126,7 @@ export const HelpDropdown: FC = () => {
         {HELP_LINKS.map((item, index) => (
           <li key={index}>
             <ForeignURL url={item.url}>
-              <div className={flexCenter + "gap-x-2"}>
+              <div className={`flex items-center ` + "gap-x-2"}>
                 {item.icon}
                 <p>{item.name}</p>
               </div>

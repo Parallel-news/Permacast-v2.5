@@ -7,11 +7,13 @@ import { useRecoilState } from 'recoil';
 import { Ans, Episode, FullEpisodeInfo, Podcast } from '../../../interfaces';
 import { hexToRGB, RGBobjectToString } from '../../../utils/ui';
 import { allPodcasts, podcastColorAtom } from '../../../atoms';
-import { Creator404, CreatorPageComponent, sortByDate } from '../../../component/creator';
+import { Creator404, sortByDate } from '../../../component/creator';
 import { ANS_TEMPLATE } from '../../../constants/ui';
 import { ARWEAVE_READ_LINK } from '../../../constants';
 import { shortenAddress } from 'react-arconnect';
 import { PASoMProfile } from '../../../interfaces/pasom';
+const CreatorPageComponentLazy = React.lazy(() => import('../../../component/creator').then(module => ({ default: module.CreatorPageComponent })));
+
 
 // pages/blog/[slug].js
 export async function getStaticPaths() {
@@ -127,7 +129,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
         <meta property="og:url" content={`https://permacast.app/`} />
         <meta property="og:description" content={`${bio}`} /> 
       </Head>
-      <CreatorPageComponent {...{ creator }}/>
+      <CreatorPageComponentLazy {...{ creator }}/>
     </>
   )
 };

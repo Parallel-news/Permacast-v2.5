@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Image from 'next/image';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { FiFile } from 'react-icons/fi';
 import { useRecoilState } from 'recoil';
 import { arweaveAddress } from '../../atoms';

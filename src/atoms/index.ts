@@ -188,4 +188,9 @@ export const userBannerImageAtom = atom<string>({
     key: 'userBannerImageAtom',
     default: ""
 });
+
+export const chronStatusAtom = atom<number>({
+    key: 'chronStatus',
+    default: 0
+});
 // *** ------- ***

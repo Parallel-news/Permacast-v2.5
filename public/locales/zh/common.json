@@ -245,6 +245,8 @@
 		"uploading": "上传中"
 	},
 	"viewPodcasts": {
-		"allpodcasts": "所有播客"
+		"allpodcasts": "所有播客",
+		"showNewest": "显示最新",
+		"showOldest": "显示最旧"
 	}
 }

@@ -48,17 +48,16 @@ interface CreatorEditInfoProps {
 // 2. Stylings
 const flexCol = `flex flex-col `;
 export const whFull = `w-full h-full `;
-export const rFull = `rounded-full `;
 export const CreatorUploadPhotoIconStyling = `h-8 w-8 text-inherit `;
 export const TransparentHidden = `absolute opacity-0 pointer-events-none `;
 export const InputFocusStyling = `focus:opacity-0 focus:z-20 `;
 export const CreatorModalHeaderStyling = flexCol + `gap-y-6 px-6 pt-4 `;
-export const CreatorModalFooterStyling = flexCenter + `w-full justify-between `;
+export const CreatorModalFooterStyling = `flex items-center ` + `w-full justify-between `;
 export const CreatorEditBannerInputStyling = TransparentHidden + InputFocusStyling + `top-12 left-40`;
 export const CreatorEditAvatarInputStyling = TransparentHidden + InputFocusStyling + `top-28 left-5 w-24 `;
 export const CreatorEditBannerLabelStyling = flexCol + `w-full h-32 bg-zinc-800 inset-0 border-dotted border-zinc-600 hover:border-white text-zinc-400 hover:text-white rounded-xl border-2 items-center justify-center default-no-outline-ringed inset default-animation focus:ring-white cursor-pointer `;
-export const CreatorEditAvatarLabelStyling = flexCol + rFull + `-mt-16 items-center justify-center mx-3 shrink-0 w-28 h-28 bg-zinc-900 text-zinc-400 focus:text-white hover:text-white default-animation absolute border-2 border-zinc-800 hover:border-white focus:border-white default-no-outline-ringed cursor-pointer `;
-export const CreatorEditAvatarPreviewImageStyling = whFull + rFull + `max-h-[100px] max-w-[100px] `;
+export const CreatorEditAvatarLabelStyling = flexCol + ` rounded-full `  + `-mt-16 items-center justify-center mx-3 shrink-0 w-28 h-28 bg-zinc-900 text-zinc-400 focus:text-white hover:text-white default-animation absolute border-2 border-zinc-800 hover:border-white focus:border-white default-no-outline-ringed cursor-pointer `;
+export const CreatorEditAvatarPreviewImageStyling = whFull + `rounded-full ` + `max-h-[100px] max-w-[100px] `;
 export const CreatorEditAvatarPreviewBannerStyling = whFull + `rounded-xl `;
 
 // 3. Functions
@@ -267,7 +266,7 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
         <ProfileInfo {...{ error, nickname, setNickname, bio, setBio }} />
         <div className={CreatorModalFooterStyling}>
           {totalImageCost > 0 && (
-            <div className={flexCenter + `bg-zinc-700 text-white rounded-xl w-48 h-12 pl-3`}>
+            <div className={`flex items-center ` + `bg-zinc-700 text-white rounded-xl w-48 h-12 pl-3`}>
               {t("home.featured-modal.cost")} {totalImageCost} AR
             </div>
           )}

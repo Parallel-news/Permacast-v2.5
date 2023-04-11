@@ -127,7 +127,7 @@ export const ShikwasaProvider = ({ children }) => {
       setCurrentEpisode(episode);
       setQueue(episodes);
       console.log(episodes);
-      if (episode.type?.includes("video") && args?.openFullscreen) setIsFullscreen(true);
+      if (episode?.type?.includes("video") && args?.openFullscreen) setIsFullscreen(true);
     };
     
     const thePlayer = player.current;
