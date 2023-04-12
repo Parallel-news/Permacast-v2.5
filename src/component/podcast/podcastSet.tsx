@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { useRecoilState } from "recoil";
 import { backgroundColorAtom } from "../../atoms";
 
@@ -60,25 +59,7 @@ export default function PodcastSet(props: podcastInter) {
 
         return (
             <>
-                <Head>
-                    <title>{`${podcastName} | Permacast`}</title>
-                    <meta name="description" content={`By ${author}`} />
-                    <meta name="twitter:card" content="summary_large_image"></meta>
-                    <meta name="twitter:image" content={(cover !== "") ? imgSrc : "https://permacast.app/favicon.ico"} />
-                    <meta name="twitter:title" content={`${podcastName} | Permacast`} />
-                    <meta name="twitter:url" content={`https://permacast.app/`}></meta>
-                    <meta name="twitter:description" content={`By ${author}`} />
-                    
-                    <meta property="og:type" content="article" />
-                    <meta name="description" content={`By ${author}`} />
-                    <meta name="og:image" content={(cover !== "") ? imgSrc : "https://permacast.app/favicon.ico"} />
-                    <meta name="og:title" content={`${podcastName} | Permacast`} />
-                    <meta name="og:url" content={`https://permacast.app/`} />
-                    <meta name="og:description" content={`By ${author}`} />
-                    <meta property="og:image:width" content="1200" />
-                    <meta property="og:image:height" content="630" />
-                    <meta property="og:image:alt" content="Show Cover" />
-                </Head>
+
                 <div className={podcastIdStyling}>
                     <PodcastBanner
                         imgSrc={imgSrc}
