@@ -4,23 +4,30 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { backgroundColorAtom } from "../../../../atoms";
-import { 
-    EpisodeBanner,
-    EpisodeDescription,
-    Episodes,
-    ErrorTag,
-    podcastIdStyling,
- } from "../../../../component/episode/eidTools";
-import { EXM_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND, ARSEED_URL, ARWEAVE_READ_LINK, MESON_ENDPOINT } from "../../../../constants";
+
+import { EXM_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND, ARSEED_URL, MESON_ENDPOINT } from "../../../../constants";
 import { getContractVariables } from "../../../../utils/contract";
 import { detectTimestampType, hasBeen10Min } from "../../../../utils/reusables";
-import { TipModal } from "../../../../component/tipModal";
-import { ShareButtons } from "../../../../component/shareButtons";
+
 import { determinePodcastURL, fetchDominantColor, getCoverColorScheme } from "../../../../utils/ui";
-import FeaturedPodcastPlayButton from "../../../../component/home/featuredPodcastPlayButton";
 import { findEpisode, findPodcast, trimChars } from "../../../../utils/filters";
 import { checkContentTypeFromUrl } from "../../../../utils/fileTools";
 import { FullEpisodeInfo } from "../../../../interfaces";
+
+import { TipModal } from "../../../../component/tipModal";
+import { ShareButtons } from "../../../../component/shareButtons";
+//import FeaturedPodcastPlayButton from "../../../../component/home/featuredPodcastPlayButton";
+import { 
+
+    podcastIdStyling,
+ } from "../../../../component/episode/eidTools";
+import React from "react";
+
+ const EpisodeBanner = React.lazy(() => import("../../../../component/episode/eidTools").then(module => ({ default: module.EpisodeBanner })));
+ const EpisodeDescription = React.lazy(() => import("../../../../component/episode/eidTools").then(module => ({ default: module.EpisodeDescription })));
+ const Episodes = React.lazy(() => import("../../../../component/episode/eidTools").then(module => ({ default: module.Episodes })));
+ const ErrorTag = React.lazy(() => import("../../../../component/episode/eidTools").then(module => ({ default: module.ErrorTag })));
+ const FeaturedPodcastPlayButton = React.lazy(() => import("../../../../component/home/featuredPodcastPlayButton"))
 
 export default function EpisodeId({data, status, mimeType}) {
 
