@@ -3,8 +3,7 @@ import { PhotoIcon } from "@heroicons/react/24/outline";
 import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
 import { useTranslation } from "next-i18next";
-import { cropScreenDivStyling, cropScreenStyling, cropSelectionDivStyling, cropSelectionTextStyling } from "../uploadShow/uploadShowTools";
-
+import { cropScreenDivStyling, cropScreenStyling, cropSelectionDivStyling, cropSelectionTextStyling } from "../uploadShow/reusables";
 
 // 1. Interfaces
 interface PreviewImageInterface {

@@ -8,13 +8,13 @@ import { useTranslation } from "next-i18next";
 import { useRecoilState } from "recoil";
 import { allPodcasts, arweaveAddress, everPayBalance } from "../../atoms";
 import { EVERPAY_AR_TAG, EVERPAY_FEATURE_TREASURY, FADE_IN_STYLE, FADE_OUT_STYLE, FEATURE_COST_BASE, FEATURE_COST_PER_DAY, SPINNER_COLOR, USER_SIG_MESSAGES } from "../../constants";
-import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
+import { APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { Podcast } from "../../interfaces";
-import { transferFunds } from "../../utils/everpay";
 import { fetchARPriceInUSD } from "../../utils/redstone";
 import DateSelector from "../dateSelector";
 import { PermaSpinner } from "../reusables/PermaSpinner";
-import { ConnectButton, containerPodcastModalStyling, SelectPodcast, tipModalStyling } from "../uploadEpisode/uploadEpisodeTools";
+import { tipModalStyling } from "../uploadEpisode/uploadEpisodeTools";
+import { ConnectButton, SelectPodcast, containerPodcastModalStyling } from "../uploadEpisode/reusables";
 import { GetFeaturedButtonStyling } from "./getFeatured";
 import { getFeaturedChannelsContract } from "../../utils/contract";
 

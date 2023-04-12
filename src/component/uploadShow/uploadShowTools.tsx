@@ -3,7 +3,7 @@ import { episodeDescStyling, episodeNameStyling } from "../uploadEpisode/uploadE
 import { categories_en } from "../../utils/languages";
 
 import { AR_DECIMALS, CONNECT_WALLET, EVERPAY_AR_TAG, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
-import { isValidEmail, ValMsg } from "../reusables/formTools";
+import { isValidEmail } from "../reusables/formTools";
 import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
 import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob } from "../../utils/fileTools";
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
@@ -18,18 +18,16 @@ import { useTranslation } from "next-i18next";
 import { Podcast } from "../../interfaces";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast"
-//import { CoverContainer, ExplicitInput, SelectDropdownRow } from "./reusables";
-//import { PermaSpinner } from "../reusables/PermaSpinner";
 import React from "react";
 
-const Tooltip = React.lazy(() => import("@nextui-org/react").then(module => ({ default: module.Tooltip })));
 const MarkDownToolTip = React.lazy(() => import("../reusables/tooltip").then(module => ({ default: module.MarkDownToolTip })));
 const CoverContainer = React.lazy(() => import("./reusables").then(module => ({ default: module.CoverContainer })));
 const ExplicitInput = React.lazy(() => import("./reusables").then(module => ({ default: module.ExplicitInput })));
 const SelectDropdownRow = React.lazy(() => import("./reusables").then(module => ({ default: module.SelectDropdownRow })));
 const PermaSpinner = React.lazy(() => import("../reusables/PermaSpinner").then(module => ({ default: module.PermaSpinner })));
-const ConnectButton = React.lazy(() => import("../uploadEpisode/uploadEpisodeTools").then(module => ({ default: module.ConnectButton })));
-const UploadButton = React.lazy(() => import("../uploadEpisode/uploadEpisodeTools").then(module => ({ default: module.UploadButton })));
+const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.ConnectButton })));
+const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
+const ValMsg = React.lazy(() => import("../reusables/formTools").then(module => ({default: module.ValMsg})))
 
 export default function uploadShowTools() {
     return false
@@ -40,40 +38,12 @@ interface ShowFormInter {
     podcasts: Podcast[]
 }
 
-interface LabelInputInter {
-    setLabelMsg: (v: any) => void;
-    setLabel: (v: any) => void;
-    labelValue: string;
-    labelMsg: string;
-    podcasts: Podcast[];
-}
-
 // 2. Stylings
 
-export const showTitleStyling = "text-white text-xl mb-4"
+
 export const spinnerClass = "w-full flex justify-center mt-4"
-export const photoIconStyling = "h-11 w-11 text-zinc-400"
-export const explicitLabelStyling = "flex items-center mr-5"
-export const mediaSwitcherLabelStyling = "flex items-center label"
-export const imgStyling = "h-48 w-48 text-slate-400 rounded-[20px]"
-export const explicitCheckBoxStyling = "checkbox mr-2 border-2 border-zinc-600"
-export const emptyCoverIconTextStyling = "text-lg tracking-wider pt-2 text-zinc-400"
-export const explicitTextStyling = "label-text cursor-pointer text-zinc-400 font-semibold"
 export const showFormStyling = "w-full flex flex-col justify-center items-center space-y-2"
-export const coverContainerInputStyling = "opacity-0 z-index-[-1] absolute pointer-events-none"
-export const cropScreenDivStyling = "relative w-[800px] h-[400px] rounded-[6px] overflow-hidden"
-export const cropSelectionTextStyling = "flex flex-col justify-center items-center text-white/60"
-export const mediaSwitcherVideoStyling = "mr-2 cursor-pointer label-text text-zinc-400 font-semibold"
-export const mediaSwitchedAudioStyling = "ml-2 cursor-pointer label-text text-zinc-400 font-semibold"
-export const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
-export const uploadShowStyling = "w-full flex flex-col justify-center items-center space-y-1 pb-[200px]"
-export const selectDropdownRowStyling = "flex flex-col sm:flex-row w-full justify-between space-y-2 sm:space-y-0"
 export const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex flex-row justify-start items-start focus-within:ring-white focus-within:ring-2"
-export const selectDropdownStyling="select select-secondary w-[30%] py-2 px-5 text-base font-normal input-styling bg-zinc-800"
-export const cropScreenStyling = "absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center backdrop-blur-md z-50"
-export const coverContainerLabelStyling = "cursor-pointer transition duration-300 ease-in-out text-zinc-600 hover:text-white flex md:block h-fit w-48"
-export const cropSelectionDivStyling = "min-w-[50px] min-h-[10px] rounded-[4px] bg-black/10 hover:bg-black/20 border-[1px] border-solid border-white/10 m-2 p-1 px-2 cursor-pointer flex flex-col justify-center items-center"
-export const emptyCoverIconStyling = "input input-secondary flex flex-col items-center justify-center cursor-pointer bg-zinc-800 h-48 w-48 rounded-[20px] outline-none focus:ring-2 focus:ring-inset focus:ring-white hover:bg-zinc-600"
 
 // 3. Custom Functions
 /**
@@ -82,7 +52,7 @@ export const emptyCoverIconStyling = "input input-secondary flex flex-col items-
  * @param {string - form type} type 
  * @returns Validation message || ""
  */
-const handleValMsg = (input: string, type: string, input2: any ="") => {
+export const handleValMsg = (input: string, type: string, input2: any ="") => {
     switch(type) {
         case 'podName':
         if((input.length > PODCAST_NAME_MAX_LEN || input.length < PODCAST_NAME_MIN_LEN)) {
@@ -392,35 +362,5 @@ export const ShowForm = (props: ShowFormInter) => {
                 <div className="w-[25%]"></div>
             </div>
         </div>
-    )
-}
-
-export const LabelInput = (props: LabelInputInter) => {
-    const { t } = useTranslation();
-//absolute right-2 top-3
-    return (
-        <>
-        <div className="flex-col">
-            <div className="flex flex-row items-center bg-zinc-800 rounded-xl pr-1">
-            <input className={episodeNameStyling} required title="Only letters and numbers are allowed" type="text" name="showLabel" placeholder={t("uploadshow.label")}
-            value={props.labelValue}
-            onChange={(e) => {
-            const pattern = /^[a-zA-Z0-9]*$/;
-            const isValid = pattern.test(e.target.value.trim());
-            console.log("isValid: ", isValid)
-  
-            if (isValid) {
-                props.setLabelMsg(handleValMsg(e.target.value.trim(), "podLabel", props.podcasts));
-                props.setLabel(e.target.value.trim());
-                console.log(e.target.value.trim())
-            }
-            }}/>
-            <Tooltip rounded color="invert" content={<div className="max-w-[240px]">{t("uploadshow.label-explanation")} <a href={`https://${props.labelValue}.pc.show`}>{props.labelValue}.pc.show</a></div>}>
-                <div className="helper-tooltip">?</div>
-            </Tooltip>
-            </div>
-            <ValMsg valMsg={props.labelMsg} className="pl-2" />
-        </div>
-        </>       
     )
 }

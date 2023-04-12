@@ -11,7 +11,7 @@ import { chronStatusAtom } from "../../../atoms";
 import { useRecoilState } from "recoil";
 
 const FeaturedPodcast = React.lazy(()=> import("../../../component/home/featuredPodcast"))
-const ViewDropDown = React.lazy(()=> import("../viewDropDown"))
+const ViewDropDown = React.lazy(()=> import("../../../component/podcast/viewDropdown"))
 
 export default function ViewPodcasts({yourShows}) {
 

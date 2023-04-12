@@ -5,6 +5,7 @@ import {
 import { useRecoilState } from "recoil";
 import { chronStatusAtom } from "../../atoms";
 import { useTranslation } from "next-i18next";
+import React from "react";
 
 export default function ViewDropDown() {
 
@@ -48,4 +49,4 @@ export default function ViewDropDown() {
         </Dropdown.Menu>
     </Dropdown>
     )
-}				
+}
