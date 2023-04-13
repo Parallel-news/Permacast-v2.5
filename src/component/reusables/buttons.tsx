@@ -13,7 +13,7 @@ export const DescriptionButton = (props: DescriptionButtonInter) => {
     const { t } = useTranslation();
     return (
         <div className="flex flex-row items-center normal-case rounded-full border-0 p-2 px-2 sm:px-2.5 bg-gray-400/30 cursor-pointer w-fit" style={{color: props.color, backgroundColor: "grey"}} onClick={props.onClick}>
-            {props.icon}<span className="font-semibold text-base">{props.text}</span>
+            {props.icon}<span className="font-semibold text-base whitespace-nowrap">{props.text}</span>
         </div>
     )
 }
