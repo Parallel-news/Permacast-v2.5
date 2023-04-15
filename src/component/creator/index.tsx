@@ -9,7 +9,7 @@ import { userBannerImageAtom } from '../../atoms';
 import { PASoMProfile } from '../../interfaces/pasom';
 import TipButton from '../reusables/tip';
 import { flexCenter } from './featuredCreators';
-import { Dropdown, DropdownButtonProps } from '@nextui-org/react';
+import { ExtendedDropdownButtonProps } from '../reusables/dropdown';
 
 const CreatorNames = React.lazy(() => import('./reusables').then(module => ({default: module.CreatorNames})))
 const CreatorTipModal = React.lazy(() => import('./reusables').then(module => ({default: module.CreatorTipModal})))
@@ -20,6 +20,8 @@ const ViewANSButton = React.lazy(() => import('./reusables').then(module => ({de
 const ProfileImage = React.lazy(() => import('./reusables').then(module => ({default: module.ProfileImage})))
 const EditButton = React.lazy(() => import('./edit').then(module => ({default: module.EditButton}))) 
 const FollowButton = React.lazy(() => import('./follow').then(module => ({default: module.FollowButton}))) 
+const Dropdown = React.lazy(() => import('../reusables/dropdown').then(module => ({default: module.default}))) 
+
 /**
  * Index
  * 1. Interfaces
@@ -41,10 +43,6 @@ interface CreatorPageComponentProps {
   episodes: FullEpisodeInfo[];
 };
 
-interface ExtendedDropdownButtonProps extends DropdownButtonProps {
-  key: string;
-  jsx: ReactNode;
-}
 
 // 2. Stylings
 export const creatorHeaderStyling = `flex flex-col md:flex-row items-center justify-between `;
@@ -114,7 +112,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
     </div>
   };
 
-  const Items = () => {
+  const Items = (): ExtendedDropdownButtonProps[] => {
     const buttonsArray = [];
     if (ANSuserExists) buttonsArray.push({key: "view-ans", jsx: <ViewANSButton {...{ currentLabel }} />});
     if (address !== user) buttonsArray.push({key: "tip", jsx: <TipButton {...{ openModalCallback }} />});
@@ -123,28 +121,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
     return buttonsArray;
   };
 
-  const UserActions: FC = () => (
-    <Dropdown>
-      <Dropdown.Button className={`rounded-full min-w-min `}>
-        ...
-      </Dropdown.Button>
-      <Dropdown.Menu 
-        aria-label="Dynamic Actions"
-        items={Items()}
-        className='w-28 hover:bg-zinc-900 bg-zinc-900 min-w-min'
-      >
-        {(item: ExtendedDropdownButtonProps) => (
-          <Dropdown.Item
-            key={item.key}
-            textValue={item.key}
-            className='w-40 hover:bg-zinc-900 bg-zinc-900'
-          >
-            {item.jsx}
-          </Dropdown.Item>
-        )}
-      </Dropdown.Menu>
-    </Dropdown>
-  );
+  // const UserActions: FC = () => (<Dropdown items={Items()} />);
 
   return (
     <div className={CreatorPageStyling}>
