@@ -250,10 +250,12 @@
 		"savingBanner": "Uploading Banner Cover",
 		"uploading": "Uploading"
 	},
-	"viewPodcasts": {
+	"feed-page": {
 		"allpodcasts": "All Podcasts",
 		"showNewest": "Show Newest",
-		"showOldest": "Show Oldest"
+		"showOldest": "Show Oldest",
+		"hide0EpisodePodcasts": "Hide 0 Episode Podcasts",
+		"show0EpisodePodcasts": "Show 0 Episode Podcasts"
 	}
 	
 }
