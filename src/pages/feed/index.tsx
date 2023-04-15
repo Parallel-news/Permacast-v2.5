@@ -28,20 +28,16 @@ const FeedPage: FC<FeedPageProps> = ({ yourShows }) => {
   const [shows, setShows] = useState<Podcast[]>([]);
 
   useEffect(() => {
-    const showsCopy = [...yourShows];
-    const shows = showsCopy.sort((a, b) => a.createdAt - b.createdAt);
+    let showsCopy = [...yourShows];
+    let shows = showsCopy
+      .sort((a, b) => a.createdAt - b.createdAt)
+      .filter((podcast: Podcast) => hide0Episodes ? podcast.episodes.length > 0: podcast);
     if (chronStatus % 2) {
       setShows(shows.reverse());
     } else {
       setShows(shows);
     };
-  }, [chronStatus]);
-
-  useEffect(() => {
-    const showsCopy = [...yourShows];
-    const shows = showsCopy.filter((podcast: Podcast) => hide0Episodes ? podcast.episodes.length > 0: podcast);
-    setShows(shows);
-  }, [hide0Episodes]);
+  }, [chronStatus, hide0Episodes, yourShows]);
 
   return (
     <>
