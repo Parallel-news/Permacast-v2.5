@@ -4,24 +4,18 @@ import {
     HeartIcon, 
     ArrowDownTrayIcon, 
     ArrowTopRightOnSquareIcon, 
-    PlayIcon 
 } from '@heroicons/react/24/solid';
-import TextTruncate from "../TextTruncate";
-import { formatStringByLen, hexToRGB } from "../../utils/reusables";
-import { ARWEAVE_READ_LINK, STR_LEN_EPISODE_BOX, STR_LEN_EPISODE_DESC, ARSEED_URL } from "../../constants";
+
+import { hexToRGB } from "../../utils/reusables";
+import { ARWEAVE_READ_LINK, STR_LEN_EPISODE_DESC } from "../../constants";
 import { useState } from "react";
 import { getTypeFromMime } from "../../utils/fileTools";
 import { useTranslation } from "next-i18next";
-import FeaturedPodcastPlayButton from "../home/featuredPodcastPlayButton";
 import Link from "next/link";
-import Track from "../reusables/track";
 import { FullEpisodeInfo } from "../../interfaces";
 
-
-export default function eidTools() {
-    return false
-}
-
+import TextTruncate from "../TextTruncate";
+import Track from "../reusables/track";
 /**
  * Index
  * 1. Interfaces
@@ -295,8 +289,6 @@ export const EpisodeDescription = (props: DescriptionContainerInter) => {
 
 export const Episodes = (props: EpisodesInter) => {
     const episodeList = props.episodes
-    const { t } = useTranslation()
-    console.log("Episode List: ", episodeList)
     return (
         <div className={nextEpisodeStyling}>
             <p className={nextEpisodeTitleStyling}>{props.containerTitle}</p>
@@ -308,70 +300,6 @@ export const Episodes = (props: EpisodesInter) => {
             :
                 <p className="text-neutral-400">None to Show.</p>
             }
-        </div>
-    )
-}
-
-/*
-<EpisodeBox
-    key={index}
-    episode={item}
-    imgSrc={props.imgSrc}
-    color={props.color}
-    podcastId={props.podcastId}
-/>
-*/
-export const EpisodeBox = (props: EpisodeBoxInter) => {
-    const uploader = props.episode.uploader
-    return  (
-        <div className={episodeBoxStyling}>
-            {/*Title Data*/}
-            <EpisodeBoxTitleData 
-                imgSrc={props.imgSrc}
-                creator={uploader.length > 15 ? formatStringByLen(uploader, 4, 4) : uploader}
-                color={props.color}
-                title={props.episode.episodeName}
-                eid={props.episode.eid}
-                pid={props.podcastId}
-            />
-            {/*Episode Description*/}
-            <div className="w-[50%]">
-                <TextTruncate 
-                    text={ARSEED_URL+props.episode.description}
-                    limit={STR_LEN_EPISODE_BOX}
-                    textClass="text-neutral-400 text-[12px]"
-                    buttonClass={textTruncateButtonStyling+" text-[13px]"}
-                    isMarkDown={true}
-                />
-            </div>
-            {/*Play Button*/}
-            <DescriptionButton 
-                icon={<PlayIcon className="w-6 h-6" />}
-                text={""}
-                color={props.color}
-            />
-        </div>
-    )
-}
-
-export const EpisodeBoxTitleData = (props: EpisodeBoxTitleData) => {
-    const { t } = useTranslation();
-    return (
-        <div className={episodeBoxTitleDataStyling}>
-            <Image 
-                src={props.imgSrc}
-                alt="Episode Cover"
-                height={30}
-                width={50}
-                className={episodeBoxTitleDataImg}
-            />
-            <div className="flex flex-col">
-                <a href={`/episode/${props.pid}/${props.eid}`} className={episodeBoxTitleStyling+" mb-1"}>{props.title}</a>
-                <div className={creatorTagDivStyling}>
-                    <p className={byStyling}>{"by"}</p>
-                    <CreatorTag color={props.color} creator={props.creator} imgSrc={props.imgSrc}/>
-                </div>
-            </div>
         </div>
     )
 }

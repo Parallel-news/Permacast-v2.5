@@ -1,5 +1,4 @@
 import axios from "axios";
-import { uploadShowStyling, showTitleStyling } from "../../component/uploadShow/uploadShowTools"
 import { EXM_READ_LINK, NO_SHOW } from "../../constants";
 import { getContractVariables } from "../../utils/contract";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -7,6 +6,9 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 
 const ShowForm = React.lazy(() => import("../../component/uploadShow/uploadShowTools").then(module => ({ default: module.ShowForm })));
+
+const showTitleStyling = "text-white text-xl mb-4"
+const uploadShowStyling = "w-full flex flex-col justify-center items-center space-y-1 pb-[200px]"
 
 export default function UploadShow({yourShows, error}) {
 

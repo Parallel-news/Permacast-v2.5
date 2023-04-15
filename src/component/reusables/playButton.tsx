@@ -26,9 +26,9 @@ const PlayButton: FC<PlayButtonProps> = ({ size, iconSize, buttonColor, accentCo
       onClick={onClick}
     >
       {isPlaying ? (
-        <PauseIcon className="stroke-[3]" style={{ width: iconSize, height: iconSize, color: accentColor }} />
+        <PauseIcon className="stroke-[3]" style={{ width: iconSize || "", height: iconSize || "", color: accentColor || "" }} />
       ): (
-        <PlayIcon className="stroke-[3]" style={{ width: iconSize, height: iconSize, color: accentColor }} />
+        <PlayIcon className="stroke-[3]" style={{ width: iconSize || "", height: iconSize || "", color: accentColor || "" }} />
       )}
     </button>
   );
