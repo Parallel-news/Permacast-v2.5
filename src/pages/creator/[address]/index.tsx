@@ -89,7 +89,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
       setPASoMProfile(profile);
     };
     fetchPASoM();
-  }, []);
+  }, [userInfo]);
 
   useEffect(() => {
     if (!allPodcasts_) return;
@@ -103,7 +103,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
       setEpisodes(sortedEpisodes.slice().reverse());
     };
     fetchUserData();
-  }, [allPodcasts_]);
+  }, [allPodcasts_, userInfo]);
 
   const creator = {
     ...userInfo,
