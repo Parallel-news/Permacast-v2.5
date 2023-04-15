@@ -1,14 +1,14 @@
 import axios from "axios";
+import { NextPage } from "next";
+import Head from "next/head";
+import React from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { ARSEED_URL, EXM_READ_LINK } from "../../constants";
 import { getContractVariables } from "../../utils/contract";
-import React from "react";
 import { EXMState, Podcast } from "../../interfaces";
 import { findPodcast } from "../../utils/filters";
-import { NextPage } from "next";
-import Head from "next/head";
 
-const PodcastSet = React.lazy(()=> import("../../component/podcast/podcastSet"))
+const PodcastSet = React.lazy(() => import("../../component/podcast/podcastSet"))
 
 const PodcastId: NextPage<{ podcast: Podcast }> = ({ podcast }) => {
     if (podcast) {
