@@ -15,9 +15,9 @@ export interface DropdownProps {
   menuItemClass: string;
 };
 
-export const openMenuButtonClass = `rounded-full min-w-min bg-zinc-900 py-2 text-sm `;
+export const openMenuButtonClass = `rounded-lg min-w-min bg-zinc-900 h-12 `;
 export const dropdownMenuClass = `w-40 !hover:bg-zinc-900 !bg-zinc-900 min-w-min `;
-export const menuItemClass = `bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white `;
+export const menuItemClass = `bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white my-1 `;
 
 const Dropdown: FC<DropdownProps> = ({
   openMenuButton,

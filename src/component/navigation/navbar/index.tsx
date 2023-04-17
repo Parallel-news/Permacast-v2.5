@@ -16,6 +16,34 @@ import { LanguageButton } from "../../reusables/LanguageButton";
 import { Bars3Icon } from "@heroicons/react/24/solid";
 
 
+export const dropdownItemFullFill = `w-full h-full flex `;
+
+export const LanguageDropdown: FC = () => {
+  const items = LANGUAGES.map((l: LanguageOptionInterface) => ({
+    key: l.name, jsx: <LanguageButton {...{ className: dropdownItemFullFill, l }} />,
+  }));
+
+  const openMenuButton = <LanguageIcon className="h-5 w-5" aria-hidden="true" />;
+  const openMenuButtonClass = `rounded-lg min-w-min bg-zinc-900 justify-start ` + dropdownItemFullFill;
+  return <Dropdown {...{ openMenuButton, items, openMenuButtonClass, dropdownMenuClass, menuItemClass }} />;
+};
+
+export const NavigationDropdown: FC = () => {
+  const { t } = useTranslation();
+
+  const items: ExtendedDropdownButtonProps[] = [
+    {jsx: <Link href="/">{t(`navbar.home`)}</Link>, key: "home"},
+    {jsx: <Link href="/upload-podcast">{t(`uploadshow.addpodcast`)}</Link>, key: "upload-podcast"},
+    {jsx: <Link href="/upload-episode">{t(`podcast.newepisode`)}</Link>, key: "upload-episode"},
+    {jsx: <ArConnect />, key: "arconnect", customClass: `px-0 h-8 overflow-y-hidden bg-zinc-900 hover:bg-zinc-900 `},
+    {jsx: <LanguageDropdown />, key: "language-dropdown", customClass: `px-0 bg-zinc-900 hover:bg-zinc-900 `}
+  ];
+
+  const openMenuButton = <Bars3Icon className="h-5 w-5" aria-hidden="true" />;
+
+  return <Dropdown {...{ openMenuButton, items, openMenuButtonClass, dropdownMenuClass, menuItemClass }} />;
+};
+
 export const NavBar: FC = () => {
   return (
     <div className="mb-10 ">
@@ -34,35 +62,9 @@ export const NavBar: FC = () => {
       </div>
     </div>
   );
-}
+};
 
 export function NavBarMobile() {
-
-  const LanguageDropdown = () => {
-    const items = LANGUAGES.map((l: LanguageOptionInterface) => ({
-      key: l.name, jsx: <LanguageButton {...{ className: 'w-full h-full flex ', l }} />,
-    }));
-
-    const openMenuButton = <LanguageIcon className="h-5 w-5" aria-hidden="true" />;
-
-    return <Dropdown {...{ openMenuButton, items, openMenuButtonClass, dropdownMenuClass, menuItemClass }} />;
-  };
-
-  const NavigationDropdown = () => {
-    const { t } = useTranslation();
-
-    const items: ExtendedDropdownButtonProps[] = [
-      {jsx: <Link href="/">{t(`navbar.home`)}</Link>, key: "home"},
-      {jsx: <Link href="/upload-podcast">{t(`uploadshow.addpodcast`)}</Link>, key: "upload-podcast"},
-      {jsx: <Link href="/upload-episode">{t(`podcast.newepisode`)}</Link>, key: "upload-episode"},
-      {jsx: <ArConnect />, key: "arconnect", customClass: `px-0 h-8 overflow-y-hidden bg-zinc-900 hover:bg-zinc-900 `},
-      {jsx: <LanguageDropdown />, key: "language-dropdown", customClass: `px-0 bg-zinc-900 hover:bg-zinc-900 `}
-    ];
-
-    const openMenuButton = <Bars3Icon className="h-5 w-5" aria-hidden="true" />;
-
-    return <Dropdown {...{ openMenuButton, items, openMenuButtonClass, dropdownMenuClass, menuItemClass }} />;
-  };
 
   return (
     <div className="flex items-center gap-x-2 mt-5">
