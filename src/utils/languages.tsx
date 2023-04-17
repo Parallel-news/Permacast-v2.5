@@ -545,7 +545,14 @@ export const languages_zh = {
   zu: "祖鲁语",
 };
 
-export const LANGUAGES = [
+export interface LanguageOptionInterface {
+  code: string;
+  name: string;
+  categories: string[];
+  languages: Record<string, string>;
+};
+
+export const LANGUAGES: LanguageOptionInterface[] = [
   {
     "code": "en",
     "name": "English",
