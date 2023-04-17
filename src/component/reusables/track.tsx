@@ -18,7 +18,7 @@ import { allANSUsersAtom } from "../../atoms";
 import { useRecoilState } from "recoil";
 import { MicrophoneIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 import { Tooltip } from "@nextui-org/react";
-import { detectTimestampType, hasBeen10Min, reRoute} from "../../utils/reusables";
+import { detectTimestampType, hasBeen10Min, reRoute } from "../../utils/reusables";
 import { useRouter } from "next/router";
 
 /**
@@ -107,7 +107,7 @@ export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, ti
         width={56}
         height={56}
         className="rounded-lg aspect-square object-cover w-14 h-14"
-        src={hasBeen10Min(timestamp) ? MESON_ENDPOINT+ cover : ARSEED_URL + cover }
+        src={hasBeen10Min(timestamp) ? MESON_ENDPOINT + cover : ARSEED_URL + cover}
         alt={alt}
       />
     </Link>
@@ -119,7 +119,7 @@ export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ podcastURL
 
   return (
     <Link
-    href={`/episode/${podcastURL}/${trimChars(eid)}${startId}`}
+      href={`/episode/${podcastURL}/${trimChars(eid)}${startId}`}
       className={trackEpisodeLinkableTitleStyling}
     >
       {episodeName}
@@ -136,9 +136,9 @@ export const TrackCreatorLink: FC<TrackCreatorLinkProps> = ({ uploader, buttonSt
     >
       <div
         className="h-2.5 w-2.5 rounded-full"
-        style={{backgroundColor: coverColor}}
+        style={{ backgroundColor: coverColor }}
       ></div>
-      <div>{uploader || author || ""}</div>
+      <div>{shortenAddress(uploader || author || "", 8)}</div>
     </Link>
   );
 };
@@ -162,7 +162,7 @@ export const TrackPlayButton: FC<TrackPlayButtonProps> = ({ playerInfo, episode,
     currentEpisode = playerState?.currentEpisode;
     isPlaying = playerState?.isPlaying;
   }
-  
+
   const episodeInfo = episode.episode;
   const podcastInfo = episode.podcast;
 
@@ -216,14 +216,14 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
 
   const [coverColor, setCoverColor] = useState<string>('');
   const [textColor, setTextColor] = useState<string>('');
-  const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({backgroundColor: '', color: ''})
+  const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({ backgroundColor: '', color: '' })
   const [markdown, setMarkdown] = useState<string>('');
   const [artist, setArtist] = useState<string>('');
 
   useMemo(() => {
     const ANS = allANSUsers.find((user: ANSMapped) => user.address === uploader);
     if (ANS) setArtist(ANS.primary + ".ar");
-    else setArtist(shortenAddress(uploader || author || "", 8));
+    else setArtist(uploader);
   }, []);
 
   useMemo(() => {
@@ -233,7 +233,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
       if (dominantColor.error) return;
       const [coverColor, textColor] = getCoverColorScheme(dominantColor.rgba);
       const { r, g, b } = RGBAstringToObject(coverColor);
-      const RGBstring = RGBobjectToString({r, g, b});
+      const RGBstring = RGBobjectToString({ r, g, b });
       const buttonStyles = getButtonRGBs(RGBstringToObject(RGBstring));
       setCoverColor(coverColor);
       setTextColor(textColor);
@@ -248,36 +248,36 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     playerColorScheme: coverColor,
     buttonColor: textColor,
     accentColor: textColor,
-    openFullscreen, 
+    openFullscreen,
     title: episodeName,
     artist,
     cover: coverUsed,
     src: contentTx,
   };
 
-  const podcastURL =  determinePodcastURL(label, pid);
+  const podcastURL = determinePodcastURL(label, pid);
   const isVideo = type.includes("video");
   const className = 'w-4 h-4 hover:white zinc-600 mx-1'
-  
+
   return (
     <div className={trackFlexCenterBothStyling}>
       <div className={trackFlexCenterPaddedYStyling}>
         <span className={trackPodcastInfoContainer}>
-          <PodcastCover {...{ podcastURL, cover: coverUsed, alt: podcastName, timestamp: detectTimestampType(uploadedAt) === "seconds" ? uploadedAt * 1000 : uploadedAt}} />
+          <PodcastCover {...{ podcastURL, cover: coverUsed, alt: podcastName, timestamp: detectTimestampType(uploadedAt) === "seconds" ? uploadedAt * 1000 : uploadedAt }} />
           <div className={trackMainInfoStyling}>
             <EpisodeLinkableTitle {...{ podcastURL, eid, episodeName }} />
             <div className={trackFlexCenterYStyling}>
               <p className={trackByStyling}>{t("track.by")}</p>
               <div className={`flex items-center `}>
                 <TrackCreatorLink {...{ uploader: artist, buttonStyles, coverColor, author }} />
-                <Tooltip color='invert' content={t(isVideo ? "track.video" : t("track.audio"))}>
-                  {isVideo ? <VideoCameraIcon {...{className}} /> : <MicrophoneIcon {...{className}} />}
+                <Tooltip color="invert" content={t(isVideo ? "track.video" : "track.audio")}>
+                  {isVideo ? <VideoCameraIcon {...{ className }} /> : <MicrophoneIcon {...{ className }} />}
                 </Tooltip>
               </div>
             </div>
           </div>
         </span>
-        
+
         <div className="flex justify-start w-full md:pl-4 lg:pl-0">
           <TrackDescription {...{ includeDescription, description: markdown }} />
         </div>
