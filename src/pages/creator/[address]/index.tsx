@@ -37,7 +37,8 @@ export async function getStaticProps(context) {
   const isAddress = address.length === 43;
 
   try {
-    const info = (await axios.get(`https://ans-resolver.herokuapp.com/resolve-as-arpage/${address}`)).data;
+    const lookupAddress = !isAddress && address.includes('.ar') ? address.split('.')[0] : address
+    const info = (await axios.get(`https://ans-resolver.herokuapp.com/resolve-as-arpage/${lookupAddress}`)).data;
     if (info?.user) {
       userInfo = info;
       userInfo.ANSuserExists = true;

@@ -34,6 +34,7 @@ export const Sidenav: FC = () => {
       </Link>
       <NavButton url="/" condition={isHome} icon={<HomeIcon />} />
       <NavButton url="/feed" condition={isViewPodcasts} icon={<RectangleStackIcon className={IconSizeStyling} />} />
+      {/* TODO: re-use the dropdown from mobile view */}
       <LanguageDropdown />
       <UploadDropdown routeMatches={isUpload} />
       <HelpDropdown />

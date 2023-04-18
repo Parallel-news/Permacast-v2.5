@@ -1,15 +1,48 @@
-import { FC } from "react";
+import Link from "next/link";
 import { useTranslation } from "next-i18next";
-import { Disclosure } from "@headlessui/react";
+import { FC } from "react";
 
-import {
-  LanguageIcon, Bars3Icon,
-  XMarkIcon
-} from "@heroicons/react/24/outline";
+import { LanguageIcon } from "@heroicons/react/24/outline";
 import ArConnect from "../../arconnect";
 import Searchbar from "../../searchbar";
-import LANGUAGES from "../../../utils/languages";
-import Link from "next/link";
+import LANGUAGES, { LanguageOptionInterface } from "../../../utils/languages";
+import Dropdown, { 
+  ExtendedDropdownButtonProps,
+  openMenuButtonClass,
+  dropdownMenuClass,
+  menuItemClass
+} from "../../reusables/dropdown";
+import { LanguageButton } from "../../reusables/LanguageButton";
+import { Bars3Icon } from "@heroicons/react/24/solid";
+
+
+export const dropdownItemFullFill = `w-full h-full flex `;
+
+export const LanguageDropdown: FC = () => {
+  const items = LANGUAGES.map((l: LanguageOptionInterface) => ({
+    key: l.name, jsx: <LanguageButton {...{ className: dropdownItemFullFill, l }} />,
+  }));
+
+  const openMenuButton = <LanguageIcon className="h-5 w-5" aria-hidden="true" />;
+  const openMenuButtonClass = `rounded-lg min-w-min bg-zinc-900 justify-start ` + dropdownItemFullFill;
+  return <Dropdown {...{ openMenuButton, items, openMenuButtonClass, dropdownMenuClass, menuItemClass }} />;
+};
+
+export const NavigationDropdown: FC = () => {
+  const { t } = useTranslation();
+
+  const items: ExtendedDropdownButtonProps[] = [
+    {jsx: <Link href="/">{t(`navbar.home`)}</Link>, key: "home"},
+    {jsx: <Link href="/upload-podcast">{t(`uploadshow.addpodcast`)}</Link>, key: "upload-podcast"},
+    {jsx: <Link href="/upload-episode">{t(`podcast.newepisode`)}</Link>, key: "upload-episode"},
+    {jsx: <ArConnect />, key: "arconnect", customClass: `px-0 h-8 overflow-y-hidden bg-zinc-900 hover:bg-zinc-900 `},
+    {jsx: <LanguageDropdown />, key: "language-dropdown", customClass: `px-0 bg-zinc-900 hover:bg-zinc-900 `}
+  ];
+
+  const openMenuButton = <Bars3Icon className="h-5 w-5" aria-hidden="true" />;
+
+  return <Dropdown {...{ openMenuButton, items, openMenuButtonClass, dropdownMenuClass, menuItemClass }} />;
+};
 
 export const NavBar: FC = () => {
   return (
@@ -29,99 +62,14 @@ export const NavBar: FC = () => {
       </div>
     </div>
   );
-}
+};
 
 export function NavBarMobile() {
-  const { t, i18n } = useTranslation();
-  // const  = (i) => history.push("/" + i);
-  // let history = useHistory();
-  // let location = useLocation();
-
-  const changeLanguage = (lng) => {
-    // i18n.changeLanguage(lng);
-  };
 
   return (
-    <div className="text-white">
-      <div className="flex gap-x-12 justify-center">
-        <Disclosure as="nav" className="rounded-box w-full">
-          {({ open }) => (
-            <>
-              <div className="navbar flex items-center">
-                <div className="flex-1">
-                  <div className="flex w-full items-center ">
-                    <div
-                      className="block h-5 w-5 mr-2 text-[rgb(255,255,0)]"
-                    ></div>
-                    <div className="w-full mx-2">
-                      <Searchbar />
-                    </div>
-                  </div>
-                </div>
-                <div className="-mr-2 flex md:hidden">
-                  <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-                    <span className="sr-only">Open main menu</span>
-                    {open ? (
-                      <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                    ) : (
-                      <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                    )}
-                  </Disclosure.Button>
-                </div>
-              </div>
-              <Disclosure.Panel>
-                <div className="px-2 pt-2 pb-3 space-y-1 border border-zinc-800 rounded-lg">
-                  <div className="dropdown dropdown-hover block px-3 py-2 rounded-md">
-                    <label tabIndex={0}>
-                      <LanguageIcon className="h-5 w-5" aria-hidden="true" />
-                    </label>
-                    <ul
-                      tabIndex={0}
-                      className="dropdown-content menu p-2 shadow bg-zinc-900 rounded-box w-32"
-                    >
-                      {LANGUAGES.map((l) => (
-                        <li key={l.code}>
-                          <span onClick={() => changeLanguage(l.code)}>
-                            {l.name}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <Disclosure.Button
-                    as="div"
-                    className="block px-3 py-2 rounded-md"
-                  >
-                    <Link href="/">
-                      {t("navbar.home")}
-                    </Link>
-                  </Disclosure.Button>
-                  <Disclosure.Button
-                    as="a"
-                    className="block px-3 py-2 rounded-md cursor-pointer"
-                  >
-                    <Link href="/upload-podcast">
-                      {t("uploadshow.addpodcast")}
-                      </Link>
-                  </Disclosure.Button>
-
-                  <Disclosure.Button
-                    as="a"
-                    className="block px-3 py-2 rounded-md cursor-pointer"
-                  >
-                    <Link href="/upload-episode">
-                      {t("podcast.newepisode")}
-                    </Link>
-                  </Disclosure.Button>
-                  <Disclosure.Button as="div" className="block py-2 rounded-md">
-                    <ArConnect />
-                  </Disclosure.Button>
-                </div>
-              </Disclosure.Panel>
-            </>
-          )}
-        </Disclosure>
-      </div>
+    <div className="flex items-center gap-x-2 mt-5">
+      <Searchbar />
+      <NavigationDropdown />
     </div>
   );
 };
