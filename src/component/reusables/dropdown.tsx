@@ -4,28 +4,44 @@ import { DropdownButtonProps, Dropdown as NextUIDropdown } from "@nextui-org/rea
 export interface ExtendedDropdownButtonProps extends DropdownButtonProps {
   key: string;
   jsx: ReactNode;
+  customClass?: string;
 };
 
 export interface DropdownProps {
-  items: ExtendedDropdownButtonProps[]
-}
+  openMenuButton?: ReactNode;
+  items: ExtendedDropdownButtonProps[];
+  openMenuButtonClass: string;
+  dropdownMenuClass: string;
+  menuItemClass: string;
+};
 
-const Dropdown: FC<DropdownProps> = ({ items }) => {
+export const openMenuButtonClass = `rounded-lg min-w-min bg-zinc-900 h-12 `;
+export const dropdownMenuClass = `w-40 !hover:bg-zinc-900 !bg-zinc-900 min-w-min `;
+export const menuItemClass = `bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white my-1 `;
+
+const Dropdown: FC<DropdownProps> = ({
+  openMenuButton,
+  items,
+  openMenuButtonClass,
+  dropdownMenuClass,
+  menuItemClass
+}) => {
+
   return (
-    <NextUIDropdown>
-      <NextUIDropdown.Button className={`rounded-full min-w-min `}>
-        
+    <NextUIDropdown closeOnSelect={false}>
+      <NextUIDropdown.Button className={openMenuButtonClass}>
+        {openMenuButton}
       </NextUIDropdown.Button>
-      <NextUIDropdown.Menu 
-        aria-label="Dynamic Actions"
+      <NextUIDropdown.Menu
+        aria-label="Dropdown Items"
         items={items}
-        className='w-28 hover:bg-zinc-900 bg-zinc-900 min-w-min'
+        className={dropdownMenuClass}
       >
         {(item: ExtendedDropdownButtonProps) => (
           <NextUIDropdown.Item
             key={item.key}
             textValue={item.key}
-            className='w-40 hover:bg-zinc-900 bg-zinc-900'
+            className={item.customClass ? item.customClass : menuItemClass}
           >
             {item.jsx}
           </NextUIDropdown.Item>
