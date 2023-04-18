@@ -16,7 +16,7 @@ const ViewDropDown: FC = () => {
 
   const filterStyling = `w-12 h-12 text-zinc-600 cursor-pointer hover:bg-zinc-700 rounded-full default-no-outline-ringed default-animation px-2 `;
   const className = 'text-white w-4 h-4 ';
-  const flexGap2 = flexCenter + `gap-x-2 `;
+  const flexGap2 = flexCenter + `gap-x-2 w-full`;
 
   const SortByUploadDateButton = () => (
     <button className={flexGap2} onClick={() => {
