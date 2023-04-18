@@ -22,6 +22,7 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
 
   const useDefaultBackground = [
     "/",
+    "/feed",
     "/search",
     "/upload-podcast",
     "/upload-episode"

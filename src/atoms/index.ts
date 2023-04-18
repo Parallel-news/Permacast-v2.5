@@ -189,8 +189,15 @@ export const userBannerImageAtom = atom<string>({
     default: ""
 });
 
+// *** Filters ***
+
 export const chronStatusAtom = atom<number>({
     key: 'chronStatus',
     default: 0
 });
+
+export const hide0EpisodesAtom = atom<boolean>({
+    key: 'hide0EpisodesAtom',
+    default: true    
+})
 // *** ------- ***

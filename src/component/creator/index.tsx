@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { FC, useEffect, useState } from 'react';
 import { shortenAddress, useArconnect } from 'react-arconnect';
 import { useRecoilState } from 'recoil';
@@ -8,6 +8,8 @@ import { userBannerImageAtom } from '../../atoms';
 
 import { PASoMProfile } from '../../interfaces/pasom';
 import TipButton from '../reusables/tip';
+import { flexCenter } from './featuredCreators';
+import { ExtendedDropdownButtonProps } from '../reusables/dropdown';
 
 const CreatorNames = React.lazy(() => import('./reusables').then(module => ({default: module.CreatorNames})))
 const CreatorTipModal = React.lazy(() => import('./reusables').then(module => ({default: module.CreatorTipModal})))
@@ -18,6 +20,8 @@ const ViewANSButton = React.lazy(() => import('./reusables').then(module => ({de
 const ProfileImage = React.lazy(() => import('./reusables').then(module => ({default: module.ProfileImage})))
 const EditButton = React.lazy(() => import('./edit').then(module => ({default: module.EditButton}))) 
 const FollowButton = React.lazy(() => import('./follow').then(module => ({default: module.FollowButton}))) 
+const Dropdown = React.lazy(() => import('../reusables/dropdown').then(module => ({default: module.default}))) 
+
 /**
  * Index
  * 1. Interfaces
@@ -53,11 +57,11 @@ export const flexItemsCenter = `flex flex-col gap-y-2 md:gap-y-0 md:flex-row ite
 export const CreatorPageStyling = `mt-12 h-full pb-40 `;
 export const CreatorProfileParentStyling = flexItemsCenter + `gap-x-7 ml-2 text-center md:text-left `;
 export const CreatorUploadPhotoIconStyling = `h-8 w-8 text-inherit `;
-export const CreatorVerificationParentStyling = `ml-2 md:ml-3 mt-1`;
+export const CreatorVerificationParentStyling = `ml-2 md:ml-3 mt-1 `;
 export const CreatorBioStyling = `h-8 select-text `;
 export const TransparentHidden = `absolute opacity-0 pointer-events-none `;
 export const InputFocusStyling = `focus:opacity-0 focus:z-20 `;
-export const CreatorEditBannerInputStyling = TransparentHidden + InputFocusStyling + `top-12 left-40`;
+export const CreatorEditBannerInputStyling = TransparentHidden + InputFocusStyling + `top-12 left-40 `;
 export const CreatorEditAvatarInputStyling = TransparentHidden + InputFocusStyling + `top-28 left-5 w-24 `;
 export const CreatorEditBannerStyling = flexCol + `w-full h-32 bg-zinc-800 inset-0 border-dotted border-zinc-600 hover:border-white text-zinc-400 hover:text-white rounded-xl border-2 items-center justify-center default-no-outline-ringed inset default-animation focus:ring-white cursor-pointer `;
 export const CreatorEditAvatarStyling = flexCol + `items-center justify-center mb-2 mx-3 shrink-0 w-28 h-28 rounded-full bg-zinc-900 text-zinc-400 focus:text-white hover:text-white default-animation absolute -bottom-16 left-0 border-2 border-zinc-900 hover:border-white focus:border-white default-no-outline-ringed cursor-pointer `;
@@ -87,16 +91,37 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
   
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [userModalIsOpen, setUserModalIsOpen] = useState<boolean>(false);
 
   useEffect(() => {setUserBannerImage(banner)}, [banner]);
   useEffect(() => {
     const isFollowing = PASoMProfile?.followers?.includes(address);
-    console.log('is following', isFollowing)
     setIsFollowing(isFollowing);
   }, [PASoMProfile, address]);
 
   const openModalCallback = () => setIsOpen(prev => !prev);
+  const openUserDetailsModal = () => setUserModalIsOpen(prev => !prev);
   const tipModalArgs = { ANSorAddress: ANSuserExists ? currentLabel : user, recipientAddress: user, isOpen, setIsOpen };
+
+  const ProfileButtons = () => {
+    return <div className={flexItemsCenter + `mr-3 hidden md:flex`}>
+      {ANSuserExists && <ViewANSButton {...{ currentLabel }} />}
+      {address !== user && <TipButton {...{ openModalCallback }} />}
+      {address !== user && <FollowButton {...{ user, walletConnected, isFollowing, setIsFollowing }} />}
+      {address === user && <EditButton {...{ PASoMProfile }} />}
+    </div>
+  };
+
+  const Items = (): ExtendedDropdownButtonProps[] => {
+    const buttonsArray = [];
+    if (ANSuserExists) buttonsArray.push({key: "view-ans", jsx: <ViewANSButton {...{ currentLabel }} />});
+    if (address !== user) buttonsArray.push({key: "tip", jsx: <TipButton {...{ openModalCallback }} />});
+    if (address !== user) buttonsArray.push({key: "follow", jsx: <FollowButton {...{ user, walletConnected, isFollowing, setIsFollowing }} />});
+    if (address === user) buttonsArray.push({key: "profile", jsx: <EditButton {...{ PASoMProfile }} />});
+    return buttonsArray;
+  };
+
+  // const UserActions: FC = () => (<Dropdown items={Items()} />);
 
   return (
     <div className={CreatorPageStyling}>
@@ -105,19 +130,16 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
         <div className={CreatorProfileParentStyling}>
           <ProfileImage {...{ currentLabel, avatar, address_color }} linkToArPage={ANSuserExists} />
           <div className={flexCol}>
-            <div className={`flex items-center ` + `justify-center md:justify-start `}>
+            <div className={flexCenter + `justify-center md:justify-start `}>
               <CreatorNames {...{ nickname, currentLabel, ANSuserExists }} />
             </div>
-            <div className={CreatorBioStyling}>{bio}</div>
-            <Followers {...{ PASoMProfile, isFollowing }} />
+            <div className={CreatorBioStyling}>
+              <p className="line-clamp-2">{bio}</p>
+              <Followers {...{ PASoMProfile, isFollowing, direction: "horizontal" }} />
+            </div>
           </div>
         </div>
-        <div className={flexItemsCenter + `mr-3 `}>
-          {ANSuserExists && <ViewANSButton {...{ currentLabel }} />}
-          {address !== user && <TipButton {...{ openModalCallback }} />}
-          {address !== user && <FollowButton {...{ user, walletConnected, isFollowing, setIsFollowing }} />}
-          {address === user && <EditButton {...{ PASoMProfile }} />}
-        </div>
+        <ProfileButtons />
       </div>
       <FeaturedPodcasts {...{ podcasts }} />
       <LatestEpisodes {...{ episodes }} />

@@ -244,9 +244,11 @@
 		"savingBanner": "上传横幅封面",
 		"uploading": "上传中"
 	},
-	"viewPodcasts": {
+	"feed-page": {
 		"allpodcasts": "所有播客",
 		"showNewest": "显示最新",
-		"showOldest": "显示最旧"
+		"showOldest": "显示最旧",
+		"hide0EpisodePodcasts": "隐藏 0 集的播客",
+		"show0EpisodePodcasts": "显示有 0 集的播客"
 	}
 }

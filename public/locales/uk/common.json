@@ -259,9 +259,11 @@
 		"savingBanner": "Завантаження обкладинки банера",
 		"uploading": "Завантаження"
 	},
-	"viewPodcasts": {
+	"feed-page": {
 		"allpodcasts": "Усі подкасти",
 		"showNewest": "Показати найновіші",
-		"showOldest": "Показати найстаріший"
+		"showOldest": "Показати найстаріший",
+		"hide0EpisodePodcasts": "Приховати подкасти з 0 епізодами ",
+		"show0EpisodePodcasts": "Показати подкасти з 0 епізодами"
 	}
 }
