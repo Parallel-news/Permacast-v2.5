@@ -147,7 +147,11 @@
 		"toupload": "до завантаження",
 		"upload": "Завантажити",
 		"uploading": "Завантаження триває, будь ласка, почекай...",
-		"uploaded": "Завантажено"
+		"uploaded": "Завантажено",
+		"validation": {
+			"name": "Назва має містити від {{minLength}} до {{maxLength}} символів.",
+			"description": "Опис має містити від {{minLength}} до {{maxLength}} символів."
+		}
 	},
 	"generalerrors": {
 		"cantfindaddress": {

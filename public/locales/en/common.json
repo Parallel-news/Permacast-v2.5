@@ -147,7 +147,11 @@
 		"toupload": "to upload",
 		"upload": "Upload",
 		"uploading": "Uploading, please wait...",
-		"uploaded": "Uploaded"
+		"uploaded": "Uploaded",
+		"validation": {
+			"name": "Name must be between {{minLength}} and {{maxLength}} characters.",
+			"description": "Description must be between {{minLength}} and {{maxLength}} characters"
+		}
 	},
 	"podcast": {
 		"newepisode": "Add Episode"

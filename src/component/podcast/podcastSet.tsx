@@ -31,7 +31,6 @@ export default function PodcastSet(props: podcastInter) {
     const [loadShareModal, setLoadShareModal] = useState<boolean>(false)
     const [baseUrl, setBaseUrl] = useState<string>("")
     const [color, setColor] = useState<string>("")
-    const [mounted, setMounted] = useState<boolean>(false)
 
     const [themeColor, setThemeColor] = useState<string>('');
     const [textColor, setTextColor] = useState<string>('');
@@ -54,7 +53,6 @@ export default function PodcastSet(props: podcastInter) {
                 setBackgroundColor(coverColor)
                 setThemeColor(coverColor)
                 setTextColor(textColor)
-                setMounted(true)
             }
             fetchColor();
         }, []);
@@ -82,7 +80,7 @@ export default function PodcastSet(props: podcastInter) {
                     {/*Title Track*/}
                     <p className={nextEpisodeTitleStyling + " pt-10"}>{t("episode.number")}</p>
                     {/*Episode Track*/}
-                    {mounted && fullEpisodeInfo.map((episode: FullEpisodeInfo, index: number) => (
+                    {fullEpisodeInfo.map((episode: FullEpisodeInfo, index: number) => (
                         <div key={index}>
                             <Track {...{ episode }} includeDescription includePlayButton />
                         </div>
