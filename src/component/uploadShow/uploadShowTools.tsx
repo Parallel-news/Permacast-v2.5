@@ -52,6 +52,7 @@ export const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex f
  * @param {string - form type} type 
  * @returns Validation message || ""
  */
+
 export const handleValMsg = (input: string, type: string, input2: any ="") => {
     switch(type) {
         case 'podName':

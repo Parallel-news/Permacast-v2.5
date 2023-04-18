@@ -111,17 +111,17 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     const handleValMsg = (input: string, type: string) => {
         switch(type) {
             case 'epName':
-            if((input.length > EPISODE_NAME_MAX_LEN || input.length < EPISODE_NAME_MIN_LEN)) {
-                return `uploadepisode.validation.name`;
-            } else {
-                return "";
-            }
+                if((input.length > EPISODE_NAME_MAX_LEN || input.length < EPISODE_NAME_MIN_LEN)) {
+                    return `uploadepisode.validation.name`;
+                } else {
+                    return "";
+                }
             case 'epDesc':
-            if((input.length > EPISODE_DESC_MAX_LEN || input.length < EPISODE_DESC_MIN_LEN)) {
-                return `uploadepisode.validation.description`;
-            } else {
-                return "";
-            }
+                if((input.length > EPISODE_DESC_MAX_LEN || input.length < EPISODE_DESC_MIN_LEN)) {
+                    return `uploadepisode.validation.description`;
+                } else {
+                    return "";
+                }
         }
     }
 
@@ -216,7 +216,6 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             onChange={(e) => {
                 setEpNameMsg(handleValMsg(e.target.value, "epName"));
                 setEpName(e.target.value);
-                console.log("res name: ", epNameMsg)
             }}/>
             {epNameMsg.length > 0 && <ValMsg valMsg={epNameMsg} className="pl-2" />}
             {/*Episode Description*/}
@@ -231,7 +230,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                     size={40}
                 />
             </div>
-            {epNameMsg.length > 0 && <ValMsg valMsg={epDescMsg} className="pl-2" />}
+            {epDescMsg.length > 0 && <ValMsg valMsg={epDescMsg} className="pl-2" />}
             {/*Episode Media*/}
             <EpisodeMedia
                 media={epMedia} 
