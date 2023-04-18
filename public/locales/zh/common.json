@@ -147,7 +147,11 @@
 		"toupload": "来进行上传",
 		"upload": "上传",
 		"uploading": "上传中，请耐心等待...",
-		"uploaded": "已完成"
+		"uploaded": "已完成",
+		"validation": {
+			"name": "名称必须介于 {{minLength}} 和 {{maxLength}} 个字符之间。",
+			"description": "说明必须介于 {{minLength}} 和 {{maxLength}} 个字符之间。"
+		}
 	},
 	"podcast": {
 		"newepisode": "添加新剧集"

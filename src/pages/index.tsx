@@ -9,8 +9,6 @@ import { latestEpisodesAtom, podcastsAtom } from "../atoms/index";
 import { Episode, EXMDevState, FeaturedChannel, FullEpisodeInfo, Podcast } from '../interfaces';
 import { getContractVariables, getFeaturedChannelsContract, getPASOMContract } from '../utils/contract';
 import { findPodcast } from '../utils/filters';
-
-//import { Greeting } from "../component/featured";
 import { featuredPocastCarouselStyling } from '../component/home/featuredPodcast';
 
 
@@ -36,6 +34,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
   const [latestEpisodes, setLatestEpisodes] = useRecoilState(latestEpisodesAtom);
   const [featuredChannels, setFeaturedChannels] = useState<FeaturedChannel[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState<boolean>(false)
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -65,8 +64,14 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
       setFeaturedChannels(featuredPodcasts?.state?.featured_channels || []);
     };
     fetchFeatured()
-    fetchData();
+    fetchData()
+    setMounted(true)
   }, []);
+
+  // Check for Mounted
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const HomeLoader = () => {
     return (
@@ -115,13 +120,10 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
               )}
             </div>
           </>
-        ) : <Loading />}
-
-        {/* {Object.keys(secondaryData_).length > 0 ? (
-          <FeaturedPodcastsMobile />
-        ) : (
-          <Loading />
-        )} */}
+        ) 
+        : 
+        <Loading />
+        }
         <div className="my-9 flex flex-col xl:flex-row md:justify-between space-y-10 xl:space-y-0">
           <div className="w-[100%] xl:w-[71%]">
             {!loading ? (
@@ -132,7 +134,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
                     <div key={index}>
                       <Track {...{ episode }} openFullscreen includeDescription includePlayButton />
                     </div>
-                  )) || <div className="w-[100%] xl:w-[71%]"><Loading /></div>}
+                  ))}
                 </div>
               </>
             ) : (
@@ -151,7 +153,6 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
     </Suspense>
   );
 };
-
 
 export async function getStaticProps({ locale }) {
   const { isProduction, contractAddress } = getContractVariables();

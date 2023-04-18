@@ -226,7 +226,8 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     else setArtist(uploader);
   }, []);
 
-  useMemo(() => {
+  // WARNING: Switching to useMemo will trigger mounting error
+  useEffect(() => {
     const fetchData = async () => {
       if (!coverUsed) return;
       const dominantColor = await fetchDominantColor(coverUsed);
