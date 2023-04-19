@@ -78,11 +78,13 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   const [allPodcasts_, setAllPodcasts_] = useRecoilState(allPodcasts);
 
   useEffect(() => {
+    if (!userInfo) return;
     const color = RGBobjectToString(hexToRGB(address_color || "#000000"));
     setPodcastColor(color);
   }, [userInfo]);
 
   useEffect(() => {
+    if (!userInfo) return;
     const fetchPASoM = async () => {
       const state = (await axios.get('/api/exm/PASoM/read')).data;
       const profiles: PASoMProfile[] = state.profiles;
@@ -93,6 +95,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   }, [userInfo]);
 
   useEffect(() => {
+    if (!userInfo) return;
     if (!allPodcasts_) return;
     const fetchUserData = async () => {
       const podcasts: Podcast[] = allPodcasts_.filter((podcast: Podcast) => podcast.owner === user);
