@@ -29,7 +29,9 @@ const addPassive = supportsPassive && isMobile
 
 
 function rehoistVideo (v) {
-  document.getElementById("video-player")?.appendChild(v)
+  const videoContainer = document.getElementById("video-player");
+  videoContainer.innerHTML = '';
+  videoContainer.appendChild(v);
 }
 
 function Video(src, append) {
