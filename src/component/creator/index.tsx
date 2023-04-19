@@ -137,8 +137,8 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
           {address === user && <EditButton {...{ PASoMProfile }} />}
         </div>
       </div>
-      <FeaturedPodcasts {...{ podcasts }} />
-      <LatestEpisodes {...{ episodes }} />
+      <>{podcasts.length !== 0 && <FeaturedPodcasts {...{ podcasts }} />}</>
+      <>{episodes.length !== 0 && <LatestEpisodes {...{ episodes }} />}</>
     </div>
   );
 };
