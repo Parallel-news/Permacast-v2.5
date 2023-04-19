@@ -64,8 +64,7 @@ export const NavBar: FC = () => {
   );
 };
 
-export function NavBarMobile() {
-
+export const NavBarMobile: FC = () => {
   return (
     <div className="flex items-center gap-x-2 mt-5">
       <Searchbar />
