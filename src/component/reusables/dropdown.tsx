@@ -29,7 +29,7 @@ const Dropdown: FC<DropdownProps> = ({
 
   return (
     <NextUIDropdown closeOnSelect={false}>
-      <NextUIDropdown.Button className={openMenuButtonClass}>
+      <NextUIDropdown.Button id="1" className={openMenuButtonClass}>
         {openMenuButton}
       </NextUIDropdown.Button>
       <NextUIDropdown.Menu
