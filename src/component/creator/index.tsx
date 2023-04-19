@@ -103,15 +103,6 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
   const openUserDetailsModal = () => setUserModalIsOpen(prev => !prev);
   const tipModalArgs = { ANSorAddress: ANSuserExists ? currentLabel : user, recipientAddress: user, isOpen, setIsOpen };
 
-  const ProfileButtons = () => {
-    return <div className={flexItemsCenter + `mr-3 hidden md:flex`}>
-      {ANSuserExists && <ViewANSButton {...{ currentLabel }} />}
-      {address !== user && <TipButton {...{ openModalCallback }} />}
-      {address !== user && <FollowButton {...{ user, walletConnected, isFollowing, setIsFollowing }} />}
-      {address === user && <EditButton {...{ PASoMProfile }} />}
-    </div>
-  };
-
   const Items = (): ExtendedDropdownButtonProps[] => {
     const buttonsArray = [];
     if (ANSuserExists) buttonsArray.push({key: "view-ans", jsx: <ViewANSButton {...{ currentLabel }} />});
@@ -139,7 +130,12 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
             </div>
           </div>
         </div>
-        <ProfileButtons />
+        <div className={flexItemsCenter + `mr-3 hidden md:flex `}>
+          {ANSuserExists && <ViewANSButton {...{ currentLabel }} />}
+          {address !== user && <TipButton {...{ openModalCallback }} />}
+          {address !== user && <FollowButton {...{ user, walletConnected, isFollowing, setIsFollowing }} />}
+          {address === user && <EditButton {...{ PASoMProfile }} />}
+        </div>
       </div>
       <FeaturedPodcasts {...{ podcasts }} />
       <LatestEpisodes {...{ episodes }} />

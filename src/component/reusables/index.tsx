@@ -14,6 +14,4 @@ export { default as Track } from "./track";
 export { default as Dropdown } from "./dropdown";
 export { default as PlayButton } from "./playButton";
 export { default as Verification } from './Verification';
-
-
-// export { default as Modal } from "./modal"; //! TODO put modal component into reusables
+export { default as Modal } from "./modal";
