@@ -174,7 +174,7 @@ export const EpisodeInfo = (props: EpisodeInfoInter) => {
     return (
         <div className={`${episodeInfoStyling} space-y-3 xl:space-y-0`}>
             <div className="space-y-3 xl:space-y-0">
-                <p className={episodeTitleStyling} style={{color: props.color}}>{props.title}</p>
+                <p className={episodeTitleStyling} style={{color: "rgb(255, 255, 255)"}}>{props.title}</p>
                 <EpisodeInfoSub 
                     color={props.color}
                     episodeNum={props.episodeNum}
