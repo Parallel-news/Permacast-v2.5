@@ -14,6 +14,7 @@ import {
 import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import '../styles/globals.css';
+import getConfig from 'next/config';
 
 const QueryPodcasts = React.lazy(() => import('../component/loaders/QueryPodcasts'));
 const QueryANS = React.lazy(() => import('../component/loaders/QueryANS'));
@@ -21,8 +22,10 @@ const Layout = React.lazy(() => import('../component/layout'));
 const ShikwasaProviderLazy = React.lazy(() => import('../hooks').then(module => ({ default: module.ShikwasaProvider })));
 
 // fetch data in _app.tsx -> populate recoil -> re-write search to query from that recoil state, if it fails then fuse.js
+const { publicRuntimeConfig } = getConfig()
+const { STUDIOTOKEN } = publicRuntimeConfig;
 const client = createReactClient({
-  provider: studioProvider({ apiKey: ''})
+  provider: studioProvider({ apiKey: STUDIOTOKEN})
 })
 
 const livepeerTheme: ThemeConfig = {
@@ -38,7 +41,7 @@ const livepeerTheme: ThemeConfig = {
 function App({ Component, pageProps }) {
 
   const [appIsLoaded, setAppIsLoaded] = useState<boolean>(false)
-
+  console.log("CONFIG CHECK: ", STUDIOTOKEN)
   return (
     <RecoilRoot>
       <Head>

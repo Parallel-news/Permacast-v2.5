@@ -15,8 +15,8 @@ const PosterImage = () => {
     );
   };
 
-const playbackId =
-  'bafybeigtqixg4ywcem3p6sitz55wy6xvnr565s6kuwhznpwjices3mmxoe';
+//const playbackId = 'bafybeigtqixg4ywcem3p6sitz55wy6xvnr565s6kuwhznpwjices3mmxoe';
+const playbackId = 'ar://oz7zITe4FE73tW4p2kFH1cn72NX1mZ5gAI18wojRA1U'
 
 //const arweaveId = "ahCH0wG_wxwmvQ_syjTZB1qxzzC3B10xJ9XdbsX1eZI"
 
@@ -26,7 +26,8 @@ export default function WatchVideo() {
     <div className="h-[200px]">
         <Player
             title="Waterfalls"
-            playbackId={`${playbackId}`}
+            //playbackId={`${playbackId}`}
+            src={playbackId}
             loop
             autoPlay
             muted

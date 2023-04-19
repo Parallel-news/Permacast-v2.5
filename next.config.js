@@ -19,5 +19,7 @@ module.exports = {
     minimumCacheTTL: 60,
     formats: ['image/avif', 'image/webp']
   },
-  
+  publicRuntimeConfig: {
+    STUDIOTOKEN: process.env.STUDIOTOKEN
+  }
 }
