@@ -217,7 +217,7 @@ export const fetchDominantColor = async (cover: string): Promise<FastAverageColo
 export const getCoverColorScheme = (RGBAstring: RGBorRGBAstring): RGBorRGBAstring[] => {
   const rgba: RGBA = RGBAstringToObject(RGBAstring);
   const coverColor = isTooDark(rgba, 0.15) ? RGBobjectToString(replaceDarkColorsRGB(rgba, 0.5)): RGBAobjectToString(rgba);
-  const textColor = isTooLight(rgba, 0.8) ? "rgb(0, 0, 0)" : "rgb(255, 255, 255)";
+  const textColor = isTooLight(rgba, 0.8) ? "rgb(40, 40, 40)" : "rgb(215, 215, 215)";
   return [coverColor, textColor];
 };
 

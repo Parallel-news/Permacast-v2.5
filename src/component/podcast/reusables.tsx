@@ -58,7 +58,7 @@ export const PodcastInfo = (props: PodcastInfoInter) => {
             />
             <div className={podcastInfoTitleDivStyling}>
                 <p className={podcastInfoTitleStyling}>{props.title}</p>
-                <MarkdownRenderer markdownText={markdownText} color={props.color === "rgb(0, 0, 0)" ? 'text-black' : 'text-white'}/>
+                <MarkdownRenderer markdownText={markdownText} color={'text-white'}/>
             </div>
         </div>
     )

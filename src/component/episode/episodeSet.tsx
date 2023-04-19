@@ -91,7 +91,7 @@ export default function EpisodeSet(props: EpisodeSetInter) {
                 setColor(textColor) 
                 setBackgroundColor_(coverColor)
                 setThemeColor(coverColor);
-                setTextColor(textColor);
+                setTextColor("rgb(255, 255, 255)");
             }
             fetchColor();
         }, []);

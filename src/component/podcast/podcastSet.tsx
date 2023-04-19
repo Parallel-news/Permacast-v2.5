@@ -52,7 +52,7 @@ export default function PodcastSet(props: podcastInter) {
                 setColor(textColor)
                 setBackgroundColor(coverColor)
                 setThemeColor(coverColor)
-                setTextColor(textColor)
+                setTextColor("rgb(255, 255, 255)")
             }
             fetchColor();
         }, []);
