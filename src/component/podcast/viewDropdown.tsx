@@ -36,7 +36,7 @@ export default function ViewDropDown() {
                 className='hover:bg-zinc-700'
             >
                 <>
-                    <button className={`flex items-center ` + 'gap-x-2'} onClick={() => {
+                    <button className={`flex items-center w-full ` + 'gap-x-2'} onClick={() => {
                         // Timeout so text doesnt change mid-click
                         setTimeout(() => setChronStatus(prev => prev + 1), 500)
                     }}>
