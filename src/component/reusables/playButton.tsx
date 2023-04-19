@@ -2,8 +2,7 @@ import React, { FC } from "react";
 
 import { dimColorString } from "../../utils/ui";
 
-import { PauseIcon } from "@heroicons/react/24/outline";
-import { PlayIcon } from "@heroicons/react/24/solid";
+import { PauseIcon, PlayIcon } from "@heroicons/react/24/solid";
 import { RGBorRGBAstring, RGBstring } from "../../interfaces/ui";
 
 
@@ -27,7 +26,7 @@ const PlayButton: FC<PlayButtonProps> = ({ size, iconSize, buttonColor, accentCo
     >
       {isPlaying ? (
         <PauseIcon className="stroke-[3]" style={{ width: iconSize || "", height: iconSize || "", color: accentColor || "" }} />
-      ): (
+      ) : (
         <PlayIcon className="stroke-[3]" style={{ width: iconSize || "", height: iconSize || "", color: accentColor || "" }} />
       )}
     </button>

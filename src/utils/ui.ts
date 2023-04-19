@@ -6,6 +6,7 @@ import { podcastCoverColorManager } from './localstorage';
 import { ARSEED_URL, ARWEAVE_READ_LINK } from '../constants/index.js';
 import { arweaveTX, Podcast } from '../interfaces/index.js';
 import { trimChars } from './filters';
+import Player from '../shikwasa-src/player.js';
 
 export const determinePodcastURL = (label: string, pid: string) => label || trimChars(pid);
 
@@ -275,3 +276,13 @@ export const showShikwasaPlayer: ShowShikwasaPlayerInterface = ({
   window.scrollTo(0, document.body.scrollHeight);
   return player;
 };
+
+export const showEmptyShikwasaPlayer = (): Player => {
+  return new Shikwasa({
+    container: () => document.getElementById('podcast-player'),
+    theme: `dark`,
+    audio: { title: "", artist: "", cover: "", src: "" },
+  });
+}
+
+export const hideShikwasaPlayer = () => document.getElementById('podcast-player').innerHTML = '';

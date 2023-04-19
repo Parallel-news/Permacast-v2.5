@@ -1,7 +1,7 @@
+import { createContext, useContext, useEffect, useRef } from 'react';
 import { useRecoilCallback, useRecoilState } from 'recoil';
 import { currentEpisodeAtom, currentPodcastAtom, isFullscreenAtom, isPlayingAtom, isQueueVisibleAtom, queueAtom } from '../atoms';
-import { createContext, MutableRefObject, useContext, useEffect, useRef, useState } from 'react';
-import { getColorSchemeShorthand, showShikwasaPlayer } from '../utils/ui';
+import { getColorSchemeShorthand, showEmptyShikwasaPlayer, showShikwasaPlayer } from '../utils/ui';
 import { showShikwasaPlayerArguments } from '../interfaces/playback';
 import { Episode, FullEpisodeInfo, Podcast } from '../interfaces';
 
@@ -102,6 +102,9 @@ export const ShikwasaProvider = ({ children }) => {
       set(queueAtom, () => []);
       setCurrentEpisode(CURRENT_EPISODE_TEMPLATE);
       setCurrentPodcast(CURRENT_PODCAST_TEMPLATE);
+      setIsFullscreen(false);
+      const emptyPlayer = showEmptyShikwasaPlayer();
+      mountPlayerWithListeners(emptyPlayer);
     };
   });
 
@@ -114,11 +117,11 @@ export const ShikwasaProvider = ({ children }) => {
   // 4. Returns helper functions for controlling the player
 
   const launchPlayer: launchPlayerInterface = (args, podcast, episodes) => {
-    const playerObject = showShikwasaPlayer(args);
-    if (!playerObject) return;
+    const playerUI = showShikwasaPlayer(args);
+    if (!playerUI) return;
+    mountPlayerWithListeners(playerUI);
 
     // set player params
-    player.current = playerObject;
     setIsPlaying(true);
     // save data about current podcast and episodes
     if (podcast) setCurrentPodcast(podcast);
@@ -129,19 +132,24 @@ export const ShikwasaProvider = ({ children }) => {
       console.log(episodes);
       if (episode?.type?.includes("video") && args?.openFullscreen) setIsFullscreen(true);
     };
-    
-    const thePlayer = player.current;
-    const queueBtn = playerObject?.ui?.queueBtn;
-    const playingBtn = playerObject?.ui?.playBtn;
-    const fullscreenBtn = playerObject?.ui?.fullscreenBtn;
-    
+
+    return playerUI;
+  };
+
+  const mountPlayerWithListeners = (shikwasaPlayerInstance: Player) => {
+    player.current = shikwasaPlayerInstance;
+    const UI = shikwasaPlayerInstance?.ui;
+
+    const queueBtn = UI.queueBtn;
+    const playingBtn = UI.playBtn;
+    const fullscreenBtn = UI.fullscreenBtn;
+
     // add event listeners
-    thePlayer.audio.addEventListener('ended', onPlaybackEndCallback);
+    shikwasaPlayerInstance?.audio?.addEventListener('ended', onPlaybackEndCallback);
     queueBtn?.addEventListener('click', (event) => {event.stopPropagation(); setQueueVisible(visible => !visible)});
     playingBtn?.addEventListener('click', (event) => {event.stopPropagation(); setIsPlaying(playing => !playing)});
     fullscreenBtn?.addEventListener('click', (event) => {event.stopPropagation(); setIsFullscreen(isFullscreen => !isFullscreen)});
     console.log('mounted successfully');
-    return playerObject;
   };
 
   const togglePlay = () => {
