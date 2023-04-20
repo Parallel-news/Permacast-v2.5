@@ -88,6 +88,8 @@
 		"cancel": "取消",
 		"feetext": "上传节目的费用：",
 		"hideShow": "隐藏显示",
+		"calculatingFee": "计算费用...",
+		"uploadCost": "上传费用",
 		"validation": {
 			"name": "播客名称必须介于 {{minLength}} 和 {{maxLength}} 个字符之间。",
 			"description": "描述必须介于 {{minLength}} 和 {{maxLength}} 个字符之间",

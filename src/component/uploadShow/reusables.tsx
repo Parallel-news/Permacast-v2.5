@@ -311,7 +311,7 @@ export const VisibleInput = (props: VisibleInputInter) => {
                 type="checkbox"
                 className={visibleCheckBoxStyling}
                 onChange={() => props.setVisible(!props.visible)}
-                checked={props.visible}
+                checked={!props.visible}
             />
         </label>
     )

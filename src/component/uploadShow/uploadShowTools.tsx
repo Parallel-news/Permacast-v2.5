@@ -262,14 +262,12 @@ export const ShowForm = (props: ShowFormInter) => {
                 setPodcastDescription_(description)
                 setPodcastAuthor_(p.author)
                 setPodcastEmail_(p.email)
-                //setPodcastCategory_()
                 
                 //Recreate Cover for Upload
                 fetch(ARSEED_URL+p.cover)
                 .then((rs) => rs.blob())
                 .then((blob) => {
                   const url = URL.createObjectURL(blob);
-                  console.log("URL: ", url)
                   setPodcastCover_(url);
                 });
                 setPodcastLanguage_(p.language)
@@ -281,6 +279,8 @@ export const ShowForm = (props: ShowFormInter) => {
             //loading modal NEEDED
         }
     }, [])
+
+    console.log("isVisible: ", isVisible)
 
     return (
         <div className={showFormStyling}>
@@ -399,10 +399,10 @@ export const ShowForm = (props: ShowFormInter) => {
                             />
                         )}
                         {uploadCost === 0 && podcastDescription_.length > 0 && podcastCover_ && (
-                        <p className="mt-2 text-neutral-400">Calculating Fee...</p> 
+                        <p className="mt-2 text-neutral-400">{t("uploadshow.calculatingFee")}</p> 
                         )}
                         {uploadCost !== 0 && podcastDescription_.length > 0 && podcastCover_ && (
-                        <p className="mt-2 text-neutral-400">{"Upload Cost: "+(Number(uploadCost)).toFixed(6) +" AR"}</p>
+                        <p className="mt-2 text-neutral-400">{t("uploadshow.uploadCost")+": "+(Number(uploadCost)).toFixed(6) +" AR"}</p>
                         )}
                     </div>
                 </div>
