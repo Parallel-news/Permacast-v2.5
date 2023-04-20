@@ -40,6 +40,11 @@ interface ExplicitInputInter {
     explicit: boolean;
 }
 
+interface VisibleInputInter {
+    setVisible: (v: any) => void;
+    visible: boolean;
+}
+
 interface CropScreenInter {
     inputImg: string;
     onCropComplete: (croppedArea: Area, croppedAreaPixels: Area) => void;
@@ -77,9 +82,10 @@ const coverContainerLabelStyling = "cursor-pointer transition duration-300 ease-
 const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
 const explicitTextStyling = "label-text cursor-pointer text-zinc-400 font-semibold"
 const photoIconStyling = "h-11 w-11 text-zinc-400"
-const explicitLabelStyling = "flex items-center mr-5"
+const explicitLabelStyling = "flex items-center"
 const imgStyling = "h-48 w-48 text-slate-400 rounded-[20px]"
 const explicitCheckBoxStyling = "checkbox mr-2 border-2 border-zinc-600"
+const visibleCheckBoxStyling = "checkbox mr-2 border-2 border-zinc-600 ml-2 mr-0"
 
 export const CoverContainer = (props: CoverContainerInter) => {
 
@@ -288,6 +294,25 @@ export const ExplicitInput = (props: ExplicitInputInter) => {
             <span className={explicitTextStyling}>
                 {t("uploadshow.explicit")}
             </span>
+        </label>
+    )
+}
+
+export const VisibleInput = (props: VisibleInputInter) => {
+    const { t } = useTranslation();
+
+    return (
+        <label className={explicitLabelStyling}>
+            <span className={explicitTextStyling}>
+                {t("uploadshow.explicit")}
+            </span>
+            <input
+                id="podcastExplicit"
+                type="checkbox"
+                className={visibleCheckBoxStyling}
+                onChange={() => props.setVisible(!props.visible)}
+                checked={props.visible}
+            />
         </label>
     )
 }

@@ -19,6 +19,7 @@ import { Podcast } from "../../interfaces";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast"
 import React from "react";
+import { VisibleInput } from "./reusables";
 
 const MarkDownToolTip = React.lazy(() => import("../reusables/tooltip").then(module => ({ default: module.MarkDownToolTip })));
 const CoverContainer = React.lazy(() => import("./reusables").then(module => ({ default: module.CoverContainer })));
@@ -110,6 +111,7 @@ export const ShowForm = (props: ShowFormInter) => {
     const [podcastLanguage_, setPodcastLanguage_] = useState('en');
     const [podcastExplicit_, setPodcastExplicit_] = useState(false);
     const [podcastLabel_, setPodcastLabel_] = useState("");
+    const [isVisible, setIsVisible] = useState<boolean>(true)
 
     // Validations
     const [podNameMsg, setPodNameMsg] = useState("");
@@ -272,7 +274,7 @@ export const ShowForm = (props: ShowFormInter) => {
                 });
                 setPodcastLanguage_(p.language)
                 setPodcastCategory_(categories_en.findIndex(cat => cat === p.categories[0]))
-                setPodcastExplicit_(true) //p.explicit === "no" ? false : true
+                setPodcastExplicit_(p.explicit === "no" ? false : true)
                 setPodcastLabel_(p.label)
             }
             restoreSavedData()
@@ -356,13 +358,20 @@ export const ShowForm = (props: ShowFormInter) => {
                         languageCode={podcastLanguage_}
                     />
                     {/*
-                        Explicit
+                        Explicit & Is Visible
                     */}
-                    <ExplicitInput 
-                        setExplicit={setPodcastExplicit_}
-                        explicit={podcastExplicit_}
-                    />
-
+                    <div className="flex flex-row justify-between items-center">
+                        <ExplicitInput 
+                            setExplicit={setPodcastExplicit_}
+                            explicit={podcastExplicit_}
+                        />
+                        {props.edit && (
+                        <VisibleInput 
+                            setVisible={setIsVisible}
+                            visible={isVisible}
+                        />
+                        )}
+                    </div>
                     {/*
                         Upload
                     */}
