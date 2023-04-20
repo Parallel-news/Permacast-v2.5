@@ -8,6 +8,25 @@ html, body {
 
 @layer components {
 
+  .flexCol {
+    @apply flex flex-col;
+  }
+
+  .flexColCenter {
+    @apply flexCol items-center;
+  }
+
+  .flexCenter {
+    @apply flex items-center;
+  }
+
+  .flexCenterGap {
+    @apply flex items-center gap-x-2;
+  }
+  .flexFullCenterGap {
+    @apply flex w-full items-center gap-x-2;
+  }
+
   .input-styling {
     @apply bg-zinc-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white placeholder:text-zinc-600 text-white;
   }
