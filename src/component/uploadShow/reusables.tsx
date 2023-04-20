@@ -25,7 +25,7 @@ interface ImgCoverInter {
 
 interface SelectDropdownRowInter {
     setLanguage: (v: any) => void;
-    //language: string;
+    languageCode: string;
     setCategory: (v: any) => void;
     categoryIndex: number;
     setLabel: (v: any) => void;
@@ -234,7 +234,9 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                     name="language"
                     onChange={(e) => props.setLanguage(e.target.value)}
                 >
-                    <LanguageOptions />
+                    <LanguageOptions 
+                        languageCode={props.languageCode}
+                    />
                 </select>
             </div>
             <select
@@ -255,7 +257,9 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 name="language"
                 onChange={(e) => props.setLanguage(e.target.value)}
             >
-                <LanguageOptions />
+                <LanguageOptions 
+                    languageCode={props.languageCode}
+                />
             </select>
             {/*Label*/}
             <LabelInput 

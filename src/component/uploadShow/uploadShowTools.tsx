@@ -353,6 +353,7 @@ export const ShowForm = (props: ShowFormInter) => {
                         labelMsg={labelMsg}
                         podcasts={props.podcasts}
                         categoryIndex={podcastCategory_}
+                        languageCode={podcastLanguage_}
                     />
                     {/*
                         Explicit

@@ -585,13 +585,17 @@ export const useLanguageHook = () => {
   return [langsArray, categoriesArray];
 };
 
-export const LanguageOptions: FC = ({ }) => {
+interface LanguageOptionsProps {
+  languageCode: string; // Set to 0 as default 
+}
+
+export const LanguageOptions: FC<LanguageOptionsProps> = ({ languageCode }) => {
   const [langsArray, _] = useLanguageHook();
 
   return (
     <>
       {langsArray.map((lang: string[]) => 
-        <option value={lang[0]} key={lang[1]}>
+        <option value={lang[0]} key={lang[1]} selected={lang[0] === languageCode}>
           {lang[1]}
         </option>
       )}
@@ -606,7 +610,6 @@ interface CategoryOptionsProps {
 export const CategoryOptions: FC<CategoryOptionsProps> = ({ categoryId }) => {
   const [_, categoriesArray] = useLanguageHook();
 
-  // <option disabled defaultValue>Category</option>
   return (
     <>
       {categoriesArray.map((lang: string[], index: number) => 
