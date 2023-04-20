@@ -170,7 +170,7 @@ export const ShowForm = (props: ShowFormInter) => {
         "isExplicit": podcastExplicit_ ? "yes" : "no",
         "categories": categories_en[podcastCategory_],
         "email": podcastEmail_,
-        "cover": "",
+        "cover": podcastCover_,
         "minifiedCover": "",
         "label": podcastLabel_,
         "jwk_n": "",
@@ -180,7 +180,6 @@ export const ShowForm = (props: ShowFormInter) => {
 
     async function submitShow(payloadObj: any) {
         // Check Connection
-        
         if (!checkConnection(arweaveAddress_)) {
             toast.error(CONNECT_WALLET, {style: TOAST_DARK})
             return false
@@ -263,9 +262,16 @@ export const ShowForm = (props: ShowFormInter) => {
                 setPodcastEmail_(p.email)
                 //setPodcastCategory_()
                 
-                //URL.createObjectURL( may have to use this
-                //setPodcastCover_ 
+                //Recreate Cover for Upload
+                fetch(ARSEED_URL+p.cover)
+                .then((rs) => rs.blob())
+                .then((blob) => {
+                  const url = URL.createObjectURL(blob);
+                  console.log("URL: ", url)
+                  setPodcastCover_(url);
+                });
                 setPodcastLanguage_(p.language)
+                setPodcastCategory_(categories_en.findIndex(cat => cat === p.categories[0]))
                 setPodcastExplicit_(p.explicit === "no" ? false : true)
                 setPodcastLabel_(p.label)
             }
@@ -346,6 +352,7 @@ export const ShowForm = (props: ShowFormInter) => {
                         setLabelMsg={setLabelMsg}
                         labelMsg={labelMsg}
                         podcasts={props.podcasts}
+                        categoryIndex={podcastCategory_}
                     />
                     {/*
                         Explicit

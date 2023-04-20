@@ -27,7 +27,7 @@ interface SelectDropdownRowInter {
     setLanguage: (v: any) => void;
     //language: string;
     setCategory: (v: any) => void;
-    //category: string;
+    categoryIndex: number;
     setLabel: (v: any) => void;
     labelValue: string;
     setLabelMsg: (v: any) => void;
@@ -220,8 +220,11 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                     id="podcastCategory"
                     name="category"
                     onChange={(e) => props.setCategory(e.target.selectedIndex)}
+                    //props.categoryIndex
                 >
-                    <CategoryOptions />
+                    <CategoryOptions 
+                        categoryId={props.categoryIndex}
+                    />
                 </select>
                 {/*Languages*/}
                 <select
@@ -240,7 +243,9 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 name="category"
                 onChange={(e) => props.setCategory(e.target.selectedIndex)}
             >
-                <CategoryOptions />
+                <CategoryOptions 
+                    categoryId={props.categoryIndex}
+                />
             </select>
             {/*Languages*/}
             <select
