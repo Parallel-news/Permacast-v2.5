@@ -19,6 +19,8 @@ export default function UploadShow({yourShows, error}) {
             <p className={showTitleStyling}>{t("uploadshow.addpodcast")}</p>
             <ShowForm 
                 podcasts={yourShows}
+                edit={true}
+                selectedPid="6ad59891f28a921b170eaf08966e97d4a70522aba439d07ed116e5c732838723ea44a536b9a4a3e7609dd51855cdc9f05d7b9b896ad433df2d20b21b8d1acfd0"
             />
         </div>
     )

@@ -59,7 +59,6 @@ export default function PodcastSet(props: podcastInter) {
 
         return (
             <>
-
                 <div className={podcastIdStyling}>
                     <PodcastBanner
                         imgSrc={imgSrc}

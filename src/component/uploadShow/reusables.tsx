@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { MouseEventHandler, useCallback, useRef, useState } from "react";
 import getCroppedImg from "../../utils/croppedImage";
 import { handleValMsg } from "./uploadShowTools";
@@ -14,7 +14,9 @@ const CategoryOptions = React.lazy(() => import("../../utils/languages").then(mo
 const LanguageOptions = React.lazy(() => import("../../utils/languages").then(module => ({default: module.LanguageOptions})))
 
 interface CoverContainerInter {
-    setCover: (v: any) => void
+    setCover: (v: any) => void;
+    isEdit: boolean;
+    editCover?: string;
 }
 
 interface ImgCoverInter {
@@ -23,7 +25,9 @@ interface ImgCoverInter {
 
 interface SelectDropdownRowInter {
     setLanguage: (v: any) => void;
+    //language: string;
     setCategory: (v: any) => void;
+    //category: string;
     setLabel: (v: any) => void;
     labelValue: string;
     setLabelMsg: (v: any) => void;
@@ -80,11 +84,32 @@ const explicitCheckBoxStyling = "checkbox mr-2 border-2 border-zinc-600"
 export const CoverContainer = (props: CoverContainerInter) => {
 
     const podcastCoverRef = useRef<HTMLInputElement | null>(null);
+    // Test here if you can inject a file into ref
     const [img, setImg] = useState("");
     const [inputImg, setInputImg] = useState("");
     const [showCrop, setShowCrop] = useState(false);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [rotation, setRotation] = useState(0);
+
+    //Check if in Edit Mode
+    useEffect(() => {
+        async function fetchImage() {
+          const response = await fetch(props.editCover);
+          const blob = await response.blob();
+          const oldCoverFile = new File([blob], "image.png", { type: "image/png" });
+          const fileArray = [oldCoverFile];
+          const newFileList = new DataTransfer();
+          fileArray.forEach((file) => {
+            newFileList.items.add(file);
+          });
+          podcastCoverRef.current.files = newFileList.files;
+          setImg(props.editCover)
+        }
+
+        if(props.isEdit) {
+            fetchImage();
+        }
+      }, []);
 
     const handleChangeImage = async (e: any) => {
         isPodcastCoverSquared(e);
