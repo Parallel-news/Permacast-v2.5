@@ -304,7 +304,7 @@ export const VisibleInput = (props: VisibleInputInter) => {
     return (
         <label className={explicitLabelStyling}>
             <span className={explicitTextStyling}>
-                {t("uploadshow.explicit")}
+                {t("uploadshow.hideShow")}
             </span>
             <input
                 id="podcastExplicit"
