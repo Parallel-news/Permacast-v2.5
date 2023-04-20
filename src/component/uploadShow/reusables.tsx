@@ -283,6 +283,7 @@ export const ExplicitInput = (props: ExplicitInputInter) => {
                 type="checkbox"
                 className={explicitCheckBoxStyling}
                 onChange={() => props.setExplicit(!props.explicit)}
+                checked={props.explicit}
             />
             <span className={explicitTextStyling}>
                 {t("uploadshow.explicit")}

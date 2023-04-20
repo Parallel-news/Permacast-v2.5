@@ -272,7 +272,7 @@ export const ShowForm = (props: ShowFormInter) => {
                 });
                 setPodcastLanguage_(p.language)
                 setPodcastCategory_(categories_en.findIndex(cat => cat === p.categories[0]))
-                setPodcastExplicit_(p.explicit === "no" ? false : true)
+                setPodcastExplicit_(true) //p.explicit === "no" ? false : true
                 setPodcastLabel_(p.label)
             }
             restoreSavedData()
