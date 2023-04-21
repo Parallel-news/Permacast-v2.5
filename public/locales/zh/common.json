@@ -258,5 +258,6 @@
 		"showOldest": "显示最旧",
 		"hide0EpisodePodcasts": "隐藏 0 集的播客",
 		"show0EpisodePodcasts": "显示有 0 集的播客"
-	}
+	},
+	"edit": "编辑"
 }
