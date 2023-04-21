@@ -225,6 +225,7 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                     className={`${selectDropdownStyling} sm:mr-[2%] w-[47%]`}
                     id="podcastCategory"
                     name="category"
+                    defaultValue="Arts"
                     onChange={(e) => props.setCategory(e.target.selectedIndex)}
                     //props.categoryIndex
                 >
@@ -249,6 +250,7 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 className={`${selectDropdownStyling} hidden sm:flex mr-[2%]`}
                 id="podcastCategory"
                 name="category"
+                defaultValue="Arts"
                 onChange={(e) => props.setCategory(e.target.selectedIndex)}
             >
                 <CategoryOptions 

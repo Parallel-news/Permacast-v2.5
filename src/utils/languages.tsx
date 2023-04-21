@@ -595,7 +595,7 @@ export const LanguageOptions: FC<LanguageOptionsProps> = ({ languageCode }) => {
   return (
     <>
       {langsArray.map((lang: string[]) => 
-        <option value={lang[0]} key={lang[1]} selected={lang[0] === languageCode}>
+        <option value={lang[0]} key={lang[1]} selected={languageCode === lang[0]}>
           {lang[1]}
         </option>
       )}

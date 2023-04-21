@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-onchange */
 import axios from "axios";
 import { EXM_READ_LINK, NO_SHOW } from "../../constants";
 import { getContractVariables } from "../../utils/contract";

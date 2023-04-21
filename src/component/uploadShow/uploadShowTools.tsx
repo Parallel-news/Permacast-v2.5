@@ -20,12 +20,12 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast"
 import React from "react";
 import { VisibleInput } from "./reusables";
-
+import { PermaSpinner } from "../reusables";
 const MarkDownToolTip = React.lazy(() => import("../reusables/tooltip").then(module => ({ default: module.MarkDownToolTip })));
 const CoverContainer = React.lazy(() => import("./reusables").then(module => ({ default: module.CoverContainer })));
 const ExplicitInput = React.lazy(() => import("./reusables").then(module => ({ default: module.ExplicitInput })));
 const SelectDropdownRow = React.lazy(() => import("./reusables").then(module => ({ default: module.SelectDropdownRow })));
-const PermaSpinner = React.lazy(() => import("../reusables/PermaSpinner").then(module => ({ default: module.PermaSpinner })));
+//const PermaSpinner = React.lazy(() => import("../reusables/PermaSpinner").then(module => ({ default: module.PermaSpinner })));
 const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.ConnectButton })));
 const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
 const ValMsg = React.lazy(() => import("../reusables/formTools").then(module => ({default: module.ValMsg})))
@@ -133,8 +133,6 @@ export const ShowForm = (props: ShowFormInter) => {
         "cat": true, // default is 0 which always defaults to Arts
         "cover": podcastCover_ !== null
     }
-    useEffect(() => console.log("allFieldsFilled: ", allFieldsFilled(validationObject)), [validationObject]);
-    useEffect(() => console.log("object: ", validationObject), [validationObject]);
 
     // Hook Calculating Upload Cost
     useEffect(() => {
@@ -155,7 +153,7 @@ export const ShowForm = (props: ShowFormInter) => {
         if(podcastDescription_.length > 0 && podcastCover_ !== null) {
             calculateTotal().then(async total => {
                 const formattedTotal = total / AR_DECIMALS
-                setUploadCost(formattedTotal+MIN_UPLOAD_PAYMENT)
+                setUploadCost(props.edit ? formattedTotal : formattedTotal+MIN_UPLOAD_PAYMENT)
             })
         } else {
             setUploadCost(0)
@@ -164,7 +162,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
     //EXM 
     const createShowPayload = {
-        "function": "createPodcast",
+        "function": props.edit ? "editPodcastMetadata" : "createPodcast",
         "name": podcastName_,
         "desc": "",
         "author": podcastAuthor_,
@@ -177,28 +175,34 @@ export const ShowForm = (props: ShowFormInter) => {
         "label": podcastLabel_,
         "jwk_n": "",
         "txid": "",
-        "sig": ""
+        "sig": "",
+        "isVisible": isVisible,
+        "pid": props.edit ? props.selectedPid : ""
     }
 
     async function submitShow(payloadObj: any) {
         // Check Connection
+
         if (!checkConnection(arweaveAddress_)) {
             toast.error(CONNECT_WALLET, {style: TOAST_DARK})
             return false
         }
+
         setSubmittingShow(true)
+
         const handleErr = handleError
         // Package EXM Call
+
         const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
         payloadObj["sig"] = await createSignature(data, defaultSignatureParams, "base64");
         payloadObj["jwk_n"] = await getPublicKey()
-        
+
+
         // Description to Arseeding
         const toastDesc = toast.loading(t("loadingToast.savingDesc"), {style: TOAST_DARK, duration: 10000000});
         try {
             const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
             toast.dismiss(toastDesc);
-            //const name = await upload2DMedia(podcastName_); payloadObj["name"] = name?.order?.itemId
         } catch (e) {
             toast.dismiss(toastDesc);
             console.log(e); handleErr(t("errors.descUploadError"), setSubmittingShow); return;
@@ -218,25 +222,28 @@ export const ShowForm = (props: ShowFormInter) => {
         }
 
         // Fee to Everpay
-        const toastFee = toast.loading(t("loadingToast.payingFee"), {style: TOAST_DARK, duration: 10000000});
-        try {
-            const everpay = new Everpay({account: address, chainType: ChainType.arweave, arJWK: 'use_wallet',});
-            const transaction = await everpay.transfer({
-                tag: EVERPAY_AR_TAG,
-                amount: String(MIN_UPLOAD_PAYMENT),
-                to: EVERPAY_EOA,
-                data: {action: "createPodcast", name: podcastName_,}
-            })
-            payloadObj["txid"] = transaction?.everHash
-            toast.dismiss(toastFee);
-        } catch (e) {
-            toast.dismiss(toastFee);
-            console.log(e); handleErr(t("error.everpayError"), setSubmittingShow); return;
+        if(!props.edit) {
+            const toastFee = toast.loading(t("loadingToast.payingFee"), {style: TOAST_DARK, duration: 10000000});
+            try {
+                const everpay = new Everpay({account: address, chainType: ChainType.arweave, arJWK: 'use_wallet',});
+                const transaction = await everpay.transfer({
+                    tag: EVERPAY_AR_TAG,
+                    amount: String(MIN_UPLOAD_PAYMENT),
+                    to: EVERPAY_EOA,
+                    data: {action: "createPodcast", name: podcastName_,}
+                })
+                payloadObj["txid"] = transaction?.everHash
+                toast.dismiss(toastFee);
+            } catch (e) {
+                toast.dismiss(toastFee);
+                console.log(e); handleErr(t("error.everpayError"), setSubmittingShow); return;
+            }
         }
         //Error handling and timeout needed for this to complete redirect
         const toastSaving = toast.loading(t("loadingToast.savingChain"), {style: TOAST_DARK, duration: 10000000});
+        console.log("Final load: ", createShowPayload)
         setTimeout(async function () {
-            const result = await axios.post('/api/exm/write', createShowPayload);
+            await axios.post('/api/exm/write', createShowPayload);
             setSubmittingShow(false)
             //EXM call, set timeout, then redirect.
             toast.dismiss(toastSaving); 
@@ -249,7 +256,7 @@ export const ShowForm = (props: ShowFormInter) => {
         }, 5000)
     }
 
-    // Check if Editting
+    // Inserts Editting Info
     useEffect(() => {
         if(props.edit) {
             const restoreSavedData = async () => {
@@ -273,14 +280,12 @@ export const ShowForm = (props: ShowFormInter) => {
                 setPodcastLanguage_(p.language)
                 setPodcastCategory_(categories_en.findIndex(cat => cat === p.categories[0]))
                 setPodcastExplicit_(p.explicit === "no" ? false : true)
-                setPodcastLabel_(p.label)
+                setPodcastLabel_(p.label ? p.label : "")
             }
             restoreSavedData()
             //loading modal NEEDED
         }
     }, [])
-
-    console.log("isVisible: ", isVisible)
 
     return (
         <div className={showFormStyling}>
@@ -411,3 +416,26 @@ export const ShowForm = (props: ShowFormInter) => {
         </div>
     )
 }
+
+
+/*
+{
+    "function": "editPodcastMetadata",
+    "name": "Arweave Convention2",
+    "desc": "FuepLd5Hul5qvWS2v__804uNU2HHvAR2EJTFm78NqgE",
+    "author": "Zhong Chin",
+    "lang": "en",
+    "isExplicit": "no",
+    "categories": "Arts",
+    "email": "2@s.com",
+    "cover": "2wq2s-zKFnORgr1jwv7MNUJe_VHLOyZNhjwz-SaUHsg",
+    "minifiedCover": "hW9ioDalJM3zR2qE5MJw538_X4P7pTpQSeIdXyiiWn8",
+    "label": "",
+    "jwk_n": "lHogurZNFhu_xnTV4HDHpDNhUNbZUL14pJUlBlzydgY8SwNMGTZCEGwJIuzLC5t8S8WfHqAvy5wRG5qu0fKE1SAMdhFFe4-jpesBGmfh9VyF43AQuM_3B5Hl-cjes9-C1PA8Ql25X4aJ2Ln-pfUBZe7oe9PAykEvF5wLb-zBNVfBdvLCj_oBrILe-YOvvqp2NPzcoOecbBNjpM4wCPmd41_tvN1qSfw3znPE0HbK5Ukzs9ETlqEzvOMJYAQ2WFd6lA5Zx3kDYKm68-VNA8vrTHp5yNldrXk8GJW8gsHru2fv2_MrBmdi30CSHNC-rDIh3BQQbcaHQ3W8Fx8RZsKsnZHZBsqiD2zJcTmXuRQDrh8Kw_2mtVYvDh7PWsSNPI_izm45lYNSxw7Wjr2SO9JbpWe_57PgU3eUWbMYHWAMkbneTiGvgDpinYdltEtpA9-Im4I_pCq1FXvWCea4sc5IcP30V8boMsQ6xw-y-07UcCogr9krVTDMdGYEVHkIfObt8d6ZzpcigPVIQLqDEAx6EKeC3I_6dP_G8axSKebdK_5IhZYot39biqPKzWZnZaz5D7zHpBjp1gRDHOJ5cV-XKjPcDvoTKbsFWdno0r6Nutaac6ksP_YPneZvP6Qxxq6To3ieVQyq4sFUMHR5UvslYoDASlE8VDnDu2EZfZhvfI8",
+    "txid": "",
+    "sig": "VagTicE247Tzq8EG7Q3/iMNUqp6VUQb38DkRKAU9ukJMBfV5GV4SrCI5GvrQndwP6gA2O6D157I2McgWPhR+Vdvvqd+RBOBSQurBxUY6+QvsC2K9ao3cj1a0tGuuAAumdlf5Fw2x6txDCyRTsp4spR3EkhbFdv8ozwtWAb0OKebMWL/wQuy3ur4Bs9gFnSHyuFi+4Fg9Q5U48oihgXIMtHSZLTXunqCJcy3enNCL4gN7yEA1gFOTWaQGp3iHf2XFfDiE55eEwzbSHFnBGXLStk/uWz6aYjaEM1/1H83pXouogbSOuvr0uTifad8kzsNTwRHrIdBoN+8CBK5byli59CcUTM7K0HfLdbVygHkn0OrXkOF/5cfAqVTCpMvS9fduIcGlFGKZGTjobOqdSxCzPqYIYkII3eQW2yFqLyOKmGj/ePYtcYC1ncXPS2+nrhDKypwplvQaLINGVVLGu9gME3Mcd8mlWN3riSjIq2egSVsNMAvnGZj8PStr5b8pvVu6ZPl/TFTfE2y8oI4u8ak+dP3WfYK9U6C2WLwMa1cbtvtlWyiZmFK9QxA1g9SC43iIAOrf3TuSa8//q42iGS1ARFWzrcIV8earFNV1jKWs+OJh6614188RxxllH0EWASHB/8Q8Mn13GufpDyNQYXXNrZ+NQ83EtgDYE4umSuO3fnE=",
+    "isVisible": true,
+    "pid": "6ad59891f28a921b170eaf08966e97d4a70522aba439d07ed116e5c732838723ea44a536b9a4a3e7609dd51855cdc9f05d7b9b896ad433df2d20b21b8d1acfd0"
+}
+
+*/
