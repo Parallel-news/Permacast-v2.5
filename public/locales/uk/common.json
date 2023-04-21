@@ -67,6 +67,7 @@
 	},
 	"uploadshow": {
 		"addpodcast": "Додай подкаст",
+		"editpodcast": "Редагувати подкасти",
 		"title": "Додай нове подкаст",
 		"uploadstitle": "завантажень",
 		"label": "Короткий URL",

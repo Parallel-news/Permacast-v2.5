@@ -298,7 +298,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     <CoverContainer 
                         setCover={setPodcastCover_}
                         isEdit={true}
-                        editCover={ARSEED_URL+"Vnp-8nueO55dh_53DzADaLDjENtk5pN6c1WzpPsDUno"}
+                        editCover={ARSEED_URL+"2wq2s-zKFnORgr1jwv7MNUJe_VHLOyZNhjwz-SaUHsg"}
                     />
                 </div>
                 <div className="flex flex-col w-[95%] md:w-[75%] lg:w-[50%] space-y-3">
@@ -419,23 +419,6 @@ export const ShowForm = (props: ShowFormInter) => {
 
 
 /*
-{
-    "function": "editPodcastMetadata",
-    "name": "Arweave Convention2",
-    "desc": "FuepLd5Hul5qvWS2v__804uNU2HHvAR2EJTFm78NqgE",
-    "author": "Zhong Chin",
-    "lang": "en",
-    "isExplicit": "no",
-    "categories": "Arts",
-    "email": "2@s.com",
-    "cover": "2wq2s-zKFnORgr1jwv7MNUJe_VHLOyZNhjwz-SaUHsg",
-    "minifiedCover": "hW9ioDalJM3zR2qE5MJw538_X4P7pTpQSeIdXyiiWn8",
-    "label": "",
-    "jwk_n": "lHogurZNFhu_xnTV4HDHpDNhUNbZUL14pJUlBlzydgY8SwNMGTZCEGwJIuzLC5t8S8WfHqAvy5wRG5qu0fKE1SAMdhFFe4-jpesBGmfh9VyF43AQuM_3B5Hl-cjes9-C1PA8Ql25X4aJ2Ln-pfUBZe7oe9PAykEvF5wLb-zBNVfBdvLCj_oBrILe-YOvvqp2NPzcoOecbBNjpM4wCPmd41_tvN1qSfw3znPE0HbK5Ukzs9ETlqEzvOMJYAQ2WFd6lA5Zx3kDYKm68-VNA8vrTHp5yNldrXk8GJW8gsHru2fv2_MrBmdi30CSHNC-rDIh3BQQbcaHQ3W8Fx8RZsKsnZHZBsqiD2zJcTmXuRQDrh8Kw_2mtVYvDh7PWsSNPI_izm45lYNSxw7Wjr2SO9JbpWe_57PgU3eUWbMYHWAMkbneTiGvgDpinYdltEtpA9-Im4I_pCq1FXvWCea4sc5IcP30V8boMsQ6xw-y-07UcCogr9krVTDMdGYEVHkIfObt8d6ZzpcigPVIQLqDEAx6EKeC3I_6dP_G8axSKebdK_5IhZYot39biqPKzWZnZaz5D7zHpBjp1gRDHOJ5cV-XKjPcDvoTKbsFWdno0r6Nutaac6ksP_YPneZvP6Qxxq6To3ieVQyq4sFUMHR5UvslYoDASlE8VDnDu2EZfZhvfI8",
-    "txid": "",
-    "sig": "VagTicE247Tzq8EG7Q3/iMNUqp6VUQb38DkRKAU9ukJMBfV5GV4SrCI5GvrQndwP6gA2O6D157I2McgWPhR+Vdvvqd+RBOBSQurBxUY6+QvsC2K9ao3cj1a0tGuuAAumdlf5Fw2x6txDCyRTsp4spR3EkhbFdv8ozwtWAb0OKebMWL/wQuy3ur4Bs9gFnSHyuFi+4Fg9Q5U48oihgXIMtHSZLTXunqCJcy3enNCL4gN7yEA1gFOTWaQGp3iHf2XFfDiE55eEwzbSHFnBGXLStk/uWz6aYjaEM1/1H83pXouogbSOuvr0uTifad8kzsNTwRHrIdBoN+8CBK5byli59CcUTM7K0HfLdbVygHkn0OrXkOF/5cfAqVTCpMvS9fduIcGlFGKZGTjobOqdSxCzPqYIYkII3eQW2yFqLyOKmGj/ePYtcYC1ncXPS2+nrhDKypwplvQaLINGVVLGu9gME3Mcd8mlWN3riSjIq2egSVsNMAvnGZj8PStr5b8pvVu6ZPl/TFTfE2y8oI4u8ak+dP3WfYK9U6C2WLwMa1cbtvtlWyiZmFK9QxA1g9SC43iIAOrf3TuSa8//q42iGS1ARFWzrcIV8earFNV1jKWs+OJh6614188RxxllH0EWASHB/8Q8Mn13GufpDyNQYXXNrZ+NQ83EtgDYE4umSuO3fnE=",
-    "isVisible": true,
-    "pid": "6ad59891f28a921b170eaf08966e97d4a70522aba439d07ed116e5c732838723ea44a536b9a4a3e7609dd51855cdc9f05d7b9b896ad433df2d20b21b8d1acfd0"
-}
+
 
 */

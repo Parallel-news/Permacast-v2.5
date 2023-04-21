@@ -67,6 +67,7 @@
 	},
 	"uploadshow": {
 		"addpodcast": "Add Podcast",
+		"editpodcast": "Edit Podcast",
 		"title": "New Show",
 		"uploadstitle": "Uploads",
 		"label": "Short URL",
