@@ -15,6 +15,7 @@ import { allFieldsFilled, byteSize, checkConnection, determineMediaType, handleE
 import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EVERPAY_EOA, GIGABYTE, SPINNER_COLOR, TOAST_DARK, TOAST_MARGIN, USER_SIG_MESSAGES } from '../../constants';
 import { ValMsg } from '../reusables/formTools';
 import { PermaSpinner } from '../reusables/PermaSpinner';
+import { VisibleInput } from '../uploadShow/reusables';
 
 const CoverContainer = React.lazy(() => import('../uploadShow/reusables').then(module => ({ default: module.CoverContainer })));
 
@@ -48,6 +49,7 @@ export const episodeDescStyling =  "input input-secondary resize-none w-full h-2
 
 // 4. Components
 export const EpisodeForm = (props: EpisodeFormInter) => {
+    console.log(props.shows)
     const { t } = useTranslation();
     const [submittingEp, setSubmittingEp] = useState<boolean>(false)
     const { address, ANS, getPublicKey, createSignature, arconnectConnect } = useArconnect();
@@ -67,6 +69,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     const [epMimeType, setEpMimeType] = useState<string>("")
     const [epContentTx, setEpContentTx] = useState<string>("")
     const [epThumbnailUrl, setEpThumbnailUrl] = useState(null)
+    const [visible, setVisible] = useState<boolean>(true)
     //Validation
     const [epNameMsg, setEpNameMsg] = useState<string>("")
     const [epDescMsg, setEpDescMsg] = useState<string>("")
@@ -242,7 +245,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
 
     //Submit Episode Function
     return(
-        <div className={episodeFormStyling}>
+        <div className={episodeFormStyling + " mb-[240px]"}>
             <div className="w-[25%] flex justify-center mb-4 lg:mb-0">
                 <CoverContainer 
                     setCover={setEpThumbnail}
@@ -284,6 +287,15 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                 media={epMedia} 
                 setMedia={setEpMedia}
             />
+            {/*Is Visible Input*/}
+            {props.edit && (
+            <div className="flex flex-row w-full justify-end">
+                <VisibleInput 
+                    setVisible={setVisible}
+                    visible={visible}
+                />
+            </div>
+            )}
             {/*Upload Button*/}
             <div className={buttonColStyling}>
                 {/*Show Upload Btn, Spinner, or Connect Btn*/}

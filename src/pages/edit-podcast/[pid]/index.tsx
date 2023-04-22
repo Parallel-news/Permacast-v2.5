@@ -11,7 +11,7 @@ const ShowForm = React.lazy(() => import("../../../component/uploadShow/uploadSh
 const showTitleStyling = "text-white text-xl mb-4"
 const uploadShowStyling = "w-full flex flex-col justify-center items-center space-y-1 pb-[200px]"
 
-export default function UploadShow({yourShows, error}) {
+export default function UploadShow({yourShows, error, pid}) {
 
     const { t } = useTranslation();
 
@@ -21,7 +21,7 @@ export default function UploadShow({yourShows, error}) {
             <ShowForm 
                 podcasts={yourShows}
                 edit={true}
-                selectedPid="671ab527a71cded3500cf3b4ad3919a729a6660386ec5fe51f78888c30626da37507e549be9d3dbf801793a6345fc396e2134825cbc977d02e5ba7dcf69cd11f"
+                selectedPid={pid}
             />
         </div>
     )

@@ -88,7 +88,7 @@
 		"cancel": "Cancel",
 		"feetext": "Uploading the show will cost: ",
 		"feeexplanation": "We charge a flat fee to prevent spam",
-		"hideShow": "Hide Show",
+		"hide": "Hide",
 		"calculatingFee": "Calculating Fee...",
 		"uploadCost": "Upload Cost",
 		"validation": {
