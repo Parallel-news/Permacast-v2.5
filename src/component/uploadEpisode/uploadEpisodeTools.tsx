@@ -16,6 +16,7 @@ import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EPISODE_DESC_MAX_LEN, EPISODE_
 import { ValMsg } from '../reusables/formTools';
 import { PermaSpinner } from '../reusables/PermaSpinner';
 import { VisibleInput } from '../uploadShow/reusables';
+import { createFileFromBlobUrl } from '../../utils/fileTools';
 
 const CoverContainer = React.lazy(() => import('../uploadShow/reusables').then(module => ({ default: module.CoverContainer })));
 
@@ -78,7 +79,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         "descError": epDescMsg.length === 0,
         "name": epName.length > 0,
         "desc": epDesc.length > 0,
-        "media": epMedia !== null,
+        "media": epMedia !== null || props.edit,
         "pid": pid.length > 0,
     }
 
@@ -131,7 +132,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                 setEpMimeType(ep.type)
                 setEpContentTx(ep.contentTx)
                 setEpThumbnailUrl(ep?.thumbnail ? ep?.thumbnail : "")
-
+                setVisible(ep.isVisible)
             }
             restoreSavedData()
             //loading modal NEEDED
@@ -162,15 +163,18 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     }
 
     const createEpPayload = {
-        "function": "addEpisode",
+        "function": props.edit ? "editEpisodeMetadata" : "addEpisode",
         "jwk_n": "",
         "pid": pid,
         "name": epName,
         "desc": "",
+        "sig": "",
+        "txid": "",
+        "isVisible": visible,
+        "thumbnail": "",
         "content": "",
         "mimeType": "",
-        "sig": "",
-        "txid": ""
+        "eid": props.edit ? props.eid : ""
     }
 
     const submitEpisode = async (epPayload: any) => {
@@ -196,12 +200,21 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             console.log(e); handleErr(t("errors.descUploadError"), setSubmittingEp); return;
         }
 
+        // Thumbnail to Arseeding
+        if(epThumbnail) {
+            const toastCover = toast.loading(t("loadingToast.savingCover"), {style: TOAST_DARK, duration: 10000000});
+            try {
+                const convertedCover = await createFileFromBlobUrl(epThumbnail, "thumbnail.txt")
+                const cover = await upload3DMedia(convertedCover, convertedCover.type); epPayload["thumbnail"] = cover?.order?.itemId
+                toast.dismiss(toastCover);
+            } catch (e) {
+                toast.dismiss(toastCover);
+                console.log(e); handleErr(t("errors.coverUploadError"), setSubmittingEp); return;
+            }
+        }
+
         // Media to Arseeding
-        if(props.edit && !epMedia) {
-            // Edits
-            epPayload["mimeType"] = epMimeType
-            epPayload["content"] = epContentTx
-        } else {
+        if(!props.edit) {
             const toastCover = toast.loading(t("loadingToast.savingMedia"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
             try {
                 const media = await upload3DMedia(epMedia, epMedia.type); epPayload["content"] = media?.order?.itemId
@@ -215,15 +228,17 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
 
 
         // Pay Upload Fee
-        const toastFee = toast.loading(t("loadingToast.payingFee"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
-        try {
-            const tx = await transferFunds("UPLOAD_EPISODE_FEE", EPISODE_UPLOAD_FEE, EVERPAY_EOA, address)
-            //@ts-ignore - refusing to acknowledge everHash
-            epPayload["txid"] = tx[1].everHash
-            toast.dismiss(toastFee);
-        } catch(e) {
-            toast.dismiss(toastFee);
-            console.log(e); handleErr(t("error.everpayError"), setSubmittingEp); return;
+        if(!props.edit) {
+            const toastFee = toast.loading(t("loadingToast.payingFee"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
+            try {
+                const tx = await transferFunds("UPLOAD_EPISODE_FEE", EPISODE_UPLOAD_FEE, EVERPAY_EOA, address)
+                //@ts-ignore - refusing to acknowledge everHash
+                epPayload["txid"] = tx[1].everHash
+                toast.dismiss(toastFee);
+            } catch(e) {
+                toast.dismiss(toastFee);
+                console.log(e); handleErr(t("error.everpayError"), setSubmittingEp); return;
+            }
         }
         const toastSaving = toast.loading(t("loadingToast.savingChain"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
         // EXM REDIRECT AND ERROR HANDLING NEEDED
@@ -245,7 +260,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
 
     //Submit Episode Function
     return(
-        <div className={episodeFormStyling + " pb-[240px]"}>
+        <div className={episodeFormStyling + " pb-10"}>
             <div className="w-[25%] flex justify-center mb-4 lg:mb-0">
                 <CoverContainer 
                     setCover={setEpThumbnail}
@@ -283,11 +298,12 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             </div>
             {epDescMsg.length > 0 && <ValMsg valMsg={epDescMsg} className="pl-2" />}
             {/*Episode Media*/}
-            <EpisodeMedia
-                media={epMedia} 
-                setMedia={setEpMedia}
-            />
-
+            {!props.edit && (
+                <EpisodeMedia
+                    media={epMedia} 
+                    setMedia={setEpMedia}
+                />
+            )}
             {/*Upload Button*/}
             <div className={buttonColStyling}>
                 {/*Show Upload Btn, Spinner, or Connect Btn*/}
