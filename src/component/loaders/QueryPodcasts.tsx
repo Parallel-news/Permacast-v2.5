@@ -9,7 +9,6 @@ const QueryPodcasts: FC = () => {
 
   useEffect(() => {
     if (allPodcasts_.length !== 0) return;
-    console.log('initial load for QueryPodcasts.tsx');
     const fetchPodcasts = async () => {
       const data = (await axios.get('/api/exm/read')).data;
       const exmState: EXMState = data;

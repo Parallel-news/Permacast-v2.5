@@ -61,6 +61,7 @@
 	},
 	"uploadshow": {
 		"addpodcast": "添加播客",
+		"editpodcast": "编辑播客",
 		"title": "添加新的节目",
 		"uploadstitle": "上传",
 		"label": "短网址",
@@ -81,6 +82,9 @@
 		"uploading": "加工...",
 		"cancel": "取消",
 		"feetext": "上传节目的费用：",
+		"hide": "隐藏",
+		"calculatingFee": "计算费用...",
+		"uploadCost": "上传费用",
 		"validation": {
 			"name": "播客名称必须介于 {{minLength}} 和 {{maxLength}} 个字符之间。",
 			"description": "描述必须介于 {{minLength}} 和 {{maxLength}} 个字符之间",
@@ -248,5 +252,6 @@
 		"showOldest": "显示最旧",
 		"hide0EpisodePodcasts": "隐藏 0 集的播客",
 		"show0EpisodePodcasts": "显示有 0 集的播客"
-	}
+	},
+	"edit": "编辑"
 }

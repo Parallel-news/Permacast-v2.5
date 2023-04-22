@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { MouseEventHandler, useCallback, useRef, useState } from "react";
 import getCroppedImg from "../../utils/croppedImage";
 import { handleValMsg } from "./uploadShowTools";
@@ -14,7 +14,9 @@ const CategoryOptions = React.lazy(() => import("../../utils/languages").then(mo
 const LanguageOptions = React.lazy(() => import("../../utils/languages").then(module => ({default: module.LanguageOptions})))
 
 interface CoverContainerInter {
-    setCover: (v: any) => void
+    setCover: (v: any) => void;
+    isEdit: boolean;
+    editCover?: string;
 }
 
 interface ImgCoverInter {
@@ -23,7 +25,9 @@ interface ImgCoverInter {
 
 interface SelectDropdownRowInter {
     setLanguage: (v: any) => void;
+    languageCode: string;
     setCategory: (v: any) => void;
+    categoryIndex: number;
     setLabel: (v: any) => void;
     labelValue: string;
     setLabelMsg: (v: any) => void;
@@ -34,6 +38,11 @@ interface SelectDropdownRowInter {
 interface ExplicitInputInter {
     setExplicit: (v: any) => void;
     explicit: boolean;
+}
+
+interface VisibleInputInter {
+    setVisible: (v: any) => void;
+    visible: boolean;
 }
 
 interface CropScreenInter {
@@ -73,18 +82,41 @@ const coverContainerLabelStyling = "cursor-pointer transition duration-300 ease-
 const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
 const explicitTextStyling = "label-text cursor-pointer text-zinc-400 font-semibold"
 const photoIconStyling = "h-11 w-11 text-zinc-400"
-const explicitLabelStyling = "flex items-center mr-5"
+const explicitLabelStyling = "flex items-center"
 const imgStyling = "h-48 w-48 text-slate-400 rounded-[20px]"
 const explicitCheckBoxStyling = "checkbox mr-2 border-2 border-zinc-600"
+const visibleCheckBoxStyling = "checkbox mr-2 border-2 border-zinc-600 ml-2 mr-0"
 
 export const CoverContainer = (props: CoverContainerInter) => {
 
     const podcastCoverRef = useRef<HTMLInputElement | null>(null);
+    // Test here if you can inject a file into ref
     const [img, setImg] = useState("");
     const [inputImg, setInputImg] = useState("");
     const [showCrop, setShowCrop] = useState(false);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [rotation, setRotation] = useState(0);
+    let responseUrl: string;
+    //Check if in Edit Mode
+    useEffect(() => {
+        async function fetchImage() {
+          const response = await fetch(props.editCover);
+          const blob = await response.blob();
+          responseUrl = response?.url ? response.url : ""
+          const oldCoverFile = new File([blob], "image.png", { type: "image/png" });
+          const fileArray = [oldCoverFile];
+          const newFileList = new DataTransfer();
+          fileArray.forEach((file) => {
+            newFileList.items.add(file);
+          });
+          podcastCoverRef.current.files = newFileList.files;
+          setImg(props.editCover);
+        }
+
+        if(props.isEdit) {
+            fetchImage();
+        }
+      }, [props.editCover]);
 
     const handleChangeImage = async (e: any) => {
         isPodcastCoverSquared(e);
@@ -157,7 +189,7 @@ export const CoverContainer = (props: CoverContainerInter) => {
             className={coverContainerLabelStyling}
         >
             {/*Show Selected Image or Empty Cover*/}
-            {podcastCoverRef?.current?.files?.[0] ? <ImgCover img={img} /> : <EmptyCover />}
+            {podcastCoverRef?.current?.files?.[0] && img.length !== 0 ? <ImgCover img={img} /> : <EmptyCover />}
       </label>
       </>
     )
@@ -194,9 +226,13 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                     className={`${selectDropdownStyling} sm:mr-[2%] w-[47%]`}
                     id="podcastCategory"
                     name="category"
+                    defaultValue="Arts"
                     onChange={(e) => props.setCategory(e.target.selectedIndex)}
+                    //props.categoryIndex
                 >
-                    <CategoryOptions />
+                    <CategoryOptions 
+                        categoryId={props.categoryIndex}
+                    />
                 </select>
                 {/*Languages*/}
                 <select
@@ -206,16 +242,21 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                     name="language"
                     onChange={(e) => props.setLanguage(e.target.value)}
                 >
-                    <LanguageOptions />
+                    <LanguageOptions 
+                        languageCode={props.languageCode}
+                    />
                 </select>
             </div>
             <select
                 className={`${selectDropdownStyling} hidden sm:flex mr-[2%]`}
                 id="podcastCategory"
                 name="category"
+                defaultValue="Arts"
                 onChange={(e) => props.setCategory(e.target.selectedIndex)}
             >
-                <CategoryOptions />
+                <CategoryOptions 
+                    categoryId={props.categoryIndex}
+                />
             </select>
             {/*Languages*/}
             <select
@@ -225,7 +266,9 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 name="language"
                 onChange={(e) => props.setLanguage(e.target.value)}
             >
-                <LanguageOptions />
+                <LanguageOptions 
+                    languageCode={props.languageCode}
+                />
             </select>
             {/*Label*/}
             <LabelInput 
@@ -249,10 +292,30 @@ export const ExplicitInput = (props: ExplicitInputInter) => {
                 type="checkbox"
                 className={explicitCheckBoxStyling}
                 onChange={() => props.setExplicit(!props.explicit)}
+                checked={props.explicit}
             />
             <span className={explicitTextStyling}>
                 {t("uploadshow.explicit")}
             </span>
+        </label>
+    )
+}
+
+export const VisibleInput = (props: VisibleInputInter) => {
+    const { t } = useTranslation();
+
+    return (
+        <label className={explicitLabelStyling}>
+            <span className={explicitTextStyling}>
+                {t("uploadshow.hide")}
+            </span>
+            <input
+                id="podcastExplicit"
+                type="checkbox"
+                className={visibleCheckBoxStyling}
+                onChange={() => props.setVisible(!props.visible)}
+                checked={!props.visible}
+            />
         </label>
     )
 }
