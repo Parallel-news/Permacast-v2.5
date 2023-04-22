@@ -49,6 +49,7 @@ export default function EpisodeSet(props: EpisodeSetInter) {
         const year = ts.getFullYear().toString(); // get the year
         const formattedDate = `${day}/${month}/${year}`;
         const d = data?.obj
+        console.log("DDD: ", d)
         const date = formattedDate
 
         // Assemble Player Data
@@ -95,7 +96,7 @@ export default function EpisodeSet(props: EpisodeSetInter) {
             }
             fetchColor();
         }, []);
-
+        console.log("OWNER: ", data?.obj.owner)
         return (
             <div className={podcastIdStyling}>
             {/*Episode Cover & Info*/}
@@ -108,10 +109,11 @@ export default function EpisodeSet(props: EpisodeSetInter) {
                 setLoadTipModal={() => setLoadTipModal(true)}
                 setLoadShareModal={() => setLoadShareModal(true)}
                 mediaLink={hasBeen10Min(data?.obj.uploadedAt) ? MESON_ENDPOINT+ data.obj.contentTx : ARSEED_URL + data.obj.contentTx}
-                podcastOwner={data?.obj.owner}
+                podcastOwner={podcastInfo.owner}
                 playButton={playButton}
                 podcastName={data?.podcastName}
-                pid={data?.pid}
+                pid={podcastInfo?.pid}
+                eid={d.eid}
             />
             {/*Episode Description*/}
             <EpisodeDescription

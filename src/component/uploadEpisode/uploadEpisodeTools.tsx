@@ -120,7 +120,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             const restoreSavedData = async () => {
                 
                 const podcast = props.shows.filter((podcast, ) => podcast.pid === props.pid)
-                const episode = podcast[0].episodes.filter((episode, ) => episode.eid === props.eid)
+                const episode = podcast[0]?.episodes.filter((episode, ) => episode.eid === props.eid)
                 const ep = episode[0]
                 setEpName(ep.episodeName)
                 const description = (await axios.get(ARSEED_URL + ep.description)).data;

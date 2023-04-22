@@ -4,6 +4,7 @@ import {
     HeartIcon, 
     ArrowDownTrayIcon, 
     ArrowTopRightOnSquareIcon, 
+    PlusIcon
 } from '@heroicons/react/24/solid';
 
 import { hexToRGB } from "../../utils/reusables";
@@ -16,6 +17,7 @@ import { FullEpisodeInfo } from "../../interfaces";
 
 import TextTruncate from "../TextTruncate";
 import Track from "../reusables/track";
+import { useArconnect } from "react-arconnect";
 /**
  * Index
  * 1. Interfaces
@@ -39,10 +41,12 @@ export interface EpisodeInfoButtonsInter {
     setLoadTipModal: (v: any) => void;
     setLoadShareModal: (v: any) => void;
     podcastId?: string;
+    episodeId?: string;
     mediaLink?: string;
     episodeName?: string;
     podcastOwner: string;
     playButton: JSX.Element;
+    eid: string;
 }
 
 export interface EpisodeInfoSubInter {
@@ -57,6 +61,7 @@ export interface EpisodeBannerInter extends EpisodeInfoInter {
     imgSrc: string;
     mediaLink: string;
     playButton: JSX.Element;
+    
 }
 
 export interface EpisodeInfoInter extends EpisodeInfoSubInter {
@@ -65,6 +70,7 @@ export interface EpisodeInfoInter extends EpisodeInfoSubInter {
     setLoadShareModal: () => void;
     mediaLink: string;
     podcastOwner: string;
+    eid: string;
     playButton: JSX.Element;
 
 }
@@ -165,6 +171,7 @@ export const EpisodeBanner = (props: EpisodeBannerInter) => {
                 playButton={props.playButton}
                 podcastName={props.podcastName}
                 pid={props.pid}
+                eid={props.eid}
             />
         </div>
     )
@@ -191,6 +198,7 @@ export const EpisodeInfo = (props: EpisodeInfoInter) => {
                 episodeName={props.title}
                 podcastOwner={props.podcastOwner}
                 playButton={props.playButton}
+                eid={props.eid}
             />
         </div>
     )
@@ -212,9 +220,10 @@ export const EpisodeInfoSub = (props: EpisodeInfoSubInter) => {
 }
 
 export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
-    const { color } = props
+    const { color, podcastOwner } = props
     const [downloading, setDownloading] = useState<boolean>(false)
     const { t } = useTranslation();
+    const { address } = useArconnect()
 
     const downloadFile = async () => {
         setDownloading(true)
@@ -229,7 +238,8 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
         document.body.removeChild(link);
         setDownloading(false)
     };
-
+    console.log(podcastOwner)
+    console.log(address)
     return (
         <div className={episodeInfoButtonsStyling}>
             <>{props.playButton}</>
@@ -239,6 +249,15 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
                 color={color} 
                 onClick={props.setLoadTipModal}
             />
+            {address === podcastOwner && (
+            <Link href={`/edit-episode/${props.podcastId}/${props.eid}}`}>
+                <DescriptionButton
+                    icon={<PlusIcon className={episodeIconStyling} />} 
+                    text={t("edit")}
+                    color={color} 
+                />
+            </Link>
+            )}
             {downloading ?
             <DescriptionButton
                 icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
