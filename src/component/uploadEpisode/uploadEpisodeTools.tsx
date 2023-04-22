@@ -39,7 +39,7 @@ interface EpisodeFormInter {
 
 // 2. Styling
 export const xBtnModalStyling = "text-neutral-400/75 text-xl cursor-pointer"
-export const buttonColStyling = "w-full flex justify-center items-center flex-col"
+export const buttonColStyling = "w-full flex justify-center items-center relative"
 export const tipModalStyling = "absolute inset-0 bottom-0 flex justify-center items-center z-50 h-full"
 export const episodeFormStyling = "w-[90%] md:w-[75%] lg:w-[50%] flex flex-col justify-center items-center space-y-4"
 export const episodeNameStyling = "input input-secondary w-full py-3 pl-5 pr-10 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
@@ -245,7 +245,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
 
     //Submit Episode Function
     return(
-        <div className={episodeFormStyling + " mb-[240px]"}>
+        <div className={episodeFormStyling + " pb-[240px]"}>
             <div className="w-[25%] flex justify-center mb-4 lg:mb-0">
                 <CoverContainer 
                     setCover={setEpThumbnail}
@@ -277,7 +277,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                     setEpDesc(e.target.value);
                 }}/>
                 <MarkDownToolTip 
-                    placement="top"
+                    placement="top" 
                     size={40}
                 />
             </div>
@@ -287,15 +287,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                 media={epMedia} 
                 setMedia={setEpMedia}
             />
-            {/*Is Visible Input*/}
-            {props.edit && (
-            <div className="flex flex-row w-full justify-end">
-                <VisibleInput 
-                    setVisible={setVisible}
-                    visible={visible}
-                />
-            </div>
-            )}
+
             {/*Upload Button*/}
             <div className={buttonColStyling}>
                 {/*Show Upload Btn, Spinner, or Connect Btn*/}
@@ -320,8 +312,19 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                         click={() => connect()}
                     />
                 )}
+                {/*Is Visible Input*/}
+                {props.edit && (
+                    <div className="absolute right-0"> 
+                        <VisibleInput 
+                            setVisible={setVisible}
+                            visible={visible}
+                        />
+                    </div>
+                )}
+            </div>
+            <div className="flex justify-center items-center">
                 {uploadCost !== 0 && epDesc.length > 0 && epMedia && (
-                <p className="mt-2 text-neutral-400">{t("uploadepisode.feetext")} {(Number(uploadCost)).toFixed(6) +" AR"}</p>
+                    <p className="mt-2 text-neutral-400">{t("uploadepisode.feetext")} {(Number(uploadCost)).toFixed(6) +" AR"}</p>
                 )}
             </div>
         </div>
