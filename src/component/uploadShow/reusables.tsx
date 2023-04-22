@@ -188,7 +188,7 @@ export const CoverContainer = (props: CoverContainerInter) => {
             className={coverContainerLabelStyling}
         >
             {/*Show Selected Image or Empty Cover*/}
-            {podcastCoverRef?.current?.files?.[0] ? <ImgCover img={img} /> : <EmptyCover />}
+            {podcastCoverRef?.current?.files?.[0] && img.length !== 0 ? <ImgCover img={img} /> : <EmptyCover />}
       </label>
       </>
     )

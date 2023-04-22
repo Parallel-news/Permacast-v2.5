@@ -21,11 +21,11 @@ import toast from "react-hot-toast"
 import React from "react";
 import { VisibleInput } from "./reusables";
 import { PermaSpinner } from "../reusables";
+
 const MarkDownToolTip = React.lazy(() => import("../reusables/tooltip").then(module => ({ default: module.MarkDownToolTip })));
 const CoverContainer = React.lazy(() => import("./reusables").then(module => ({ default: module.CoverContainer })));
 const ExplicitInput = React.lazy(() => import("./reusables").then(module => ({ default: module.ExplicitInput })));
 const SelectDropdownRow = React.lazy(() => import("./reusables").then(module => ({ default: module.SelectDropdownRow })));
-//const PermaSpinner = React.lazy(() => import("../reusables/PermaSpinner").then(module => ({ default: module.PermaSpinner })));
 const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.ConnectButton })));
 const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
 const ValMsg = React.lazy(() => import("../reusables/formTools").then(module => ({default: module.ValMsg})))
@@ -108,6 +108,7 @@ export const ShowForm = (props: ShowFormInter) => {
     const [podcastCategory_, setPodcastCategory_] = useState<number>(0);
     const [podcastName_, setPodcastName_] = useState("");
     const [podcastCover_, setPodcastCover_] = useState(null);
+    const [coverUrl, setCoverUrl] = useState<string>("")
     const [podcastLanguage_, setPodcastLanguage_] = useState('en');
     const [podcastExplicit_, setPodcastExplicit_] = useState(false);
     const [podcastLabel_, setPodcastLabel_] = useState("");
@@ -241,7 +242,7 @@ export const ShowForm = (props: ShowFormInter) => {
         }
         //Error handling and timeout needed for this to complete redirect
         const toastSaving = toast.loading(t("loadingToast.savingChain"), {style: TOAST_DARK, duration: 10000000});
-        console.log("Final load: ", createShowPayload)
+
         setTimeout(async function () {
             await axios.post('/api/exm/write', createShowPayload);
             setSubmittingShow(false)
@@ -271,6 +272,7 @@ export const ShowForm = (props: ShowFormInter) => {
                 setPodcastEmail_(p.email)
                 
                 //Recreate Cover for Upload
+                setCoverUrl(p.cover)
                 fetch(ARSEED_URL+p.cover)
                 .then((rs) => rs.blob())
                 .then((blob) => {
@@ -297,8 +299,8 @@ export const ShowForm = (props: ShowFormInter) => {
                 <div className="w-[25%] flex justify-center mb-4 lg:mb-0">
                     <CoverContainer 
                         setCover={setPodcastCover_}
-                        isEdit={true}
-                        editCover={ARSEED_URL+"2wq2s-zKFnORgr1jwv7MNUJe_VHLOyZNhjwz-SaUHsg"}
+                        isEdit={props.edit}
+                        editCover={ARSEED_URL+coverUrl}
                     />
                 </div>
                 <div className="flex flex-col w-[95%] md:w-[75%] lg:w-[50%] space-y-3">

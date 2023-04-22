@@ -19,7 +19,7 @@ const CurrencyDollarIcon = React.lazy(() => import('@heroicons/react/24/outline'
 */
 interface EpisodeMediaInter {
     media: File | null;
-    setMedia: (v: any) => void
+    setMedia: (v: any) => void;
 }
 
 interface UploadButtonInter {

@@ -7,7 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const episodeTitleStyling = "text-white text-xl mt-4"
 const showErrorTag = "flex justify-center items-center m-auto text-white font-semibold text-xl"
-const uploadEpisodeStyling = "flex flex-col justify-center items-center m-auto space-y-3 relative pb-[250px]"
+const uploadEpisodeStyling = "flex flex-col justify-center items-center m-auto space-y-3 relative"
 
 const EpisodeForm = React.lazy(() => import("../../component/uploadEpisode/uploadEpisodeTools").then(module => ({ default: module.EpisodeForm })));
 
@@ -26,6 +26,8 @@ export default function UploadEpisode({yourShows, error, pid}) {
             <EpisodeForm 
               shows={yourShows}
               pid={pid}
+              eid={"f12d4503b251e66968ea82b24ade99768232022b9f8b4676f675fc586572e175f4ef544c66f055f4c3f5d01fec453dab1fe26c55872d4474531cb04ec20fe215"}
+              edit={true}
             />
         </div>
       )

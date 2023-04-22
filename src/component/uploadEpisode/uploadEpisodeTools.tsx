@@ -12,9 +12,11 @@ import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
 import { descContainerStyling, spinnerClass } from '../uploadShow/uploadShowTools';
 import { getBundleArFee, upload2DMedia, upload3DMedia } from '../../utils/arseeding';
 import { allFieldsFilled, byteSize, checkConnection, determineMediaType, handleError } from '../../utils/reusables';
-import { AR_DECIMALS, CONNECT_WALLET, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EVERPAY_EOA, GIGABYTE, SPINNER_COLOR, TOAST_DARK, TOAST_MARGIN, USER_SIG_MESSAGES } from '../../constants';
+import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EVERPAY_EOA, GIGABYTE, SPINNER_COLOR, TOAST_DARK, TOAST_MARGIN, USER_SIG_MESSAGES } from '../../constants';
 import { ValMsg } from '../reusables/formTools';
 import { PermaSpinner } from '../reusables/PermaSpinner';
+
+const CoverContainer = React.lazy(() => import('../uploadShow/reusables').then(module => ({ default: module.CoverContainer })));
 
 const UploadButton = React.lazy(() => import('./reusables').then(module => ({ default: module.UploadButton })));
 const EpisodeMedia = React.lazy(() => import('./reusables').then(module => ({ default: module.EpisodeMedia })));
@@ -30,6 +32,8 @@ export default function uploadEpisode() {
 interface EpisodeFormInter {
     shows: Podcast[]
     pid: string;
+    eid: string;
+    edit: boolean;
 }
 
 // 2. Styling
@@ -57,6 +61,12 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     const [epName, setEpName] = useState<string>("")
     const [epDesc, setEpDesc] = useState<string>("")
     const [epMedia, setEpMedia] = useState(null)
+    const [epThumbnail, setEpThumbnail] = useState(null)
+
+    //For Edits
+    const [epMimeType, setEpMimeType] = useState<string>("")
+    const [epContentTx, setEpContentTx] = useState<string>("")
+    const [epThumbnailUrl, setEpThumbnailUrl] = useState(null)
     //Validation
     const [epNameMsg, setEpNameMsg] = useState<string>("")
     const [epDescMsg, setEpDescMsg] = useState<string>("")
@@ -101,6 +111,29 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             setUploadCost(0)
         }
     }, [epDesc, epMedia])
+
+    //Enable Editting
+    useEffect(() => {
+        if(props.edit) {
+            const restoreSavedData = async () => {
+                console.log("props.shows: ", props.shows)
+                
+                const podcast = props.shows.filter((podcast, ) => podcast.pid === props.pid)
+                const episode = podcast[0].episodes.filter((episode, ) => episode.eid === props.eid)
+                const ep = episode[0]
+                console.log("TX: ", episode)
+                setEpName(ep.episodeName)
+                const description = (await axios.get(ARSEED_URL + ep.description)).data;
+                setEpDesc(description)
+                setEpMimeType(ep.type)
+                setEpContentTx(ep.contentTx)
+                setEpThumbnailUrl(ep?.thumbnail ? ep?.thumbnail : "")
+
+            }
+            restoreSavedData()
+            //loading modal NEEDED
+        }
+    }, [])
 
     /**
      * Determines whether validation message should be placed within input field
@@ -161,15 +194,22 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         }
 
         // Media to Arseeding
-        const toastCover = toast.loading(t("loadingToast.savingMedia"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
-        try {
-            const media = await upload3DMedia(epMedia, epMedia.type); epPayload["content"] = media?.order?.itemId
-            epPayload["mimeType"] = determineMediaType(epMedia.type)
-            toast.dismiss(toastCover);
-        } catch (e) {
-            toast.dismiss(toastCover);
-            console.log(e); handleErr(t("errors.mediaUploadError"), setSubmittingEp); return;
+        if(props.edit && !epMedia) {
+            // Edits
+            epPayload["mimeType"] = epMimeType
+            epPayload["content"] = epContentTx
+        } else {
+            const toastCover = toast.loading(t("loadingToast.savingMedia"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
+            try {
+                const media = await upload3DMedia(epMedia, epMedia.type); epPayload["content"] = media?.order?.itemId
+                epPayload["mimeType"] = determineMediaType(epMedia.type)
+                toast.dismiss(toastCover);
+            } catch (e) {
+                toast.dismiss(toastCover);
+                console.log(e); handleErr(t("errors.mediaUploadError"), setSubmittingEp); return;
+            }
         }
+
 
         // Pay Upload Fee
         const toastFee = toast.loading(t("loadingToast.payingFee"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
@@ -203,16 +243,24 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     //Submit Episode Function
     return(
         <div className={episodeFormStyling}>
+            <div className="w-[25%] flex justify-center mb-4 lg:mb-0">
+                <CoverContainer 
+                    setCover={setEpThumbnail}
+                    isEdit={props.edit}
+                    editCover={epThumbnailUrl ? ARSEED_URL+epThumbnailUrl : ""}
+                />
+            </div>
             {/*Select Podcast*/}
-            {address && (
+            {(address && !props.edit) && (
                 <SelectPodcast
                     pid={pid} 
                     setPid={setPid}
                     shows={props.shows}
                 />
             )}
+
             {/*Episode Name*/}
-            <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="episodeName" placeholder={t("uploadepisode.name")}
+            <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="episodeName" placeholder={t("uploadepisode.name")} value={epName}
             onChange={(e) => {
                 setEpNameMsg(handleValMsg(e.target.value, "epName"));
                 setEpName(e.target.value);
@@ -220,7 +268,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             {epNameMsg.length > 0 && <ValMsg valMsg={epNameMsg} className="pl-2" />}
             {/*Episode Description*/}
             <div className={descContainerStyling}>
-                <textarea className={"w-[93%] "+episodeDescStyling} required title="Between 1 and 5000 characters" name="episodeShowNotes" placeholder={t("uploadepisode.description")} 
+                <textarea className={"w-[93%] "+episodeDescStyling} required title="Between 1 and 5000 characters" name="episodeShowNotes" placeholder={t("uploadepisode.description")} value={epDesc} 
                 onChange={(e) => {
                     setEpDescMsg(handleValMsg(e.target.value, "epDesc"));
                     setEpDesc(e.target.value);
