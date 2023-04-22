@@ -1,17 +1,17 @@
 import axios from 'axios';
 import React from 'react';
 import { useTranslation } from 'next-i18next';
-import { EXM_READ_LINK, NO_SHOW } from '../../constants';
-import { getContractVariables } from '../../utils/contract';
+import { EXM_READ_LINK, NO_SHOW } from '../../../../constants';
+import { getContractVariables } from '../../../../utils/contract';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const episodeTitleStyling = "text-white text-xl mt-4"
 const showErrorTag = "flex justify-center items-center m-auto text-white font-semibold text-xl"
 const uploadEpisodeStyling = "flex flex-col justify-center items-center m-auto space-y-3 relative"
 
-const EpisodeForm = React.lazy(() => import("../../component/uploadEpisode/uploadEpisodeTools").then(module => ({ default: module.EpisodeForm })));
+const EpisodeForm = React.lazy(() => import('../../../../component/uploadEpisode/uploadEpisodeTools').then(module => ({ default: module.EpisodeForm })));
 
-export default function UploadEpisode({yourShows, error, pid}) {
+export default function UploadEpisode({yourShows, error, pid, eid}) {
     
     const { t } = useTranslation();
 
@@ -26,17 +26,18 @@ export default function UploadEpisode({yourShows, error, pid}) {
             <EpisodeForm 
               shows={yourShows}
               pid={pid}
-              eid={""}
-              edit={false}
+              eid={eid}
+              edit={true}
             />
         </div>
       )
     }
 }
 
-export async function getServerSideProps({query, locale}) {
+export async function getServerSideProps(context) {
     const { contractAddress } = getContractVariables()
-    const pid = query.pid || '';
+    const { locale, query } = context;
+    const { pid, eid } = query;
     let yourShows = null
     let error = "";
     try {
@@ -53,7 +54,8 @@ export async function getServerSideProps({query, locale}) {
         ])),
         yourShows,
         error,
-        pid
+        pid,
+        eid
       },
     }
   }

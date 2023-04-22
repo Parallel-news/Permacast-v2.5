@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'next-i18next';
-import { PASoMProfile } from '../../interfaces/pasom';
-import { Dispatch, FC, SetStateAction } from 'react';
-import Link from 'next/link';
-import { ARSEED_URL } from '../../constants';
 import Image from 'next/image';
-import { dimColorString, hexToRGB, isTooLight } from '../../utils/ui';
+import Link from 'next/link';
+import { useTranslation } from 'next-i18next';
+import React, { useState, Dispatch, FC, SetStateAction } from 'react';
 import { shortenAddress } from 'react-arconnect';
-
 import { useRecoilState } from 'recoil';
+
+import { PASoMProfile } from '../../interfaces/pasom';
+import { FullEpisodeInfo, Podcast } from '../../interfaces';
+import { ARSEED_URL } from '../../constants';
+import { dimColorString, hexToRGB, isTooLight } from '../../utils/ui';
 import { currentThemeColorAtom } from '../../atoms';
 import { hoverableLinkButtonStyling } from '../reusables/themedButton';
-import { FullEpisodeInfo, Podcast } from '../../interfaces';
 
 const Verification = React.lazy(() => import('../reusables/Verification'))
 const Track = React.lazy(() => import('../reusables/track'))

@@ -29,20 +29,19 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
   ];
 
   useEffect(() => {
-    console.log("background.tsx useEffect");
     if (!pathname.includes("/creator")) setUserBannerImage('');
     if (useDefaultBackground.includes(pathname)) setbackgroundColor(dimColorString(currentThemeColor, 0.4));
     else if (pathname.includes("/creator")) {
       if (userBannerImage.length > 0) {
         console.log('userBannerImage ', userBannerImage)
         setbackgroundColor(dimColorString(currentThemeColor, 0))
-      } else setbackgroundColor(dimColorString(currentThemeColor, 0.6))
+      } else setbackgroundColor(dimColorString(podcastColor, 0.6));
     } else setbackgroundColor(dimColorString(podcastColor, 0.5));
   }, [pathname, podcastColor, userBannerImage]);
 
 
   const styles = {backgroundImage: `linear-gradient(transparent, black, black)`};
-  console.log("userBannerImage: ", userBannerImage)
+
   return (
     <div className="w-screen h-3/4 absolute overflow-hidden default-animation-slow pointer-events-none" style={{backgroundColor: backgroundColor, zIndex: -1}}>
       {userBannerImage && (

@@ -58,7 +58,7 @@ export const PodcastInfo = (props: PodcastInfoInter) => {
             />
             <div className={podcastInfoTitleDivStyling}>
                 <p className={podcastInfoTitleStyling}>{props.title}</p>
-                <MarkdownRenderer markdownText={markdownText} color={props.color === "rgb(0, 0, 0)" ? 'text-black' : 'text-white'}/>
+                <MarkdownRenderer markdownText={markdownText} color={'text-white'}/>
             </div>
         </div>
     )
@@ -109,6 +109,15 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
                 />
             </Link>
             )}
+            {address === props.podcastOwner && (
+            <Link href={`/edit-podcast/${props.podcastId}`}>
+                <DescriptionButton
+                    icon={<PlusIcon className={episodeIconStyling} />} 
+                    text={t("edit")}
+                    color={color}
+                />
+            </Link>
+            )}
             <DescriptionButton
                 icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
                 text={t("share.share")}
@@ -125,3 +134,19 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
         </div>
     )
 }
+
+
+/*
+Documentos
+
+650,000  to runt  certificacion de comercio al banco
+
+$700,000
+
+balance de apertura para el banco y certificacion nacional accionaria  290,000 
+
+certicacion accionaria - 
+
+
+
+*/

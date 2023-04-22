@@ -14,7 +14,7 @@ const ViewDropDown = React.lazy(() => import("./viewDropDown"));
 
 const titleRow = `flex flex-row justify-between items-end mb-10 `;
 const allPodcastHeader = `text-3xl text-neutral-300/90 font-semibold pt-10 text-center md:text-start `;
-const podcastContainer = `grid grid-cols-1 justify-items-center md:justify-items-start md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1 gap-y-10 mb-10 `;
+const podcastContainer = `grid grid-cols-1 justify-items-center md:justify-items-start md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1 gap-y-10 pb-40 `;
 
 interface FeedPageProps {
   yourShows: Podcast[];

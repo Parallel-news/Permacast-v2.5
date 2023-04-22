@@ -178,8 +178,8 @@ export const TrackPlayButton: FC<TrackPlayButtonProps> = ({ playerInfo, episode,
   const buttonStyleArgs = {
     size: 36,
     iconSize: 18,
-    buttonColor: accentColor,
-    accentColor: accentColor
+    buttonColor: accentColor || "rgb(0, 0, 0)",
+    accentColor: accentColor || "rgb(0, 0, 0)"
   };
 
   if (!includePlayButton) return <></>;

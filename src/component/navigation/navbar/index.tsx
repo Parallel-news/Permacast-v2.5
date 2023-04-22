@@ -1,19 +1,19 @@
 import Link from "next/link";
 import { useTranslation } from "next-i18next";
 import { FC } from "react";
+import { Bars3Icon, LanguageIcon } from "@heroicons/react/24/solid";
 
-import { LanguageIcon } from "@heroicons/react/24/outline";
-import ArConnect from "../../arconnect";
 import Searchbar from "../../searchbar";
 import LANGUAGES, { LanguageOptionInterface } from "../../../utils/languages";
+import { LanguageButton } from "../../reusables/LanguageButton";
 import Dropdown, { 
   ExtendedDropdownButtonProps,
   openMenuButtonClass,
   dropdownMenuClass,
   menuItemClass
 } from "../../reusables/dropdown";
-import { LanguageButton } from "../../reusables/LanguageButton";
-import { Bars3Icon } from "@heroicons/react/24/solid";
+import ArConnect from "../../wallets/arconnect";
+import WalletSelectorButton from "../../wallets";
 
 
 export const dropdownItemFullFill = `w-full h-full flex `;
@@ -56,7 +56,7 @@ export const NavBar: FC = () => {
             <Searchbar />
           </div>
           <div className="ml-2 w-80">
-            <ArConnect />
+            <WalletSelectorButton />
           </div>
         </div>
       </div>
@@ -64,8 +64,7 @@ export const NavBar: FC = () => {
   );
 };
 
-export function NavBarMobile() {
-
+export const NavBarMobile: FC = () => {
   return (
     <div className="flex items-center gap-x-2 mt-5">
       <Searchbar />

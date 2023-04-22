@@ -19,7 +19,7 @@ const CurrencyDollarIcon = React.lazy(() => import('@heroicons/react/24/outline'
 */
 interface EpisodeMediaInter {
     media: File | null;
-    setMedia: (v: any) => void
+    setMedia: (v: any) => void;
 }
 
 interface UploadButtonInter {
@@ -67,7 +67,7 @@ const selectPodcastModalStyling = "absolute inset-0 top-0 flex justify-center"
 const podcastOptionBaseStyling = "w-full flex justify-start items-center space-x-4"
 const podcastOptionsContainer = "w-full flex flex-col px-5 overflow-auto h-[120%] mb-[40px]"
 const podcastOptionHoverStyling = "cursor-pointer hover:bg-zinc-600/30 transition duration-650 ease-in-out rounded-3xl p-3"
-export const containerPodcastModalStyling = "w-[98%] sm:w-[75%] lg:w-[50%] h-[420px] bg-zinc-800 rounded-3xl flex flex-col z-10 mb-0"
+export const containerPodcastModalStyling = "w-[98%] sm:w-[75%] lg:w-[50%] h-[420px] bg-zinc-800 rounded-3xl flex flex-col z-10 mb-0 "
 const xMarkStyling = "h-5 w-5 mt-1 cursor-pointer hover:text-red-400 hover:bg-red-400/10 transition duration-400 ease-in-out rounded-full"
 const uploadButtonStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8"
 const submitModalStyling = "btn btn-secondary transition duration-300 ease-in-out hover:text-white rounded-xl px-8 border-0 text-2xl absolute z-30"

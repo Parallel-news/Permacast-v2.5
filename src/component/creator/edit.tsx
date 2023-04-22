@@ -7,10 +7,10 @@ import { Tooltip } from '@nextui-org/react';
 import toast from 'react-hot-toast';
 
 import { flexCenter, flexCenterGap } from './featuredCreators';
-import Modal from '../modal';
+import { Modal } from '../reusables';
 import { ARSEED_URL, GIGABYTE, PASOM_SIG_MESSAGES, } from '../../constants';
 import { PASoMProfile, updateWalletMetadata } from '../../interfaces/pasom';
-import { ArConnectButtonStyling } from '../arconnect';
+import { ArConnectButtonStyling } from '../wallets/arconnect';
 import ThemedButton from '../reusables/themedButton';
 import { UploadImageContainer } from '../reusables/croppingTools';
 import {  TOAST_DARK } from "../../constants";
