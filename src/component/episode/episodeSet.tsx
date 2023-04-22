@@ -96,7 +96,7 @@ export default function EpisodeSet(props: EpisodeSetInter) {
             }
             fetchColor();
         }, []);
-        console.log("OWNER: ", data?.obj.owner)
+
         return (
             <div className={podcastIdStyling}>
             {/*Episode Cover & Info*/}
@@ -112,7 +112,7 @@ export default function EpisodeSet(props: EpisodeSetInter) {
                 podcastOwner={podcastInfo.owner}
                 playButton={playButton}
                 podcastName={data?.podcastName}
-                pid={podcastInfo?.pid}
+                pid={podcastInfo.pid}
                 eid={d.eid}
             />
             {/*Episode Description*/}

@@ -118,15 +118,22 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     useEffect(() => {
         if(props.edit) {
             const restoreSavedData = async () => {
-                
                 const podcast = props.shows.filter((podcast, ) => podcast.pid === props.pid)
+                console.log("podcast: ", podcast)
+                console.log("eid: ", props.eid)
                 const episode = podcast[0]?.episodes.filter((episode, ) => episode.eid === props.eid)
-                const ep = episode[0]
-                setEpName(ep.episodeName)
-                const description = (await axios.get(ARSEED_URL + ep.description)).data;
-                setEpDesc(description)
-                setEpThumbnailUrl(ep?.thumbnail ? ep?.thumbnail : "")
-                setVisible(ep.isVisible)
+                console.log("episode: ", episode)
+                if(episode && episode.length) {
+                    console.log("episode: ", episode)
+ 
+                    const ep = episode[0]
+                    setEpName(ep.episodeName)
+                    const description = (await axios.get(ARSEED_URL + ep.description)).data;
+                    setEpDesc(description)
+                    setEpThumbnailUrl(ep?.thumbnail ? ep?.thumbnail : "")
+                    setVisible(ep.isVisible)
+                
+                }
             }
             restoreSavedData()
             //loading modal NEEDED

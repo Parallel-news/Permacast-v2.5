@@ -47,6 +47,7 @@ export interface EpisodeInfoButtonsInter {
     podcastOwner: string;
     playButton: JSX.Element;
     eid: string;
+    pid: string;
 }
 
 export interface EpisodeInfoSubInter {
@@ -199,6 +200,7 @@ export const EpisodeInfo = (props: EpisodeInfoInter) => {
                 podcastOwner={props.podcastOwner}
                 playButton={props.playButton}
                 eid={props.eid}
+                pid={props.pid}
             />
         </div>
     )
@@ -250,7 +252,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
                 onClick={props.setLoadTipModal}
             />
             {address === podcastOwner && (
-            <Link href={`/edit-episode/${props.podcastId}/${props.eid}}`}>
+            <Link href={`/edit-episode/${props.pid}/${props.eid}`}>
                 <DescriptionButton
                     icon={<PlusIcon className={episodeIconStyling} />} 
                     text={t("edit")}
