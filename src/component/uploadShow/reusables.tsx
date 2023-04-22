@@ -96,12 +96,14 @@ export const CoverContainer = (props: CoverContainerInter) => {
     const [showCrop, setShowCrop] = useState(false);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [rotation, setRotation] = useState(0);
-
+    let responseUrl: string;
     //Check if in Edit Mode
     useEffect(() => {
         async function fetchImage() {
+          console.log("props.editCover: ", props.editCover)
           const response = await fetch(props.editCover);
           const blob = await response.blob();
+          responseUrl = response?.url ? response.url : ""
           const oldCoverFile = new File([blob], "image.png", { type: "image/png" });
           const fileArray = [oldCoverFile];
           const newFileList = new DataTransfer();
@@ -109,13 +111,13 @@ export const CoverContainer = (props: CoverContainerInter) => {
             newFileList.items.add(file);
           });
           podcastCoverRef.current.files = newFileList.files;
-          setImg(props.editCover)
+          setImg(props.editCover);
         }
 
         if(props.isEdit) {
             fetchImage();
         }
-      }, []);
+      }, [props.editCover]);
 
     const handleChangeImage = async (e: any) => {
         isPodcastCoverSquared(e);
