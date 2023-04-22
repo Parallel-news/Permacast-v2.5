@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 import { CURRENT_EPISODE_TEMPLATE, CURRENT_PODCAST_TEMPLATE, DEFAULT_BACKGROUND_COLOR, DEFAULT_PODCAST_COLOR, DEFAULT_THEME_COLOR } from '../constants/ui';
-import { ANSMapped, Ans, Episode, FullEpisodeInfo, Podcast } from '../interfaces';
+import { ANSMapped, Ans, Episode, FullEpisodeInfo, Podcast, availableWallets } from '../interfaces';
 import { RGBorRGBAstring } from '../interfaces/ui';
 import { PASoMProfile } from '../interfaces/pasom';
 
@@ -199,5 +199,10 @@ export const chronStatusAtom = atom<number>({
 export const hide0EpisodesAtom = atom<boolean>({
     key: 'hide0EpisodesAtom',
     default: true    
-})
+});
 // *** ------- ***
+
+export const selectedWalletAtom = atom<availableWallets>({
+    key: 'selectedWalletAtom',
+    default: 'arconnect'
+});

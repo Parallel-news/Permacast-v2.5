@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { latestEpisodesAtom, podcastsAtom } from "../atoms/index";
-import { Episode, EXMDevState, FeaturedChannel, FullEpisodeInfo, Podcast } from '../interfaces';
+import { Episode, EXMState, FeaturedChannel, FullEpisodeInfo, Podcast } from '../interfaces';
 import { getContractVariables, getFeaturedChannelsContract, getPASOMContract } from '../utils/contract';
 import { findPodcast } from '../utils/filters';
 import { featuredPocastCarouselStyling } from '../component/home/featuredPodcast';
@@ -41,7 +41,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
     const fetchData = async () => {
       setLoading(true);
       // re-write to use internal state
-      const exmState: EXMDevState = (await axios.get('/api/exm/read')).data;
+      const exmState: EXMState = (await axios.get('/api/exm/read')).data;
 
       const { podcasts } = exmState;
       const episodes: FullEpisodeInfo[] = podcasts

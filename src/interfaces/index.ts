@@ -6,23 +6,9 @@ export type chainTicker = string;
 export type tx = string;
 export type arweaveTX = string;
 export type everpayTX = string;
+export type availableWallets = "arconnect" | "metamask";
 
 export interface EXMState {
-  podcasts:              Podcast[];
-  admins:                string[];
-  isPaused:              boolean;
-  user_sig_messages:     signature[];
-  admin_sig_messages:    signature[];
-  stores:                string[];
-  fees_handler_endpoint: URL;
-  fees_networks:         chainName[];
-  supported_tokens:      chainTicker[];
-  ar_molecule_endpoint:  URL;
-  paid_fees:             tx[];
-  signatures:            signature[];
-}
-// !deprecated
-export interface EXMDevState {
   podcasts:              Podcast[];
   admins:                string[];
   isPaused:              boolean;

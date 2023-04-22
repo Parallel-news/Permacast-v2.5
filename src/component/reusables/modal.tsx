@@ -2,11 +2,11 @@ import React, { FC, ReactNode, Dispatch, SetStateAction, useEffect, useState } f
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 
-interface ModalProps {
+export interface ModalProps {
   isVisible: boolean;
   setIsVisible: Dispatch<SetStateAction<boolean>>;
-  className: string;
-  children: ReactNode;
+  className?: string;
+  children?: ReactNode;
 };
 
 const modalWrapperStyling = `absolute inset-0 bottom-0 flex justify-center items-center z-50 h-full backdrop-blur-sm `;

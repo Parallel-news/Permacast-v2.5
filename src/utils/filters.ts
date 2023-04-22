@@ -14,7 +14,7 @@ export const removeDuplicates = (list: FullEpisodeInfo[]) => {
   return uniquePodcasts;
 };
 
-const MIN_CHARS = 40;
+const MIN_CHARS = 43;
 
 export const trimChars = (str: any) => (str || '').slice(0, MIN_CHARS);
 
