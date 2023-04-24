@@ -2,8 +2,8 @@ import { useTranslation } from "next-i18next";
 import { FC } from "react";
 import { useRecoilState } from "recoil";
 import { EyeSlashIcon, Bars3BottomRightIcon, ClockIcon } from '@heroicons/react/24/outline';
-import { chronStatusAtom, hide0EpisodesAtom } from "../../atoms";
-import { Dropdown, dropdownMenuClass as dropdownClassPrev, menuItemClass, ExtendedDropdownButtonProps } from "../../component/reusables";
+import { chronStatusAtom, hide0EpisodesAtom } from "../atoms";
+import { Dropdown, dropdownMenuClass as dropdownClassPrev, menuItemClass, ExtendedDropdownButtonProps } from "./reusables";
 
 const ViewDropDown: FC = () => {
 

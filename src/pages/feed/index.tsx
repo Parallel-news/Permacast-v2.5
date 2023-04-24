@@ -9,8 +9,8 @@ import { getContractVariables } from "../../utils/contract";
 import { detectTimestampType } from "../../utils/reusables";
 import { Podcast } from "../../interfaces";
 
+const ViewDropDown = React.lazy(() => import("../../component/viewDropDown"));
 const FeaturedPodcast = React.lazy(() => import("../../component/home/featuredPodcast"));
-const ViewDropDown = React.lazy(() => import("./viewDropDown"));
 
 const titleRow = `flex flex-row justify-between items-end mb-10 `;
 const allPodcastHeader = `text-3xl text-neutral-300/90 font-semibold pt-10 text-center md:text-start `;
