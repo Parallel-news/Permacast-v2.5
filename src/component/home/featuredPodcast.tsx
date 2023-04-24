@@ -139,11 +139,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
     } catch (error) {
       console.log(error)
     };
-  }, []);
-
-  useEffect(() => {
-    queryMarkdownByTX(description).then(setMarkdownText);
-  }, []);
+  }, [podcastInfo]);
 
   const episodes = convertPodcastsToEpisodes([podcastInfo]);
   const episode = episodes.length ? episodes[0]: undefined
