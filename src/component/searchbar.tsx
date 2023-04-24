@@ -13,7 +13,7 @@ const Searchbar: FC = () => {
   
   const router = useRouter();
 
-  const [searchInput, setSearchInput] = useRecoilState(searchInputAtom); 
+  const [searchInput, setSearchInput] = useRecoilState(searchInputAtom);
   
   const [inputFocused, setInputFocused] = useState(false);
   const [debounceTimeout, setDebounceTimeout] = useState(null);
@@ -22,7 +22,20 @@ const Searchbar: FC = () => {
     setSearchInput(newInput);
     if (debounceTimeout) clearTimeout(debounceTimeout);
     const newTimeout = setTimeout(() => {
-      router.push("/search", `/search/${newInput}`, { shallow: true });
+      // Update the query object with the new search term
+      const updatedQuery = { ...router.query, query: newInput };
+  
+      // Check if the current search query is different from the new search query
+      if (router.query.query !== newInput) {
+        router.push(
+          {
+            pathname: "/search",
+            query: updatedQuery,
+          },
+          undefined,
+          { shallow: true }
+        );
+      }
     }, 800);
 
     setDebounceTimeout(newTimeout);
