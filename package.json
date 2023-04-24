@@ -20,7 +20,7 @@
     "arweave": "^1.13.4",
     "axios": "^1.2.4",
     "bignumber.js": "^9.1.1",
-    "daisyui": "^2.47.0",
+    "daisyui": "^2.51.5",
     "everpay": "^0.6.0",
     "fast-average-color": "^9.3.0",
     "i18next": "^22.4.9",

@@ -12,19 +12,20 @@ const resultsStyling = "text-2xl text-white font-bold mb-6"
 const startTypingStyling = "text-center text-white text-2xl"
 const searchLoadingStyling = "text-3xl text-white font-bold mb-6"
 
-export default function SearchSet() {
+export default function SearchSet({ query }) {
     const { t } = useTranslation();
     const [titlesLoading, ] = useState(false);
     const [_titles, _setTitles] = useRecoilState(titles);
     const [allPodcasts_, setAllPodcasts_] = useRecoilState(allPodcasts);
     const [_selection, ] = useRecoilState(selection);
-    const [searchInput, _] = useRecoilState(searchInputAtom); 
+    const [searchInput, setSearchInput] = useRecoilState(searchInputAtom); 
   
     const [allEpisodes, setAllEpisodes] = useState<FullEpisodeInfo[]>([]);
   
     const [filteredPodcasts, setFilteredPodcasts] = useState<Podcast[]>([]);
     const [filteredEpisodes, setFilteredEpisodes] = useState<FullEpisodeInfo[]>([]);
   
+    useEffect(() => { setSearchInput(query) }, []);
     useEffect(() => {
       if (allPodcasts_.length) setAllEpisodes(convertPodcastsToEpisodes(allPodcasts_));
     }, [allPodcasts_]);
