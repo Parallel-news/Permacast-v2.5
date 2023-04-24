@@ -16,15 +16,13 @@ import ArConnect from "../../wallets/arconnect";
 import WalletSelectorButton from "../../wallets";
 
 
-export const dropdownItemFullFill = `w-full h-full flex `;
-
 export const LanguageDropdown: FC = () => {
   const items = LANGUAGES.map((l: LanguageOptionInterface) => ({
-    key: l.name, jsx: <LanguageButton {...{ className: dropdownItemFullFill, l }} />,
+    key: l.name, jsx: <LanguageButton {...{ className: `flexFill `, l }} />,
   }));
 
   const openMenuButton = <LanguageIcon className="h-5 w-5" aria-hidden="true" />;
-  const openMenuButtonClass = `rounded-lg min-w-min bg-zinc-900 justify-start ` + dropdownItemFullFill;
+  const openMenuButtonClass = `rounded-lg min-w-min bg-zinc-900 justify-start flexFill `;
   return <Dropdown {...{ openMenuButton, items, openMenuButtonClass, dropdownMenuClass, menuItemClass }} />;
 };
 
