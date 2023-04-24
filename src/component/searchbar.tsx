@@ -12,16 +12,20 @@ const Searchbar: FC = () => {
   const { t } = useTranslation();
   
   const router = useRouter();
-  const { pathname, asPath, query, locale } = router;
-  // router.push({ pathname, query }, asPath, { locale: newLocale })
 
   const [searchInput, setSearchInput] = useRecoilState(searchInputAtom); 
   
   const [inputFocused, setInputFocused] = useState(false);
+  const [debounceTimeout, setDebounceTimeout] = useState(null);
 
   const handleInput = (newInput: string) => {
     setSearchInput(newInput);
-    // router.push({ pathname: '/search', query: {} }, asPath, { locale: locale, shallow: false })
+    if (debounceTimeout) clearTimeout(debounceTimeout);
+    const newTimeout = setTimeout(() => {
+      router.push("/search", `/search/${newInput}`, { shallow: true });
+    }, 800);
+
+    setDebounceTimeout(newTimeout);
   };
 
   const handleFocus = () => setInputFocused(true);
