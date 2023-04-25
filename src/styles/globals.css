@@ -184,6 +184,39 @@ body::-webkit-scrollbar-thumb:hover {
   bottom: 0
 }
 
+
+@media screen and (max-width: 1280px) {
+  .shine {
+    font-size: 125px;;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .shine {
+    font-size: 90px;;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .shine {
+    font-size: 70px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .shine {
+    font-size: 60px;
+  }
+}
+
+@media screen and (max-width: 325px) {
+  #jumbotron {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+
 @keyframes gradient {
   0% {
     background-position: 0% 50%;
