@@ -231,6 +231,9 @@
 	"fullscreen": {
 		"episode": "Епізод"
 	},
+	"cropImage": {
+		"crop": "Обрізати"
+	},
 	"view": "Переглянути",
 	"share": {
 		"Checkthis": "Заціни",

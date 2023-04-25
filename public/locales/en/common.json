@@ -219,6 +219,9 @@
 	"fullscreen": {
 		"episode": "Episode"
 	},
+	"cropImage": {
+		"crop": "Crop"
+	},
 	"view": "View",
 	"textTruncate": {
 		"showMore": "Show More",

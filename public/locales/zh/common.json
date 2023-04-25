@@ -217,6 +217,9 @@
 	"fullscreen": {
 		"episode": "剧集"
 	},
+	"cropImage": {
+		"crop": "裁剪"
+	},
 	"view": "看法",
 	"share": {
 		"Checkthis": "看一下这个",
