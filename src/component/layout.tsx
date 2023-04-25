@@ -13,6 +13,7 @@ import Fullscreen from './fullscreen';
 import { isFullscreenAtom, isQueueVisibleAtom } from '../atoms/index';
 import { MINT_DURATION, TOAST_POSITION } from '../constants';
 import { Toaster } from 'react-hot-toast';
+import { InitialLoad } from './reusables/InitialLoad';
 
 interface LayoutInterface {
   children: ReactNode;
@@ -31,6 +32,7 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
 
   return (
     <div className={AppStyling} data-theme="permacast">
+      <InitialLoad />
       <div className={AppInnerStyling}>
         <Sidenav />
         {isQueueVisible && <EpisodeQueue />}
@@ -52,6 +54,7 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
           </div>
         </div>
       </div>
+      
     </div>
   );
 };
