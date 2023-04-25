@@ -4,6 +4,7 @@
 html, body {
   height: 100%;
   overflow-x: hidden;
+  background-color: #000;
 }
 
 @layer components {
@@ -79,17 +80,6 @@ html, body {
   }
 }
 
-/*
-.HideScollBar::-webkit-scrollbar {
-  display: none;
-}
-
-.HideScollBar {
-  -ms-overflow-style: none;
-  scrollbar-width: none; 
-}
-*/
-
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
   background-color: black;
@@ -143,35 +133,6 @@ body::-webkit-scrollbar-thumb:hover {
   background-color: #000;
 }
 
-/*
-.shine {
-  background-image: linear-gradient(100deg,
-      #A7226E,
-      #F7DB4F,
-      #A7226E,
-      #F7DB4F);
-  background-size: 400% 400%;
-  height: 100vh;
-  color: white;
-  font-family: 'Roboto', serif;
-  padding: 5px;
-  animation: gradient 20s ease infinite;
-}
-
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-}
-*/
 .shine {
   background-image: linear-gradient(100deg, #f7f5f6, #F7DB4F, #f7f5f6, #F7DB4F);
   background-size: 400% 400%;
