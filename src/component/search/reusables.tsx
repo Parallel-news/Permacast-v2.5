@@ -45,7 +45,7 @@ export default function SearchSet({ query }) {
       };
   
       fetchFiltered();
-    }, [searchInput]);
+    }, [searchInput, allPodcasts_, allEpisodes]);
 
     return (
         <div className={searchContainerStyling}>
