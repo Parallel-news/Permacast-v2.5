@@ -1,15 +1,17 @@
-import React, { useState, useEffect, FC } from "react";
-import { useTranslation } from "next-i18next";
-import { determinePodcastURL, fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
-import { arweaveTX, Podcast } from "../../interfaces/index";
-import Link from "next/link";
-import FeaturedPodcastPlayButton from "./featuredPodcastPlayButton";
 import Image from "next/image";
-import { ARSEED_URL, startId } from "../../constants";
+import Link from "next/link";
+import { useTranslation } from "next-i18next";
+import React, { useState, useEffect, FC } from "react";
+
+import { arweaveTX, Podcast } from "../../interfaces/index";
+import { showShikwasaPlayerArguments } from "../../interfaces/playback";
+
 import MarkdownRenderer from "../markdownRenderer";
+import FeaturedPodcastPlayButton from "./featuredPodcastPlayButton";
+import { ARSEED_URL, startId } from "../../constants";
 import { queryMarkdownByTX } from "../../utils/markdown";
 import { convertPodcastsToEpisodes } from "../../utils/filters";
-import { useRouter } from "next/router";
+import { determinePodcastURL, fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 
 
 
@@ -137,17 +139,22 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
       fetchColors();
       fetchMarkdown(description);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     };
-  }, []);
-
-  useEffect(() => {
-    queryMarkdownByTX(description).then(setMarkdownText);
-  }, []);
+  }, [podcastInfo]);
 
   const episodes = convertPodcastsToEpisodes([podcastInfo]);
   const episode = episodes.length ? episodes[0]: undefined
-  const playerInfo = { playerColorScheme: themeColor, buttonColor: themeColor, accentColor: textColor, title: episode?.episode?.episodeName, artist: author, cover, src: episode?.episode?.contentTx };
+  const playerInfo: showShikwasaPlayerArguments = {
+    playerColorScheme: themeColor,
+    openFullscreen: true,
+    buttonColor: themeColor,
+    accentColor: textColor,
+    title: episode?.episode?.episodeName,
+    artist: author,
+    cover,
+    src: episode?.episode?.contentTx
+  };
 
   const prevent = (event: any) => {
     event.preventDefault();

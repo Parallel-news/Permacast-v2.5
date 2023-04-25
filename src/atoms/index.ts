@@ -206,3 +206,13 @@ export const selectedWalletAtom = atom<availableWallets>({
     key: 'selectedWalletAtom',
     default: 'arconnect'
 });
+
+export const selectWalletModalVisibilityAtom = atom<boolean>({
+    key: 'selectWalletModalVisibilityAtom',
+    default: false
+});
+
+export const walletNotDetectedModalVisibilityAtom = atom<boolean>({
+    key: 'walletNotDetectedModalVisibilityAtom',
+    default: false
+});

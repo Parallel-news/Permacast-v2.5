@@ -249,7 +249,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     playerColorScheme: coverColor,
     buttonColor: textColor,
     accentColor: textColor,
-    openFullscreen,
+    openFullscreen: true,
     title: episodeName,
     artist,
     cover: coverUsed,

@@ -21,6 +21,10 @@ html, body {
     @apply flex items-center;
   }
 
+  .flexFill {
+    @apply flex w-full h-full;
+  }
+
   .flexCenterGap {
     @apply flex items-center gap-x-2;
   }

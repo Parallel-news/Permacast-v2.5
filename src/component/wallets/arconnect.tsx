@@ -7,7 +7,8 @@ import { useArconnect, shortenAddress } from 'react-arconnect';
 import { useRecoilState } from 'recoil';
 import { ArrowLeftOnRectangleIcon, BanknotesIcon, NewspaperIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 
-import { PASoMProfileAtom, arweaveAddress } from '../../atoms';
+import { PASoMProfileAtom, arweaveAddress, walletNotDetectedModalVisibilityAtom } from '../../atoms';
+
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
 import { ProfileImage } from '../creator/reusables';
 import { ANS_TEMPLATE } from '../../constants/ui';
@@ -29,12 +30,16 @@ export const ArConnectButtonStyling = `h-12 btn-base-color items-center flex px-
 export const ConnectArconnect: FC<{ className: string }> = ({ className }) => {
   const { t } = useTranslation();
 
+  const [walletNotDetectedModalVisibility, setWalletNotDetectedModalVisibility] = useRecoilState<boolean>(walletNotDetectedModalVisibilityAtom);
   const { arconnectConnect } = useArconnect();
 
-  const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
+  const connect = () => {
+    if (window?.arweaveWallet) arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
+    else setWalletNotDetectedModalVisibility(true);
+  };
 
   return (
-    <button 
+    <button
       className={className}
       onClick={connect}
     >
@@ -44,8 +49,8 @@ export const ConnectArconnect: FC<{ className: string }> = ({ className }) => {
 };
 
 
-const connectButtonStyling = `w-full h-12 hover:bg-zinc-700 bg-zinc-900 rounded-full items-center flex px-4 justify-center mx-auto default-no-outline-ringed default-animation z-0 `;
-const avatarStyling = `rounded-full h-6 w-6 overflow-hidden border-[2px] `;
+const connectButtonStyling = `w-full h-12 hover:bg-zinc-700 bg-zinc-900 rounded-full items-center flex px-1 justify-center mx-auto default-no-outline-ringed default-animation z-0 `;
+const avatarStyling = `rounded-full h-6 w-6 overflow-hidden border-[2px] min-w-min `;
 const iconSize = `w-6 h-6 `;
 
 const ArConnect: FC = () => {
@@ -131,7 +136,7 @@ const ArConnect: FC = () => {
 
   const UserDropdown: FC = () => {
     const openMenuButton = <OpenDropdownButton />;
-    const openMenuButtonClass = prevButtonClass + `rounded-full w-full `;
+    const openMenuButtonClass = prevButtonClass + `rounded-full w-full z-0 `;
     const dropdownMenuClass = prevMenuClass + ` w-72`;
     return <Dropdown {...{ openMenuButton, items, openMenuButtonClass, dropdownMenuClass, menuItemClass }} />;
   };

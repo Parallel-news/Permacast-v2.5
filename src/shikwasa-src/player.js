@@ -30,6 +30,7 @@ const addPassive = supportsPassive && isMobile
 
 function rehoistVideo (v) {
   const videoContainer = document.getElementById("video-player");
+  if (!videoContainer) return;
   videoContainer.innerHTML = '';
   videoContainer.appendChild(v);
 }
