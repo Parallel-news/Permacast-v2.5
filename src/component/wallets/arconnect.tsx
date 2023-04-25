@@ -131,7 +131,7 @@ const ArConnect: FC = () => {
 
   const UserDropdown: FC = () => {
     const openMenuButton = <OpenDropdownButton />;
-    const openMenuButtonClass = prevButtonClass + `rounded-full w-full `;
+    const openMenuButtonClass = prevButtonClass + `rounded-full w-full z-0 `;
     const dropdownMenuClass = prevMenuClass + ` w-72`;
     return <Dropdown {...{ openMenuButton, items, openMenuButtonClass, dropdownMenuClass, menuItemClass }} />;
   };
