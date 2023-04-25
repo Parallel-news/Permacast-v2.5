@@ -1,14 +1,14 @@
 import Head from 'next/head';
 import Script from 'next/script';
 import { appWithTranslation } from 'next-i18next';
-import React, { Suspense, startTransition, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { RecoilRoot } from 'recoil';
 import { ArconnectProvider } from 'react-arconnect';
-import localStorageObjectManager, { PODCAST_COVER_COLORS_MANAGER, PODCAST_DESCRIPTION_MANAGER } from '../utils/localstorage';
 import { PERMISSIONS } from '../constants/arconnect';
 import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import '../styles/globals.css';
+import { InitialLoad } from '../component/reusables/InitialLoad';
 
 const QueryPodcasts = React.lazy(() => import('../component/loaders/QueryPodcasts'));
 const QueryANS = React.lazy(() => import('../component/loaders/QueryANS'));
@@ -38,6 +38,7 @@ function App({ Component, pageProps }) {
         <meta property="og:url" content={`https://permacast.app/`} />
         <meta property="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
       </Head>
+        {/*
         <ArconnectProvider permissions={PERMISSIONS}>
           <QueryPodcasts />
           <QueryANS />
@@ -60,6 +61,8 @@ function App({ Component, pageProps }) {
             </Layout>
           </ShikwasaProviderLazy>
         </ArconnectProvider>
+        */}
+        <InitialLoad />
     </RecoilRoot>
   )
 }
