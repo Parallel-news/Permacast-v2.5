@@ -60,8 +60,8 @@ export const InitialLoad = () => {
                     enterFrom="opacity-0"
                     enterTo="opacity-100"
                 >
-                    <p className={`shine mb-2 md:mb-4`}>
-                        Permacast
+                    <p className={`shine mb-2 md:mb-4 font-mono`}>
+                        permacast
                     </p>
                 </Transition>
             </div> 
