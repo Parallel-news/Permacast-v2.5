@@ -44,8 +44,8 @@ export const ConnectArconnect: FC<{ className: string }> = ({ className }) => {
 };
 
 
-const connectButtonStyling = `w-full h-12 hover:bg-zinc-700 bg-zinc-900 rounded-full items-center flex px-4 justify-center mx-auto default-no-outline-ringed default-animation z-0 `;
-const avatarStyling = `rounded-full h-6 w-6 overflow-hidden border-[2px] `;
+const connectButtonStyling = `w-full h-12 hover:bg-zinc-700 bg-zinc-900 rounded-full items-center flex px-1 justify-center mx-auto default-no-outline-ringed default-animation z-0 `;
+const avatarStyling = `rounded-full h-6 w-6 overflow-hidden border-[2px] min-w-min `;
 const iconSize = `w-6 h-6 `;
 
 const ArConnect: FC = () => {
