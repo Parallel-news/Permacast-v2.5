@@ -8,7 +8,6 @@ import { PERMISSIONS } from '../constants/arconnect';
 import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import '../styles/globals.css';
-import { InitialLoad } from '../component/reusables/InitialLoad';
 
 const QueryPodcasts = React.lazy(() => import('../component/loaders/QueryPodcasts'));
 const QueryANS = React.lazy(() => import('../component/loaders/QueryANS'));
@@ -38,7 +37,7 @@ function App({ Component, pageProps }) {
         <meta property="og:url" content={`https://permacast.app/`} />
         <meta property="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
       </Head>
-        {/*
+
         <ArconnectProvider permissions={PERMISSIONS}>
           <QueryPodcasts />
           <QueryANS />
@@ -61,8 +60,8 @@ function App({ Component, pageProps }) {
             </Layout>
           </ShikwasaProviderLazy>
         </ArconnectProvider>
-        */}
-        <InitialLoad />
+
+        
     </RecoilRoot>
   )
 }

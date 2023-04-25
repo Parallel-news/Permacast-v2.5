@@ -26,8 +26,8 @@ export const InitialLoad = () => {
     // Zoom Out
     useEffect(() => {
         const timer = setTimeout(() => {
-            setIsShowing(true)
-        }, 4500);
+            setIsShowing(false)
+        }, 5500);
         return () => clearTimeout(timer);
     }, [])
 
@@ -41,7 +41,7 @@ export const InitialLoad = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
             >
-                <div className={`flex justify-center items-center space-x-4 md:space-x-10 h-screen relative mb-[30px]`} id="jumbotron" style={{ backgroundColor: color, transition: 'width 0.5s ease-out' }}>
+                <div className={`flex justify-center items-center space-x-4 md:space-x-10 h-screen relative mb-[30px] z-50`} id="jumbotron" style={{ backgroundColor: color, transition: 'width 0.5s ease-out' }}>
                 {!showLogo && (<div className="bg-black rounded-md w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[85px] md:h-[85px] lg:w-[110px] lg:h-[110px] xl:w-[140px] xl:h-[140px] "></div>)}
                 <Transition
                     show={showLogo}
