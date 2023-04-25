@@ -21,7 +21,8 @@
 		},
 		"modal": {
 			"choose": "选择要连接的钱包",
-			"not-detected": "未检测到"
+			"not-detected": "未检测到",
+			"download-wallet: ": "您可以在此处下载："
 		}
 	},
 	"home": {
@@ -216,6 +217,9 @@
 	},
 	"fullscreen": {
 		"episode": "剧集"
+	},
+	"cropImage": {
+		"crop": "裁剪"
 	},
 	"view": "看法",
 	"share": {

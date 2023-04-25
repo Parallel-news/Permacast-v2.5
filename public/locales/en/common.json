@@ -21,7 +21,8 @@
 		},
 		"modal": {
 			"choose": "Select which wallet to connect with",
-			"not-detected": "not detected"
+			"not-detected": "not detected",
+			"download-wallet": "You can download it here: "
 		}
 	},
 	"home": {
@@ -218,6 +219,9 @@
 	},
 	"fullscreen": {
 		"episode": "Episode"
+	},
+	"cropImage": {
+		"crop": "Crop"
 	},
 	"view": "View",
 	"textTruncate": {

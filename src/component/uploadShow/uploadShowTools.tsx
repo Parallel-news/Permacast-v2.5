@@ -11,7 +11,7 @@ import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { allFieldsFilled, byteSize, checkConnection, handleError, validateLabel} from "../../utils/reusables";
 import Everpay, { ChainType } from "everpay";
 import { useRecoilState } from "recoil";
-import { arweaveAddress } from "../../atoms";
+import { arweaveAddress, podcastColorAtom } from "../../atoms";
 
 import axios from "axios";
 import { useTranslation } from "next-i18next";
@@ -21,6 +21,7 @@ import toast from "react-hot-toast"
 import React from "react";
 import { VisibleInput } from "./reusables";
 import { PermaSpinner } from "../reusables";
+import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 
 const MarkDownToolTip = React.lazy(() => import("../reusables/tooltip").then(module => ({ default: module.MarkDownToolTip })));
 const CoverContainer = React.lazy(() => import("./reusables").then(module => ({ default: module.CoverContainer })));
@@ -96,9 +97,10 @@ export const ShowForm = (props: ShowFormInter) => {
     const { t } = useTranslation();
     const { address, ANS, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
-    const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
-    const [submittingShow, setSubmittingShow] = useState<boolean>(false)
-    const [uploadCost, setUploadCost] = useState<Number>(0)
+    const [arweaveAddress_, ] = useRecoilState(arweaveAddress);
+    const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
+    const [submittingShow, setSubmittingShow] = useState<boolean>(false);
+    const [uploadCost, setUploadCost] = useState<Number>(0);
     const router = useRouter();
 
     // inputs
@@ -133,7 +135,18 @@ export const ShowForm = (props: ShowFormInter) => {
         "lang": podcastLanguage_.length > 0,
         "cat": true, // default is 0 which always defaults to Arts
         "cover": podcastCover_ !== null
-    }
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!podcastCover_) return;
+            const dominantColor = await fetchDominantColor(podcastCover_, false, false);
+            if (dominantColor.error) return;
+            const [coverColor, _] = getCoverColorScheme(dominantColor.rgba);
+            setPodcastColor(coverColor);
+        };
+        fetchData();
+      }, [podcastCover_]);
 
     // Hook Calculating Upload Cost
     useEffect(() => {

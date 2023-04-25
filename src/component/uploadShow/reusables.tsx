@@ -321,6 +321,8 @@ export const VisibleInput = (props: VisibleInputInter) => {
 }
 
 export const CropScreen = (props: CropScreenInter) => {
+    const { t } = useTranslation();
+
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     return (
@@ -343,7 +345,7 @@ export const CropScreen = (props: CropScreenInter) => {
             onClick={props.onClickResp}
             >
             <p className={cropSelectionTextStyling}>
-                Crop Selection
+                {t("cropImage.crop")}
             </p>
             </div>
         </div>
