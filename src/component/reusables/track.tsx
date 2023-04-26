@@ -72,7 +72,7 @@ export interface TrackCreatorLinkProps {
   uploader: string;
   buttonStyles: ButtonStyle;
   coverColor: string;
-  author: string;
+  author?: string;
 };
 
 export interface TrackDescriptionProps {
