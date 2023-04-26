@@ -1,10 +1,12 @@
-import React, { FC } from 'react';
 import { useTranslation } from 'next-i18next';
-import Track from './reusables/track';
+import React, { FC } from 'react';
 import { useRecoilState } from 'recoil';
+import { PlusIcon } from '@heroicons/react/24/solid';
+
+import Track from './reusables/track';
+
 import { isQueueVisibleAtom, queueAtom } from '../atoms';
 import { FullEpisodeInfo } from '../interfaces';
-import { PlusIcon } from '@heroicons/react/24/solid';
 
 /**
  * Index
@@ -31,7 +33,7 @@ const crossStyling = "rotate-45 text-zinc-400 hover:text-white default-animation
 
 export const CrossIcon: FC<CrossIconProps> = ({ size, onClick }) => (
   <button onClick={onClick}>
-    <PlusIcon className={crossStyling} style={{width: size, height: size}} />
+    <PlusIcon className={crossStyling} style={{ width: size, height: size }} />
   </button>
 );
 
@@ -53,7 +55,7 @@ const EpisodeQueue: FC = () => {
     <div>
       {queue.map((episode: FullEpisodeInfo, index: number) => (
         <div key={index} className="mb-2 relative">
-          <Track {...{episode }} includePlayButton />
+          <Track {...{ episode }} includePlayButton />
         </div>
       )) || <p className="text-zinc-400">{t("queue.emptyqueue")}</p>}
     </div>

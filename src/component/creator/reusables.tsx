@@ -205,7 +205,7 @@ export const LatestEpisodes: FC<LatestEpisodesProps> = ({ episodes }) => {
       <div className="mt-6">
         {episodes.map((episode: FullEpisodeInfo, index: number) => (
           <div className="mb-4" key={index}>
-            <Track {...{ episode }} includeDescription includePlayButton />
+            <Track {...{ episode }} includeDescription includePlayButton includeContentType />
           </div>
         ))}
       </div>

@@ -81,7 +81,7 @@ export default function PodcastSet(props: podcastInter) {
                     {/*Episode Track*/}
                     {fullEpisodeInfo.map((episode: FullEpisodeInfo, index: number) => (
                         <div key={index}>
-                            <Track {...{ episode }} includeDescription includePlayButton />
+                            <Track {...{ episode }} includeDescription includePlayButton includeContentType />
                         </div>
                     )) || <Loading />}
                 </div>
