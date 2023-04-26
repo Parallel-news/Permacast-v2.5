@@ -27,7 +27,7 @@ export const InitialLoad = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsShowing(false)
-        }, 5500);
+        }, 2500);
         return () => clearTimeout(timer);
     }, [])
 
