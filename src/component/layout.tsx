@@ -14,15 +14,17 @@ import { isFullscreenAtom, isQueueVisibleAtom } from '../atoms/index';
 import { MINT_DURATION, TOAST_POSITION } from '../constants';
 import { Toaster } from 'react-hot-toast';
 import { InitialLoad } from './reusables/InitialLoad';
+import { DEFAULT_BACKGROUND_COLOR } from '../constants/ui';
 
 interface LayoutInterface {
   children: ReactNode;
 };
+
 //ml-0 lg:pr-8 pt-2 px-5 lg:pt-9
-export const AppStyling = "select-none h-full bg-black overflow-hidden";
+export const AppStyling = "select-none h-full overflow-hidden ";
 export const AppInnerStyling = "flex h-screen overflow-x-hidden relative";
 export const BackgroundWrapperStyling = "w-screen overflow-y-scroll overflow-x-hidden z-[1]";
-export const InnerLayoutStyling = "ml-0 md:ml-5 md:pr-8 pt-2 px-5 md:pt-8 z-[3]";
+export const InnerLayoutStyling = "ml-0 md:ml-2 md:pr-8 pt-2 px-5 md:pt-8 z-[3]";
 export const ParentStyling = "w-full overflow-hidden z-[3]";
 
 const Layout: FC<LayoutInterface> = ({ children }) => {
@@ -30,10 +32,12 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
   const [isFullscreen] = useRecoilState(isFullscreenAtom);
   const [isQueueVisible] = useRecoilState(isQueueVisibleAtom);
 
+  const backgroundColor = DEFAULT_BACKGROUND_COLOR;
+
   return (
     <div className={AppStyling} data-theme="permacast">
       <InitialLoad />
-      <div className={AppInnerStyling}>
+      <div className={AppInnerStyling} style={{backgroundColor}}>
         <Sidenav />
         {isQueueVisible && <EpisodeQueue />}
         {isFullscreen && <Fullscreen />}

@@ -27,7 +27,7 @@ export const Sidenav: FC = () => {
   // const isFeed = router.pathname === "feed";
 
   return (
-    <div className={SideNavStyling + "bg-black"}>
+    <div className={SideNavStyling}>
       <Link href="/" className={SIDENAV_BUTTON}>
         <Cooyub svgStyle={IconSizeStyling} rectStyle={IconSizeStyling} fill={currentThemeColor} />
       </Link>
