@@ -1,25 +1,32 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { FC, useState, useMemo, useEffect } from "react";
 import { useTranslation } from "next-i18next";
+import React, { FC, useState, useMemo, useEffect } from "react";
 import { shortenAddress } from "react-arconnect";
+import { useRecoilState } from "recoil";
+import { Tooltip } from "@nextui-org/react";
+import { MicrophoneIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 
-import { ANSMapped, arweaveTX, FullEpisodeInfo } from "../../interfaces";
-import { determinePodcastURL, fetchDominantColor, getButtonRGBs, getCoverColorScheme, RGBAstringToObject, RGBobjectToString, RGBstringToObject } from "../../utils/ui";
-import { useShikwasa } from "../../hooks";
-import { showShikwasaPlayerArguments } from "../../interfaces/playback";
 import PlayButton from "./playButton";
 import MarkdownRenderer from "../markdownRenderer";
-import { queryMarkdownByTX } from "../../utils/markdown";
-import { ARSEED_URL, ARWEAVE_READ_LINK, MESON_ENDPOINT, startId } from "../../constants";
-import { trimChars } from "../../utils/filters";
-import { flexCenter } from "../creator/featuredCreators";
+
 import { allANSUsersAtom } from "../../atoms";
-import { useRecoilState } from "recoil";
-import { MicrophoneIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
-import { Tooltip } from "@nextui-org/react";
-import { detectTimestampType, hasBeen10Min, reRoute } from "../../utils/reusables";
-import { useRouter } from "next/router";
+import { ARSEED_URL, MESON_ENDPOINT, startId } from "../../constants";
+import { ANSMapped, FullEpisodeInfo } from "../../interfaces";
+import { showShikwasaPlayerArguments } from "../../interfaces/playback";
+import { useShikwasa } from "../../hooks";
+import { queryMarkdownByTX } from "../../utils/markdown";
+import {
+  determinePodcastURL,
+  fetchDominantColor,
+  getButtonRGBs,
+  getCoverColorScheme,
+  RGBAstringToObject,
+  RGBobjectToString,
+  RGBstringToObject
+} from "../../utils/ui";
+import { trimChars } from "../../utils/filters";
+import { detectTimestampType, hasBeen10Min } from "../../utils/reusables";
 
 /**
  * Index
@@ -40,6 +47,7 @@ export interface TrackProps {
   openFullscreen?: boolean;
   includeDescription?: boolean,
   includePlayButton?: boolean,
+  includeContentType?: boolean,
 };
 
 export interface PodcastCoverProps {
@@ -80,6 +88,12 @@ export interface TrackPlayButtonProps {
   accentColor: string;
 };
 
+export interface TrackContentTypeIconProps {
+  includeContentType: boolean;
+  isVideo: boolean;
+  className: string;
+};
+
 // 2. Stylings
 
 export const trackFlexCenterYStyling = `flex items-center mt-1 `;
@@ -115,8 +129,6 @@ export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, ti
 };
 
 export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ podcastURL, eid, episodeName }) => {
-
-
   return (
     <Link
       href={`/episode/${podcastURL}/${trimChars(eid)}${startId}`}
@@ -150,6 +162,18 @@ export const TrackDescription: FC<TrackDescriptionProps> = ({ includeDescription
     </div>
   );
 };
+
+export const TrackContentTypeIcon: FC<TrackContentTypeIconProps> = ({ isVideo, className, includeContentType }) => {
+
+  const { t } = useTranslation();
+
+  if (includeContentType) return (
+    <Tooltip color="invert" content={t(isVideo ? "track.video" : "track.audio")}>
+      {isVideo ? <VideoCameraIcon {...{ className }} /> : <MicrophoneIcon {...{ className }} />}
+    </Tooltip>
+  );
+};
+
 
 export const TrackPlayButton: FC<TrackPlayButtonProps> = ({ playerInfo, episode, includePlayButton, buttonColor, accentColor }) => {
 
@@ -191,7 +215,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
 
   const { t } = useTranslation();
 
-  const { episode, openFullscreen, includeDescription, includePlayButton } = props;
+  const { episode, openFullscreen, includeDescription, includePlayButton, includeContentType } = props;
   const {
     cover,
     label,
@@ -258,7 +282,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
 
   const podcastURL = determinePodcastURL(label, pid);
   const isVideo = type.includes("video");
-  const className = 'w-4 h-4 hover:white zinc-600 mx-1'
+  const className = `w-4 h-4 hover:white zinc-600 mx-1 `;
 
   return (
     <div className={trackFlexCenterBothStyling}>
@@ -269,11 +293,9 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
             <EpisodeLinkableTitle {...{ podcastURL, eid, episodeName }} />
             <div className={trackFlexCenterYStyling}>
               <p className={trackByStyling}>{t("track.by")}</p>
-              <div className={`flex items-center `}>
+              <div className={`flexCenter `}>
                 <TrackCreatorLink {...{ uploader: artist, buttonStyles, coverColor, author }} />
-                <Tooltip color="invert" content={t(isVideo ? "track.video" : "track.audio")}>
-                  {isVideo ? <VideoCameraIcon {...{ className }} /> : <MicrophoneIcon {...{ className }} />}
-                </Tooltip>
+                <TrackContentTypeIcon {...{ isVideo, className, includeContentType }} />
               </div>
             </div>
           </div>
