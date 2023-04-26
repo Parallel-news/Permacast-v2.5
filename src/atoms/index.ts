@@ -216,3 +216,8 @@ export const walletNotDetectedModalVisibilityAtom = atom<boolean>({
     key: 'walletNotDetectedModalVisibilityAtom',
     default: false
 });
+
+export const firstRender = atom<boolean>({
+    key: 'firstRender',
+    default: false
+})

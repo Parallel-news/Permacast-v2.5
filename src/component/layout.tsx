@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from 'react';
+import React, { FC, ReactNode, useEffect } from 'react';
 
 import { useRecoilState } from 'recoil';
 
@@ -10,8 +10,8 @@ import Background from './background';
 import EpisodeQueue from './episodeQueue';
 import Fullscreen from './fullscreen';
 
-import { isFullscreenAtom, isQueueVisibleAtom } from '../atoms/index';
-import { MINT_DURATION, TOAST_POSITION } from '../constants';
+import { firstRender, isFullscreenAtom, isQueueVisibleAtom } from '../atoms/index';
+import { FADE_WAIT, MINT_DURATION, TOAST_POSITION } from '../constants';
 import { Toaster } from 'react-hot-toast';
 import { InitialLoad } from './reusables/InitialLoad';
 import { DEFAULT_BACKGROUND_COLOR } from '../constants/ui';
@@ -31,12 +31,22 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
 
   const [isFullscreen] = useRecoilState(isFullscreenAtom);
   const [isQueueVisible] = useRecoilState(isQueueVisibleAtom);
+  const [_firstRender, _setFirstRender] = useRecoilState(firstRender)
+
+  useEffect(() => {
+    if(!_firstRender) {
+      //set the timeout 
+      const timer = setTimeout(() =>{_setFirstRender(true); console.log("O RENDERED");}, FADE_WAIT+1000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [])
 
   const backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
   return (
     <div className={AppStyling} data-theme="permacast">
-      <InitialLoad />
+      {!_firstRender && (<InitialLoad />)}
       <div className={AppInnerStyling} style={{backgroundColor}}>
         <Sidenav />
         {isQueueVisible && <EpisodeQueue />}

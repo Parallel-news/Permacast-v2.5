@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import Script from 'next/script';
 import { appWithTranslation } from 'next-i18next';
-import React, { useState } from 'react';
-import { RecoilRoot } from 'recoil';
+import React, { useEffect, useState } from 'react';
+import { RecoilRoot, useRecoilState } from 'recoil';
 import { ArconnectProvider } from 'react-arconnect';
 import { PERMISSIONS } from '../constants/arconnect';
 import '../shikwasa-src/css/base.css';
