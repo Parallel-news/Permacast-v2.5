@@ -18,6 +18,10 @@ const ShikwasaProviderLazy = React.lazy(() => import('../hooks').then(module => 
 
 function App({ Component, pageProps }) {
 
+  //app loaded
+  //useEffect appLoaded
+  //
+
   return (
     <RecoilRoot>
       <Head>

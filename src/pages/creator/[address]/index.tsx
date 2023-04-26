@@ -66,14 +66,10 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) return <Creator404 address={userInfo?.user || ''} />
 
   const { user, nickname, currentLabel, address_color, bio, avatar } = userInfo;
-
   const [PASoMProfile, setPASoMProfile] = useState<PASoMProfile | undefined>();
-
   const creatorName = nickname || currentLabel || shortenAddress(user);
-
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [episodes, setEpisodes] = useState<FullEpisodeInfo[]>([]);
-
   const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
   const [allPodcasts_, setAllPodcasts_] = useRecoilState(allPodcasts);
 

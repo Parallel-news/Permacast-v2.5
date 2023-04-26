@@ -93,7 +93,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [userModalIsOpen, setUserModalIsOpen] = useState<boolean>(false);
 
-  useEffect(() => {setUserBannerImage(banner)}, [banner]);
+  //useEffect(() => {setUserBannerImage(banner)}, [banner]);
   useEffect(() => {
     const isFollowing = PASoMProfile?.followers?.includes(address);
     setIsFollowing(isFollowing);
