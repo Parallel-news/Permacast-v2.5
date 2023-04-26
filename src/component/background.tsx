@@ -2,9 +2,11 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, ReactNode } from "react";
 import { useRecoilState } from "recoil";
+
 import { backgroundColorAtom, currentThemeColorAtom, podcastColorAtom, userBannerImageAtom } from '../atoms/index';
 import { dimColorString } from "../utils/ui";
 import { ARSEED_URL } from "../constants";
+import { DEFAULT_BACKGROUND_COLOR } from "../constants/ui";
 
 interface BackgroundInterface {
   children?: ReactNode;
@@ -41,14 +43,14 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
   }, [pathname, podcastColor, userBannerImage]);
 
 
-  const styles = {backgroundImage: `linear-gradient(transparent, black, black)`};
+  const styles = { backgroundImage: `linear-gradient(transparent, ${DEFAULT_BACKGROUND_COLOR}, ${DEFAULT_BACKGROUND_COLOR})` };
 
   return (
-    <div className="w-screen h-3/4 absolute overflow-hidden default-animation-slow pointer-events-none" style={{backgroundColor: backgroundColor, zIndex: -1}}>
+    <div className="w-screen h-3/4 absolute overflow-hidden default-animation-slow pointer-events-none" style={{ backgroundColor: backgroundColor, zIndex: -1 }}>
       {userBannerImage && (
         <div className="absolute">
           <Image src={ARSEED_URL + userBannerImage} width={1350} height={450} alt="Profile banner" className="opacity-40 w-screen md:w-[93.5vw] h-[180px] md:h-[30vw]" />
-          <div className="absolute w-full h-full z-[1] top-0" style={{backgroundImage: `linear-gradient(transparent, transparent, transparent, transparent, transparent, black)`}}></div>
+          <div className="absolute w-full h-full z-[1] top-0" style={{ backgroundImage: `linear-gradient(transparent, transparent, transparent, transparent, transparent, black)` }}></div>
         </div>
       )}
       <div className="w-full h-full z-[1]" style={styles}></div>

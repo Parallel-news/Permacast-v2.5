@@ -132,7 +132,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
                 <div className="grid grid-rows-3 gap-y-4 text-zinc-100">
                   {latestEpisodes.map((episode: FullEpisodeInfo, index: number) => (
                     <div key={index}>
-                      <Track {...{ episode }} openFullscreen includeDescription includePlayButton />
+                      <Track {...{ episode }} openFullscreen includeDescription includePlayButton includeContentType />
                     </div>
                   ))}
                 </div>

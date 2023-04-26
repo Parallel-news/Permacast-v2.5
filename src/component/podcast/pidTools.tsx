@@ -30,29 +30,43 @@ export const podcastInfoTitleDivStyling = "flex flex-col ml-0 m-0 mr-[64px]"
 
 //4. Custom Components
 export const PodcastBanner = (props: PodcastBannerInter) => {
+    const {
+        imgSrc,
+        title,
+        description,
+        color,
+        podcastOwner,
+        podcastId,
+        setLoadShareModal,
+        setLoadTipModal,
+        playButton
+    } = props;
+
     return (
         <div className={podcastBannerStyling}>
             <PodcastInfo 
-                imgSrc={props.imgSrc}
-                title={props.title}
-                description={props.description}
-                color={props.color}
+                owner={podcastOwner}
+                imgSrc={imgSrc}
+                title={title}
+                description={description}
+                color={color}
             />
             <PodcastInfoMobile 
-                imgSrc={props.imgSrc}
-                title={props.title}
-                description={props.description}
-                color={props.color}
+                owner={podcastOwner}
+                imgSrc={imgSrc}
+                title={title}
+                description={description}
+                color={color}
             />
 
             <PodcastButtons 
-                color={props.color}
-                setLoadTipModal={props.setLoadTipModal}
-                podcastId={props.podcastId}
-                podcastOwner={props.podcastOwner}
-                setLoadShareModal={props.setLoadShareModal}
-                playButton={props.playButton}
+                color={color}
+                setLoadTipModal={setLoadTipModal}
+                podcastId={podcastId}
+                podcastOwner={podcastOwner}
+                setLoadShareModal={setLoadShareModal}
+                playButton={playButton}
             />
         </div>
-    )
-}
+    );
+};

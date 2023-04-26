@@ -316,7 +316,7 @@ export const Episodes = (props: EpisodesInter) => {
             {/*Loop Episodes*/}
             {episodeList.length > 0 ?
                 episodeList.map((episode: FullEpisodeInfo, index) => (
-                    <Track {...{ episode }} includeDescription includePlayButton />
+                    <Track {...{ episode }} includeDescription includePlayButton includeContentType />
                 ))
             :
                 <p className="text-neutral-400">None to Show.</p>
