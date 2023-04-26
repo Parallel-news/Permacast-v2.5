@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import Script from 'next/script';
 import { appWithTranslation } from 'next-i18next';
-import React, { useEffect, useState } from 'react';
-import { RecoilRoot, useRecoilState } from 'recoil';
+import React from 'react';
+import { RecoilRoot } from 'recoil';
 import { ArconnectProvider } from 'react-arconnect';
 import { PERMISSIONS } from '../constants/arconnect';
 import '../shikwasa-src/css/base.css';
@@ -17,8 +17,6 @@ const ShikwasaProviderLazy = React.lazy(() => import('../hooks').then(module => 
 // fetch data in _app.tsx -> populate recoil -> re-write search to query from that recoil state, if it fails then fuse.js
 
 function App({ Component, pageProps }) {
-
-  const [appIsLoaded, setAppIsLoaded] = useState<boolean>(false)
 
   return (
     <RecoilRoot>
@@ -37,7 +35,6 @@ function App({ Component, pageProps }) {
         <meta property="og:url" content={`https://permacast.app/`} />
         <meta property="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
       </Head>
-
         <ArconnectProvider permissions={PERMISSIONS}>
           <QueryPodcasts />
           <QueryANS />
@@ -60,8 +57,6 @@ function App({ Component, pageProps }) {
             </Layout>
           </ShikwasaProviderLazy>
         </ArconnectProvider>
-
-        
     </RecoilRoot>
   )
 }

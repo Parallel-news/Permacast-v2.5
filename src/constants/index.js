@@ -143,6 +143,6 @@ export const NO_SHOW = "Unable to fetch shows. Refresh and try again."
 export const startId = "#start"
 
 //Initial Load
-export const TITLE_WAIT = 500
-export const LOGO_WAIT = 1000
-export const FADE_WAIT = 2500
+export const TITLE_WAIT = 100
+export const LOGO_WAIT = 700
+export const FADE_WAIT = 4500
