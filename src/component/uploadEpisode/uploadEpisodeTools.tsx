@@ -253,9 +253,6 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         setTimeout(async function () {
             setProgress(100)
             const result = await axios.post('/api/exm/write', createEpPayload);
-            console.log("PAYLOAD: ", epPayload)
-            console.log("exm res: ", result)
-            setSubmittingEp(false)
             //EXM call, set timeout, then redirect. 
             toast.dismiss(toastSaving);
             toast.success(t("success.episodeUploaded"), {style: TOAST_DARK, className:TOAST_MARGIN})

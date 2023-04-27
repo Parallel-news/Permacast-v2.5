@@ -264,7 +264,6 @@ export const ShowForm = (props: ShowFormInter) => {
         setTimeout(async function () {
             setProgress(100)
             await axios.post('/api/exm/write', createShowPayload);
-            setSubmittingShow(false)
             //EXM call, set timeout, then redirect.
             toast.dismiss(toastSaving); 
             toast.success(t("success.showUploaded"), {style: TOAST_DARK})
