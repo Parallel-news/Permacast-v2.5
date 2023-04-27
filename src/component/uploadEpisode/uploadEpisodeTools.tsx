@@ -251,11 +251,11 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         setProgress(props.edit ? 75 : 82)
         // EXM REDIRECT AND ERROR HANDLING NEEDED
         setTimeout(async function () {
-            setProgress(100)
             const result = await axios.post('/api/exm/write', createEpPayload);
             //EXM call, set timeout, then redirect. 
             toast.dismiss(toastSaving);
             toast.success(t("success.episodeUploaded"), {style: TOAST_DARK, className:TOAST_MARGIN})
+            setProgress(100)
             setTimeout(async function () {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
                 const { locale } = router;

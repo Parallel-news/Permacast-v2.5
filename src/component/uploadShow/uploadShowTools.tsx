@@ -262,10 +262,10 @@ export const ShowForm = (props: ShowFormInter) => {
         const toastSaving = toast.loading(t("loadingToast.savingChain"), {style: TOAST_DARK, duration: 10000000});
         setProgress(props.edit ? 80: 75)
         setTimeout(async function () {
-            setProgress(100)
             await axios.post('/api/exm/write', createShowPayload);
             //EXM call, set timeout, then redirect.
             toast.dismiss(toastSaving); 
+            setProgress(100)
             toast.success(t("success.showUploaded"), {style: TOAST_DARK})
             setTimeout(async function () {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
