@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { Ans, Episode, FullEpisodeInfo, Podcast } from '../../../interfaces';
 import { hexToRGB, RGBobjectToString } from '../../../utils/ui';
-import { allPodcasts, podcastColorAtom } from '../../../atoms';
+import { allPodcasts, loadingPage, podcastColorAtom } from '../../../atoms';
 import { Creator404, sortByDate } from '../../../component/creator';
 import { ANS_TEMPLATE } from '../../../constants/ui';
 import { ARWEAVE_READ_LINK } from '../../../constants';
@@ -72,6 +72,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   const [episodes, setEpisodes] = useState<FullEpisodeInfo[]>([]);
   const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
   const [allPodcasts_, setAllPodcasts_] = useRecoilState(allPodcasts);
+  const [, _setLoadingPage] = useRecoilState(loadingPage)
 
   useEffect(() => {
     if (!userInfo) return;
@@ -104,6 +105,10 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
     };
     fetchUserData();
   }, [allPodcasts_, userInfo]);
+
+  useEffect(() => {
+    _setLoadingPage(false)
+  }, [])
 
   const creator = {
     ...userInfo,

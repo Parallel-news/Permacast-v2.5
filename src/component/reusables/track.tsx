@@ -147,11 +147,13 @@ export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ podcastURL
 };
 
 export const TrackCreatorLink: FC<TrackCreatorLinkProps> = ({ uploader, buttonStyles, coverColor, author }) => {
+  const [, _setLoadingPage] = useRecoilState(loadingPage)
   return (
     <Link
       href={`/creator/${uploader}`}
       style={buttonStyles}
       className={trackBackgroundColorStyling}
+      onClick={() => _setLoadingPage(true)}
     >
       <div
         className="h-2.5 w-2.5 rounded-full"
