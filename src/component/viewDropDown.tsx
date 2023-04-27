@@ -40,10 +40,15 @@ const ViewDropDown: FC = () => {
   ];
 
   const openMenuButton = <Bars3BottomRightIcon className="h-5 w-5" aria-hidden="true" />;
-  const openMenuButtonClass = `rounded-lg min-w-min bg-zinc-900 justify-start `;
-  const dropdownMenuClass = dropdownClassPrev + `text-sm w-96 `;
+  const openMenuButtonClass = `rounded-lg min-w-min bg-zinc-900 justify-start`;
+  const dropdownMenuClass = dropdownClassPrev + ` text-sm`; 
+  const position = "start"
 
-  return <Dropdown {...{ openMenuButton, items, openMenuButtonClass, dropdownMenuClass, menuItemClass }} />;
+  return (
+    <div id="sharp">
+      <Dropdown {...{ openMenuButton, items, openMenuButtonClass, dropdownMenuClass, menuItemClass, position } } />
+    </div>
+  )
 };
 
 export default ViewDropDown;

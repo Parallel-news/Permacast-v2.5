@@ -13,9 +13,9 @@ export default function LoadingLogo() {
             enter="transform transition duration-[400ms]"
             enterFrom="opacity-0 rotate-[-120deg] scale-50"
             enterTo="opacity-100 rotate-0 scale-100"
-            leave="transform transition duration-[400ms]"
+            leave="transform transition duration-[200ms]"
             leaveFrom="opacity-100 rotate-0 scale-100"
-            leaveTo="opacity-75 rotate-[120deg] scale-50"
+            leaveTo="opacity-75 rotate-[120deg] scale-75"
             className=""
         >
             <div 
