@@ -112,8 +112,6 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
     return buttonsArray;
   };
 
-  // const UserActions: FC = () => (<Dropdown items={Items()} />);
-
   return (
     <div className={CreatorPageStyling}>
       <CreatorTipModal {...tipModalArgs} />

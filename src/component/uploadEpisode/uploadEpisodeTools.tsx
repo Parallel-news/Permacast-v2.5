@@ -17,6 +17,7 @@ import { ValMsg } from '../reusables/formTools';
 import { PermaSpinner } from '../reusables/PermaSpinner';
 import { VisibleInput } from '../uploadShow/reusables';
 import { createFileFromBlobUrl } from '../../utils/fileTools';
+import ProgressBar from '../reusables/progressBar';
 
 const CoverContainer = React.lazy(() => import('../uploadShow/reusables').then(module => ({ default: module.CoverContainer })));
 
@@ -65,6 +66,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     const [epDesc, setEpDesc] = useState<string>("")
     const [epMedia, setEpMedia] = useState(null)
     const [epThumbnail, setEpThumbnail] = useState(null)
+    const [progress, setProgress] = useState(0)
 
     //For Edits
     const [epThumbnailUrl, setEpThumbnailUrl] = useState(null)
@@ -193,6 +195,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
 
         // Description to Arseeding
         const toastDesc = toast.loading(t("loadingToast.savingDesc"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
+        setProgress(props.edit ? 25 : 16)
         try {
             const description = await upload2DMedia(epDesc); epPayload["desc"] = description?.order?.itemId
             toast.dismiss(toastDesc); 
@@ -204,6 +207,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         // Thumbnail to Arseeding
         if(epThumbnail) {
             const toastCover = toast.loading(t("loadingToast.savingCover"), {style: TOAST_DARK, duration: 10000000});
+            setProgress(props.edit ? 50 : 32)
             try {
                 const convertedCover = await createFileFromBlobUrl(epThumbnail, "thumbnail.txt")
                 const cover = await upload3DMedia(convertedCover, convertedCover.type); epPayload["thumbnail"] = cover?.order?.itemId
@@ -217,6 +221,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         // Media to Arseeding
         if(!props.edit) {
             const toastCover = toast.loading(t("loadingToast.savingMedia"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
+            setProgress(48)
             try {
                 const media = await upload3DMedia(epMedia, epMedia.type); epPayload["content"] = media?.order?.itemId
                 epPayload["mimeType"] = determineMediaType(epMedia.type)
@@ -231,6 +236,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         // Pay Upload Fee
         if(!props.edit) {
             const toastFee = toast.loading(t("loadingToast.payingFee"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
+            setProgress(66)
             try {
                 const tx = await transferFunds("UPLOAD_EPISODE_FEE", EPISODE_UPLOAD_FEE, EVERPAY_EOA, address)
                 //@ts-ignore - refusing to acknowledge everHash
@@ -242,8 +248,10 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             }
         }
         const toastSaving = toast.loading(t("loadingToast.savingChain"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
+        setProgress(props.edit ? 75 : 82)
         // EXM REDIRECT AND ERROR HANDLING NEEDED
         setTimeout(async function () {
+            setProgress(100)
             const result = await axios.post('/api/exm/write', createEpPayload);
             console.log("PAYLOAD: ", epPayload)
             console.log("exm res: ", result)
@@ -316,11 +324,9 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                 />
                 )}
                 {address && address.length > 0 && submittingEp && (
-                <PermaSpinner 
-                    spinnerColor={SPINNER_COLOR}
-                    size={10}
-                    divClass={spinnerClass}
-                />
+                    <ProgressBar
+                        value={progress}
+                    />
                 )}
                 {!address && (
                     <ConnectButton 
