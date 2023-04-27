@@ -20,7 +20,6 @@ function App({ Component, pageProps }) {
 
   //app loaded
   //useEffect appLoaded
-  //
 
   return (
     <RecoilRoot>

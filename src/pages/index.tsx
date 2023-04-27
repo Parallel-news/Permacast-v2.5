@@ -10,6 +10,7 @@ import { Episode, EXMState, FeaturedChannel, FullEpisodeInfo, Podcast } from '..
 import { getContractVariables, getFeaturedChannelsContract, getPASOMContract } from '../utils/contract';
 import { findPodcast } from '../utils/filters';
 import { featuredPocastCarouselStyling } from '../component/home/featuredPodcast';
+import LoadingLogo from '../component/reusables/LoadingLogo';
 
 
 const GetFeatured = React.lazy(() => import('../component/home/getFeatured'))
@@ -108,6 +109,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
             <div className="text-teal-300 flex gap-x-1">EXM Main Address: <p className="underline font-medium">{contractAddress}</p></div>
             <div className="text-indigo-300 flex gap-x-1">EXM Feature Channel Address: <p className="underline font-medium">{featuredContractAddress}</p></div>
             <div>(PRODUCTION) PASoM Contract Address: {PASoMContractAddress}</div>
+            
           </div>
         }
         {podcasts_.length > 0 ? (

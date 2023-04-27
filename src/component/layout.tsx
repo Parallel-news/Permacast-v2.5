@@ -9,6 +9,7 @@ import { FADE_WAIT, MINT_DURATION, TOAST_POSITION } from '../constants';
 import { Toaster } from 'react-hot-toast';
 import { InitialLoad } from './reusables/InitialLoad';
 import { DEFAULT_BACKGROUND_COLOR } from '../constants/ui';
+import LoadingLogo from './reusables/LoadingLogo';
 
 interface LayoutInterface {
   children: ReactNode;
@@ -57,6 +58,9 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
               {children}
             </div>
           </div>
+        </div>
+        <div className='absolute bottom-[25px] right-[35px] z-50'>
+          <LoadingLogo /> 
         </div>
       </div>
     </div>
