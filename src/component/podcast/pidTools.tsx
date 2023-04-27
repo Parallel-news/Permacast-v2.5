@@ -1,4 +1,5 @@
 import React from "react";
+import { Podcast } from "../../interfaces";
 
 const PodcastButtons = React.lazy(() => import("./reusables").then(module => ({ default: module.PodcastButtons })));
 const PodcastInfo = React.lazy(() => import("./reusables").then(module => ({ default: module.PodcastInfo })));
@@ -6,6 +7,7 @@ const PodcastInfoMobile = React.lazy(() => import("./reusables").then(module => 
 
 // 1. Interfaces
 export interface PodcastBannerInter  {
+    podcast?: Podcast;
     color: string;
     setLoadTipModal: (v: any) => void;
     setLoadShareModal: (v: any) => void;
@@ -31,6 +33,7 @@ export const podcastInfoTitleDivStyling = "flex flex-col ml-0 m-0 mr-[64px]"
 //4. Custom Components
 export const PodcastBanner = (props: PodcastBannerInter) => {
     const {
+        podcast,
         imgSrc,
         title,
         description,
@@ -45,6 +48,7 @@ export const PodcastBanner = (props: PodcastBannerInter) => {
     return (
         <div className={podcastBannerStyling}>
             <PodcastInfo 
+                podcast={podcast}
                 owner={podcastOwner}
                 imgSrc={imgSrc}
                 title={title}
