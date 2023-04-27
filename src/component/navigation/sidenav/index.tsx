@@ -30,10 +30,10 @@ export const Sidenav: FC = () => {
 
   return (
     <div className={SideNavStyling}>
-      <Link href="/" className={SIDENAV_BUTTON} onClick={engageLoading}>
+      <Link href="/" className={SIDENAV_BUTTON} onClick={isHome ? ()=>"" : engageLoading}>
         <Cooyub svgStyle={IconSizeStyling} rectStyle={IconSizeStyling} fill={currentThemeColor} />
       </Link>
-      <NavButton url="/" condition={isHome} icon={<HomeIcon onClick={engageLoading} />}  />
+      <NavButton url="/" condition={isHome} icon={<HomeIcon onClick={isHome ? ()=>"" : engageLoading} />}  />
       <NavButton url="/feed" condition={isViewPodcasts} icon={<RectangleStackIcon className={IconSizeStyling} onClick={engageLoading} />} />
       {/* TODO: re-use the dropdown from mobile view */}
       <LanguageDropdown />
