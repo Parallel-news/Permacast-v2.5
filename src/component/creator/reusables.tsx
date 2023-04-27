@@ -9,7 +9,7 @@ import { PASoMProfile } from '../../interfaces/pasom';
 import { FullEpisodeInfo, Podcast } from '../../interfaces';
 import { ARSEED_URL } from '../../constants';
 import { dimColorString, hexToRGB, isTooLight } from '../../utils/ui';
-import { currentThemeColorAtom } from '../../atoms';
+import { currentThemeColorAtom, loadingPage } from '../../atoms';
 import { hoverableLinkButtonStyling } from '../reusables/themedButton';
 
 const Verification = React.lazy(() => import('../reusables/Verification'))
@@ -115,6 +115,7 @@ export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, addr
   const imageSize = size || 120;
   const squaredOuterBorderRadius = squared ? '12px' : '999px';
   const squaredInnerBorderRadius = squared ? '8px' : '999px';
+  const [,_setLoadingPage] = useRecoilState(loadingPage)
 
   return (
     <Link
@@ -122,6 +123,7 @@ export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, addr
       style={{ borderColor: borderColor, borderWidth: borderWidth || '4px', borderRadius: squaredOuterBorderRadius }}
       tabIndex={unclickable ? -1 : 0}
       className="default-no-outline-ringed default-animation"
+      onClick={() => _setLoadingPage(true)}
     >
       {avatar && <Image width={imageSize} height={imageSize} alt={avatar} src={ARSEED_URL + avatar} className="object-fit aspect-square rounded-full" />}
       {!avatar && (
