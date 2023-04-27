@@ -10,7 +10,7 @@ import { MicrophoneIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 import PlayButton from "./playButton";
 import MarkdownRenderer from "../markdownRenderer";
 
-import { allANSUsersAtom } from "../../atoms";
+import { allANSUsersAtom, loadingPage } from "../../atoms";
 import { ARSEED_URL, MESON_ENDPOINT, startId } from "../../constants";
 import { ANSMapped, FullEpisodeInfo } from "../../interfaces";
 import { showShikwasaPlayerArguments } from "../../interfaces/playback";
@@ -115,8 +115,13 @@ export const trackPodcastInfoContainer = "flex flex-row md:items-center w-full m
 // 4. Reusable Components
 
 export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, timestamp }) => {
+  const [, _setLoadingPage] = useRecoilState(loadingPage)
   if (cover) return (
-    <Link href={`/podcast/${podcastURL}`} className={`w-14 h-14 shrink-0`}>
+    <Link 
+      href={`/podcast/${podcastURL}`} 
+      className={`w-14 h-14 shrink-0`} 
+      onClick={() => _setLoadingPage(true)}
+    >
       <Image
         width={56}
         height={56}
