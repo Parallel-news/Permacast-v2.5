@@ -144,11 +144,11 @@ export const BasicLoaderSpinner: FC = () => (
     divClass={spinnerClass}
   />
 );
-
+//{loading && <BasicLoaderSpinner className="w-full p-4" />}
 export const LinkWithProgress: FC<LinkWithProgressProps> = ({ loading, onClick, href, hrefText }) => (
-  <div>
-    {loading && <BasicLoaderSpinner />}
-    {!loading && <Link {...{ href, onClick }}>{hrefText}</Link>}
+  <div className="m-0 p-0">
+    
+    {<Link {...{ href, onClick }} className="w-full p-4">{hrefText}</Link>}
   </div>
 );
 
@@ -160,6 +160,8 @@ export const UploadDropdown: FC<UploadDropdownProps> = ({ routeMatches }) => {
   const [podcastClickLoad, setPodcastClickLoad] = useState<boolean>(false)
   const [episodeClickLoad, setEpisodeClickLoad] = useState<boolean>(false)
   const [,_setLoadingPage] = useRecoilState(loadingPage)
+  const isUploadPodcast = router.pathname === "/upload-podcast"
+  const isUploadEpisode = router.pathname === "/upload-episode"
 
   const clickSwitch = (type: string) => {
     if(!podcastClickLoad && !episodeClickLoad) {
@@ -183,11 +185,11 @@ export const UploadDropdown: FC<UploadDropdownProps> = ({ routeMatches }) => {
 
   const switchToPodcast = () => {
     clickSwitch("podcast");
-    _setLoadingPage(true)
+    if(!isUploadPodcast) _setLoadingPage(true)
   }
   const switchToEpisode = () => {
     clickSwitch("episode");
-    _setLoadingPage(true)
+    if(!isUploadEpisode) _setLoadingPage(true)
   }
 
   const routeIsMatchingClassName = routeMatches ? SIDENAV_BUTTON + " w-9 hover:text-white ": SIDENAV_BUTTON_BASE + " hover:text-zinc-100";

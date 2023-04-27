@@ -43,8 +43,8 @@
 		"episodes": "Episodes",
 		"recentlyadded": "Recently added",
 		"featuredcreators": "Featured creators",
-		"add-podcast": "Add podcast",
-		"add-episode": "Add episode"
+		"add-podcast": "Add Podcast",
+		"add-episode": "Add Episode"
   },
 	"search" : {
 		"placeholder": "Search for a podcast",

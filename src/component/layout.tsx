@@ -35,7 +35,7 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
   // First Render?
   useEffect(() => {
     if(!_firstRender) {
-      const timer = setTimeout(() =>{_setFirstRender(true); console.log("O RENDERED");}, FADE_WAIT+1000);
+      const timer = setTimeout(() =>{_setFirstRender(true);}, FADE_WAIT+1000);
       return () => clearTimeout(timer);
     }
   }, [])
