@@ -7,7 +7,7 @@ import { useArconnect, shortenAddress } from 'react-arconnect';
 import { useRecoilState } from 'recoil';
 import { ArrowLeftOnRectangleIcon, BanknotesIcon, NewspaperIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 
-import { PASoMProfileAtom, arweaveAddress, walletNotDetectedModalVisibilityAtom } from '../../atoms';
+import { PASoMProfileAtom, arweaveAddress, loadingPage, walletNotDetectedModalVisibilityAtom } from '../../atoms';
 
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
 import { ProfileImage } from '../creator/reusables';
@@ -95,12 +95,18 @@ const ArConnect: FC = () => {
     </a>
   );
 
-  const Profile: FC = () => (
-    <Link href={`/creator/` + ANS?.currentLabel || address} className={`flexFullCenterGap `}>
-      <UserCircleIcon className={iconSize} />
-      {t("wallet.arconnect.profile")}
-    </Link>
-  );
+  const Profile: FC = () => {
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
+    return (
+      <Link 
+        href={`/creator/` + ANS?.currentLabel || address} 
+        className={`flexFullCenterGap `}
+        onClick={() => _setLoadingPage(true)}
+      >
+        <UserCircleIcon className={iconSize} />
+        {t("wallet.arconnect.profile")}
+      </Link>
+  )};
 
   const Arpage: FC = () => (
     <a {...{ target, rel }} href={`https://${ANS?.currentLabel}.ar.page`} className={`flexFullCenterGap `}>
