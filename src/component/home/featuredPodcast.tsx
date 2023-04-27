@@ -175,11 +175,11 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
       style={{ backgroundColor: themeColor }}
       onClick={() => {
         window.scrollTo(0, 0)
-        _setLoadingPage(true)
+        
       }}
     >
       <div className={podcastInnerBackgroundStyling}>
-        <div>
+        <div onClick={() => _setLoadingPage(true)}>
           <EpisodeCount count={episodes.length} textColor={textColor} />
           <PocastCover podcastName={podcastName} cover={cover} />
         </div>
@@ -187,7 +187,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
           <div onClick={prevent}>
             <FeaturedPodcastPlayButton {...{ playerInfo, podcastInfo, episodes }} />
           </div>
-          <div className="ml-3 w-full" style={{color: textColor}}>
+          <div className="ml-3 w-full cursor-default" style={{color: textColor}}>
             <PodcastName podcastName={podcastName} />
             <PodcastDescription podcastDescription={markdownText} />
           </div>

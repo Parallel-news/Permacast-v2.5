@@ -10,6 +10,7 @@ import { Toaster } from 'react-hot-toast';
 import { InitialLoad } from './reusables/InitialLoad';
 import { DEFAULT_BACKGROUND_COLOR } from '../constants/ui';
 import LoadingLogo from './reusables/LoadingLogo';
+import { useShikwasa } from '../hooks';
 
 interface LayoutInterface {
   children: ReactNode;
@@ -27,6 +28,9 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
   const [isQueueVisible] = useRecoilState(isQueueVisibleAtom);
   const [_firstRender, _setFirstRender] = useRecoilState(firstRender)
   const backgroundColor = DEFAULT_BACKGROUND_COLOR;
+
+  const shik = useShikwasa()
+  const playerActivated = shik?.playerState?.player?.current
 
   // First Render?
   useEffect(() => {
@@ -59,7 +63,7 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
             </div>
           </div>
         </div>
-        <div className='absolute bottom-[25px] right-[35px] z-50'>
+        <div className={`absolute z-50 ${playerActivated ? ' bottom-[130px] lg:bottom-[115px] right-[35px]' : ' bottom-[25px] right-[35px]'}`}>
           <LoadingLogo /> 
         </div>
       </div>
