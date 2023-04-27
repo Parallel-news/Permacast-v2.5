@@ -14,8 +14,6 @@ import { useRecoilState } from "recoil";
 import { isFullscreenAtom, loadingPage } from "../../atoms";
 import { PermaSpinner } from "../reusables/PermaSpinner";
 import { HELP_LINKS, SPINNER_COLOR } from "../../constants";
-import { flexCenter } from "../creator/featuredCreators";
-
 
 interface INavButton {
   url:       string;
