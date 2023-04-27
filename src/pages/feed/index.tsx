@@ -3,7 +3,7 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React, { FC, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { chronStatusAtom, hide0EpisodesAtom } from "../../atoms";
+import { chronStatusAtom, hide0EpisodesAtom, loadingPage } from "../../atoms";
 import { EXM_READ_LINK, NO_SHOW } from "../../constants";
 import { getContractVariables } from "../../utils/contract";
 import { detectTimestampType } from "../../utils/reusables";
@@ -26,6 +26,7 @@ const FeedPage: FC<FeedPageProps> = ({ yourShows }) => {
   const [chronStatus,] = useRecoilState<number>(chronStatusAtom);
   const [hide0Episodes, setHide0Episodes] = useRecoilState<boolean>(hide0EpisodesAtom);
   const [shows, setShows] = useState<Podcast[]>([]);
+  const [, _setLoadingPage] = useRecoilState(loadingPage)
 
   useEffect(() => {
     let showsCopy = [...yourShows];
@@ -38,6 +39,10 @@ const FeedPage: FC<FeedPageProps> = ({ yourShows }) => {
       setShows(shows);
     };
   }, [chronStatus, hide0Episodes, yourShows]);
+
+  useEffect(() => {
+    _setLoadingPage(false)
+  }, [])
 
   return (
     <>

@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { latestEpisodesAtom, podcastsAtom } from "../atoms/index";
+import { latestEpisodesAtom, loadingPage, podcastsAtom } from "../atoms/index";
 import { Episode, EXMState, FeaturedChannel, FullEpisodeInfo, Podcast } from '../interfaces';
 import { getContractVariables, getFeaturedChannelsContract, getPASOMContract } from '../utils/contract';
 import { findPodcast } from '../utils/filters';
@@ -37,6 +37,11 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState<boolean>(false)
   const [isVisible, setIsVisible] = useState(false);
+  const [, _setLoadingPage] = useRecoilState(loadingPage)
+
+  useEffect(() => {
+    _setLoadingPage(false)
+  }, [])
 
   useEffect(() => {
     const fetchData = async () => {
