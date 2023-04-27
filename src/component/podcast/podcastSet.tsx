@@ -17,7 +17,7 @@ const Loading = React.lazy(()=> import("../../component/reusables/loading"))
 const Track = React.lazy(()=> import("../../component/reusables/track"))
 
 const nextEpisodeTitleStyling = "text-2xl text-neutral-300/90 font-semibold"
-const podcastIdStyling = "flex flex-col space-y-8 w-[100%] mb-[200px]"
+const podcastIdStyling = "flex flex-col space-y-4 w-[100%] mb-[200px]"
 
 interface podcastInter {
     podcast: Podcast
