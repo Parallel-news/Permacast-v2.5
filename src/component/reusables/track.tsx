@@ -134,10 +134,12 @@ export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, ti
 };
 
 export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ podcastURL, eid, episodeName }) => {
+  const [, _setLoadingPage] = useRecoilState(loadingPage)
   return (
     <Link
       href={`/episode/${podcastURL}/${trimChars(eid)}${startId}`}
       className={trackEpisodeLinkableTitleStyling}
+      onClick={() => _setLoadingPage(true)}
     >
       {episodeName}
     </Link>
