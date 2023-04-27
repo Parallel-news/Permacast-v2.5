@@ -72,7 +72,7 @@ export interface TrackCreatorLinkProps {
   uploader: string;
   buttonStyles: ButtonStyle;
   coverColor: string;
-  author?: string;
+  minified?: boolean;
 };
 
 export interface TrackDescriptionProps {
@@ -104,7 +104,7 @@ export const trackByStyling = `text-zinc-400 text-[10px] mr-2 `;
 export const trackBackgroundColorStyling = `rounded-full cursor-pointer flex items-center min-w-max text-[10px] gap-x-1 px-2 py-0.5 focus:brightness-150 hover:brightness-125 default-animation `;
 export const trackDescriptionStyling = `mx-1.5 w-full line-clamp-1 text-xs `;
 export const trackMainInfoStyling = `ml-4 flex flex-col text-wrap `;
-export const trackPodcastInfoContainer = "flex flex-row md:items-center w-full md:min-w-[25%]"
+export const trackPodcastInfoContainer = `flex flex-row md:items-center w-full md:min-w-[25%] `;
 
 // 3. Custom Functions
 
@@ -139,7 +139,8 @@ export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ podcastURL
   );
 };
 
-export const TrackCreatorLink: FC<TrackCreatorLinkProps> = ({ uploader, buttonStyles, coverColor, author }) => {
+export const TrackCreatorLink: FC<TrackCreatorLinkProps> = ({ uploader, buttonStyles, coverColor, minified }) => {
+  const uploaderText = minified ? shortenAddress(uploader || "", 8) : uploader || "";
   return (
     <Link
       href={`/creator/${uploader}`}
@@ -150,7 +151,9 @@ export const TrackCreatorLink: FC<TrackCreatorLinkProps> = ({ uploader, buttonSt
         className="h-2.5 w-2.5 rounded-full"
         style={{ backgroundColor: coverColor }}
       ></div>
-      <div>{shortenAddress(uploader || author || "", 8)}</div>
+      <div>
+        {uploaderText}
+      </div>
     </Link>
   );
 };
@@ -294,7 +297,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
             <div className={trackFlexCenterYStyling}>
               <p className={trackByStyling}>{t("track.by")}</p>
               <div className={`flexCenter `}>
-                <TrackCreatorLink {...{ uploader: artist, buttonStyles, coverColor, author }} />
+                <TrackCreatorLink {...{ uploader: artist, buttonStyles, coverColor }} minified />
                 <TrackContentTypeIcon {...{ isVideo, className, includeContentType }} />
               </div>
             </div>
