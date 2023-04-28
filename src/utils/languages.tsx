@@ -585,6 +585,14 @@ export const useLanguageHook = () => {
   return [langsArray, categoriesArray];
 };
 
+export const findCategoryIndex = (en_category: string) => {
+  return categories_en.indexOf(categories_en.find((category: string) => category === en_category));
+};
+
+export const getCategoryInCurrentLanguage = (categoriesArray, enCategory) => {
+  return categoriesArray.find((category: string[]) => Number(category[0]) === findCategoryIndex(enCategory));
+};
+
 interface LanguageOptionsProps {
   languageCode: string; // Set to 0 as default 
 }

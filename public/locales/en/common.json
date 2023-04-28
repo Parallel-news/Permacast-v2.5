@@ -153,6 +153,7 @@
 		}
 	},
 	"podcast": {
+		"expand": "Expand",
 		"newepisode": "Add Episode"
 	},
 	"episode": {

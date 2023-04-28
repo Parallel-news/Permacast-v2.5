@@ -50,7 +50,7 @@ const Background: React.FC<BackgroundInterface> = ({ children }) => {
       {userBannerImage && (
         <div className="absolute">
           <Image src={ARSEED_URL + userBannerImage} width={1350} height={450} alt="Profile banner" className="opacity-40 w-screen md:w-[93.5vw] h-[180px] md:h-[30vw]" />
-          <div className="absolute w-full h-full z-[1] top-0" style={{ backgroundImage: `linear-gradient(transparent, transparent, transparent, transparent, transparent, black)` }}></div>
+          <div className="absolute w-full h-full z-[1] top-0" style={{ backgroundImage: `linear-gradient(transparent, transparent, transparent, transparent, transparent, ${DEFAULT_BACKGROUND_COLOR})` }}></div>
         </div>
       )}
       <div className="w-full h-full z-[1]" style={styles}></div>

@@ -153,6 +153,7 @@
 		}
 	},
 	"podcast": {
+		"expand": "展开",
 		"newepisode": "添加新剧集"
 	},
 	"episode": {
