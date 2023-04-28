@@ -52,7 +52,7 @@ export default function PodcastSet(props: podcastInter) {
                 setColor(textColor)
                 setBackgroundColor(coverColor)
                 setThemeColor(coverColor)
-                setTextColor("rgb(255, 255, 255)")
+                setTextColor(textColor)
             }
             fetchColor();
         }, []);
@@ -61,6 +61,7 @@ export default function PodcastSet(props: podcastInter) {
             <>
                 <div className={podcastIdStyling}>
                     <PodcastBanner
+                        podcast={podcast}
                         imgSrc={imgSrc}
                         title={podcastName}
                         description={description}
