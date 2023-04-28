@@ -11,7 +11,7 @@
 	"wallet": {
 		"connect": "Connect Wallet",
 		"arconnect": {
-			"login": "🦔 ArConnect login",
+			"login": "🦔 ArConnect Login",
 			"logout": "Logout",
 			"load-failed": "Everpay failed to load. Please try again later.",
 			"profile": "View Profile",
