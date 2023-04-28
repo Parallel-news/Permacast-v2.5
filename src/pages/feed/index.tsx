@@ -65,13 +65,13 @@ const FeedPage: FC<FeedPageProps> = ({ yourShows }) => {
   */
   return(
     <div>
-      <div className={titleRow} id="2x">
+      <div className={titleRow}>
         <div className="flex md:hidden"></div>
         <h2 className={allPodcastHeader}>{t("feed-page.allpodcasts")}</h2>
         <ViewDropDown />
       </div>
-      <div className={podcastContainer}>
-        t
+      <div>
+        <p>trick or treat</p>
       </div>
     </div>
   )
