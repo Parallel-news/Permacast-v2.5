@@ -209,6 +209,7 @@ export const EpisodeInfo = (props: EpisodeInfoInter) => {
 }
 
 export const EpisodeInfoSub = (props: EpisodeInfoSubInter) => {
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
     return(
         <>
             <div className={episodeInfoSubStyling}>
@@ -218,7 +219,13 @@ export const EpisodeInfoSub = (props: EpisodeInfoSubInter) => {
                 />
                 <p className={episodeDateStyling}>{props.date}</p>
             </div>
-            <Link href={`/podcast/${props.pid}`} className="text-slate-300 text-[16px] font-semibold hover:text-white transition-colors duration-500 pt-2">{props.podcastName}</Link>
+            <Link 
+                href={`/podcast/${props.pid}`} 
+                className="text-slate-300 text-[16px] font-semibold hover:text-white transition-colors duration-500 pt-2"
+                onClick={() => _setLoadingPage(true)}
+            >
+                {props.podcastName}
+            </Link>
         </>
     )
 }

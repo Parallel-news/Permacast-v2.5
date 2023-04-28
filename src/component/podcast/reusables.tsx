@@ -11,7 +11,7 @@ import { RssIcon } from "@heroicons/react/24/solid";
 
 import MarkdownRenderer from "../markdownRenderer";
 
-import { allANSUsersAtom } from "../../atoms";
+import { allANSUsersAtom, loadingPage } from "../../atoms";
 import { RSS_FEED_URL } from "../../constants";
 import { ButtonStyle } from "../reusables/track";
 import { ANSMapped } from "../../interfaces";
@@ -61,10 +61,7 @@ export const PodcastInfo = (props: PodcastInfoInter) => {
         title,
         imgSrc,
         description,
-        color,
         owner,
-        episodes,
-        length,
     } = props;
 
     const [allANSUsers, setAllANSUsers] = useRecoilState(allANSUsersAtom);
@@ -166,6 +163,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
     const { t } = useTranslation();
     const { color, podcastId } = props
     const { address } = useArconnect()
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
     return (
         <div className={podcastButtonsStyling}>
             {props.playButton}
@@ -177,7 +175,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
                 onClick={props.setLoadTipModal} 
             />
             {address === props.podcastOwner && (
-            <Link href={`/upload-episode?pid=${props.podcastId}`}>
+            <Link href={`/upload-episode?pid=${props.podcastId}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
                     icon={<PlusIcon className={episodeIconStyling} />} 
                     text={t("episode.number")}
@@ -186,7 +184,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             </Link>
             )}
             {address === props.podcastOwner && (
-            <Link href={`/edit-podcast/${props.podcastId}`}>
+            <Link href={`/edit-podcast/${props.podcastId}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
                     icon={<PlusIcon className={episodeIconStyling} />} 
                     text={t("edit")}
@@ -210,19 +208,3 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
         </div>
     )
 }
-
-
-/*
-Documentos
-
-650,000  to runt  certificacion de comercio al banco
-
-$700,000
-
-balance de apertura para el banco y certificacion nacional accionaria  290,000 
-
-certicacion accionaria - 
-
-
-
-*/

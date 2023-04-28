@@ -11,7 +11,7 @@ import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { allFieldsFilled, byteSize, checkConnection, handleError, validateLabel} from "../../utils/reusables";
 import Everpay, { ChainType } from "everpay";
 import { useRecoilState } from "recoil";
-import { arweaveAddress, podcastColorAtom } from "../../atoms";
+import { arweaveAddress, loadingPage, podcastColorAtom } from "../../atoms";
 
 import axios from "axios";
 import { useTranslation } from "next-i18next";
@@ -124,6 +124,7 @@ export const ShowForm = (props: ShowFormInter) => {
     const [podEmailMsg, setPodEmailMsg] = useState("");
     const [labelMsg, setLabelMsg] = useState("");
     const [progress, setProgress] = useState(0)
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
     const validationObject = {
         "nameError": podNameMsg.length === 0,
         "descError": podDescMsg.length === 0,
@@ -300,9 +301,12 @@ export const ShowForm = (props: ShowFormInter) => {
                 setPodcastCategory_(categories_en.findIndex(cat => cat === p.categories[0]))
                 setPodcastExplicit_(p.explicit === "no" ? false : true)
                 setPodcastLabel_(p.label ? p.label : "")
+                _setLoadingPage(false)
             }
             restoreSavedData()
             //loading modal NEEDED
+        } else {
+            _setLoadingPage(false)
         }
     }, [])
 

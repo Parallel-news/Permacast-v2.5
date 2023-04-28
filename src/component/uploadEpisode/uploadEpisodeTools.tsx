@@ -3,7 +3,7 @@ import router from 'next/router';
 import toast from 'react-hot-toast';
 import { useRecoilState } from 'recoil';
 import { Podcast } from '../../interfaces';
-import { arweaveAddress } from '../../atoms';
+import { arweaveAddress, loadingPage } from '../../atoms';
 import { useTranslation } from 'next-i18next';
 import React, {  useEffect, useState } from 'react';
 import { transferFunds } from '../../utils/everpay';
@@ -74,6 +74,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     //Validation
     const [epNameMsg, setEpNameMsg] = useState<string>("")
     const [epDescMsg, setEpDescMsg] = useState<string>("")
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
     const validationObject = {
         "nameError": epNameMsg.length === 0,
         "descError": epDescMsg.length === 0,
@@ -134,11 +135,13 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                     setEpDesc(description)
                     setEpThumbnailUrl(ep?.thumbnail ? ep?.thumbnail : "")
                     setVisible(ep.isVisible)
-                
+                    _setLoadingPage(false)
                 }
-            }
+            } 
             restoreSavedData()
             //loading modal NEEDED
+        } else {
+            _setLoadingPage(false)
         }
     }, [])
 
