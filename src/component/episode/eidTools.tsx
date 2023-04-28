@@ -18,6 +18,8 @@ import { FullEpisodeInfo } from "../../interfaces";
 import TextTruncate from "../TextTruncate";
 import Track from "../reusables/track";
 import { useArconnect } from "react-arconnect";
+import { loadingPage } from "../../atoms";
+import { useRecoilState } from "recoil";
 /**
  * Index
  * 1. Interfaces
@@ -224,6 +226,7 @@ export const EpisodeInfoSub = (props: EpisodeInfoSubInter) => {
 export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
     const { color, podcastOwner } = props
     const [downloading, setDownloading] = useState<boolean>(false)
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
     const { t } = useTranslation();
     const { address } = useArconnect()
 
@@ -240,8 +243,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
         document.body.removeChild(link);
         setDownloading(false)
     };
-    console.log(podcastOwner)
-    console.log(address)
+
     return (
         <div className={episodeInfoButtonsStyling}>
             <>{props.playButton}</>
@@ -252,7 +254,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
                 onClick={props.setLoadTipModal}
             />
             {address === podcastOwner && (
-            <Link href={`/edit-episode/${props.pid}/${props.eid}`}>
+            <Link href={`/edit-episode/${props.pid}/${props.eid}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
                     icon={<PlusIcon className={episodeIconStyling} />} 
                     text={t("edit")}
