@@ -168,6 +168,7 @@
 		}
 	},
 	"podcast": {
+		"expand": "Розгорнути",
 		"newepisode": "додай новий епізод"
 	},
 	"episode": {

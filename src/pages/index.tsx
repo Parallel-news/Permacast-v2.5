@@ -62,7 +62,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
         .map(
           (channel: FeaturedChannel) => findPodcast(channel.pid, podcasts))
         .filter((channel: Podcast) => channel);
-      setPodcasts_([...(foundFeaturedChannels || []), ...sortedPodcasts].splice(0, 4));
+      setPodcasts_([...(foundFeaturedChannels || []), ...sortedPodcasts].splice(0, 6));
       setLoading(false);
     };
     const fetchFeatured = async () => {

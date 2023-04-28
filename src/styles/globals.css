@@ -51,6 +51,10 @@ html, body {
   .default-animation {
     @apply ease-in-out duration-300 transition-all;
   }
+  
+  .brighten-animation {
+    @apply focus:brightness-150 hover:brightness-125 default-animation;
+  }
 
   .default-animation-slow {
     @apply ease-in-out transition-all duration-3500;

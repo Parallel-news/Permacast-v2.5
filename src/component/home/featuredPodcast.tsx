@@ -47,7 +47,7 @@ interface PodcastDescriptionProps {
 
 // 2. Stylings
 
-export const featuredPocastCarouselStyling = `w-full mt-8 carousel gap-x-12 py-3`;
+export const featuredPocastCarouselStyling = `w-full mt-8 carousel gap-x-4 py-3`;
 export const podcastOuterBackgroundStyling = `rounded-3xl text-white/30 relative overflow-hidden carousel-item hover-up-effect max-w-[280px] default-outline `
 export const podcastInnerBackgroundStyling = `w-full h-1/6 px-5 pb-2 cursor-pointer relative`
 export const podcastCoverStyling = `w-full max-w-[250px] overflow-x-hidden mx-auto mb-2`
