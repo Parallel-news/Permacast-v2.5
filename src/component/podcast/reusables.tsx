@@ -167,13 +167,14 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
     return (
         <div className={podcastButtonsStyling}>
             {props.playButton}
-
+            {address !== props.podcastOwner && (
             <DescriptionButton
                 icon={<HeartIcon className={episodeIconStyling} />} 
                 text={t("tip")}
                 color={color}
                 onClick={props.setLoadTipModal} 
             />
+            )}
             {address === props.podcastOwner && (
             <Link href={`/upload-episode?pid=${props.podcastId}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
