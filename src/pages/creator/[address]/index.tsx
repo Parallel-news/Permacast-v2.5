@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { Ans, Episode, FullEpisodeInfo, Podcast } from '../../../interfaces';
 import { hexToRGB, RGBobjectToString } from '../../../utils/ui';
-import { allPodcasts, podcastColorAtom } from '../../../atoms';
+import { allPodcasts, loadingPage, podcastColorAtom } from '../../../atoms';
 import { Creator404, sortByDate } from '../../../component/creator';
 import { ANS_TEMPLATE } from '../../../constants/ui';
 import { ARWEAVE_READ_LINK } from '../../../constants';
@@ -66,16 +66,13 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) return <Creator404 address={userInfo?.user || ''} />
 
   const { user, nickname, currentLabel, address_color, bio, avatar } = userInfo;
-
   const [PASoMProfile, setPASoMProfile] = useState<PASoMProfile | undefined>();
-
   const creatorName = nickname || currentLabel || shortenAddress(user);
-
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [episodes, setEpisodes] = useState<FullEpisodeInfo[]>([]);
-
   const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
   const [allPodcasts_, setAllPodcasts_] = useRecoilState(allPodcasts);
+  const [, _setLoadingPage] = useRecoilState(loadingPage)
 
   useEffect(() => {
     if (!userInfo) return;
@@ -108,6 +105,10 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
     };
     fetchUserData();
   }, [allPodcasts_, userInfo]);
+
+  useEffect(() => {
+    _setLoadingPage(false)
+  }, [])
 
   const creator = {
     ...userInfo,

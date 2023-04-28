@@ -10,7 +10,7 @@ import { MicrophoneIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 import PlayButton from "./playButton";
 import MarkdownRenderer from "../markdownRenderer";
 
-import { allANSUsersAtom } from "../../atoms";
+import { allANSUsersAtom, loadingPage } from "../../atoms";
 import { ARSEED_URL, MESON_ENDPOINT, startId } from "../../constants";
 import { ANSMapped, FullEpisodeInfo } from "../../interfaces";
 import { showShikwasaPlayerArguments } from "../../interfaces/playback";
@@ -116,8 +116,13 @@ export const trackPodcastInfoContainer = `flex flex-row md:items-center w-full m
 // 4. Reusable Components
 
 export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, timestamp }) => {
+  const [, _setLoadingPage] = useRecoilState(loadingPage)
   if (cover) return (
-    <Link href={`/podcast/${podcastURL}`} className={`w-14 h-14 shrink-0`}>
+    <Link 
+      href={`/podcast/${podcastURL}`} 
+      className={`w-14 h-14 shrink-0`} 
+      onClick={() => _setLoadingPage(true)}
+    >
       <Image
         width={56}
         height={56}
@@ -130,10 +135,12 @@ export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, ti
 };
 
 export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ podcastURL, eid, episodeName }) => {
+  const [, _setLoadingPage] = useRecoilState(loadingPage)
   return (
     <Link
       href={`/episode/${podcastURL}/${trimChars(eid)}${startId}`}
       className={trackEpisodeLinkableTitleStyling}
+      onClick={() => _setLoadingPage(true)}
     >
       {episodeName}
     </Link>
@@ -143,12 +150,15 @@ export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ podcastURL
 export const TrackCreatorLink: FC<TrackCreatorLinkProps> = ({ uploader, buttonStyles, coverColor, minified, fontSize }) => {
   const text = uploader || "";
   const uploaderText = minified ? shortenAddress(text, 8) : text;
+  const [, _setLoadingPage] = useRecoilState(loadingPage)
+
 
   return (
     <Link
       href={`/creator/${uploader}`}
       style={{ ...buttonStyles, fontSize: `${fontSize || 10}px` }}
       className={trackBackgroundColorStyling}
+      onClick={() => _setLoadingPage(true)}
     >
       <div
         className="h-2.5 w-2.5 rounded-full"
@@ -232,13 +242,14 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     episodeName,
     contentTx,
     description,
+    thumbnail,
     type,
     eid,
     uploader,
     uploadedAt
   } = episode.episode;
 
-  const coverUsed = minifiedCover || cover;
+  const coverUsed = thumbnail || minifiedCover || cover;
 
   const [allANSUsers, setAllANSUsers] = useRecoilState(allANSUsersAtom);
 

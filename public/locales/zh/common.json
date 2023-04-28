@@ -63,6 +63,7 @@
 	"uploadshow": {
 		"addpodcast": "添加播客",
 		"editpodcast": "编辑播客",
+		"editepisode": "编辑剧集",
 		"title": "添加新的节目",
 		"uploadstitle": "上传",
 		"label": "短网址",

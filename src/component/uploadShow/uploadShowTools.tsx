@@ -11,7 +11,7 @@ import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { allFieldsFilled, byteSize, checkConnection, handleError, validateLabel} from "../../utils/reusables";
 import Everpay, { ChainType } from "everpay";
 import { useRecoilState } from "recoil";
-import { arweaveAddress, podcastColorAtom } from "../../atoms";
+import { arweaveAddress, loadingPage, podcastColorAtom } from "../../atoms";
 
 import axios from "axios";
 import { useTranslation } from "next-i18next";
@@ -22,6 +22,7 @@ import React from "react";
 import { VisibleInput } from "./reusables";
 import { PermaSpinner } from "../reusables";
 import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
+import ProgressBar from "../reusables/progressBar";
 
 const MarkDownToolTip = React.lazy(() => import("../reusables/tooltip").then(module => ({ default: module.MarkDownToolTip })));
 const CoverContainer = React.lazy(() => import("./reusables").then(module => ({ default: module.CoverContainer })));
@@ -122,6 +123,8 @@ export const ShowForm = (props: ShowFormInter) => {
     const [podAuthMsg, setPodAuthMsg] = useState("");
     const [podEmailMsg, setPodEmailMsg] = useState("");
     const [labelMsg, setLabelMsg] = useState("");
+    const [progress, setProgress] = useState(0)
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
     const validationObject = {
         "nameError": podNameMsg.length === 0,
         "descError": podDescMsg.length === 0,
@@ -214,6 +217,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
         // Description to Arseeding
         const toastDesc = toast.loading(t("loadingToast.savingDesc"), {style: TOAST_DARK, duration: 10000000});
+        setProgress(props.edit ? 25 : 20)
         try {
             const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
             toast.dismiss(toastDesc);
@@ -224,6 +228,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
         // Covers to Arseeding
         const toastCover = toast.loading(t("loadingToast.savingCover"), {style: TOAST_DARK, duration: 10000000});
+        setProgress(props.edit ? 50 : 40)
         try {
             const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
             const cover = await upload3DMedia(convertedCover, convertedCover.type); payloadObj["cover"] = cover?.order?.itemId
@@ -238,6 +243,7 @@ export const ShowForm = (props: ShowFormInter) => {
         // Fee to Everpay
         if(!props.edit) {
             const toastFee = toast.loading(t("loadingToast.payingFee"), {style: TOAST_DARK, duration: 10000000});
+            setProgress(60)
             try {
                 const everpay = new Everpay({account: address, chainType: ChainType.arweave, arJWK: 'use_wallet',});
                 const transaction = await everpay.transfer({
@@ -255,12 +261,12 @@ export const ShowForm = (props: ShowFormInter) => {
         }
         //Error handling and timeout needed for this to complete redirect
         const toastSaving = toast.loading(t("loadingToast.savingChain"), {style: TOAST_DARK, duration: 10000000});
-
+        setProgress(props.edit ? 80: 75)
         setTimeout(async function () {
             await axios.post('/api/exm/write', createShowPayload);
-            setSubmittingShow(false)
             //EXM call, set timeout, then redirect.
             toast.dismiss(toastSaving); 
+            setProgress(100)
             toast.success(t("success.showUploaded"), {style: TOAST_DARK})
             setTimeout(async function () {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
@@ -276,7 +282,6 @@ export const ShowForm = (props: ShowFormInter) => {
             const restoreSavedData = async () => {
                 const podcast = props.podcasts.filter((podcast, ) => podcast.pid === props.selectedPid)
                 const p = podcast[0]
-                console.log("p: ", p)
                 //Set all state variables
                 setPodcastName_(p.podcastName)
                 const description = (await axios.get(ARSEED_URL + p.description)).data;
@@ -296,9 +301,12 @@ export const ShowForm = (props: ShowFormInter) => {
                 setPodcastCategory_(categories_en.findIndex(cat => cat === p.categories[0]))
                 setPodcastExplicit_(p.explicit === "no" ? false : true)
                 setPodcastLabel_(p.label ? p.label : "")
+                _setLoadingPage(false)
             }
             restoreSavedData()
             //loading modal NEEDED
+        } else {
+            _setLoadingPage(false)
         }
     }, [])
 
@@ -405,11 +413,9 @@ export const ShowForm = (props: ShowFormInter) => {
                         />
                         )}
                         {address && address.length > 0 && submittingShow && (
-                        <PermaSpinner 
-                            spinnerColor={SPINNER_COLOR}
-                            size={10}
-                            divClass={spinnerClass}
-                        />
+                            <ProgressBar
+                                value={progress}
+                            />
                         )}
                         {!address && (
                             <ConnectButton 
@@ -431,9 +437,3 @@ export const ShowForm = (props: ShowFormInter) => {
         </div>
     )
 }
-
-
-/*
-
-
-*/

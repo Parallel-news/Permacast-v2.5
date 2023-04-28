@@ -12,6 +12,8 @@ import { ARSEED_URL, startId } from "../../constants";
 import { queryMarkdownByTX } from "../../utils/markdown";
 import { convertPodcastsToEpisodes } from "../../utils/filters";
 import { determinePodcastURL, fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
+import { useRecoilState } from "recoil";
+import { loadingPage } from "../../atoms";
 
 
 
@@ -119,7 +121,8 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
   const [themeColor, setThemeColor] = useState<string>('');
   const [textColor, setTextColor] = useState<string>('');
   const [markdownText, setMarkdownText] = useState<string>('');
-
+  const [, _setLoadingPage] = useRecoilState(loadingPage)
+  
   useEffect(() => {
     const fetchMarkdown = async (tx: arweaveTX) => {
       const text = await queryMarkdownByTX(tx);
@@ -170,10 +173,13 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
       href={`/podcast/${determinePodcastURL(label, pid)}${startId}`}
       className={podcastOuterBackgroundStyling}
       style={{ backgroundColor: themeColor }}
-      onClick={() => window.scrollTo(0, 0) }
+      onClick={() => {
+        window.scrollTo(0, 0)
+        
+      }}
     >
       <div className={podcastInnerBackgroundStyling}>
-        <div>
+        <div onClick={() => _setLoadingPage(true)}>
           <EpisodeCount count={episodes.length} textColor={textColor} />
           <PocastCover podcastName={podcastName} cover={cover} />
         </div>
@@ -181,7 +187,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
           <div onClick={prevent}>
             <FeaturedPodcastPlayButton {...{ playerInfo, podcastInfo, episodes }} />
           </div>
-          <div className="ml-3 w-full" style={{color: textColor}}>
+          <div className="ml-3 w-full cursor-default" style={{color: textColor}}>
             <PodcastName podcastName={podcastName} />
             <PodcastDescription podcastDescription={markdownText} />
           </div>

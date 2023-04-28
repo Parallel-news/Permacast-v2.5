@@ -1,7 +1,7 @@
 import { useRecoilState } from 'recoil';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import { titles, allPodcasts, selection, searchInputAtom } from '../../atoms';
+import { titles, allPodcasts, selection, searchInputAtom, loadingPage } from '../../atoms';
 import { FullEpisodeInfo, Podcast } from '../../interfaces';
 import Track from '../../component/reusables/track';
 import FeaturedPodcast, { featuredPocastCarouselStyling } from '../../component/home/featuredPodcast';
@@ -13,19 +13,19 @@ const startTypingStyling = "text-center text-white text-2xl"
 const searchLoadingStyling = "text-3xl text-white font-bold mb-6"
 
 export default function SearchSet({ query }) {
+  
     const { t } = useTranslation();
     const [titlesLoading, ] = useState(false);
     const [_titles, _setTitles] = useRecoilState(titles);
     const [allPodcasts_, setAllPodcasts_] = useRecoilState(allPodcasts);
     const [_selection, ] = useRecoilState(selection);
     const [searchInput, setSearchInput] = useRecoilState(searchInputAtom); 
-  
     const [allEpisodes, setAllEpisodes] = useState<FullEpisodeInfo[]>([]);
-  
     const [filteredPodcasts, setFilteredPodcasts] = useState<Podcast[]>([]);
     const [filteredEpisodes, setFilteredEpisodes] = useState<FullEpisodeInfo[]>([]);
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
   
-    useEffect(() => { setSearchInput(query) }, []);
+    useEffect(() => { setSearchInput(query);  }, []);
     useEffect(() => {
       if (allPodcasts_.length) setAllEpisodes(convertPodcastsToEpisodes(allPodcasts_));
     }, [allPodcasts_]);
@@ -33,7 +33,7 @@ export default function SearchSet({ query }) {
     useEffect(() => {
       const fetchFiltered = async () => {
         if (searchInput.length === 0 || allPodcasts_.length === 0 || allEpisodes.length === 0) return;
-  
+        
         let filteredPodcasts = allPodcasts_.filter((podcast: Podcast) => 
           podcast.podcastName.toLowerCase().includes(searchInput.toLowerCase()));
         
@@ -45,6 +45,7 @@ export default function SearchSet({ query }) {
       };
   
       fetchFiltered();
+      _setLoadingPage(false);
     }, [searchInput, allPodcasts_, allEpisodes]);
 
     return (

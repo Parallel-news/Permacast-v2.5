@@ -21,7 +21,7 @@ import {
 import MarkdownRenderer from "../markdownRenderer";
 import { findCategoryIndex, getCategoryInCurrentLanguage, useLanguageHook } from "../../utils/languages";
 
-import { allANSUsersAtom } from "../../atoms";
+import { allANSUsersAtom, loadingPage } from "../../atoms";
 import { RSS_FEED_URL } from "../../constants";
 import { ButtonStyle } from "../reusables/track";
 import { ANSMapped, Podcast } from "../../interfaces";
@@ -67,7 +67,6 @@ const podcastButtonsStyling = "flex flex-row items-center space-x-6 justify-star
 const podcastInfoTitleDivStyling = "flex flex-col ml-0 m-0 pr-8";
 const episodeIconStyling = "mr-2 w-4 h-4";
 const coloredButtonPaddingStying = `rounded-full px-2 py-0.5 `;
-
 
 export const PodcastInfo: FC<PodcastInfoInter> = ({
     podcast,
@@ -218,21 +217,23 @@ export const PodcastInfoMobile = (props: PodcastInfoInter) => {
 
 export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
     const { t } = useTranslation();
-    const { color, podcastId } = props;
-    const { address } = useArconnect();
+    const { color, podcastId } = props
+    const { address } = useArconnect()
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
 
     return (
         <div className={podcastButtonsStyling}>
             {props.playButton}
-
+            {address !== props.podcastOwner && (
             <DescriptionButton
                 icon={<HeartIcon className={episodeIconStyling} />} 
                 text={t("tip")}
                 color={color}
                 onClick={props.setLoadTipModal} 
             />
+            )}
             {address === props.podcastOwner && (
-            <Link href={`/upload-episode?pid=${props.podcastId}`}>
+            <Link href={`/upload-episode?pid=${props.podcastId}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
                     icon={<PlusIcon className={episodeIconStyling} />} 
                     text={t("episode.number")}
@@ -241,7 +242,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             </Link>
             )}
             {address === props.podcastOwner && (
-            <Link href={`/edit-podcast/${props.podcastId}`}>
+            <Link href={`/edit-podcast/${props.podcastId}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
                     icon={<PlusIcon className={episodeIconStyling} />} 
                     text={t("edit")}
@@ -263,5 +264,6 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
                 />
             </a>
         </div>
-    );
-};
+    )
+}
+

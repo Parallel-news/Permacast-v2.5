@@ -1,17 +1,24 @@
 import axios from "axios";
 import Head from "next/head";
-import React from "react";
+import React, { useEffect } from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { EXM_READ_LINK, NO_PODCAST_FOUND, PAYLOAD_RECEIVED, NO_EPISODE_FOUND, ARSEED_URL, MESON_ENDPOINT } from "../../../../constants";
 import { getContractVariables } from "../../../../utils/contract";
 import { hasBeen10Min } from "../../../../utils/reusables";
 import { findEpisode, findPodcast } from "../../../../utils/filters";
 import { checkContentTypeFromUrl } from "../../../../utils/fileTools";
+import { useRecoilState } from "recoil";
+import { loadingPage } from "../../../../atoms";
 
 const ErrorTag = React.lazy(() => import("../../../../component/episode/eidTools").then(module => ({ default: module.ErrorTag })));
 const EpisodeSet = React.lazy(() => import("../../../../component/episode/episodeSet"))
 
 export default function EpisodeId({data, status, mimeType}) {
+
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
+    useEffect(() => {
+        _setLoadingPage(false)
+    }, [])
 
     if (data) {
         return (

@@ -1,9 +1,11 @@
 import axios from 'axios';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import { EXM_READ_LINK, NO_SHOW } from '../../../../constants';
 import { getContractVariables } from '../../../../utils/contract';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRecoilState } from 'recoil';
+import { loadingPage } from '../../../../atoms';
 
 const episodeTitleStyling = "text-white text-xl mt-4"
 const showErrorTag = "flex justify-center items-center m-auto text-white font-semibold text-xl"
@@ -14,7 +16,11 @@ const EpisodeForm = React.lazy(() => import('../../../../component/uploadEpisode
 export default function UploadEpisode({yourShows, error, pid, eid}) {
     
     const { t } = useTranslation();
-
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
+    useEffect(() => {
+        _setLoadingPage(false)
+    }, [])
+    
     if(error.length > 0) {
       return (
         <p className={showErrorTag}>{error}</p>
@@ -22,7 +28,7 @@ export default function UploadEpisode({yourShows, error, pid, eid}) {
     } else {
       return (
         <div className={uploadEpisodeStyling}>
-            <p className={episodeTitleStyling}>{t("uploadepisode.title")}</p>
+            <p className={episodeTitleStyling}>{t("uploadshow.editpodcast")}</p>
             <EpisodeForm 
               shows={yourShows}
               pid={pid}
