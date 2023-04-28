@@ -64,48 +64,12 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
             </div>
           </div>
         </div>
-
-        
           <LoadingLogo 
             playerActivated={playerActivated}
           /> 
-        
-
       </div>
     </div>
   );
 };
-//<div className={`absolute z-50 ${playerActivated ? ' bottom-[130px] lg:bottom-[115px] right-[35px]' : ' bottom-[25px] right-[35px]'}`}>
 
-/*
-  return (
-    <>
-    <Sidenav />
-    {isQueueVisible && <EpisodeQueue />}
-    {isFullscreen && <Fullscreen />}
-    <div className={BackgroundWrapperStyling}>
-      <Background />
-      <div className={InnerLayoutStyling} id="start">
-        <Toaster
-          position={TOAST_POSITION}
-          reverseOrder={false}
-          toastOptions={{
-            duration: MINT_DURATION
-          }}
-        />
-        <NavBar />
-        <div className={ParentStyling}>
-          {children}
-        </div>
-      </div>
-    </div>
-    </>
-  )
-  };
-  */
-
-/*
-
-
-*/
 export default Layout;

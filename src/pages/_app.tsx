@@ -8,6 +8,7 @@ import { PERMISSIONS } from '../constants/arconnect';
 import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import '../styles/globals.css';
+import { SSRProvider } from '@react-aria/ssr';
 
 const QueryPodcasts = React.lazy(() => import('../component/loaders/QueryPodcasts'));
 const QueryANS = React.lazy(() => import('../component/loaders/QueryANS'));
@@ -53,7 +54,9 @@ function App({ Component, pageProps }) {
           </Script>
           <ShikwasaProviderLazy>
             <Layout>
-              <Component {...pageProps} className="scrollbar-container"/>
+              <SSRProvider>
+                <Component {...pageProps} className="scrollbar-container"/>
+              </SSRProvider>
             </Layout>
           </ShikwasaProviderLazy>
         </ArconnectProvider>

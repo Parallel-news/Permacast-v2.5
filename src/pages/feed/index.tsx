@@ -43,16 +43,18 @@ const FeedPage: FC<FeedPageProps> = ({ yourShows }) => {
   useEffect(() => {
     _setLoadingPage(false)
   }, [])
-
+//{/*Header*/}
+//{/*Podcasts*/}
+  /*
   return (
     <>
       <div className={titleRow} id="2x">
-        {/*Header*/}
+        
         <div className="flex md:hidden"></div>
         <h2 className={allPodcastHeader}>{t("feed-page.allpodcasts")}</h2>
         <ViewDropDown />
       </div>
-      {/*Podcasts*/}
+      
       <div className={podcastContainer} id="3x">
         {shows.map((podcast: Podcast, index: number) =>
           <FeaturedPodcast {...podcast} key={index} />
@@ -60,6 +62,19 @@ const FeedPage: FC<FeedPageProps> = ({ yourShows }) => {
       </div>
     </>
   );
+  */
+  return(
+    <div>
+      <div className={titleRow} id="2x">
+        <div className="flex md:hidden"></div>
+        <h2 className={allPodcastHeader}>{t("feed-page.allpodcasts")}</h2>
+        <ViewDropDown />
+      </div>
+      <div className={podcastContainer}>
+        t
+      </div>
+    </div>
+  )
 };
 
 export async function getStaticProps({ locale }) {
