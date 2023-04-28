@@ -237,13 +237,14 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     episodeName,
     contentTx,
     description,
+    thumbnail,
     type,
     eid,
     uploader,
     uploadedAt
   } = episode.episode;
 
-  const coverUsed = minifiedCover || cover;
+  const coverUsed = thumbnail || minifiedCover || cover;
 
   const [allANSUsers, setAllANSUsers] = useRecoilState(allANSUsersAtom);
 
