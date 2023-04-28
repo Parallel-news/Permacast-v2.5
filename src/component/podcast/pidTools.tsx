@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC } from "react";
 import { Podcast } from "../../interfaces";
 
 const PodcastButtons = React.lazy(() => import("./reusables").then(module => ({ default: module.PodcastButtons })));
@@ -31,24 +31,23 @@ export const podcastInfoTitleDivStyling = "flex flex-col ml-0 m-0 mr-[64px]"
 // 3. Custom Functions
 
 //4. Custom Components
-export const PodcastBanner = (props: PodcastBannerInter) => {
-    const {
-        podcast,
-        imgSrc,
-        title,
-        description,
-        color,
-        podcastOwner,
-        podcastId,
-        setLoadShareModal,
-        setLoadTipModal,
-        playButton
-    } = props;
+export const PodcastBanner: FC<PodcastBannerInter> = ({
+    podcast,
+    imgSrc,
+    title,
+    description,
+    color,
+    podcastOwner,
+    podcastId,
+    setLoadShareModal,
+    setLoadTipModal,
+    playButton
+}) => {
 
     return (
         <div className={podcastBannerStyling}>
             <PodcastInfo 
-                podcast={podcast}
+                podcast={podcast || undefined}
                 owner={podcastOwner}
                 imgSrc={imgSrc}
                 title={title}
