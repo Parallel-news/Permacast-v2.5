@@ -255,7 +255,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
 
   const [coverColor, setCoverColor] = useState<string>('');
   const [textColor, setTextColor] = useState<string>('');
-  const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({ backgroundColor: '', color: '' })
+  const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({ backgroundColor: '', color: ''})
   const [markdown, setMarkdown] = useState<string>('');
   const [artist, setArtist] = useState<string>('');
 
