@@ -26,7 +26,7 @@ const FeedPage: FC<FeedPageProps> = ({ yourShows }) => {
   const [chronStatus,] = useRecoilState<number>(chronStatusAtom);
   const [hide0Episodes, setHide0Episodes] = useRecoilState<boolean>(hide0EpisodesAtom);
   const [shows, setShows] = useState<Podcast[]>([]);
-  const [, _setLoadingPage] = useRecoilState(loadingPage)
+  const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
 
   useEffect(() => {
     let showsCopy = [...yourShows];
