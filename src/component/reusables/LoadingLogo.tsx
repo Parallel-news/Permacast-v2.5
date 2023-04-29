@@ -2,7 +2,11 @@ import { Transition } from "@headlessui/react";
 import { useRecoilState } from "recoil";
 import { loadingPage } from "../../atoms";
 
-export default function LoadingLogo() {
+interface LoadingLogoInter {
+    playerActivated: boolean
+}
+
+export default function LoadingLogo(props: LoadingLogoInter) {
 
     const [_loadingPage] = useRecoilState(loadingPage)
 
@@ -16,7 +20,7 @@ export default function LoadingLogo() {
             leave="transform transition duration-[200ms]"
             leaveFrom="opacity-100 rotate-0 scale-100"
             leaveTo="opacity-75 rotate-[120deg] scale-75"
-            className=""
+            className={`absolute z-50 ${props.playerActivated ? ' bottom-[130px] lg:bottom-[115px] right-[35px]' : ' bottom-[25px] right-[35px]'}`}
         >
             <div 
                 className="bg-[#FFFF00] rounded-md w-[40px] h-[40px] w-[45px] h-[45px] "

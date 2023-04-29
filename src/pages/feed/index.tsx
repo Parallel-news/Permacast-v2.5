@@ -44,20 +44,25 @@ const FeedPage: FC<FeedPageProps> = ({ yourShows }) => {
     _setLoadingPage(false)
   }, [])
 
-  return (
-    <>
-      <div className={titleRow} id="2x">
-        {/*Header*/}
-        <div className="flex md:hidden"></div>
-        <h2 className={allPodcastHeader}>{t("feed-page.allpodcasts")}</h2>
-        <ViewDropDown />
-      </div>
-      {/*Podcasts*/}
+  const Podcasts: FC<{ shows: Podcast[] }> = ({ shows }) => {
+    return (
       <div className={podcastContainer} id="3x">
         {shows.map((podcast: Podcast, index: number) =>
           <FeaturedPodcast {...podcast} key={index} />
         )}
       </div>
+    )
+  }
+
+  return (
+    <>
+      <div className={titleRow}>
+        
+        <div className="flex md:hidden"></div>
+        <h2 className={allPodcastHeader}>{t("feed-page.allpodcasts")}</h2>
+        <ViewDropDown />
+      </div>
+      {shows.length !== 0 && <Podcasts shows={shows} />}
     </>
   );
 };

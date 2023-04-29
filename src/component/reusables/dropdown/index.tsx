@@ -30,7 +30,8 @@ const Dropdown: FC<DropdownProps> = ({
   return (
     <div className="flex flex-row mr-4">
     <NextUIDropdown closeOnSelect={false}>
-      <NextUIDropdown.Button className={openMenuButtonClass}>
+      {/*Server and Static are generating two separate IDs. Next UI not SSR friendly*/}
+      <NextUIDropdown.Button className={openMenuButtonClass} suppressHydrationWarning={true}>
         {openMenuButton}
       </NextUIDropdown.Button>
       <NextUIDropdown.Menu

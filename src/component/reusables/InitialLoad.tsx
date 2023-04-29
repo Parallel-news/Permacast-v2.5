@@ -26,42 +26,44 @@ export const InitialLoad = () => {
     }, [])
 
     return (
-        <Transition
-            show={isShowing}
-            enter="transform transition duration-[0ms]"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="transition ease-out duration-500"
-            leaveFrom="opacity-100 scale-100"
-            leaveTo="opacity-0 scale-95"
-        >
-            <div className={`flex justify-center items-center space-x-4 md:space-x-10 h-screen relative mb-[30px] z-50`} id="jumbotron" style={{ backgroundColor: color, transition: 'width 0.5s ease-out' }}>
-                {!showLogo ? 
-                    <div className="bg-black rounded-md w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[85px] md:h-[85px] lg:w-[110px] lg:h-[110px] xl:w-[140px] xl:h-[140px] "></div> 
-                :
+        <>
+            <Transition
+                show={isShowing}
+                enter="transform transition duration-[0ms]"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="transition ease-out duration-500"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+            >
+                <div className={`flex justify-center items-center space-x-4 md:space-x-10 h-screen relative mb-[30px] z-50`} id="jumbotron" style={{ backgroundColor: color, transition: 'width 0.5s ease-out' }}>
+                    {!showLogo ? 
+                        <div className="bg-black rounded-md w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[85px] md:h-[85px] lg:w-[110px] lg:h-[110px] xl:w-[140px] xl:h-[140px] "></div> 
+                    :
+                        <Transition
+                            show={showLogo}
+                            appear={true}
+                            enter="transform transition duration-[400ms]"
+                            enterFrom="opacity-0 rotate-[-120deg] scale-50"
+                            enterTo="opacity-100 rotate-0 scale-100"
+                            className=""
+                        >
+                            <div className="bg-[#FFFF00] rounded-md w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[85px] md:h-[85px] lg:w-[110px] lg:h-[110px] xl:w-[140px] xl:h-[140px] "></div>
+                        </Transition>
+                    }
                     <Transition
-                        show={showLogo}
+                        show={showTitle}
                         appear={true}
-                        enter="transform transition duration-[400ms]"
-                        enterFrom="opacity-0 rotate-[-120deg] scale-50"
-                        enterTo="opacity-100 rotate-0 scale-100"
-                        className=""
+                        enter="transition ease-out duration-500"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
                     >
-                        <div className="bg-[#FFFF00] rounded-md w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[85px] md:h-[85px] lg:w-[110px] lg:h-[110px] xl:w-[140px] xl:h-[140px] "></div>
+                        <p className={`shine mb-2 md:mb-4 font-mono`}>
+                            permacast
+                        </p>
                     </Transition>
-                }
-                <Transition
-                    show={showTitle}
-                    appear={true}
-                    enter="transition ease-out duration-500"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                >
-                    <p className={`shine mb-2 md:mb-4 font-mono`}>
-                        permacast
-                    </p>
-                </Transition>
-            </div> 
-        </Transition>
+                </div> 
+            </Transition>
+        </>
     )
 }

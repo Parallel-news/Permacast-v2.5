@@ -63,7 +63,6 @@ const ArConnect: FC = () => {
     walletConnected,
     address,
     ANS,
-    arconnectConnect,
     arconnectDisconnect
   } = useArconnect();
 

@@ -1,14 +1,14 @@
 import Head from 'next/head';
 import Script from 'next/script';
 import { appWithTranslation } from 'next-i18next';
-import React, { useEffect } from 'react';
-import { RecoilRoot, useRecoilState } from 'recoil';
+import React from 'react';
+import { RecoilRoot } from 'recoil';
 import { ArconnectProvider } from 'react-arconnect';
 import { PERMISSIONS } from '../constants/arconnect';
 import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import '../styles/globals.css';
-import { loadingPage } from '../atoms';
+import { SSRProvider } from '@react-aria/ssr';
 
 const QueryPodcasts = React.lazy(() => import('../component/loaders/QueryPodcasts'));
 const QueryANS = React.lazy(() => import('../component/loaders/QueryANS'));
@@ -54,7 +54,9 @@ function App({ Component, pageProps }) {
           </Script>
           <ShikwasaProviderLazy>
             <Layout>
-              <Component {...pageProps} className="scrollbar-container"/>
+              <SSRProvider>
+                <Component {...pageProps} className="scrollbar-container"/>
+              </SSRProvider>
             </Layout>
           </ShikwasaProviderLazy>
         </ArconnectProvider>

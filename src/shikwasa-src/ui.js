@@ -3,6 +3,7 @@ import IconComp from './templates/Icon'
 import { secondToTime, numToString, marquee, createElement, toggleAttribute } from './utils'
 import applyFocusVisible from './focus-visible'
 import { dimColorObject, isTooLight, RGBAobjectToString, RGBAstringToObject } from '../utils/ui'
+import { shortenAddress } from 'react-arconnect'
 
 let resize,
   coverUrl = null
@@ -138,7 +139,7 @@ export default class UI {
     }
     this.title.innerHTML = audio.title
     this.titleInner.setAttribute('data-title', audio.title)
-    this.artist.innerHTML = audio.artist
+    this.artist.innerHTML = shortenAddress(audio.artist)
     let artistColor = audio.color;
     let artistTextColor;
     if (artistColor) {
