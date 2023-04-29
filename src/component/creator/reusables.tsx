@@ -9,7 +9,7 @@ import { PASoMProfile } from '../../interfaces/pasom';
 import { FullEpisodeInfo, Podcast } from '../../interfaces';
 import { ARSEED_URL } from '../../constants';
 import { dimColorString, hexToRGB, isTooLight } from '../../utils/ui';
-import { currentThemeColorAtom } from '../../atoms';
+import { currentThemeColorAtom, loadingPage } from '../../atoms';
 import { hoverableLinkButtonStyling } from '../reusables/themedButton';
 
 const Verification = React.lazy(() => import('../reusables/Verification'))
@@ -71,7 +71,7 @@ export const flexCol = `flex flex-col `;
 export const flexColVertical = `flex flex-col items-center `;
 export const WhiteLargeFont = `text-3xl font-bold text-white `;
 export const CreatorVerificationParentStyling = `ml-2 md:ml-3 mt-1`;
-export const podcastCarouselStyling = `w-full mt-8 carousel gap-x-12 py-3 `;
+export const podcastCarouselStyling = `w-full mt-8 carousel gap-x-4 py-3 `;
 export const creatorLabelStyling = `select-text text-lg font-medium text-[#828282] `;
 export const creatorLabelSmallStyling = `select-text text-sm font-medium text-[#828282] `;
 export const creatorNicknameSmallStyling = `select-text font-medium tracking-wide text-white `;
@@ -115,6 +115,7 @@ export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, addr
   const imageSize = size || 120;
   const squaredOuterBorderRadius = squared ? '12px' : '999px';
   const squaredInnerBorderRadius = squared ? '8px' : '999px';
+  const [,_setLoadingPage] = useRecoilState(loadingPage)
 
   return (
     <Link
@@ -122,6 +123,7 @@ export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, addr
       style={{ borderColor: borderColor, borderWidth: borderWidth || '4px', borderRadius: squaredOuterBorderRadius }}
       tabIndex={unclickable ? -1 : 0}
       className="default-no-outline-ringed default-animation"
+      onClick={() => _setLoadingPage(true)}
     >
       {avatar && <Image width={imageSize} height={imageSize} alt={avatar} src={ARSEED_URL + avatar} className="object-fit aspect-square rounded-full" />}
       {!avatar && (
@@ -205,7 +207,7 @@ export const LatestEpisodes: FC<LatestEpisodesProps> = ({ episodes }) => {
       <div className="mt-6">
         {episodes.map((episode: FullEpisodeInfo, index: number) => (
           <div className="mb-4" key={index}>
-            <Track {...{ episode }} includeDescription includePlayButton />
+            <Track {...{ episode }} includeDescription includePlayButton includeContentType />
           </div>
         ))}
       </div>

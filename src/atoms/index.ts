@@ -206,3 +206,23 @@ export const selectedWalletAtom = atom<availableWallets>({
     key: 'selectedWalletAtom',
     default: 'arconnect'
 });
+
+export const selectWalletModalVisibilityAtom = atom<boolean>({
+    key: 'selectWalletModalVisibilityAtom',
+    default: false
+});
+
+export const walletNotDetectedModalVisibilityAtom = atom<boolean>({
+    key: 'walletNotDetectedModalVisibilityAtom',
+    default: false
+});
+
+export const firstRender = atom<boolean>({
+    key: 'firstRender',
+    default: false
+})
+
+export const loadingPage = atom<boolean>({
+    key: 'loadingPage',
+    default: false
+})

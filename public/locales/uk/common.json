@@ -21,7 +21,8 @@
 		},
 		"modal": {
 			"choose": "Виберіть гаманець для підключення",
-			"not-detected": "не виявлено"
+			"not-detected": "не виявлено",
+			"download-wallet": "Ви можете завантажити його тут: "
 		}
 	},
 	"home": {
@@ -62,6 +63,7 @@
 	"uploadshow": {
 		"addpodcast": "Додай подкаст",
 		"editpodcast": "Редагувати подкасти",
+		"editepisode": "Редагувати епізод",
 		"title": "Додай нове подкаст",
 		"uploadstitle": "завантажень",
 		"label": "Короткий URL",
@@ -166,6 +168,7 @@
 		}
 	},
 	"podcast": {
+		"expand": "Розгорнути",
 		"newepisode": "додай новий епізод"
 	},
 	"episode": {
@@ -230,6 +233,9 @@
 	},
 	"fullscreen": {
 		"episode": "Епізод"
+	},
+	"cropImage": {
+		"crop": "Обрізати"
 	},
 	"view": "Переглянути",
 	"share": {

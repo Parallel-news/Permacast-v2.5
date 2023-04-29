@@ -1,7 +1,8 @@
 import Head from 'next/head';
 import Script from 'next/script';
 import { appWithTranslation } from 'next-i18next';
-import React, { useState } from 'react';
+
+import React from 'react';
 import { RecoilRoot } from 'recoil';
 import { ArconnectProvider } from 'react-arconnect';
 import { PERMISSIONS } from '../constants/arconnect';
@@ -15,6 +16,7 @@ import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import '../styles/globals.css';
 import getConfig from 'next/config';
+import { SSRProvider } from '@react-aria/ssr';
 
 const QueryPodcasts = React.lazy(() => import('../component/loaders/QueryPodcasts'));
 const QueryANS = React.lazy(() => import('../component/loaders/QueryANS'));
@@ -40,8 +42,6 @@ const livepeerTheme: ThemeConfig = {
 
 function App({ Component, pageProps }) {
 
-  const [appIsLoaded, setAppIsLoaded] = useState<boolean>(false)
-  console.log("CONFIG CHECK: ", STUDIOTOKEN)
   return (
     <RecoilRoot>
       <Head>
@@ -77,9 +77,9 @@ function App({ Component, pageProps }) {
           </Script>
           <ShikwasaProviderLazy>
             <Layout>
-              <LivepeerConfig client={client} theme={livepeerTheme}>
+              <SSRProvider>
                 <Component {...pageProps} className="scrollbar-container"/>
-              </LivepeerConfig>
+              </SSRProvider>
             </Layout>
           </ShikwasaProviderLazy>
         </ArconnectProvider>

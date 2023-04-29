@@ -18,6 +18,8 @@ import { FullEpisodeInfo } from "../../interfaces";
 import TextTruncate from "../TextTruncate";
 import Track from "../reusables/track";
 import { useArconnect } from "react-arconnect";
+import { loadingPage } from "../../atoms";
+import { useRecoilState } from "recoil";
 /**
  * Index
  * 1. Interfaces
@@ -207,6 +209,7 @@ export const EpisodeInfo = (props: EpisodeInfoInter) => {
 }
 
 export const EpisodeInfoSub = (props: EpisodeInfoSubInter) => {
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
     return(
         <>
             <div className={episodeInfoSubStyling}>
@@ -216,7 +219,13 @@ export const EpisodeInfoSub = (props: EpisodeInfoSubInter) => {
                 />
                 <p className={episodeDateStyling}>{props.date}</p>
             </div>
-            <Link href={`/podcast/${props.pid}`} className="text-slate-300 text-[16px] font-semibold hover:text-white transition-colors duration-500 pt-2">{props.podcastName}</Link>
+            <Link 
+                href={`/podcast/${props.pid}`} 
+                className="text-slate-300 text-[16px] font-semibold hover:text-white transition-colors duration-500 pt-2"
+                onClick={() => _setLoadingPage(true)}
+            >
+                {props.podcastName}
+            </Link>
         </>
     )
 }
@@ -224,6 +233,7 @@ export const EpisodeInfoSub = (props: EpisodeInfoSubInter) => {
 export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
     const { color, podcastOwner } = props
     const [downloading, setDownloading] = useState<boolean>(false)
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
     const { t } = useTranslation();
     const { address } = useArconnect()
 
@@ -240,19 +250,20 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
         document.body.removeChild(link);
         setDownloading(false)
     };
-    console.log(podcastOwner)
-    console.log(address)
+
     return (
         <div className={episodeInfoButtonsStyling}>
             <>{props.playButton}</>
+            {address !== podcastOwner && (
             <DescriptionButton
                 icon={<HeartIcon className={episodeIconStyling} />} 
                 text={t("tip")}
                 color={color} 
                 onClick={props.setLoadTipModal}
             />
+            )}
             {address === podcastOwner && (
-            <Link href={`/edit-episode/${props.pid}/${props.eid}`}>
+            <Link href={`/edit-episode/${props.pid}/${props.eid}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
                     icon={<PlusIcon className={episodeIconStyling} />} 
                     text={t("edit")}
@@ -316,7 +327,7 @@ export const Episodes = (props: EpisodesInter) => {
             {/*Loop Episodes*/}
             {episodeList.length > 0 ?
                 episodeList.map((episode: FullEpisodeInfo, index) => (
-                    <Track {...{ episode }} includeDescription includePlayButton />
+                    <Track {...{ episode }} includeDescription includePlayButton includeContentType />
                 ))
             :
                 <p className="text-neutral-400">None to Show.</p>

@@ -11,7 +11,7 @@
 	"wallet": {
 		"connect": "Connect Wallet",
 		"arconnect": {
-			"login": "🦔 ArConnect login",
+			"login": "🦔 ArConnect Login",
 			"logout": "Logout",
 			"load-failed": "Everpay failed to load. Please try again later.",
 			"profile": "View Profile",
@@ -21,7 +21,8 @@
 		},
 		"modal": {
 			"choose": "Select which wallet to connect with",
-			"not-detected": "not detected"
+			"not-detected": "not detected",
+			"download-wallet": "You can download it here: "
 		}
 	},
 	"home": {
@@ -42,8 +43,8 @@
 		"episodes": "Episodes",
 		"recentlyadded": "Recently added",
 		"featuredcreators": "Featured creators",
-		"add-podcast": "Add podcast",
-		"add-episode": "Add episode"
+		"add-podcast": "Add Podcast",
+		"add-episode": "Add Episode"
   },
 	"search" : {
 		"placeholder": "Search for a podcast",
@@ -62,6 +63,7 @@
 	"uploadshow": {
 		"addpodcast": "Add Podcast",
 		"editpodcast": "Edit Podcast",
+		"editepisode": "Edit Episode",
 		"title": "New Show",
 		"uploadstitle": "Uploads",
 		"label": "Short URL",
@@ -152,6 +154,7 @@
 		}
 	},
 	"podcast": {
+		"expand": "Expand",
 		"newepisode": "Add Episode"
 	},
 	"episode": {
@@ -218,6 +221,9 @@
 	},
 	"fullscreen": {
 		"episode": "Episode"
+	},
+	"cropImage": {
+		"crop": "Crop"
 	},
 	"view": "View",
 	"textTruncate": {

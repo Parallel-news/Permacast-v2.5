@@ -1,4 +1,5 @@
-import React from "react";
+import React, { FC } from "react";
+import { Podcast } from "../../interfaces";
 
 const PodcastButtons = React.lazy(() => import("./reusables").then(module => ({ default: module.PodcastButtons })));
 const PodcastInfo = React.lazy(() => import("./reusables").then(module => ({ default: module.PodcastInfo })));
@@ -6,6 +7,7 @@ const PodcastInfoMobile = React.lazy(() => import("./reusables").then(module => 
 
 // 1. Interfaces
 export interface PodcastBannerInter  {
+    podcast?: Podcast;
     color: string;
     setLoadTipModal: (v: any) => void;
     setLoadShareModal: (v: any) => void;
@@ -29,30 +31,45 @@ export const podcastInfoTitleDivStyling = "flex flex-col ml-0 m-0 mr-[64px]"
 // 3. Custom Functions
 
 //4. Custom Components
-export const PodcastBanner = (props: PodcastBannerInter) => {
+export const PodcastBanner: FC<PodcastBannerInter> = ({
+    podcast,
+    imgSrc,
+    title,
+    description,
+    color,
+    podcastOwner,
+    podcastId,
+    setLoadShareModal,
+    setLoadTipModal,
+    playButton
+}) => {
+
     return (
         <div className={podcastBannerStyling}>
             <PodcastInfo 
-                imgSrc={props.imgSrc}
-                title={props.title}
-                description={props.description}
-                color={props.color}
+                podcast={podcast || undefined}
+                owner={podcastOwner}
+                imgSrc={imgSrc}
+                title={title}
+                description={description}
+                color={color}
             />
             <PodcastInfoMobile 
-                imgSrc={props.imgSrc}
-                title={props.title}
-                description={props.description}
-                color={props.color}
+                owner={podcastOwner}
+                imgSrc={imgSrc}
+                title={title}
+                description={description}
+                color={color}
             />
 
             <PodcastButtons 
-                color={props.color}
-                setLoadTipModal={props.setLoadTipModal}
-                podcastId={props.podcastId}
-                podcastOwner={props.podcastOwner}
-                setLoadShareModal={props.setLoadShareModal}
-                playButton={props.playButton}
+                color={color}
+                setLoadTipModal={setLoadTipModal}
+                podcastId={podcastId}
+                podcastOwner={podcastOwner}
+                setLoadShareModal={setLoadShareModal}
+                playButton={playButton}
             />
         </div>
-    )
-}
+    );
+};

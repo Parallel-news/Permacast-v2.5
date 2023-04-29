@@ -51,7 +51,7 @@ export const creatorLabelStyling = `select-text text-lg font-medium text-[#82828
 export const creatorNicknameSmallStyling = `select-text font-medium tracking-wide text-white `;
 export const creatorLabelSmallStyling = `select-text text-sm font-medium text-[#828282] `;
 export const WhiteLargeFont = `text-3xl font-bold text-white `;
-export const podcastCarouselStyling = `w-full mt-8 carousel gap-x-12 py-3 `;
+export const podcastCarouselStyling = `w-full mt-8 carousel gap-x-4 py-3 `;
 export const flexCol = `flex flex-col `;
 export const flexItemsCenter = `flex flex-col gap-y-2 md:gap-y-0 md:flex-row items-center `;
 export const CreatorPageStyling = `mt-12 h-full pb-40 `;
@@ -93,7 +93,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [userModalIsOpen, setUserModalIsOpen] = useState<boolean>(false);
 
-  useEffect(() => {setUserBannerImage(banner)}, [banner]);
+  //useEffect(() => {setUserBannerImage(banner)}, [banner]);
   useEffect(() => {
     const isFollowing = PASoMProfile?.followers?.includes(address);
     setIsFollowing(isFollowing);
@@ -111,8 +111,6 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
     if (address === user) buttonsArray.push({key: "profile", jsx: <EditButton {...{ PASoMProfile }} />});
     return buttonsArray;
   };
-
-  // const UserActions: FC = () => (<Dropdown items={Items()} />);
 
   return (
     <div className={CreatorPageStyling}>

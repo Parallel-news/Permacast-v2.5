@@ -17,7 +17,7 @@ const Loading = React.lazy(()=> import("../../component/reusables/loading"))
 const Track = React.lazy(()=> import("../../component/reusables/track"))
 
 const nextEpisodeTitleStyling = "text-2xl text-neutral-300/90 font-semibold"
-const podcastIdStyling = "flex flex-col space-y-8 w-[100%] mb-[200px]"
+const podcastIdStyling = "flex flex-col space-y-4 w-[100%] mb-[200px]"
 
 interface podcastInter {
     podcast: Podcast
@@ -49,9 +49,9 @@ export default function PodcastSet(props: podcastInter) {
             const fetchColor = async () => {
                 const dominantColor = await fetchDominantColor(cover);
                 const [coverColor, textColor] = getCoverColorScheme(dominantColor.rgba);
-                setColor(textColor)
+                setColor("rgb(255, 255, 255)")
                 setBackgroundColor(coverColor)
-                setThemeColor(coverColor)
+                setThemeColor("rgb(255, 255, 255)")
                 setTextColor("rgb(255, 255, 255)")
             }
             fetchColor();
@@ -61,6 +61,7 @@ export default function PodcastSet(props: podcastInter) {
             <>
                 <div className={podcastIdStyling}>
                     <PodcastBanner
+                        podcast={podcast}
                         imgSrc={imgSrc}
                         title={podcastName}
                         description={description}
@@ -81,7 +82,7 @@ export default function PodcastSet(props: podcastInter) {
                     {/*Episode Track*/}
                     {fullEpisodeInfo.map((episode: FullEpisodeInfo, index: number) => (
                         <div key={index}>
-                            <Track {...{ episode }} includeDescription includePlayButton />
+                            <Track {...{ episode }} includeDescription includePlayButton includeContentType />
                         </div>
                     )) || <Loading />}
                 </div>

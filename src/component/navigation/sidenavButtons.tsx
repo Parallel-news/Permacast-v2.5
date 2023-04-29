@@ -11,11 +11,9 @@ import {
 } from "@heroicons/react/24/outline";
 import LANGUAGES from "../../utils/languages";
 import { useRecoilState } from "recoil";
-import { isFullscreenAtom } from "../../atoms";
+import { isFullscreenAtom, loadingPage } from "../../atoms";
 import { PermaSpinner } from "../reusables/PermaSpinner";
 import { HELP_LINKS, SPINNER_COLOR } from "../../constants";
-import { flexCenter } from "../creator/featuredCreators";
-
 
 interface INavButton {
   url:       string;
@@ -146,11 +144,11 @@ export const BasicLoaderSpinner: FC = () => (
     divClass={spinnerClass}
   />
 );
-
+//{loading && <BasicLoaderSpinner className="w-full p-4" />}
 export const LinkWithProgress: FC<LinkWithProgressProps> = ({ loading, onClick, href, hrefText }) => (
-  <div>
-    {loading && <BasicLoaderSpinner />}
-    {!loading && <Link {...{ href, onClick }}>{hrefText}</Link>}
+  <div className="m-0 p-0">
+    
+    {<Link {...{ href, onClick }} className="w-full p-4">{hrefText}</Link>}
   </div>
 );
 
@@ -161,6 +159,9 @@ export const UploadDropdown: FC<UploadDropdownProps> = ({ routeMatches }) => {
 
   const [podcastClickLoad, setPodcastClickLoad] = useState<boolean>(false)
   const [episodeClickLoad, setEpisodeClickLoad] = useState<boolean>(false)
+  const [,_setLoadingPage] = useRecoilState(loadingPage)
+  const isUploadPodcast = router.pathname === "/upload-podcast"
+  const isUploadEpisode = router.pathname === "/upload-episode"
 
   const clickSwitch = (type: string) => {
     if(!podcastClickLoad && !episodeClickLoad) {
@@ -176,21 +177,20 @@ export const UploadDropdown: FC<UploadDropdownProps> = ({ routeMatches }) => {
   };
 
   useEffect(() => {
-    // if (router.pathname === "/upload-podcast") {
-    //   setPodcastClickLoad(false)
-    //   setEpisodeClickLoad(true)
-    // } else if (router.pathname === "/upload-episode") {
-    //   setPodcastClickLoad(true)
-    //   setEpisodeClickLoad(false)
-    // };
     setTimeout(() => {
       setPodcastClickLoad(false)
       setEpisodeClickLoad(false)
     }, 2000)
   }, [podcastClickLoad, episodeClickLoad])
 
-  const switchToPodcast = () => clickSwitch("podcast");
-  const switchToEpisode = () => clickSwitch("episode");
+  const switchToPodcast = () => {
+    clickSwitch("podcast");
+    if(!isUploadPodcast) _setLoadingPage(true)
+  }
+  const switchToEpisode = () => {
+    clickSwitch("episode");
+    if(!isUploadEpisode) _setLoadingPage(true)
+  }
 
   const routeIsMatchingClassName = routeMatches ? SIDENAV_BUTTON + " w-9 hover:text-white ": SIDENAV_BUTTON_BASE + " hover:text-zinc-100";
 

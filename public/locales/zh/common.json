@@ -21,7 +21,8 @@
 		},
 		"modal": {
 			"choose": "选择要连接的钱包",
-			"not-detected": "未检测到"
+			"not-detected": "未检测到",
+			"download-wallet: ": "您可以在此处下载："
 		}
 	},
 	"home": {
@@ -62,6 +63,7 @@
 	"uploadshow": {
 		"addpodcast": "添加播客",
 		"editpodcast": "编辑播客",
+		"editepisode": "编辑剧集",
 		"title": "添加新的节目",
 		"uploadstitle": "上传",
 		"label": "短网址",
@@ -152,6 +154,7 @@
 		}
 	},
 	"podcast": {
+		"expand": "展开",
 		"newepisode": "添加新剧集"
 	},
 	"episode": {
@@ -216,6 +219,9 @@
 	},
 	"fullscreen": {
 		"episode": "剧集"
+	},
+	"cropImage": {
+		"crop": "裁剪"
 	},
 	"view": "看法",
 	"share": {

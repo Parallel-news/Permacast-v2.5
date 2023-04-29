@@ -44,6 +44,7 @@ const imgCoverStyling = `flex items-center justify-center bg-slate-400 h-48 w-48
 // 4. Components
 
 export const CropScreen: FC<CropScreenInterface> = ({ inputImg, rotation, cropAspect, setRotation, onCropComplete, onClickResp }) => {
+  const { t } = useTranslation();
   
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -68,7 +69,7 @@ export const CropScreen: FC<CropScreenInterface> = ({ inputImg, rotation, cropAs
         onClick={onClickResp}
       >
         <p className={cropSelectionTextStyling}>
-          Crop
+          {t("cropImage.crop")}
         </p>
       </div>
     </div>

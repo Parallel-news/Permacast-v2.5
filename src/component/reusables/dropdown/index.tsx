@@ -15,10 +15,10 @@ export interface DropdownProps {
   menuItemClass: string;
 };
 
-export const openMenuButtonClass = `min-w-min bg-zinc-900 h-12 `;
-export const dropdownMenuClass = `w-40 hover:bg-zinc-900 bg-zinc-900 min-w-min `;
-export const menuItemClass = `bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white my-1 `;
-
+export const openMenuButtonClass = `bg-zinc-900 h-12 `;
+export const dropdownMenuClass = `hover:bg-zinc-900 bg-zinc-900 w-[22px]`;
+export const menuItemClass = `bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white my-1`;
+ 
 const Dropdown: FC<DropdownProps> = ({
   openMenuButton,
   items,
@@ -28,12 +28,14 @@ const Dropdown: FC<DropdownProps> = ({
 }) => {
 
   return (
+    <div className="flex flex-row mr-4">
     <NextUIDropdown closeOnSelect={false}>
-      <NextUIDropdown.Button id="1" className={openMenuButtonClass}>
+      {/*Server and Static are generating two separate IDs. Next UI not SSR friendly*/}
+      <NextUIDropdown.Button className={openMenuButtonClass} suppressHydrationWarning={true}>
         {openMenuButton}
       </NextUIDropdown.Button>
       <NextUIDropdown.Menu
-        aria-label="Dropdown Items"
+        aria-label="Dropdown Items" 
         items={items}
         className={dropdownMenuClass}
       >
@@ -48,6 +50,8 @@ const Dropdown: FC<DropdownProps> = ({
         )}
       </NextUIDropdown.Menu>
     </NextUIDropdown>
+    <div className="h-[10px] w-[10px]"></div>
+    </div>
   );
 };
 

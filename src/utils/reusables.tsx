@@ -3,20 +3,20 @@ import { CONNECT_WALLET, PODCAST_LABEL_MAX_LEN, PODCAST_LABEL_MIN_LEN, TOAST_DAR
 import { Podcast } from "../interfaces";
 
 interface hexToRgbInter {
-    hex: string
-    alpha: number
+  hex: string
+  alpha: number
 }
 
 export function hexToRGB(hex, alpha) {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
 
-    if (alpha) {
+  if (alpha) {
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    } else {
+  } else {
     return `rgb(${r}, ${g}, ${b})`;
-    }
+  }
 }
 
 /**
@@ -28,16 +28,16 @@ export function hexToRGB(hex, alpha) {
  */
 
 export function findObjectById(arr, pid, key) {
-    for (let i = 0; i < arr.length; i++) {
-      const obj = arr[i];
-      if (obj[key] === pid) {
-        return {
-            "obj": obj,
-            "index": i
-        };
-      }
+  for (let i = 0; i < arr.length; i++) {
+    const obj = arr[i];
+    if (obj[key] === pid) {
+      return {
+        "obj": obj,
+        "index": i
+      };
     }
-    return null;
+  }
+  return null;
 }
 
 /**
@@ -49,10 +49,10 @@ export function findObjectById(arr, pid, key) {
  * @returns {string} The formatted string.
  */
 export function formatStringByLen(str, beginLength, endLength) {
-    const strLength = str.length;
-    const beginStr = str.substr(0, beginLength);
-    const endStr = str.substr(strLength - endLength, strLength);
-    return `${beginStr}...${endStr}`;
+  const strLength = str.length;
+  const beginStr = str.substr(0, beginLength);
+  const endStr = str.substr(strLength - endLength, strLength);
+  return `${beginStr}...${endStr}`;
 }
 
 /**
@@ -62,12 +62,12 @@ export function formatStringByLen(str, beginLength, endLength) {
  * @returns {Array<any>} - The updated array with the specified object moved to the first index.
  */
 export const checkConnection = (arAddress: string) => {
-    if (arAddress === undefined) {
-      toast.error(CONNECT_WALLET)
-      return false
-    } else {
-      return true
-    }
+  if (arAddress === undefined) {
+    toast.error(CONNECT_WALLET)
+    return false
+  } else {
+    return true
+  }
 }
 
 /**
@@ -75,7 +75,7 @@ export const checkConnection = (arAddress: string) => {
  * @param str String to measure number of bytes
  * @returns number
  */
-export const byteSize = (str:string) => new Blob([str]).size;
+export const byteSize = (str: string) => new Blob([str]).size;
 
 
 /**
@@ -85,17 +85,17 @@ export const byteSize = (str:string) => new Blob([str]).size;
  */
 export const allFieldsFilled = (fieldsObj: any) => {
   for (const key in fieldsObj) {
-      if(Object.hasOwnProperty.call(fieldsObj, key)) {
-          if(!fieldsObj[key]) {
-              return false
-          }
-      }   
+    if (Object.hasOwnProperty.call(fieldsObj, key)) {
+      if (!fieldsObj[key]) {
+        return false
+      }
+    }
   }
   return true
 }
 
-export function handleError (errorMessage: string, loadingSetter: (v: boolean) => void) {
-  toast.error(errorMessage, {style: TOAST_DARK})
+export function handleError(errorMessage: string, loadingSetter: (v: boolean) => void) {
+  toast.error(errorMessage, { style: TOAST_DARK })
   loadingSetter(false)
 }
 
@@ -104,17 +104,17 @@ export const determineMediaType = (mime: string) => mime.match(/^(audio\/|video\
 export function validateLabel(label, podcasts: Podcast[]) {
 
   if (!label) {
-    return {res: false, msg: "uploadshow.validation.label.limit"}
+    return { res: false, msg: "uploadshow.validation.label.limit" }
   };
-  if(label.length < PODCAST_LABEL_MIN_LEN || label.length > PODCAST_LABEL_MAX_LEN) {
-    return {res: false, msg: "uploadshow.validation.label.limit"}
+  if (label.length < PODCAST_LABEL_MIN_LEN || label.length > PODCAST_LABEL_MAX_LEN) {
+    return { res: false, msg: "uploadshow.validation.label.limit" }
   }
   const existingLabels = podcasts.map((pod) => pod.label); // only valid labels
-  if(existingLabels.includes(label)) {
-    return {res: false, msg: "uploadshow.validation.label.in-use"}
+  if (existingLabels.includes(label)) {
+    return { res: false, msg: "uploadshow.validation.label.in-use" }
   }
   if (/^(?!-)[a-zA-Z0-9-]{1,35}(?<!-)$/.test(label)) {
-    return {res: true, msg: label};
+    return { res: true, msg: label };
   }
 }
 
@@ -127,6 +127,14 @@ export function detectTimestampType(timestamp) {
     return 'milliseconds';
   }
 }
+
+export const getFormattedTimeStamp = (uploadedAt: number) => {
+  let ts = new Date(detectTimestampType(uploadedAt) === "milliseconds" ? uploadedAt : uploadedAt * 1000);
+  const day = ts.getDate().toString().padStart(2, '0'); // get the day and add leading zero if necessary
+  const month = (ts.getMonth() + 1).toString().padStart(2, '0'); // get the month (adding 1 because getMonth() returns 0-indexed) and add leading zero if necessary
+  const year = ts.getFullYear().toString(); // get the year
+  return `${day}/${month}/${year}`;
+};
 
 // Checks if we should use Arweave or Arseeding gateway
 export const hasBeen10Min = (timestamp: number) => (Date.now() - timestamp) > (10 * 60 * 1000) ? true : false

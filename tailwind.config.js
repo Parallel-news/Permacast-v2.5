@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        'bg-zinc-950': '#0c0c0e',
+      },
       transitionDuration: {
         '3500': '3500ms',
         '5000': '5000ms',

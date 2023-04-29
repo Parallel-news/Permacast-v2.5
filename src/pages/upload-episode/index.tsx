@@ -1,9 +1,11 @@
 import axios from 'axios';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import { EXM_READ_LINK, NO_SHOW } from '../../constants';
 import { getContractVariables } from '../../utils/contract';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { loadingPage } from '../../atoms';
+import { useRecoilState } from 'recoil';
 
 const episodeTitleStyling = "text-white text-xl mt-4"
 const showErrorTag = "flex justify-center items-center m-auto text-white font-semibold text-xl"
@@ -14,6 +16,11 @@ const EpisodeForm = React.lazy(() => import("../../component/uploadEpisode/uploa
 export default function UploadEpisode({yourShows, error, pid}) {
     
     const { t } = useTranslation();
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
+
+    useEffect(() => {
+      _setLoadingPage(false)
+    }, [])
 
     if(error.length > 0) {
       return (

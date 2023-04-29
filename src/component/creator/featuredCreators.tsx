@@ -8,6 +8,7 @@ import {
   allPodcasts,
   creatorsAtom,
   currentThemeColorAtom,
+  loadingPage,
 } from "../../atoms";
 import Link from 'next/link';
 import { flexCol} from './';
@@ -36,12 +37,13 @@ export const creatorHeadingStyling = `text-zinc-400 mb-4 `;
 export const ViewANSButton: FC<ViewANSButtonProps> = ({ currentLabel }) => {
   const { t } = useTranslation();
   const [currentThemeColor] = useRecoilState(currentThemeColorAtom);
-
+  const [, _setLoadingPage] = useRecoilState(loadingPage)
   return (
       <Link
         className={viewANSButtonStyling}
         style={{ backgroundColor: dimColorString(currentThemeColor, 0.1), color: currentThemeColor, }}
         href={`/creator/${currentLabel}`}
+        onClick={() => _setLoadingPage(true)}
       >
         {t("view")}
       </Link>
