@@ -49,10 +49,10 @@ export default function PodcastSet(props: podcastInter) {
             const fetchColor = async () => {
                 const dominantColor = await fetchDominantColor(cover);
                 const [coverColor, textColor] = getCoverColorScheme(dominantColor.rgba);
-                setColor(textColor)
+                setColor("rgb(255, 255, 255)")
                 setBackgroundColor(coverColor)
-                setThemeColor(coverColor)
-                setTextColor(textColor)
+                setThemeColor("rgb(255, 255, 255)")
+                setTextColor("rgb(255, 255, 255)")
             }
             fetchColor();
         }, []);
