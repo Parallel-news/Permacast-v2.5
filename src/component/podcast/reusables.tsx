@@ -14,12 +14,11 @@ import {
     RssIcon,
     HashtagIcon,
     LanguageIcon,
-    AtSymbolIcon,
-    QueueListIcon
+    AtSymbolIcon
 } from "@heroicons/react/24/solid";
 
 import MarkdownRenderer from "../markdownRenderer";
-import { findCategoryIndex, getCategoryInCurrentLanguage, useLanguageHook } from "../../utils/languages";
+import { getCategoryInCurrentLanguage, useLanguageHook } from "../../utils/languages";
 
 import { allANSUsersAtom, loadingPage } from "../../atoms";
 import { RSS_FEED_URL } from "../../constants";
@@ -62,7 +61,9 @@ interface EpisodeInfoButtonsInter {
 };
 
 const podcastInfoStyling = "items-center space-x-16 justify-start xl:justify-start hidden xl:flex xl:flex-row";
-const podcastInfoTitleStyling = "text-4xl font-semibold select-text items-start justify-start text-white flexCenterGap ";
+const podcastInfoTitleStyling = `font-semibold select-text items-start justify-start text-white flexCenterGap `;
+const podcastTitlePreviewStyling = podcastInfoTitleStyling + ` text-4xl line-clamp-3 `;
+const podcastTitleModalStyling = podcastInfoTitleStyling + ` text-xl mt-2 `;
 const podcastButtonsStyling = "flex flex-row items-center space-x-6 justify-start";
 const podcastInfoTitleDivStyling = "flex flex-col ml-0 m-0 pr-8";
 const episodeIconStyling = "mr-2 w-4 h-4";
@@ -73,10 +74,7 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
     title,
     imgSrc,
     description,
-    color,
-    owner,
-    episodes,
-    length,
+    owner
 }) => {
     const { t } = useTranslation();
     const [languagesArray, categoriesArray] = useLanguageHook();
@@ -100,7 +98,7 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
       const ANS = allANSUsers.find((user: ANSMapped) => user.address === owner);
       if (ANS) setUploader(ANS.primary + ".ar");
       else setUploader(owner);
-    }, []);
+    }, [allANSUsers]);
 
     useEffect(() => {
       const fetchData = async () => {
@@ -131,19 +129,22 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
                     priority
                     className="object-cover width-[700px] height-[700px]"
                 />
-                <p className={podcastInfoTitleStyling + " mt-2"}>{title}</p>
             </Modal>
-            <Modal open={descriptionModalOpen} onClose={() => setDescriptionModalOpen(false)} className={`bg-zinc-900 rounded-lg text-white cursor-auto flexColCenter p-4 `}>
+            <Modal 
+                open={descriptionModalOpen}
+                onClose={() => setDescriptionModalOpen(false)}
+                className={`bg-zinc-900 rounded-lg text-white cursor-auto flexColCenter p-4 `}
+            >
+                <p className={podcastTitleModalStyling}>{title}</p>
+                <Divider className="h-0.5 my-4 bg-white" />
                 <MarkdownRenderer markdownText={markdownText} color={'text-white '} />
                 <Divider className="h-0.5 my-4 bg-white" />
-                <div className="flexCenterGap">
+                <div className="flexColCenter">
                     <div className="flexCenter gap-x-0.5">
-                        <AtSymbolIcon className="w-4 h-4 mt-1" />
+                        <AtSymbolIcon className="w-4 h-4 mt-0.5" />
                         {podcast?.email || "N/A"}
                     </div>
-                    <div>{t("episodes")}: {podcast?.episodes?.length}</div>
-                </div>
-                <div className="flexCenterGap">
+                    <div>{podcast?.episodes?.length} {t("episodes")}</div>
                     <div className="flexCenter gap-x-0.5">
                         <HashtagIcon className="w-4 h-4 " />
                         {category}
@@ -164,29 +165,32 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
                 />
             </button>
             <div className={podcastInfoTitleDivStyling}>
-                <h1 className={podcastInfoTitleStyling}>
+                <h1 className={podcastTitlePreviewStyling}>
                     {title}
                 </h1>
                 <MarkdownRenderer markdownText={markdownText} color={'line-clamp-3 text-white text-sm '} />
-                <div className="flexCenterGap mt-3 ">
-                    <div className="max-w-max">
-                        <TrackCreatorLink {...{ uploader, buttonStyles, coverColor, fontSize: 16 }} />
+                {(buttonStyles.backgroundColor && buttonStyles.color) && (
+                    <div className="flexCenterGap mt-3 ">
+                        <div className="max-w-max">
+                            <TrackCreatorLink {...{ uploader, buttonStyles, coverColor, fontSize: 16 }} />
+                        </div>
+                        <div className={coloredButtonPaddingStying} style={buttonStyles}>
+                            {formattedDate}
+                        </div>
+                        {/* <div className={coloredButtonPaddingStying} style={buttonStyles}>
+                            {t("episodes")}: {podcast?.episodes?.length}
+                        </div> */}
+                    
+                        <button
+                            onClick={() => setDescriptionModalOpen(true)}
+                            className={`flexCenterGap brighten-animation ` + coloredButtonPaddingStying}
+                            style={buttonStyles}
+                        >
+                            {t("textTruncate.showMore")}
+                            <ExpandIcon />
+                        </button>
                     </div>
-                    <div className={coloredButtonPaddingStying} style={buttonStyles}>
-                        {formattedDate}
-                    </div>
-                    {/* <div className={coloredButtonPaddingStying} style={buttonStyles}>
-                        {t("episodes")}: {podcast?.episodes?.length}
-                    </div> */}
-                    <button
-                        onClick={() => setDescriptionModalOpen(true)}
-                        className={`flexCenterGap brighten-animation ` + coloredButtonPaddingStying}
-                        style={buttonStyles}
-                    >
-                        {t("textTruncate.showMore")}
-                        <ExpandIcon />
-                    </button>
-                </div>
+                )}
             </div>
         </div>
     );

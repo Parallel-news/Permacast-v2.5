@@ -118,9 +118,9 @@ export const trackPodcastInfoContainer = `flex flex-row md:items-center w-full m
 export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, timestamp }) => {
   const [, _setLoadingPage] = useRecoilState(loadingPage)
   if (cover) return (
-    <Link 
-      href={`/podcast/${podcastURL}`} 
-      className={`w-14 h-14 shrink-0`} 
+    <Link
+      href={`/podcast/${podcastURL}`}
+      className={`w-14 h-14 shrink-0`}
       onClick={() => _setLoadingPage(true)}
     >
       <Image
@@ -149,11 +149,10 @@ export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ podcastURL
 
 export const TrackCreatorLink: FC<TrackCreatorLinkProps> = ({ uploader, buttonStyles, coverColor, minified, fontSize }) => {
   const text = uploader || "";
-  const uploaderText = minified ? shortenAddress(text, 8) : text;
-  const [, _setLoadingPage] = useRecoilState(loadingPage)
+  const uploaderText = shortenAddress(text, minified ? 8 : 16);
+  const [, _setLoadingPage] = useRecoilState(loadingPage);
 
-
-  return (
+  if (buttonStyles.backgroundColor && buttonStyles.color) return (
     <Link
       href={`/creator/${uploader}`}
       style={{ ...buttonStyles, fontSize: `${fontSize || 10}px` }}
@@ -199,7 +198,7 @@ export const TrackPlayButton: FC<TrackPlayButtonProps> = ({ playerInfo, episode,
     currentPodcast = playerState?.currentPodcast;
     currentEpisode = playerState?.currentEpisode;
     isPlaying = playerState?.isPlaying;
-  }
+  };
 
   const episodeInfo = episode.episode;
   const podcastInfo = episode.podcast;
@@ -255,7 +254,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
 
   const [coverColor, setCoverColor] = useState<string>('');
   const [textColor, setTextColor] = useState<string>('');
-  const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({ backgroundColor: '', color: ''})
+  const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({ backgroundColor: '', color: '' });
   const [markdown, setMarkdown] = useState<string>('');
   const [artist, setArtist] = useState<string>('');
 
@@ -263,7 +262,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     const ANS = allANSUsers.find((user: ANSMapped) => user.address === uploader);
     if (ANS) setArtist(ANS.primary + ".ar");
     else setArtist(uploader);
-  }, []);
+  }, [allANSUsers]);
 
   // WARNING: Switching to useMemo will trigger mounting error
   useEffect(() => {
@@ -297,13 +296,14 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
 
   const podcastURL = determinePodcastURL(label, pid);
   const isVideo = type.includes("video");
+  const timestamp = detectTimestampType(uploadedAt) === "seconds" ? uploadedAt * 1000 : uploadedAt;
   const className = `w-4 h-4 hover:white zinc-600 mx-1 `;
 
   return (
     <div className={trackFlexCenterBothStyling}>
       <div className={trackFlexCenterPaddedYStyling}>
         <span className={trackPodcastInfoContainer}>
-          <PodcastCover {...{ podcastURL, cover: coverUsed, alt: podcastName, timestamp: detectTimestampType(uploadedAt) === "seconds" ? uploadedAt * 1000 : uploadedAt }} />
+          <PodcastCover {...{ podcastURL, cover: coverUsed, alt: podcastName, timestamp }} />
           <div className={trackMainInfoStyling}>
             <EpisodeLinkableTitle {...{ podcastURL, eid, episodeName }} />
             <div className={trackFlexCenterYStyling}>
@@ -315,7 +315,6 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
             </div>
           </div>
         </span>
-
         <div className="flex justify-start w-full md:pl-4 lg:pl-0">
           <TrackDescription {...{ includeDescription, description: markdown }} />
         </div>
