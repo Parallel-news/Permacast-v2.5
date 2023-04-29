@@ -1,8 +1,6 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
-import { loadingPage } from '../../atoms';
+import React from 'react';
 
 const SearchSet = React.lazy(() =>import('../../component/search/reusables'));
 
