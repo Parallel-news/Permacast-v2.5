@@ -23,7 +23,7 @@ export default function LoadingLogo(props: LoadingLogoInter) {
             className={`absolute z-50 ${props.playerActivated ? ' bottom-[130px] lg:bottom-[115px] right-[35px]' : ' bottom-[25px] right-[35px]'}`}
         >
             <div 
-                className="bg-[#FFFF00] rounded-md w-[40px] h-[40px] w-[45px] h-[45px] "
+                className="bg-[#FFFF00] rounded-md w-[30px] h-[30px] "
                 style={{ animation: "rotate 2s linear infinite" }}
             ></div>
         </Transition>
