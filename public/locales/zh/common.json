@@ -259,5 +259,12 @@
 		"hide0EpisodePodcasts": "隐藏 0 集的播客",
 		"show0EpisodePodcasts": "显示有 0 集的播客"
 	},
-	"edit": "编辑"
+	"edit": "编辑",
+	"rss": {
+		"importrss": "导入 RSS",
+		"rssfeedurl": "RSS 提要网址",
+		"norssepisode": "无法从 RSS 链接获取剧集数据",
+		"norsspodcast": "无法从 RSS 链接获取播客元数据"
+
+	}
 }

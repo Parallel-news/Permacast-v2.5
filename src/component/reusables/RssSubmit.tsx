@@ -1,5 +1,5 @@
 
-import { MouseEventHandler, ReactElement } from "react";
+import { ReactElement } from "react";
 
 
 interface RssSubmitButtonInter {

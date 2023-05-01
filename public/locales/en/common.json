@@ -265,6 +265,13 @@
 		"hide0EpisodePodcasts": "Hide 0 Episode Podcasts",
 		"show0EpisodePodcasts": "Show 0 Episode Podcasts"
 	},
-	"edit": "Edit"
+	"edit": "Edit",
+	"rss": {
+		"importrss": "Import RSS",
+		"rssfeedurl": "RSS Feed Url",
+		"norssepisode": "Could not fetch episode data from RSS link.",
+		"norsspodcast": "Could not fetch podcast metadata from RSS link."
+
+	}
 	
 }

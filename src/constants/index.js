@@ -63,6 +63,7 @@ export const RSS_FEED_URL = PERMACAST_HELPER_URL + "feeds/rss/"; // requires PID
 export const EXM_ANS_CONTRACT_ADDRESS = "VGWeJLDLJ9ify3ezl9tW-9fhB0G-GIUd60FE-5Q-_VI";
 export const MESON_ENDPOINT = "https://pz-znmpfs.meson.network/"
 export const RSS_IMPORT_LINK = PERMACAST_HELPER_URL + "import-rss/"
+export const RSS_META_LINK = PERMACAST_HELPER_URL+"rss-podcast-metadata/"
 
 // SOCIALS
 export const PERMACAST_DISCORD_URL = "https://discord.gg/cQanQVCs7G"
