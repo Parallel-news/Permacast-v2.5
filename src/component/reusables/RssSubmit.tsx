@@ -11,7 +11,11 @@ interface RssSubmitButtonInter {
 
 export default function RssSubmit(props: RssSubmitButtonInter) {
     return (
-        <button style={{color: "#27272a"}}className={`rounded-full flex items-center justify-center ${props.color} ${props.dimensions}`} onClick={props.onClick}>
+        <button 
+            style={{color: "#27272a"}}
+            className={`rounded-full flex items-center justify-center ${props.color} ${props.dimensions}`} 
+            onClick={props.onClick}
+        >
             {props.icon}
         </button>
     )
