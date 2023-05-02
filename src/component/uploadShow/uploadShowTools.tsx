@@ -39,7 +39,8 @@ export default function uploadShowTools() {
 interface ShowFormInter {
     podcasts: Podcast[],
     edit: boolean,
-    selectedPid?: string
+    selectedPid?: string,
+    rssData?: Podcast[]
 }
 
 // 2. Stylings
@@ -277,7 +278,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
     // Inserts Editting Info
     useEffect(() => {
-        if(props.edit) {
+        if(props.edit && !props.rssData.length) {
             const restoreSavedData = async () => {
                 const podcast = props.podcasts.filter((podcast, ) => podcast.pid === props.selectedPid)
                 const p = podcast[0]
@@ -309,6 +310,38 @@ export const ShowForm = (props: ShowFormInter) => {
         }
     }, [])
 
+    // Inserts Editting Info
+    useEffect(() => {
+        console.log("props.rssData.length: ", props.rssData.length)
+        if(props.rssData.length) {
+            console.log("engaged!")
+            const restoreSavedData = async () => {
+                const p = props.rssData[0]
+                console.log("p test: ", p)
+                //Set all state variables
+                setPodcastName_(p.podcastName)
+                setPodcastDescription_(p.description)
+                setPodcastAuthor_(p.author)
+                
+                //Recreate Cover for Upload
+                setCoverUrl(p.cover)
+                fetch(p.cover)
+                .then((rs) => rs.blob())
+                .then((blob) => {
+                  const url = URL.createObjectURL(blob);
+                  setPodcastCover_(url);
+                });
+                setPodcastLanguage_(p.language)
+                setPodcastCategory_(categories_en.findIndex(cat => cat === p.categories[0]))
+                setPodcastExplicit_(p.explicit === "no" ? false : true)
+                _setLoadingPage(false)
+            }
+            restoreSavedData()
+        } else {
+            _setLoadingPage(false)
+        }
+    }, [])
+
     return (
         <div className={showFormStyling}>
             {/*First Row*/}
@@ -319,8 +352,8 @@ export const ShowForm = (props: ShowFormInter) => {
                 <div className="w-[25%] flex justify-center mb-4 lg:mb-0">
                     <CoverContainer 
                         setCover={setPodcastCover_}
-                        isEdit={props.edit}
-                        editCover={ARSEED_URL+coverUrl}
+                        isEdit={props.edit || props.rssData.length > 0}
+                        editCover={(props.edit && !props.rssData.length) ? ARSEED_URL+coverUrl : coverUrl}
                     />
                 </div>
                 <div className="flex flex-col w-[95%] md:w-[75%] lg:w-[50%] space-y-3">
