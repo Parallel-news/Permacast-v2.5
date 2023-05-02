@@ -12,6 +12,7 @@ import { ArrowSmallRightIcon } from "@heroicons/react/24/solid"
 import { convertLinktoBase64, isValidUrl } from "../../utils/reusables";
 import { RSS_IMPORT_LINK, RSS_META_LINK, TOAST_DARK } from "../../constants";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import EpisodeRssContainer from "../../component/reusables/episodeRssContainer";
 
 const ValMsg = React.lazy(() => import("../../component/reusables").then(module => ({default: module.ValMsg})))
 
@@ -80,6 +81,7 @@ export default function rss() {
 
     return (
         <>
+            {/*Step 1: Fetch RSS Data*/}
             <Transition
                 show={step === 0}
                 appear={true}
@@ -108,8 +110,15 @@ export default function rss() {
                         />
                     </div>
                     <ValMsg valMsg={rssLinkError} className="pl-2" />
+                    <div className="w-[75%]">
+                        <EpisodeRssContainer 
+                            rightTitle={<p className="text-white/75 text-2xl">Episode 1: Introduction</p>}
+                            leftTitle={<p className="text-white/75 text-2xl">{"22 mb"+"         "+"0.1 AR"}</p>}
+                        />
+                    </div>
                 </div>
             </Transition>
+            {/*Step 2: Show Form*/}
             <Transition
                 show={step === 1}
                 appear={true}
@@ -120,7 +129,7 @@ export default function rss() {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-75 scale-75"
             >
-                <p>Step 2</p>
+                <p>Step 2: Form</p>
             </Transition>
         </>
     )
