@@ -278,8 +278,9 @@ export const ShowForm = (props: ShowFormInter) => {
 
     // Inserts Editting Info
     useEffect(() => {
-        if(props.edit && !props.rssData.length) {
+        if(props.edit && props.rssData.length === 0) {
             const restoreSavedData = async () => {
+                console.log("Edit capability executed")
                 const podcast = props.podcasts.filter((podcast, ) => podcast.pid === props.selectedPid)
                 const p = podcast[0]
                 //Set all state variables
@@ -312,12 +313,9 @@ export const ShowForm = (props: ShowFormInter) => {
 
     // Inserts Editting Info
     useEffect(() => {
-        console.log("props.rssData.length: ", props.rssData.length)
-        if(props.rssData.length) {
-            console.log("engaged!")
+        if(props.rssData.length > 0) {
             const restoreSavedData = async () => {
                 const p = props.rssData[0]
-                console.log("p test: ", p)
                 //Set all state variables
                 setPodcastName_(p.podcastName)
                 setPodcastDescription_(p.description)

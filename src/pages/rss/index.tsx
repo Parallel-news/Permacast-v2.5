@@ -96,8 +96,8 @@ export default function rss({yourShows}) {
             toast.error(fetchError, {style: TOAST_DARK})
             return false
         }
-        console.log(rssFeed)
-        console.log(rssMetadata)
+        //console.log(rssFeed)
+        //console.log(rssMetadata)
 
         setRssMeta(prevState => {
             const updatedPodcasts = prevState.map(podcast => {
@@ -118,7 +118,7 @@ export default function rss({yourShows}) {
         setSubmittingLink(false)
         setStep(1)
     }
-
+    console.log("rssMeta: ", rssMeta)
     return (
         <div className="flex flex-col justify-center w-full space-y-7">
             {/*Step 1: Fetch RSS Data*/}

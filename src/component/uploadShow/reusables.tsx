@@ -97,13 +97,12 @@ export const CoverContainer = (props: CoverContainerInter) => {
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [rotation, setRotation] = useState(0);
     let responseUrl: string;
+    console.log("props.editCover: ", props.editCover)
     //Check if in Edit Mode
     useEffect(() => {
         async function fetchImage() {
           const response = await fetch(props.editCover);
-          console.log("response: ", response)
           const blob = await response.blob();
-          console.log("blob: ", blob)
           responseUrl = response?.url ? response.url : ""
           const oldCoverFile = new File([blob], "image.png", { type: "image/png" });
           const fileArray = [oldCoverFile];
@@ -112,7 +111,6 @@ export const CoverContainer = (props: CoverContainerInter) => {
             newFileList.items.add(file);
           });
           podcastCoverRef.current.files = newFileList.files;
-          console.log("Setting URL IMP: ", props.editCover)
           setImg(props.editCover);
         }
 
@@ -165,9 +163,6 @@ export const CoverContainer = (props: CoverContainerInter) => {
         setShowCrop(false);
         
     }
-    console.log("ref: ", podcastCoverRef?.current?.files?.[0])
-    console.log("img length: ", img.length)
-    console.log("img: ", img)
 
     return (
         <>
@@ -195,7 +190,7 @@ export const CoverContainer = (props: CoverContainerInter) => {
             className={coverContainerLabelStyling}
         >
             {/*Show Selected Image or Empty Cover*/}
-            {podcastCoverRef?.current?.files?.[0] && img.length !== 0 ? <ImgCover img={img} /> : <EmptyCover />}
+            {podcastCoverRef?.current?.files?.[0] && (img.length !== 0 || props.editCover.length > 0) ? <ImgCover img={img.length > 0 ? img : props.editCover} /> : <EmptyCover />}
       </label>
       </>
     )
