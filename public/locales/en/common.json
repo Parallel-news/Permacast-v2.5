@@ -270,8 +270,9 @@
 		"importrss": "Import RSS",
 		"rssfeedurl": "RSS Feed Url",
 		"norssepisode": "Could not fetch episode data from RSS link.",
-		"norsspodcast": "Could not fetch podcast metadata from RSS link."
-
+		"norsspodcast": "Could not fetch podcast metadata from RSS link.",
+		"emptyinput": "Please enter a URL.",
+		"invalidurl": "Enter a Valid Url"
 	}
 	
 }

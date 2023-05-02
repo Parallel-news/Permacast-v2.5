@@ -264,7 +264,8 @@
 		"importrss": "导入 RSS",
 		"rssfeedurl": "RSS 提要网址",
 		"norssepisode": "无法从 RSS 链接获取剧集数据",
-		"norsspodcast": "无法从 RSS 链接获取播客元数据"
-
+		"norsspodcast": "无法从 RSS 链接获取播客元数据",
+		"emptyinput": "请输入网址",
+		"invalidurl": "输入有效网址"
 	}
 }

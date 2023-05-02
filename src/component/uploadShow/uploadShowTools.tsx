@@ -20,7 +20,6 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast"
 import React from "react";
 import { VisibleInput } from "./reusables";
-import { PermaSpinner } from "../reusables";
 import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 import ProgressBar from "../reusables/progressBar";
 

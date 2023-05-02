@@ -1,4 +1,5 @@
 import { useTranslation } from "next-i18next";
+import { Transition } from "@headlessui/react";
 import { EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MIN_LEN, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_LABEL_MAX_LEN, PODCAST_LABEL_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN } from "../../constants";
 
 /**
@@ -18,9 +19,23 @@ export const ValMsg = props => {
   // Episodes
   if (valMsg === "uploadepisode.validation.name") lengths = {minLength: EPISODE_NAME_MIN_LEN, maxLength: EPISODE_DESC_MAX_LEN};
   if (valMsg === "uploadepisode.validation.description") lengths = {minLength: EPISODE_DESC_MIN_LEN, maxLength: EPISODE_DESC_MAX_LEN};
+  // Rss
+  if (valMsg === "rss.norssepisode") lengths = {};
+  if (valMsg === "rss.norsspodcast") lengths = {};
 
   return (
-    <p className={`text-red-300 flex ${className}`}>{t(valMsg, lengths)}</p>
+    <Transition
+        show={valMsg.length ? true : false}
+        appear={true}
+        enter="transform transition duration-[500ms]"
+        enterFrom="opacity-0 scale-75"
+        enterTo="opacity-100 scale-100"
+        leave="transform transition duration-[200ms]"
+        leaveFrom="opacity-100 scale-100"
+        leaveTo="opacity-75 scale-75"
+    >   
+      <p className={`text-red-300 flex ${className}`}>{t(valMsg, lengths)}</p>
+    </Transition>
   );
 }
 
