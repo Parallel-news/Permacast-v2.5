@@ -28,4 +28,4 @@ export default function LoadingLogo(props: LoadingLogoInter) {
             ></div>
         </Transition>
     )
-}
+} 
