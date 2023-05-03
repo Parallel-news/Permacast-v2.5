@@ -42,8 +42,8 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
 
   return (
     <div className={AppStyling} data-theme="permacast">
-      {!_firstRender && false && (<InitialLoad />)}
-      <div className={`${AppInnerStyling} ${false ? " hidden" : " flex"}`} style={{backgroundColor}}>
+      {!_firstRender && (<InitialLoad />)}
+      <div className={`${AppInnerStyling} ${!_firstRender ? " hidden" : " flex"}`} style={{backgroundColor}}>
         <Sidenav />
         {isQueueVisible && <EpisodeQueue />}
         {isFullscreen && <Fullscreen />}

@@ -72,7 +72,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   const [episodes, setEpisodes] = useState<FullEpisodeInfo[]>([]);
   const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
   const [allPodcasts_, setAllPodcasts_] = useRecoilState(allPodcasts);
-  const [, _setLoadingPage] = useRecoilState(loadingPage)
+  const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
 
   useEffect(() => {
     if (!userInfo) return;
@@ -107,8 +107,9 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   }, [allPodcasts_, userInfo]);
 
   useEffect(() => {
-    _setLoadingPage(false)
-  }, [])
+    const timer = setTimeout(() =>{_setLoadingPage(false);}, 1000);
+    return () => clearTimeout(timer);
+  }, [_loadingPage])
 
   const creator = {
     ...userInfo,
