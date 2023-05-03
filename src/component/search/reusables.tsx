@@ -6,6 +6,7 @@ import { FullEpisodeInfo, Podcast } from '../../interfaces';
 import Track from '../../component/reusables/track';
 import FeaturedPodcast, { featuredPocastCarouselStyling } from '../../component/home/featuredPodcast';
 import { convertPodcastsToEpisodes, removeDuplicates } from '../../utils/filters';
+import FeaturedPodcastCarousel from '../reusables/FeaturedPodcastCarousel';
 
 const searchContainerStyling = "text-white h-full pb-80"
 const resultsStyling = "text-2xl text-white font-bold mb-6"
@@ -58,11 +59,17 @@ export default function SearchSet({ query }) {
               {searchInput.length === 0 ? <div className={startTypingStyling}>{t("search.starttyping")}</div>: (
                 <div>
                   <div className={resultsStyling}>{t("search.podcasts")}</div>
+                  {/*Under Construction*/}
+                  <FeaturedPodcastCarousel 
+                    podcasts={filteredPodcasts}
+                  />
+                  {/*
                   <div className={featuredPocastCarouselStyling}>
                     {filteredPodcasts.map((podcast: Podcast, index: number) => (
                       <FeaturedPodcast {...podcast } key={index} />
                     ))}
                   </div>
+                  */}
                   <div className='mt-6'>
                     <div className={resultsStyling}>{t("search.episodes")}</div>
                     {filteredEpisodes.map((episode: FullEpisodeInfo, index: number) => (
