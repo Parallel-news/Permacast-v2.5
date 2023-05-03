@@ -121,13 +121,6 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
         {podcasts_.length > 0 ? (
           <>
             {isVisible && <FeaturedChannelModal {...{ isVisible, setIsVisible }} />}
-            {/* 
-            <div className={featuredPocastCarouselStyling}>
-              {podcasts_.map((podcast: Podcast, index: number) =>
-                <FeaturedPodcast {...podcast} key={index} />
-              )}
-            </div>
-            */}
             <FeaturedPodcastCarousel 
               podcasts={podcasts_}
             />

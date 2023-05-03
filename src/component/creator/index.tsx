@@ -10,6 +10,7 @@ import { PASoMProfile } from '../../interfaces/pasom';
 import TipButton from '../reusables/tip';
 import { flexCenter } from './featuredCreators';
 import { ExtendedDropdownButtonProps } from '../reusables/dropdown';
+import FeaturedPodcastCarousel from '../reusables/FeaturedPodcastCarousel';
 
 const CreatorNames = React.lazy(() => import('./reusables').then(module => ({default: module.CreatorNames})))
 const CreatorTipModal = React.lazy(() => import('./reusables').then(module => ({default: module.CreatorTipModal})))
@@ -93,7 +94,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [userModalIsOpen, setUserModalIsOpen] = useState<boolean>(false);
 
-  //useEffect(() => {setUserBannerImage(banner)}, [banner]);
+  useEffect(() => {setUserBannerImage(banner)}, [banner]);
   useEffect(() => {
     const isFollowing = PASoMProfile?.followers?.includes(address);
     setIsFollowing(isFollowing);
@@ -135,7 +136,15 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
           {address === user && <EditButton {...{ PASoMProfile }} />}
         </div>
       </div>
-      <>{podcasts.length !== 0 && <FeaturedPodcasts {...{ podcasts }} />}</>
+      {/*<>{podcasts.length !== 0 && <FeaturedPodcasts {...{ podcasts }} />}</>*/}
+      <>
+        {podcasts.length !== 0 && (
+          <FeaturedPodcastCarousel 
+            podcasts={podcasts}
+          />
+        )}
+      </>
+
       <>{episodes.length !== 0 && <LatestEpisodes {...{ episodes }} />}</>
     </div>
   );
