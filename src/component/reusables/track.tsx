@@ -1,25 +1,32 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { FC, useState, useMemo, useEffect } from "react";
 import { useTranslation } from "next-i18next";
+import React, { FC, useState, useMemo, useEffect } from "react";
 import { shortenAddress } from "react-arconnect";
+import { useRecoilState } from "recoil";
+import { Tooltip } from "@nextui-org/react";
+import { MicrophoneIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 
-import { ANSMapped, arweaveTX, FullEpisodeInfo } from "../../interfaces";
-import { determinePodcastURL, fetchDominantColor, getButtonRGBs, getCoverColorScheme, RGBAstringToObject, RGBobjectToString, RGBstringToObject } from "../../utils/ui";
-import { useShikwasa } from "../../hooks";
-import { showShikwasaPlayerArguments } from "../../interfaces/playback";
 import PlayButton from "./playButton";
 import MarkdownRenderer from "../markdownRenderer";
+
+import { allANSUsersAtom, loadingPage } from "../../atoms";
+import { ARSEED_URL, MESON_ENDPOINT, startId } from "../../constants";
+import { ANSMapped, FullEpisodeInfo } from "../../interfaces";
+import { showShikwasaPlayerArguments } from "../../interfaces/playback";
+import { useShikwasa } from "../../hooks";
 import { queryMarkdownByTX } from "../../utils/markdown";
-import { ARSEED_URL, ARWEAVE_READ_LINK, MESON_ENDPOINT, startId } from "../../constants";
+import {
+  determinePodcastURL,
+  fetchDominantColor,
+  getButtonRGBs,
+  getCoverColorScheme,
+  RGBAstringToObject,
+  RGBobjectToString,
+  RGBstringToObject
+} from "../../utils/ui";
 import { trimChars } from "../../utils/filters";
-import { flexCenter } from "../creator/featuredCreators";
-import { allANSUsersAtom } from "../../atoms";
-import { useRecoilState } from "recoil";
-import { MicrophoneIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
-import { Tooltip } from "@nextui-org/react";
-import { detectTimestampType, hasBeen10Min, reRoute} from "../../utils/reusables";
-import { useRouter } from "next/router";
+import { detectTimestampType, hasBeen10Min } from "../../utils/reusables";
 
 /**
  * Index
@@ -40,6 +47,7 @@ export interface TrackProps {
   openFullscreen?: boolean;
   includeDescription?: boolean,
   includePlayButton?: boolean,
+  includeContentType?: boolean,
 };
 
 export interface PodcastCoverProps {
@@ -64,7 +72,8 @@ export interface TrackCreatorLinkProps {
   uploader: string;
   buttonStyles: ButtonStyle;
   coverColor: string;
-  author: string;
+  minified?: boolean;
+  fontSize?: number;
 };
 
 export interface TrackDescriptionProps {
@@ -80,17 +89,23 @@ export interface TrackPlayButtonProps {
   accentColor: string;
 };
 
+export interface TrackContentTypeIconProps {
+  includeContentType: boolean;
+  isVideo: boolean;
+  className: string;
+};
+
 // 2. Stylings
 
 export const trackFlexCenterYStyling = `flex items-center mt-1 `;
 export const trackFlexCenterPaddedYStyling = `flex items-center flex-col md:flex-row justify-center p-3 space-y-3 md:space-y-0 w-[85%]`;
 export const trackFlexCenterBothStyling = `flex items-center justify-between border-zinc-600 border-2 rounded-2xl pr-4 `;
-export const trackEpisodeLinkableTitleStyling = `cursor-pointer line-clamp-1 pr-2 text-sm hover:underline `;
+export const trackEpisodeLinkableTitleStyling = `cursor-pointer line-clamp-1 pr-2 text-sm hover:underline select-text`;
 export const trackByStyling = `text-zinc-400 text-[10px] mr-2 `;
-export const trackBackgroundColorStyling = `rounded-full cursor-pointer flex items-center min-w-max text-[10px] gap-x-1 px-2 py-0.5 focus:brightness-150 hover:brightness-125 default-animation `;
+export const trackBackgroundColorStyling = `rounded-full cursor-pointer flex items-center min-w-max gap-x-1 px-2 py-0.5 brighten-animation `;
 export const trackDescriptionStyling = `mx-1.5 w-full line-clamp-1 text-xs `;
 export const trackMainInfoStyling = `ml-4 flex flex-col text-wrap `;
-export const trackPodcastInfoContainer = "flex flex-row md:items-center w-full md:min-w-[25%]"
+export const trackPodcastInfoContainer = `flex flex-row md:items-center w-full md:min-w-[25%] `;
 
 // 3. Custom Functions
 
@@ -101,13 +116,18 @@ export const trackPodcastInfoContainer = "flex flex-row md:items-center w-full m
 // 4. Reusable Components
 
 export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, timestamp }) => {
+  const [, _setLoadingPage] = useRecoilState(loadingPage)
   if (cover) return (
-    <Link href={`/podcast/${podcastURL}`} className={`w-14 h-14 shrink-0`}>
+    <Link
+      href={`/podcast/${podcastURL}`}
+      className={`w-14 h-14 shrink-0`}
+      onClick={() => _setLoadingPage(true)}
+    >
       <Image
         width={56}
         height={56}
         className="rounded-lg aspect-square object-cover w-14 h-14"
-        src={hasBeen10Min(timestamp) ? MESON_ENDPOINT+ cover : ARSEED_URL + cover }
+        src={hasBeen10Min(timestamp) ? MESON_ENDPOINT + cover : ARSEED_URL + cover}
         alt={alt}
       />
     </Link>
@@ -115,30 +135,35 @@ export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, ti
 };
 
 export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ podcastURL, eid, episodeName }) => {
-
-
+  const [, _setLoadingPage] = useRecoilState(loadingPage)
   return (
     <Link
-    href={`/episode/${podcastURL}/${trimChars(eid)}${startId}`}
+      href={`/episode/${podcastURL}/${trimChars(eid)}${startId}`}
       className={trackEpisodeLinkableTitleStyling}
+      onClick={() => _setLoadingPage(true)}
     >
       {episodeName}
     </Link>
   );
 };
 
-export const TrackCreatorLink: FC<TrackCreatorLinkProps> = ({ uploader, buttonStyles, coverColor, author }) => {
-  return (
+export const TrackCreatorLink: FC<TrackCreatorLinkProps> = ({ uploader, buttonStyles, coverColor, minified, fontSize }) => {
+  const text = uploader || "";
+  const uploaderText = shortenAddress(text, minified ? 8 : 16);
+  const [, _setLoadingPage] = useRecoilState(loadingPage);
+
+  if (buttonStyles.backgroundColor && buttonStyles.color) return (
     <Link
       href={`/creator/${uploader}`}
-      style={buttonStyles}
+      style={{ ...buttonStyles, fontSize: `${fontSize || 10}px` }}
       className={trackBackgroundColorStyling}
+      onClick={() => _setLoadingPage(true)}
     >
       <div
         className="h-2.5 w-2.5 rounded-full"
-        style={{backgroundColor: coverColor}}
+        style={{ backgroundColor: coverColor }}
       ></div>
-      <div>{uploader || author || ""}</div>
+      <div>{uploaderText}</div>
     </Link>
   );
 };
@@ -151,6 +176,18 @@ export const TrackDescription: FC<TrackDescriptionProps> = ({ includeDescription
   );
 };
 
+export const TrackContentTypeIcon: FC<TrackContentTypeIconProps> = ({ isVideo, className, includeContentType }) => {
+
+  const { t } = useTranslation();
+
+  if (includeContentType) return (
+    <Tooltip color="invert" content={t(isVideo ? "track.video" : "track.audio")}>
+      {isVideo ? <VideoCameraIcon {...{ className }} /> : <MicrophoneIcon {...{ className }} />}
+    </Tooltip>
+  );
+};
+
+
 export const TrackPlayButton: FC<TrackPlayButtonProps> = ({ playerInfo, episode, includePlayButton, buttonColor, accentColor }) => {
 
   const { playerState, launchPlayer, togglePlay } = useShikwasa();
@@ -161,8 +198,8 @@ export const TrackPlayButton: FC<TrackPlayButtonProps> = ({ playerInfo, episode,
     currentPodcast = playerState?.currentPodcast;
     currentEpisode = playerState?.currentEpisode;
     isPlaying = playerState?.isPlaying;
-  }
-  
+  };
+
   const episodeInfo = episode.episode;
   const podcastInfo = episode.podcast;
 
@@ -178,8 +215,8 @@ export const TrackPlayButton: FC<TrackPlayButtonProps> = ({ playerInfo, episode,
   const buttonStyleArgs = {
     size: 36,
     iconSize: 18,
-    buttonColor: accentColor,
-    accentColor: accentColor
+    buttonColor: accentColor || "rgb(0, 0, 0)",
+    accentColor: accentColor || "rgb(0, 0, 0)"
   };
 
   if (!includePlayButton) return <></>;
@@ -191,7 +228,7 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
 
   const { t } = useTranslation();
 
-  const { episode, openFullscreen, includeDescription, includePlayButton } = props;
+  const { episode, openFullscreen, includeDescription, includePlayButton, includeContentType } = props;
   const {
     cover,
     label,
@@ -204,36 +241,38 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     episodeName,
     contentTx,
     description,
+    thumbnail,
     type,
     eid,
     uploader,
     uploadedAt
   } = episode.episode;
 
-  const coverUsed = minifiedCover || cover;
+  const coverUsed = thumbnail || minifiedCover || cover;
 
   const [allANSUsers, setAllANSUsers] = useRecoilState(allANSUsersAtom);
 
   const [coverColor, setCoverColor] = useState<string>('');
   const [textColor, setTextColor] = useState<string>('');
-  const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({backgroundColor: '', color: ''})
+  const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({ backgroundColor: '', color: '' });
   const [markdown, setMarkdown] = useState<string>('');
   const [artist, setArtist] = useState<string>('');
 
   useMemo(() => {
     const ANS = allANSUsers.find((user: ANSMapped) => user.address === uploader);
     if (ANS) setArtist(ANS.primary + ".ar");
-    else setArtist(shortenAddress(uploader || author || "", 8));
-  }, []);
+    else setArtist(uploader);
+  }, [allANSUsers]);
 
-  useMemo(() => {
+  // WARNING: Switching to useMemo will trigger mounting error
+  useEffect(() => {
     const fetchData = async () => {
       if (!coverUsed) return;
       const dominantColor = await fetchDominantColor(coverUsed);
       if (dominantColor.error) return;
       const [coverColor, textColor] = getCoverColorScheme(dominantColor.rgba);
       const { r, g, b } = RGBAstringToObject(coverColor);
-      const RGBstring = RGBobjectToString({r, g, b});
+      const RGBstring = RGBobjectToString({ r, g, b });
       const buttonStyles = getButtonRGBs(RGBstringToObject(RGBstring));
       setCoverColor(coverColor);
       setTextColor(textColor);
@@ -248,36 +287,34 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     playerColorScheme: coverColor,
     buttonColor: textColor,
     accentColor: textColor,
-    openFullscreen, 
+    openFullscreen: true,
     title: episodeName,
     artist,
     cover: coverUsed,
     src: contentTx,
   };
 
-  const podcastURL =  determinePodcastURL(label, pid);
+  const podcastURL = determinePodcastURL(label, pid);
   const isVideo = type.includes("video");
-  const className = 'w-4 h-4 hover:white zinc-600 mx-1'
-  
+  const timestamp = detectTimestampType(uploadedAt) === "seconds" ? uploadedAt * 1000 : uploadedAt;
+  const className = `w-4 h-4 hover:white zinc-600 mx-1 `;
+
   return (
     <div className={trackFlexCenterBothStyling}>
       <div className={trackFlexCenterPaddedYStyling}>
         <span className={trackPodcastInfoContainer}>
-          <PodcastCover {...{ podcastURL, cover: coverUsed, alt: podcastName, timestamp: detectTimestampType(uploadedAt) === "seconds" ? uploadedAt * 1000 : uploadedAt}} />
+          <PodcastCover {...{ podcastURL, cover: coverUsed, alt: podcastName, timestamp }} />
           <div className={trackMainInfoStyling}>
             <EpisodeLinkableTitle {...{ podcastURL, eid, episodeName }} />
             <div className={trackFlexCenterYStyling}>
               <p className={trackByStyling}>{t("track.by")}</p>
-              <div className={`flex items-center `}>
-                <TrackCreatorLink {...{ uploader: artist, buttonStyles, coverColor, author }} />
-                <Tooltip color='invert' content={t(isVideo ? "track.video" : t("track.audio"))}>
-                  {isVideo ? <VideoCameraIcon {...{className}} /> : <MicrophoneIcon {...{className}} />}
-                </Tooltip>
+              <div className={`flexCenter `}>
+                <TrackCreatorLink {...{ uploader: artist, buttonStyles, coverColor }} minified />
+                <TrackContentTypeIcon {...{ isVideo, className, includeContentType }} />
               </div>
             </div>
           </div>
         </span>
-        
         <div className="flex justify-start w-full md:pl-4 lg:pl-0">
           <TrackDescription {...{ includeDescription, description: markdown }} />
         </div>

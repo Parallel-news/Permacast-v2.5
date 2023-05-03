@@ -4,30 +4,25 @@
 		"coming-soon": "Coming soon",
 		"markdown-supported": "Markdown Supported"
 	},
-	"arconnect": {
-		"load-failed": "Everpay failed to load. Please try again later.",
-		"profile": "View Profile",
-		"arpage": "View on ar.page",
-		"everpay": "Top up with Everpay",
-		"disconnect": "Disconnect"
-	},
 	"navbar": {
 		"home": "Home",
-		"help": "Get help",
-		"new": "What's new",
-		"wallets": "Wallets",
-		"swal": {
-			"title": "New in permacast V3 ✨",
-			"html": "<li>iTunes/Spotify compatible RSS imports via the upcoming permacast CLI</li><li>Gas cost reduction</li><li>Auto-protection from duplicated uploads</li><li><a href='https://github.com/Parallel-news/permacast/issues/46'>Read full changelog</a></li>"
-		}
+		"help": "Get help"
 	},
-	"connector": {
-		"login": "ArConnect login",
-		"logout": "Logout",
-		"swal": {
-			"title": "Install ArConnect to continue",
-			"text": "Permacast uses ArConnect to make it easier to authenticate and send transactions for questions and answers",
-			"footer": "Download ArConnect here"
+	"wallet": {
+		"connect": "Connect Wallet",
+		"arconnect": {
+			"login": "🦔 ArConnect Login",
+			"logout": "Logout",
+			"load-failed": "Everpay failed to load. Please try again later.",
+			"profile": "View Profile",
+			"arpage": "View on ar.page",
+			"everpay": "Top up with Everpay",
+			"disconnect": "Disconnect"
+		},
+		"modal": {
+			"choose": "Select which wallet to connect with",
+			"not-detected": "not detected",
+			"download-wallet": "You can download it here: "
 		}
 	},
 	"home": {
@@ -48,8 +43,8 @@
 		"episodes": "Episodes",
 		"recentlyadded": "Recently added",
 		"featuredcreators": "Featured creators",
-		"add-podcast": "Add podcast",
-		"add-episode": "Add episode"
+		"add-podcast": "Add Podcast",
+		"add-episode": "Add Episode"
   },
 	"search" : {
 		"placeholder": "Search for a podcast",
@@ -67,6 +62,8 @@
 	},
 	"uploadshow": {
 		"addpodcast": "Add Podcast",
+		"editpodcast": "Edit Podcast",
+		"editepisode": "Edit Episode",
 		"title": "New Show",
 		"uploadstitle": "Uploads",
 		"label": "Short URL",
@@ -78,7 +75,7 @@
 		"email": "Email",
 		"language": "Podcast language",
 		"category": "Category",
-		"explicit": "Contains explicit content",
+		"explicit": "Contains Explicit Content",
 		"contentaudio": "Audio only",
 		"contentvideo": "Video only",
 		"connect-wallet": "Connect wallet",
@@ -87,6 +84,9 @@
 		"cancel": "Cancel",
 		"feetext": "Uploading the show will cost: ",
 		"feeexplanation": "We charge a flat fee to prevent spam",
+		"hide": "Hide",
+		"calculatingFee": "Calculating Fee...",
+		"uploadCost": "Upload Cost",
 		"validation": {
 			"name": "Podcast name must be between {{minLength}} and {{maxLength}} characters.",
 			"description": "Description must be between {{minLength}} and {{maxLength}} characters",
@@ -147,9 +147,14 @@
 		"toupload": "to upload",
 		"upload": "Upload",
 		"uploading": "Uploading, please wait...",
-		"uploaded": "Uploaded"
+		"uploaded": "Uploaded",
+		"validation": {
+			"name": "Name must be between {{minLength}} and {{maxLength}} characters.",
+			"description": "Description must be between {{minLength}} and {{maxLength}} characters"
+		}
 	},
 	"podcast": {
+		"expand": "Expand",
 		"newepisode": "Add Episode"
 	},
 	"episode": {
@@ -217,6 +222,9 @@
 	"fullscreen": {
 		"episode": "Episode"
 	},
+	"cropImage": {
+		"crop": "Crop"
+	},
 	"view": "View",
 	"textTruncate": {
 		"showMore": "Show More",
@@ -250,10 +258,13 @@
 		"savingBanner": "Uploading Banner Cover",
 		"uploading": "Uploading"
 	},
-	"viewPodcasts": {
+	"feed-page": {
 		"allpodcasts": "All Podcasts",
 		"showNewest": "Show Newest",
-		"showOldest": "Show Oldest"
-	}
+		"showOldest": "Show Oldest",
+		"hide0EpisodePodcasts": "Hide 0 Episode Podcasts",
+		"show0EpisodePodcasts": "Show 0 Episode Podcasts"
+	},
+	"edit": "Edit"
 	
 }

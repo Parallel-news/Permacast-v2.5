@@ -36,20 +36,20 @@ export const BackgroundImage: FC<BackgroundImageProps> = ({ cover, episodeName }
 
 export const FullscreenEpisodeText: FC<{ currentEpisodeIndex: number, episodeName: string }> = ({ currentEpisodeIndex, episodeName }) => {
   const { t } = useTranslation();
-  
+
   return (
     <>
       <div className={WhiteLargeFont + " mt-5"}>
         {t("fullscreen.episode")} #{currentEpisodeIndex + 1}
       </div>
-    <div className={LargeGrayTextStyling + "mt-2"}>{episodeName}</div>
-  </>
+      <div className={LargeGrayTextStyling + "mt-2"}>{episodeName}</div>
+    </>
   );
 };
 
-export const FullscreenStaticImage: FC<FullscreenStaticImageProps> = ({ cover, episodeName, currentEpisodeIndex}) => {
+export const FullscreenStaticImage: FC<FullscreenStaticImageProps> = ({ cover, episodeName, currentEpisodeIndex }) => {
   const { t } = useTranslation();
-  
+
   return (
     <div className={FullscreenInnerContentStyling}>
       <Image
@@ -64,22 +64,22 @@ export const FullscreenStaticImage: FC<FullscreenStaticImageProps> = ({ cover, e
   );
 };
 
-export const FullscreenVideo: FC<FullscreenStaticImageProps> = ({ episodeName, currentEpisodeIndex}) => {
-  
+export const FullscreenVideo: FC<FullscreenStaticImageProps> = ({ episodeName, currentEpisodeIndex }) => {
+
   const [loaded, setLoaded] = useState<boolean>(false);
-  
+
   useEffect(() => {
-    setTimeout(() => setLoaded(true), 4000)
+    setTimeout(() => setLoaded(true), 4000);
   }, []);
 
   return (
     <div className={FullscreenVideoWrapperStyling}>
       <div id="video-player" className="h-full flex justify-center items-center"></div>
-      <div className={FullscreenEpisodeTextStyling + (loaded ? "hover:opacity-100 opacity-0 hover:bg-black/40 p-6 lg:p-5": "opacity-100") }>
+      <div className={FullscreenEpisodeTextStyling + (loaded ? "hover:opacity-100 opacity-0 hover:bg-black/40 p-6 lg:p-5" : "opacity-100")}>
         <FullscreenEpisodeText {...{ currentEpisodeIndex, episodeName }} />
       </div>
     </div>
-  )
+  );
 };
 
 
@@ -98,9 +98,9 @@ const Fullscreen: FC = () => {
 
   return (
     <div className={FullscreenOuterStyling}>
-      <BackgroundImage {...{ cover,episodeName }} />
+      <BackgroundImage {...{ cover, episodeName }} />
       {isAudio && <FullscreenStaticImage {...{ cover, episodeName, currentEpisodeIndex }} />}
-      {isVideo && <FullscreenVideo {...{ episodeName, currentEpisodeIndex}}  />}
+      {isVideo && <FullscreenVideo {...{ episodeName, currentEpisodeIndex }} />}
     </div>
   );
 };

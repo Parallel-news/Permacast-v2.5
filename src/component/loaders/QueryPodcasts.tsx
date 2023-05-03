@@ -1,6 +1,6 @@
 import { FC, useEffect } from "react";
 import axios from 'axios';
-import { Episode, EXMDevState, FullEpisodeInfo, Podcast } from '../../interfaces';
+import { Episode, EXMState, FullEpisodeInfo, Podcast } from '../../interfaces';
 import { allPodcasts } from '../../atoms';
 import { useRecoilState } from "recoil";
 
@@ -9,10 +9,9 @@ const QueryPodcasts: FC = () => {
 
   useEffect(() => {
     if (allPodcasts_.length !== 0) return;
-    console.log('initial load for QueryPodcasts.tsx');
     const fetchPodcasts = async () => {
       const data = (await axios.get('/api/exm/read')).data;
-      const exmState: EXMDevState = data;
+      const exmState: EXMState = data;
       const { podcasts } = exmState;
       setAllPodcasts_(podcasts);
     }

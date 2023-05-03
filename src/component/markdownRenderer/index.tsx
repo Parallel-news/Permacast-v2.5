@@ -7,8 +7,10 @@ interface MarkdownInter {
   align?: string;
 }
 
+const MarkdownStyle = `select-text `;
+
 const MarkdownRenderer = (props: MarkdownInter) => {
-  return <ReactMarkdown className={props.color+" "+props.align}>{props.markdownText}</ReactMarkdown>;
+  return <ReactMarkdown className={MarkdownStyle + props.color+" "+props.align}>{props.markdownText}</ReactMarkdown>;
 };
 
 export default MarkdownRenderer;

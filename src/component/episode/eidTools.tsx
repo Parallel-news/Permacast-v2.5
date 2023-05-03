@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { DescriptionButton } from "../reusables/buttons";
 import { 
-    HeartIcon, 
+    CurrencyDollarIcon, 
     ArrowDownTrayIcon, 
     ArrowTopRightOnSquareIcon, 
+    PlusIcon
 } from '@heroicons/react/24/solid';
 
 import { hexToRGB } from "../../utils/reusables";
@@ -16,6 +17,9 @@ import { FullEpisodeInfo } from "../../interfaces";
 
 import TextTruncate from "../TextTruncate";
 import Track from "../reusables/track";
+import { useArconnect } from "react-arconnect";
+import { loadingPage } from "../../atoms";
+import { useRecoilState } from "recoil";
 /**
  * Index
  * 1. Interfaces
@@ -39,10 +43,13 @@ export interface EpisodeInfoButtonsInter {
     setLoadTipModal: (v: any) => void;
     setLoadShareModal: (v: any) => void;
     podcastId?: string;
+    episodeId?: string;
     mediaLink?: string;
     episodeName?: string;
     podcastOwner: string;
     playButton: JSX.Element;
+    eid: string;
+    pid: string;
 }
 
 export interface EpisodeInfoSubInter {
@@ -57,6 +64,7 @@ export interface EpisodeBannerInter extends EpisodeInfoInter {
     imgSrc: string;
     mediaLink: string;
     playButton: JSX.Element;
+    
 }
 
 export interface EpisodeInfoInter extends EpisodeInfoSubInter {
@@ -65,6 +73,7 @@ export interface EpisodeInfoInter extends EpisodeInfoSubInter {
     setLoadShareModal: () => void;
     mediaLink: string;
     podcastOwner: string;
+    eid: string;
     playButton: JSX.Element;
 
 }
@@ -117,10 +126,10 @@ export interface ErrorTagInter {
 }
 
 // 2. Stylings
-export const episodeIconStyling = "mr-2 w-4 h-4"
+export const episodeIconStyling = "w-[20px] h-[20px]"
 export const creatorTagDivStyling = "flex flex-row space-x-3"
 export const byStyling = "text-neutral-400 text-[12px] inline"
-export const episodeInfoButtonsStyling = "flex flex-row items-center space-x-1 sm:space-x-3 md:space-x-6 pt-3 sm:pt-0"
+export const episodeInfoButtonsStyling = "flex flex-row items-center space-x-1 sm:space-x-3 md:space-x-6 xl:space-x-8 pt-3 sm:pt-0 w-full"
 export const episodeBoxTitleDataImg = "object-cover h-12 rounded-xl"
 export const errorTagStyle = "w-full flex justify-center items-center"
 export const episodeDateStyling = "text-gray-500 text-[11px] font-bold"
@@ -128,14 +137,14 @@ export const creatorTagImgStyling = "object-cover h-4 rounded-full mr-1"
 export const errorTagMsgStyle = "text-neutral-400 text-xl font-semibold"
 export const episodeBoxTitleStyling = "text-lg text-white font-semibold"
 export const episodeBannerStyling = "flex flex-col lg:flex-row w-full space-x-0 lg:space-x-16 space-y-4 lg:space-y-0 items-start justify-start"
-export const episodeInfoStyling = "flex flex-col xl:flex-row justify-start items-start lg:items-center space-y-4 px-0 xl:px-10 xl:space-x-8"
+export const episodeInfoStyling = "flex flex-col xl:flex-row justify-start items-start lg:items-center space-y-4 px-0 xl:px-2 xl:space-x-8"
 export const episodeInfoSubStyling = "flex flex-row items-center space-x-3 justify-start xl:justify-start pb-2"
 export const podcastIdStyling = "flex flex-col space-y-8 w-[100%] mb-[200px]"
 export const creatorTagStyling = "flex flex-row items-center p-1.5 rounded-3xl"
 export const episodeBoxTitleDataStyling = "flex flex-row items-center space-x-3 w-[30%]"
 export const nextEpisodeTitleStyling = "text-2xl text-neutral-300/90 font-semibold"
 export const episodeNumberStyling = "rounded-2xl bg-gray-400/30 p-2 py-1 text-[11px]"
-export const episodeTitleStyling = "select-text text-[30px] md:text-[35px] xl:text-[40px] font-medium pb-0 flex items-end text-left md:text-center lg:text-start pb-0 xl:pb-4"
+export const episodeTitleStyling = "select-text text-[25px] md:text-[30px] xl:text-[35px] font-medium pb-0 flex items-end text-left md:text-center lg:text-start pb-0 xl:pb-4"
 export const nextEpisodeStyling = "w-full flex flex-col space-y-6  overflow-auto overflow-x-hidden h-[425px]"
 export const textTruncateButtonStyling = "text-gray-400 font-bold hover:text-blue-400 transition duration-400 ease-in-out"
 export const episodeBoxStyling = "w-[98%] rounded-2xl border-2 border-gray-400/30 p-3 flex flex-row justify-between items-center bg-black"
@@ -165,6 +174,7 @@ export const EpisodeBanner = (props: EpisodeBannerInter) => {
                 playButton={props.playButton}
                 podcastName={props.podcastName}
                 pid={props.pid}
+                eid={props.eid}
             />
         </div>
     )
@@ -172,9 +182,9 @@ export const EpisodeBanner = (props: EpisodeBannerInter) => {
 
 export const EpisodeInfo = (props: EpisodeInfoInter) => {
     return (
-        <div className={`${episodeInfoStyling} space-y-3 xl:space-y-0`}>
-            <div className="space-y-3 xl:space-y-0">
-                <p className={episodeTitleStyling} style={{color: props.color}}>{props.title}</p>
+        <div className={`${episodeInfoStyling} space-y-3 xl:space-y-0 w-full`}>
+            <div className="space-y-3 xl:space-y-0 w-full xl:w-[85%]">
+                <p className={episodeTitleStyling} style={{color: "rgb(255, 255, 255)"}}>{props.title}</p>
                 <EpisodeInfoSub 
                     color={props.color}
                     episodeNum={props.episodeNum}
@@ -191,12 +201,15 @@ export const EpisodeInfo = (props: EpisodeInfoInter) => {
                 episodeName={props.title}
                 podcastOwner={props.podcastOwner}
                 playButton={props.playButton}
+                eid={props.eid}
+                pid={props.pid}
             />
         </div>
     )
 }
 
 export const EpisodeInfoSub = (props: EpisodeInfoSubInter) => {
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
     return(
         <>
             <div className={episodeInfoSubStyling}>
@@ -206,15 +219,23 @@ export const EpisodeInfoSub = (props: EpisodeInfoSubInter) => {
                 />
                 <p className={episodeDateStyling}>{props.date}</p>
             </div>
-            <Link href={`/podcast/${props.pid}`} className="text-slate-300 text-[16px] font-semibold hover:text-white transition-colors duration-500 pt-2">{props.podcastName}</Link>
+            <Link 
+                href={`/podcast/${props.pid}`} 
+                className="text-slate-300 text-[16px] font-semibold hover:text-white transition-colors duration-500 pt-2"
+                onClick={() => _setLoadingPage(true)}
+            >
+                {props.podcastName}
+            </Link>
         </>
     )
 }
 
 export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
-    const { color } = props
+    const { color, podcastOwner } = props
     const [downloading, setDownloading] = useState<boolean>(false)
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
     const { t } = useTranslation();
+    const { address } = useArconnect()
 
     const downloadFile = async () => {
         setDownloading(true)
@@ -233,23 +254,34 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
     return (
         <div className={episodeInfoButtonsStyling}>
             <>{props.playButton}</>
+            {address !== podcastOwner && (
             <DescriptionButton
-                icon={<HeartIcon className={episodeIconStyling} />} 
-                text={t("tip")}
+                icon={<CurrencyDollarIcon className={episodeIconStyling} />} 
+                text={""}
                 color={color} 
                 onClick={props.setLoadTipModal}
             />
+            )}
+            {address === podcastOwner && (
+            <Link href={`/edit-episode/${props.pid}/${props.eid}`} onClick={() => _setLoadingPage(true)}>
+                <DescriptionButton
+                    icon={<PlusIcon className={episodeIconStyling} />} 
+                    text={""}
+                    color={color} 
+                />
+            </Link>
+            )}
             {downloading ?
             <DescriptionButton
-                icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
-                text={"Fetching"}
+                icon={<span className="animate-ping absolute inline-flex h-[10px] w-[10px] rounded-full bg-white opacity-75"></span>} 
+                text={""}
                 color={color}
                 onClick={() => ""}
             />
             :
             <DescriptionButton
                 icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
-                text={t("episode.download")}
+                text={""}
                 color={color}
                 onClick={() => downloadFile()}
             />
@@ -257,7 +289,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
 
             <DescriptionButton
                 icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
-                text={t("episode.share")}
+                text={""}
                 color={color}
                 onClick={props.setLoadShareModal}
             />
@@ -295,7 +327,7 @@ export const Episodes = (props: EpisodesInter) => {
             {/*Loop Episodes*/}
             {episodeList.length > 0 ?
                 episodeList.map((episode: FullEpisodeInfo, index) => (
-                    <Track {...{ episode }} includeDescription includePlayButton />
+                    <Track {...{ episode }} includeDescription includePlayButton includeContentType />
                 ))
             :
                 <p className="text-neutral-400">None to Show.</p>

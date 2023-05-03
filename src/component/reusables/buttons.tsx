@@ -1,19 +1,20 @@
 
 import { useTranslation } from 'next-i18next';
-import { MouseEventHandler, ReactElement } from 'react';
+import { FC, MouseEventHandler, ReactElement } from 'react';
 
 interface DescriptionButtonInter {
     icon: ReactElement<any, any>;
     text: string;
     color: string;
     onClick?: MouseEventHandler<HTMLDivElement>;
-}
+};
 
-export const DescriptionButton = (props: DescriptionButtonInter) => {
-    const { t } = useTranslation();
-    return (
-        <div className="flex flex-row items-center normal-case rounded-full border-0 p-2 px-2 sm:px-2.5 bg-gray-400/30 cursor-pointer w-fit" style={{color: props.color, backgroundColor: "grey"}} onClick={props.onClick}>
-            {props.icon}<span className="font-semibold text-base">{props.text}</span>
+const descriptionButtonStyling = `flex flex-row items-center justify-center normal-case rounded-full border-0 p-2 px-2 sm:px-2.5 bg-gray-400/30 cursor-pointer w-[40px] h-[40px] `;
+
+export const DescriptionButton: FC<DescriptionButtonInter> = ({ color, icon, text, onClick }) => {
+    if (icon && color) return (
+        <div className={descriptionButtonStyling} style={{ color: color, backgroundColor: "grey" }} onClick={onClick}>
+            {icon}{text && (<span className="font-semibold text-base whitespace-nowrap">{text}</span>)}
         </div>
-    )
-}
+    );
+};

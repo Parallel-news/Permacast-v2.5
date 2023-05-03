@@ -3,7 +3,9 @@ import { EXM_READ_LINK, NO_SHOW } from "../../constants";
 import { getContractVariables } from "../../utils/contract";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from "next-i18next";
-import React from "react";
+import React, { useEffect } from "react";
+import { useRecoilState } from "recoil";
+import { loadingPage } from "../../atoms";
 
 const ShowForm = React.lazy(() => import("../../component/uploadShow/uploadShowTools").then(module => ({ default: module.ShowForm })));
 
@@ -13,12 +15,19 @@ const uploadShowStyling = "w-full flex flex-col justify-center items-center spac
 export default function UploadShow({yourShows, error}) {
 
     const { t } = useTranslation();
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
+
+    useEffect(() => {
+      _setLoadingPage(false)
+    }, [])
 
     return (
         <div className={uploadShowStyling}>
             <p className={showTitleStyling}>{t("uploadshow.addpodcast")}</p>
             <ShowForm 
                 podcasts={yourShows}
+                edit={false}
+                selectedPid=""
             />
         </div>
     )

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { episodeDescStyling, episodeNameStyling } from "../uploadEpisode/uploadEpisodeTools";
 import { categories_en } from "../../utils/languages";
 
-import { AR_DECIMALS, CONNECT_WALLET, EVERPAY_AR_TAG, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
+import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EVERPAY_AR_TAG, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
 import { isValidEmail } from "../reusables/formTools";
 import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
 import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob } from "../../utils/fileTools";
@@ -11,7 +11,7 @@ import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { allFieldsFilled, byteSize, checkConnection, handleError, validateLabel} from "../../utils/reusables";
 import Everpay, { ChainType } from "everpay";
 import { useRecoilState } from "recoil";
-import { arweaveAddress } from "../../atoms";
+import { arweaveAddress, loadingPage, podcastColorAtom } from "../../atoms";
 
 import axios from "axios";
 import { useTranslation } from "next-i18next";
@@ -19,12 +19,15 @@ import { Podcast } from "../../interfaces";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast"
 import React from "react";
+import { VisibleInput } from "./reusables";
+import { PermaSpinner } from "../reusables";
+import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
+import ProgressBar from "../reusables/progressBar";
 
 const MarkDownToolTip = React.lazy(() => import("../reusables/tooltip").then(module => ({ default: module.MarkDownToolTip })));
 const CoverContainer = React.lazy(() => import("./reusables").then(module => ({ default: module.CoverContainer })));
 const ExplicitInput = React.lazy(() => import("./reusables").then(module => ({ default: module.ExplicitInput })));
 const SelectDropdownRow = React.lazy(() => import("./reusables").then(module => ({ default: module.SelectDropdownRow })));
-const PermaSpinner = React.lazy(() => import("../reusables/PermaSpinner").then(module => ({ default: module.PermaSpinner })));
 const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.ConnectButton })));
 const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
 const ValMsg = React.lazy(() => import("../reusables/formTools").then(module => ({default: module.ValMsg})))
@@ -35,12 +38,12 @@ export default function uploadShowTools() {
 
 // 1. Interfaces
 interface ShowFormInter {
-    podcasts: Podcast[]
+    podcasts: Podcast[],
+    edit: boolean,
+    selectedPid?: string
 }
 
 // 2. Stylings
-
-
 export const spinnerClass = "w-full flex justify-center mt-4"
 export const showFormStyling = "w-full flex flex-col justify-center items-center space-y-2"
 export const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex flex-row justify-start items-start focus-within:ring-white focus-within:ring-2"
@@ -52,6 +55,7 @@ export const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex f
  * @param {string - form type} type 
  * @returns Validation message || ""
  */
+
 export const handleValMsg = (input: string, type: string, input2: any ="") => {
     switch(type) {
         case 'podName':
@@ -89,13 +93,15 @@ export const handleValMsg = (input: string, type: string, input2: any ="") => {
   
 // 4. Components
 export const ShowForm = (props: ShowFormInter) => {
+    
     // hooks
     const { t } = useTranslation();
     const { address, ANS, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
-    const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
-    const [submittingShow, setSubmittingShow] = useState<boolean>(false)
-    const [uploadCost, setUploadCost] = useState<Number>(0)
+    const [arweaveAddress_, ] = useRecoilState(arweaveAddress);
+    const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
+    const [submittingShow, setSubmittingShow] = useState<boolean>(false);
+    const [uploadCost, setUploadCost] = useState<Number>(0);
     const router = useRouter();
 
     // inputs
@@ -105,9 +111,11 @@ export const ShowForm = (props: ShowFormInter) => {
     const [podcastCategory_, setPodcastCategory_] = useState<number>(0);
     const [podcastName_, setPodcastName_] = useState("");
     const [podcastCover_, setPodcastCover_] = useState(null);
+    const [coverUrl, setCoverUrl] = useState<string>("")
     const [podcastLanguage_, setPodcastLanguage_] = useState('en');
     const [podcastExplicit_, setPodcastExplicit_] = useState(false);
     const [podcastLabel_, setPodcastLabel_] = useState("");
+    const [isVisible, setIsVisible] = useState<boolean>(true)
 
     // Validations
     const [podNameMsg, setPodNameMsg] = useState("");
@@ -115,6 +123,8 @@ export const ShowForm = (props: ShowFormInter) => {
     const [podAuthMsg, setPodAuthMsg] = useState("");
     const [podEmailMsg, setPodEmailMsg] = useState("");
     const [labelMsg, setLabelMsg] = useState("");
+    const [progress, setProgress] = useState(0)
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
     const validationObject = {
         "nameError": podNameMsg.length === 0,
         "descError": podDescMsg.length === 0,
@@ -128,9 +138,18 @@ export const ShowForm = (props: ShowFormInter) => {
         "lang": podcastLanguage_.length > 0,
         "cat": true, // default is 0 which always defaults to Arts
         "cover": podcastCover_ !== null
-    }
-    useEffect(() => console.log("allFieldsFilled: ", allFieldsFilled(validationObject)), [validationObject]);
-    useEffect(() => console.log("object: ", validationObject), [validationObject]);
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!podcastCover_) return;
+            const dominantColor = await fetchDominantColor(podcastCover_, false, false);
+            if (dominantColor.error) return;
+            const [coverColor, _] = getCoverColorScheme(dominantColor.rgba);
+            setPodcastColor(coverColor);
+        };
+        fetchData();
+      }, [podcastCover_]);
 
     // Hook Calculating Upload Cost
     useEffect(() => {
@@ -151,7 +170,7 @@ export const ShowForm = (props: ShowFormInter) => {
         if(podcastDescription_.length > 0 && podcastCover_ !== null) {
             calculateTotal().then(async total => {
                 const formattedTotal = total / AR_DECIMALS
-                setUploadCost(formattedTotal+MIN_UPLOAD_PAYMENT)
+                setUploadCost(props.edit ? formattedTotal : formattedTotal+MIN_UPLOAD_PAYMENT)
             })
         } else {
             setUploadCost(0)
@@ -160,7 +179,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
     //EXM 
     const createShowPayload = {
-        "function": "createPodcast",
+        "function": props.edit ? "editPodcastMetadata" : "createPodcast",
         "name": podcastName_,
         "desc": "",
         "author": podcastAuthor_,
@@ -168,34 +187,40 @@ export const ShowForm = (props: ShowFormInter) => {
         "isExplicit": podcastExplicit_ ? "yes" : "no",
         "categories": categories_en[podcastCategory_],
         "email": podcastEmail_,
-        "cover": "",
+        "cover": podcastCover_,
         "minifiedCover": "",
         "label": podcastLabel_,
         "jwk_n": "",
         "txid": "",
-        "sig": ""
+        "sig": "",
+        "isVisible": isVisible,
+        "pid": props.edit ? props.selectedPid : ""
     }
 
     async function submitShow(payloadObj: any) {
         // Check Connection
-        
+
         if (!checkConnection(arweaveAddress_)) {
             toast.error(CONNECT_WALLET, {style: TOAST_DARK})
             return false
         }
+
         setSubmittingShow(true)
+
         const handleErr = handleError
         // Package EXM Call
+
         const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
         payloadObj["sig"] = await createSignature(data, defaultSignatureParams, "base64");
         payloadObj["jwk_n"] = await getPublicKey()
-        
+
+
         // Description to Arseeding
         const toastDesc = toast.loading(t("loadingToast.savingDesc"), {style: TOAST_DARK, duration: 10000000});
+        setProgress(props.edit ? 25 : 20)
         try {
             const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
             toast.dismiss(toastDesc);
-            //const name = await upload2DMedia(podcastName_); payloadObj["name"] = name?.order?.itemId
         } catch (e) {
             toast.dismiss(toastDesc);
             console.log(e); handleErr(t("errors.descUploadError"), setSubmittingShow); return;
@@ -203,6 +228,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
         // Covers to Arseeding
         const toastCover = toast.loading(t("loadingToast.savingCover"), {style: TOAST_DARK, duration: 10000000});
+        setProgress(props.edit ? 50 : 40)
         try {
             const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
             const cover = await upload3DMedia(convertedCover, convertedCover.type); payloadObj["cover"] = cover?.order?.itemId
@@ -215,28 +241,32 @@ export const ShowForm = (props: ShowFormInter) => {
         }
 
         // Fee to Everpay
-        const toastFee = toast.loading(t("loadingToast.payingFee"), {style: TOAST_DARK, duration: 10000000});
-        try {
-            const everpay = new Everpay({account: address, chainType: ChainType.arweave, arJWK: 'use_wallet',});
-            const transaction = await everpay.transfer({
-                tag: EVERPAY_AR_TAG,
-                amount: String(MIN_UPLOAD_PAYMENT),
-                to: EVERPAY_EOA,
-                data: {action: "createPodcast", name: podcastName_,}
-            })
-            payloadObj["txid"] = transaction?.everHash
-            toast.dismiss(toastFee);
-        } catch (e) {
-            toast.dismiss(toastFee);
-            console.log(e); handleErr(t("error.everpayError"), setSubmittingShow); return;
+        if(!props.edit) {
+            const toastFee = toast.loading(t("loadingToast.payingFee"), {style: TOAST_DARK, duration: 10000000});
+            setProgress(60)
+            try {
+                const everpay = new Everpay({account: address, chainType: ChainType.arweave, arJWK: 'use_wallet',});
+                const transaction = await everpay.transfer({
+                    tag: EVERPAY_AR_TAG,
+                    amount: String(MIN_UPLOAD_PAYMENT),
+                    to: EVERPAY_EOA,
+                    data: {action: "createPodcast", name: podcastName_,}
+                })
+                payloadObj["txid"] = transaction?.everHash
+                toast.dismiss(toastFee);
+            } catch (e) {
+                toast.dismiss(toastFee);
+                console.log(e); handleErr(t("error.everpayError"), setSubmittingShow); return;
+            }
         }
         //Error handling and timeout needed for this to complete redirect
         const toastSaving = toast.loading(t("loadingToast.savingChain"), {style: TOAST_DARK, duration: 10000000});
+        setProgress(props.edit ? 80: 75)
         setTimeout(async function () {
-            const result = await axios.post('/api/exm/write', createShowPayload);
-            setSubmittingShow(false)
+            await axios.post('/api/exm/write', createShowPayload);
             //EXM call, set timeout, then redirect.
             toast.dismiss(toastSaving); 
+            setProgress(100)
             toast.success(t("success.showUploaded"), {style: TOAST_DARK})
             setTimeout(async function () {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
@@ -245,6 +275,40 @@ export const ShowForm = (props: ShowFormInter) => {
             }, 2500)
         }, 5000)
     }
+
+    // Inserts Editting Info
+    useEffect(() => {
+        if(props.edit) {
+            const restoreSavedData = async () => {
+                const podcast = props.podcasts.filter((podcast, ) => podcast.pid === props.selectedPid)
+                const p = podcast[0]
+                //Set all state variables
+                setPodcastName_(p.podcastName)
+                const description = (await axios.get(ARSEED_URL + p.description)).data;
+                setPodcastDescription_(description)
+                setPodcastAuthor_(p.author)
+                setPodcastEmail_(p.email)
+                
+                //Recreate Cover for Upload
+                setCoverUrl(p.cover)
+                fetch(ARSEED_URL+p.cover)
+                .then((rs) => rs.blob())
+                .then((blob) => {
+                  const url = URL.createObjectURL(blob);
+                  setPodcastCover_(url);
+                });
+                setPodcastLanguage_(p.language)
+                setPodcastCategory_(categories_en.findIndex(cat => cat === p.categories[0]))
+                setPodcastExplicit_(p.explicit === "no" ? false : true)
+                setPodcastLabel_(p.label ? p.label : "")
+                _setLoadingPage(false)
+            }
+            restoreSavedData()
+            //loading modal NEEDED
+        } else {
+            _setLoadingPage(false)
+        }
+    }, [])
 
     return (
         <div className={showFormStyling}>
@@ -256,13 +320,15 @@ export const ShowForm = (props: ShowFormInter) => {
                 <div className="w-[25%] flex justify-center mb-4 lg:mb-0">
                     <CoverContainer 
                         setCover={setPodcastCover_}
+                        isEdit={props.edit}
+                        editCover={ARSEED_URL+coverUrl}
                     />
                 </div>
                 <div className="flex flex-col w-[95%] md:w-[75%] lg:w-[50%] space-y-3">
                     {/*
                         Episode Name
                     */}
-                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="showName" placeholder={t("uploadshow.name")} 
+                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="showName" placeholder={t("uploadshow.name")} value={podcastName_} 
                     onChange={(e) => {
                       setPodNameMsg(handleValMsg(e.target.value, "podName"));
                       setPodcastName_(e.target.value);
@@ -273,7 +339,7 @@ export const ShowForm = (props: ShowFormInter) => {
                         Episode Description
                     */}
                     <div className={descContainerStyling}>
-                        <textarea className={"w-[93%] "+episodeDescStyling + " h-32 "} required title="Between 1 and 5000 characters" name="showShowNotes" placeholder={t("uploadshow.description")}                     
+                        <textarea className={"w-[93%] "+episodeDescStyling + " h-32 "} required title="Between 1 and 5000 characters" name="showShowNotes" placeholder={t("uploadshow.description")} value={podcastDescription_}                     
                         onChange={(e) => {
                         setPodDescMsg(handleValMsg(e.target.value, "podDesc"));
                         setPodcastDescription_(e.target.value);
@@ -288,7 +354,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Author
                     */}
-                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Author" type="text" name="showName" placeholder={t("uploadshow.author")}                   
+                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Author" type="text" name="showName" placeholder={t("uploadshow.author")} value={podcastAuthor_}                  
                     onChange={(e) => {
                         setPodAuthMsg(handleValMsg(e.target.value, "podAuthor"));
                         setPodcastAuthor_(e.target.value);
@@ -298,7 +364,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Email
                     */}
-                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Email" type="text" name="showName" placeholder={t("uploadshow.email")}                   
+                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Email" type="text" name="showName" placeholder={t("uploadshow.email")} value={podcastEmail_}                   
                     onChange={(e) => {
                         setPodEmailMsg(handleValMsg(e.target.value, "podEmail"));
                         setPodcastEmail_(e.target.value);
@@ -316,15 +382,24 @@ export const ShowForm = (props: ShowFormInter) => {
                         setLabelMsg={setLabelMsg}
                         labelMsg={labelMsg}
                         podcasts={props.podcasts}
+                        categoryIndex={podcastCategory_}
+                        languageCode={podcastLanguage_}
                     />
                     {/*
-                        Explicit
+                        Explicit & Is Visible
                     */}
-                    <ExplicitInput 
-                        setExplicit={setPodcastExplicit_}
-                        explicit={podcastExplicit_}
-                    />
-
+                    <div className="flex flex-row justify-between items-center">
+                        <ExplicitInput 
+                            setExplicit={setPodcastExplicit_}
+                            explicit={podcastExplicit_}
+                        />
+                        {props.edit && (
+                        <VisibleInput 
+                            setVisible={setIsVisible}
+                            visible={isVisible}
+                        />
+                        )}
+                    </div>
                     {/*
                         Upload
                     */}
@@ -338,11 +413,9 @@ export const ShowForm = (props: ShowFormInter) => {
                         />
                         )}
                         {address && address.length > 0 && submittingShow && (
-                        <PermaSpinner 
-                            spinnerColor={SPINNER_COLOR}
-                            size={10}
-                            divClass={spinnerClass}
-                        />
+                            <ProgressBar
+                                value={progress}
+                            />
                         )}
                         {!address && (
                             <ConnectButton 
@@ -352,10 +425,10 @@ export const ShowForm = (props: ShowFormInter) => {
                             />
                         )}
                         {uploadCost === 0 && podcastDescription_.length > 0 && podcastCover_ && (
-                        <p className="mt-2 text-neutral-400">Calculating Fee...</p> 
+                        <p className="mt-2 text-neutral-400">{t("uploadshow.calculatingFee")}</p> 
                         )}
                         {uploadCost !== 0 && podcastDescription_.length > 0 && podcastCover_ && (
-                        <p className="mt-2 text-neutral-400">{"Upload Cost: "+(Number(uploadCost)).toFixed(6) +" AR"}</p>
+                        <p className="mt-2 text-neutral-400">{t("uploadshow.uploadCost")+": "+(Number(uploadCost)).toFixed(6) +" AR"}</p>
                         )}
                     </div>
                 </div>

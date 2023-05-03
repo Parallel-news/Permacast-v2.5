@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 import { CURRENT_EPISODE_TEMPLATE, CURRENT_PODCAST_TEMPLATE, DEFAULT_BACKGROUND_COLOR, DEFAULT_PODCAST_COLOR, DEFAULT_THEME_COLOR } from '../constants/ui';
-import { ANSMapped, Ans, Episode, FullEpisodeInfo, Podcast } from '../interfaces';
+import { ANSMapped, Ans, Episode, FullEpisodeInfo, Podcast, availableWallets } from '../interfaces';
 import { RGBorRGBAstring } from '../interfaces/ui';
 import { PASoMProfile } from '../interfaces/pasom';
 
@@ -189,8 +189,40 @@ export const userBannerImageAtom = atom<string>({
     default: ""
 });
 
+// *** Filters ***
+
 export const chronStatusAtom = atom<number>({
     key: 'chronStatus',
     default: 0
 });
+
+export const hide0EpisodesAtom = atom<boolean>({
+    key: 'hide0EpisodesAtom',
+    default: true    
+});
 // *** ------- ***
+
+export const selectedWalletAtom = atom<availableWallets>({
+    key: 'selectedWalletAtom',
+    default: 'arconnect'
+});
+
+export const selectWalletModalVisibilityAtom = atom<boolean>({
+    key: 'selectWalletModalVisibilityAtom',
+    default: false
+});
+
+export const walletNotDetectedModalVisibilityAtom = atom<boolean>({
+    key: 'walletNotDetectedModalVisibilityAtom',
+    default: false
+});
+
+export const firstRender = atom<boolean>({
+    key: 'firstRender',
+    default: false
+})
+
+export const loadingPage = atom<boolean>({
+    key: 'loadingPage',
+    default: false
+})

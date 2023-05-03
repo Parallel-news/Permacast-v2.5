@@ -1,19 +1,26 @@
 import axios from 'axios';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import { EXM_READ_LINK, NO_SHOW } from '../../constants';
 import { getContractVariables } from '../../utils/contract';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { loadingPage } from '../../atoms';
+import { useRecoilState } from 'recoil';
 
 const episodeTitleStyling = "text-white text-xl mt-4"
 const showErrorTag = "flex justify-center items-center m-auto text-white font-semibold text-xl"
-const uploadEpisodeStyling = "flex flex-col justify-center items-center m-auto space-y-3 relative pb-[250px]"
+const uploadEpisodeStyling = "flex flex-col justify-center items-center m-auto space-y-3 relative"
 
 const EpisodeForm = React.lazy(() => import("../../component/uploadEpisode/uploadEpisodeTools").then(module => ({ default: module.EpisodeForm })));
 
 export default function UploadEpisode({yourShows, error, pid}) {
     
     const { t } = useTranslation();
+    const [, _setLoadingPage] = useRecoilState(loadingPage)
+
+    useEffect(() => {
+      _setLoadingPage(false)
+    }, [])
 
     if(error.length > 0) {
       return (
@@ -26,6 +33,8 @@ export default function UploadEpisode({yourShows, error, pid}) {
             <EpisodeForm 
               shows={yourShows}
               pid={pid}
+              eid={""}
+              edit={false}
             />
         </div>
       )

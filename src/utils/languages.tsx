@@ -545,7 +545,14 @@ export const languages_zh = {
   zu: "祖鲁语",
 };
 
-export const LANGUAGES = [
+export interface LanguageOptionInterface {
+  code: string;
+  name: string;
+  categories: string[];
+  languages: Record<string, string>;
+};
+
+export const LANGUAGES: LanguageOptionInterface[] = [
   {
     "code": "en",
     "name": "English",
@@ -578,13 +585,25 @@ export const useLanguageHook = () => {
   return [langsArray, categoriesArray];
 };
 
-export const LanguageOptions: FC = ({ }) => {
+export const findCategoryIndex = (en_category: string) => {
+  return categories_en.indexOf(categories_en.find((category: string) => category === en_category));
+};
+
+export const getCategoryInCurrentLanguage = (categoriesArray, enCategory) => {
+  return categoriesArray.find((category: string[]) => Number(category[0]) === findCategoryIndex(enCategory));
+};
+
+interface LanguageOptionsProps {
+  languageCode: string; // Set to 0 as default 
+}
+
+export const LanguageOptions: FC<LanguageOptionsProps> = ({ languageCode }) => {
   const [langsArray, _] = useLanguageHook();
 
   return (
     <>
       {langsArray.map((lang: string[]) => 
-        <option value={lang[0]} key={lang[1]}>
+        <option value={lang[0]} key={lang[1]} selected={languageCode === lang[0]}>
           {lang[1]}
         </option>
       )}
@@ -592,15 +611,17 @@ export const LanguageOptions: FC = ({ }) => {
   )
 };
 
+interface CategoryOptionsProps {
+  categoryId: number; // Set to 0 as default 
+}
 
-export const CategoryOptions: FC = ({ }) => {
+export const CategoryOptions: FC<CategoryOptionsProps> = ({ categoryId }) => {
   const [_, categoriesArray] = useLanguageHook();
 
-  // <option disabled defaultValue>Category</option>
   return (
     <>
-      {categoriesArray.map((lang: string[]) => 
-        <option value={lang[1]} key={lang[0]}>
+      {categoriesArray.map((lang: string[], index: number) => 
+        <option value={lang[1]} key={lang[0]} selected={index === categoryId}>
           {lang[1]}
         </option>
       )}

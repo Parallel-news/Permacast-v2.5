@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { Ans, Episode, FullEpisodeInfo, Podcast } from '../../../interfaces';
 import { hexToRGB, RGBobjectToString } from '../../../utils/ui';
-import { allPodcasts, podcastColorAtom } from '../../../atoms';
+import { allPodcasts, loadingPage, podcastColorAtom } from '../../../atoms';
 import { Creator404, sortByDate } from '../../../component/creator';
 import { ANS_TEMPLATE } from '../../../constants/ui';
 import { ARWEAVE_READ_LINK } from '../../../constants';
@@ -37,7 +37,8 @@ export async function getStaticProps(context) {
   const isAddress = address.length === 43;
 
   try {
-    const info = (await axios.get(`https://ans-resolver.herokuapp.com/resolve-as-arpage/${address}`)).data;
+    const lookupAddress = !isAddress && address.includes('.ar') ? address.split('.')[0] : address
+    const info = (await axios.get(`https://ans-resolver.herokuapp.com/resolve-as-arpage/${lookupAddress}`)).data;
     if (info?.user) {
       userInfo = info;
       userInfo.ANSuserExists = true;
@@ -65,23 +66,22 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) return <Creator404 address={userInfo?.user || ''} />
 
   const { user, nickname, currentLabel, address_color, bio, avatar } = userInfo;
-
   const [PASoMProfile, setPASoMProfile] = useState<PASoMProfile | undefined>();
-
   const creatorName = nickname || currentLabel || shortenAddress(user);
-
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [episodes, setEpisodes] = useState<FullEpisodeInfo[]>([]);
-
   const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
   const [allPodcasts_, setAllPodcasts_] = useRecoilState(allPodcasts);
+  const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
 
   useEffect(() => {
+    if (!userInfo) return;
     const color = RGBobjectToString(hexToRGB(address_color || "#000000"));
     setPodcastColor(color);
   }, [userInfo]);
 
   useEffect(() => {
+    if (!userInfo) return;
     const fetchPASoM = async () => {
       const state = (await axios.get('/api/exm/PASoM/read')).data;
       const profiles: PASoMProfile[] = state.profiles;
@@ -89,9 +89,10 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
       setPASoMProfile(profile);
     };
     fetchPASoM();
-  }, []);
+  }, [userInfo]);
 
   useEffect(() => {
+    if (!userInfo) return;
     if (!allPodcasts_) return;
     const fetchUserData = async () => {
       const podcasts: Podcast[] = allPodcasts_.filter((podcast: Podcast) => podcast.owner === user);
@@ -103,7 +104,12 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
       setEpisodes(sortedEpisodes.slice().reverse());
     };
     fetchUserData();
-  }, [allPodcasts_]);
+  }, [allPodcasts_, userInfo]);
+
+  useEffect(() => {
+    const timer = setTimeout(() =>{_setLoadingPage(false);}, 1000);
+    return () => clearTimeout(timer);
+  }, [_loadingPage])
 
   const creator = {
     ...userInfo,

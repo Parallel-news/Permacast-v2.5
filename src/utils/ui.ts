@@ -6,6 +6,7 @@ import { podcastCoverColorManager } from './localstorage';
 import { ARSEED_URL, ARWEAVE_READ_LINK } from '../constants/index.js';
 import { arweaveTX, Podcast } from '../interfaces/index.js';
 import { trimChars } from './filters';
+import Player from '../shikwasa-src/player.js';
 
 export const determinePodcastURL = (label: string, pid: string) => label || trimChars(pid);
 
@@ -198,14 +199,14 @@ export function getButtonRGBs(rgb: RGB, textLightness=0.8, backgroundLightness=0
 };
 
 // Fetches the color, but also stores it in memory for later use.
-export const fetchDominantColor = async (cover: string): Promise<FastAverageColorResult> => {
+export const fetchDominantColor = async (cover: string, saveInLocal=true, useArseed=true): Promise<FastAverageColorResult> => {
   if (!cover) return;
   try {
     const savedColor = podcastCoverColorManager.getValueFromObject(cover);
     if (savedColor) return {rgb: '', rgba: savedColor, hex: '', isDark: false, isLight: false, hexa: '', value: [0,0,0,0]};
     const fac = new FastAverageColor();
-    const averageColor: FastAverageColorResult = await fac.getColorAsync(ARSEED_URL + cover, { algorithm: 'dominant' })
-    podcastCoverColorManager.addValueToObject(cover, averageColor.rgba);
+    const averageColor: FastAverageColorResult = await fac.getColorAsync((useArseed ? ARSEED_URL : "") + cover, { algorithm: 'dominant' })
+    if (saveInLocal) podcastCoverColorManager.addValueToObject(cover, averageColor.rgba);
     return averageColor;      
   } catch {
     console.log('error fetching dominant color')
@@ -216,7 +217,7 @@ export const fetchDominantColor = async (cover: string): Promise<FastAverageColo
 export const getCoverColorScheme = (RGBAstring: RGBorRGBAstring): RGBorRGBAstring[] => {
   const rgba: RGBA = RGBAstringToObject(RGBAstring);
   const coverColor = isTooDark(rgba, 0.15) ? RGBobjectToString(replaceDarkColorsRGB(rgba, 0.5)): RGBAobjectToString(rgba);
-  const textColor = isTooLight(rgba, 0.8) ? "rgb(0, 0, 0)" : "rgb(255, 255, 255)";
+  const textColor = isTooLight(rgba, 0.8) ? "rgb(40, 40, 40)" : "rgb(255, 255, 255)";
   return [coverColor, textColor];
 };
 
@@ -275,3 +276,13 @@ export const showShikwasaPlayer: ShowShikwasaPlayerInterface = ({
   window.scrollTo(0, document.body.scrollHeight);
   return player;
 };
+
+export const showEmptyShikwasaPlayer = (): Player => {
+  return new Shikwasa({
+    container: () => document.getElementById('podcast-player'),
+    theme: `dark`,
+    audio: { title: "", artist: "", cover: "", src: "" },
+  });
+}
+
+export const hideShikwasaPlayer = () => document.getElementById('podcast-player').innerHTML = '';

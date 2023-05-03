@@ -1,14 +1,14 @@
 import Head from 'next/head';
 import Script from 'next/script';
 import { appWithTranslation } from 'next-i18next';
-import React, { Suspense, startTransition, useEffect, useState } from 'react';
+import React from 'react';
 import { RecoilRoot } from 'recoil';
 import { ArconnectProvider } from 'react-arconnect';
-import localStorageObjectManager, { PODCAST_COVER_COLORS_MANAGER, PODCAST_DESCRIPTION_MANAGER } from '../utils/localstorage';
 import { PERMISSIONS } from '../constants/arconnect';
 import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import '../styles/globals.css';
+import { SSRProvider } from '@react-aria/ssr';
 
 const QueryPodcasts = React.lazy(() => import('../component/loaders/QueryPodcasts'));
 const QueryANS = React.lazy(() => import('../component/loaders/QueryANS'));
@@ -18,8 +18,6 @@ const ShikwasaProviderLazy = React.lazy(() => import('../hooks').then(module => 
 // fetch data in _app.tsx -> populate recoil -> re-write search to query from that recoil state, if it fails then fuse.js
 
 function App({ Component, pageProps }) {
-
-  const [appIsLoaded, setAppIsLoaded] = useState<boolean>(false)
 
   return (
     <RecoilRoot>
@@ -56,7 +54,9 @@ function App({ Component, pageProps }) {
           </Script>
           <ShikwasaProviderLazy>
             <Layout>
-              <Component {...pageProps} className="scrollbar-container"/>
+              <SSRProvider>
+                <Component {...pageProps} className="scrollbar-container"/>
+              </SSRProvider>
             </Layout>
           </ShikwasaProviderLazy>
         </ArconnectProvider>

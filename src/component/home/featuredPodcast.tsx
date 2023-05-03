@@ -1,15 +1,19 @@
-import React, { useState, useEffect, FC } from "react";
-import { useTranslation } from "next-i18next";
-import { determinePodcastURL, fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
-import { arweaveTX, Podcast } from "../../interfaces/index";
-import Link from "next/link";
-import FeaturedPodcastPlayButton from "./featuredPodcastPlayButton";
 import Image from "next/image";
-import { ARSEED_URL, startId } from "../../constants";
+import Link from "next/link";
+import { useTranslation } from "next-i18next";
+import React, { useState, useEffect, FC } from "react";
+
+import { arweaveTX, Podcast } from "../../interfaces/index";
+import { showShikwasaPlayerArguments } from "../../interfaces/playback";
+
 import MarkdownRenderer from "../markdownRenderer";
+import FeaturedPodcastPlayButton from "./featuredPodcastPlayButton";
+import { ARSEED_URL, startId } from "../../constants";
 import { queryMarkdownByTX } from "../../utils/markdown";
 import { convertPodcastsToEpisodes } from "../../utils/filters";
-import { useRouter } from "next/router";
+import { determinePodcastURL, fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
+import { useRecoilState } from "recoil";
+import { loadingPage } from "../../atoms";
 
 
 
@@ -43,7 +47,7 @@ interface PodcastDescriptionProps {
 
 // 2. Stylings
 
-export const featuredPocastCarouselStyling = `w-full mt-8 carousel gap-x-12 py-3`;
+export const featuredPocastCarouselStyling = `w-full mt-8 carousel gap-x-4 py-3`;
 export const podcastOuterBackgroundStyling = `rounded-3xl text-white/30 relative overflow-hidden carousel-item hover-up-effect max-w-[280px] default-outline `
 export const podcastInnerBackgroundStyling = `w-full h-1/6 px-5 pb-2 cursor-pointer relative`
 export const podcastCoverStyling = `w-full max-w-[250px] overflow-x-hidden mx-auto mb-2`
@@ -117,7 +121,8 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
   const [themeColor, setThemeColor] = useState<string>('');
   const [textColor, setTextColor] = useState<string>('');
   const [markdownText, setMarkdownText] = useState<string>('');
-
+  const [, _setLoadingPage] = useRecoilState(loadingPage)
+  
   useEffect(() => {
     const fetchMarkdown = async (tx: arweaveTX) => {
       const text = await queryMarkdownByTX(tx);
@@ -137,17 +142,22 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
       fetchColors();
       fetchMarkdown(description);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     };
-  }, []);
-
-  useEffect(() => {
-    queryMarkdownByTX(description).then(setMarkdownText);
-  }, []);
+  }, [podcastInfo]);
 
   const episodes = convertPodcastsToEpisodes([podcastInfo]);
   const episode = episodes.length ? episodes[0]: undefined
-  const playerInfo = { playerColorScheme: themeColor, buttonColor: themeColor, accentColor: textColor, title: episode?.episode?.episodeName, artist: author, cover, src: episode?.episode?.contentTx };
+  const playerInfo: showShikwasaPlayerArguments = {
+    playerColorScheme: themeColor,
+    openFullscreen: true,
+    buttonColor: themeColor,
+    accentColor: textColor,
+    title: episode?.episode?.episodeName,
+    artist: author,
+    cover,
+    src: episode?.episode?.contentTx
+  };
 
   const prevent = (event: any) => {
     event.preventDefault();
@@ -163,10 +173,13 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
       href={`/podcast/${determinePodcastURL(label, pid)}${startId}`}
       className={podcastOuterBackgroundStyling}
       style={{ backgroundColor: themeColor }}
-      onClick={() => window.scrollTo(0, 0) }
+      onClick={() => {
+        window.scrollTo(0, 0)
+        
+      }}
     >
       <div className={podcastInnerBackgroundStyling}>
-        <div>
+        <div onClick={() => _setLoadingPage(true)}>
           <EpisodeCount count={episodes.length} textColor={textColor} />
           <PocastCover podcastName={podcastName} cover={cover} />
         </div>
@@ -174,7 +187,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
           <div onClick={prevent}>
             <FeaturedPodcastPlayButton {...{ playerInfo, podcastInfo, episodes }} />
           </div>
-          <div className="ml-3 w-full" style={{color: textColor}}>
+          <div className="ml-3 w-full cursor-default" style={{color: textColor}}>
             <PodcastName podcastName={podcastName} />
             <PodcastDescription podcastDescription={markdownText} />
           </div>

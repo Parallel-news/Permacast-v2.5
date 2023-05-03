@@ -11,7 +11,7 @@ interface ThemedButtonInterface {
   className?: string;
 };
 
-export const hoverableLinkButtonStyling = `px-3 py-2 rounded-full text-sm ml-5 cursor-pointer hover:brightness-[3] default-animation outline-inherit `;
+export const hoverableLinkButtonStyling = `px-3 py-2 rounded-full text-sm ml-5 cursor-pointer hover:brightness-[3] default-animation outline-inherit min-w-max `;
 export const themedButtonIconStyling = `text-inherit w-4 h-4 `;
 
 const ThemedButton: FC<ThemedButtonInterface> = ({ children, onClick, disabled, className }) => {

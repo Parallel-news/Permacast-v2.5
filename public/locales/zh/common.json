@@ -4,34 +4,29 @@
 		"coming-soon": "即将推出",
 		"markdown-supported": "支持降价"
 	},
-	"arconnect": {
-		"load-failed": "Everpay加载失败。请稍后再试。",
-    "profile": "查看个人资料",
-    "arpage": "在 ar.page 上查看",
-		"everpay": "使用 Everpay 充值",
-    "disconnect": "断开连接"
-  },
 	"navbar": {
-		"home": "主页",
-		"help": "获取帮助",
-		"new": "新功能",
-		"wallets": "钱包",
-		"swal": {
-			"title": "Permacast V2 新功能 ✨",
-			"html": "<li>为任何播客生成符合 Spotify 和 Apple 标准的 RSS 源</li><li>剧集作为原子 NFT，可在 Verto 上展示!</li>"
-		}
+		"home": "首页",
+		"help": "获取帮助"
 	},
-	"connector": {
-		"login": "ArConnect 登录",
-		"logout": "登出",
-		"swal": {
-			"title": "安装 ArConnect 以继续",
-			"text": "Permacast 使用 ArConnect 让认证和发送交易更加容易",
-			"footer": "下载 ArConnect"
+	"wallet": {
+		"connect": "连接钱包",
+		"arconnect": {
+			"login": "🦔 登录 ArConnect",
+			"logout": "退出",
+			"load-failed": "Everpay 加载失败。请稍后再试。",
+			"profile": "查看个人资料",
+			"arpage": "在 ar.page 上查看",
+			"everpay": "使用 Everpay 充值",
+			"disconnect": "断开连接"
+		},
+		"modal": {
+			"choose": "选择要连接的钱包",
+			"not-detected": "未检测到",
+			"download-wallet: ": "您可以在此处下载："
 		}
 	},
 	"home": {
-    "hi": "你好, ",
+		"hi": "你好, ",
 		"welcome": "欢迎",
 		"subtext": "让我们看看我们今天有什么",
 		"get-featured": "推广您的播客",
@@ -50,8 +45,8 @@
 		"featuredcreators": "精选创作者",
 		"add-podcast": "添加播客",
 		"add-episode": "添加剧集"
-  },
-	"search" : {
+	},
+	"search": {
 		"placeholder": "搜索播客",
 		"loading": "下载播客标题...",
 		"starttyping": "开始输入搜索",
@@ -67,6 +62,8 @@
 	},
 	"uploadshow": {
 		"addpodcast": "添加播客",
+		"editpodcast": "编辑播客",
+		"editepisode": "编辑剧集",
 		"title": "添加新的节目",
 		"uploadstitle": "上传",
 		"label": "短网址",
@@ -87,6 +84,9 @@
 		"uploading": "加工...",
 		"cancel": "取消",
 		"feetext": "上传节目的费用：",
+		"hide": "隐藏",
+		"calculatingFee": "计算费用...",
+		"uploadCost": "上传费用",
 		"validation": {
 			"name": "播客名称必须介于 {{minLength}} 和 {{maxLength}} 个字符之间。",
 			"description": "描述必须介于 {{minLength}} 和 {{maxLength}} 个字符之间",
@@ -147,13 +147,18 @@
 		"toupload": "来进行上传",
 		"upload": "上传",
 		"uploading": "上传中，请耐心等待...",
-		"uploaded": "已完成"
+		"uploaded": "已完成",
+		"validation": {
+			"name": "名称必须介于 {{minLength}} 和 {{maxLength}} 个字符之间。",
+			"description": "说明必须介于 {{minLength}} 和 {{maxLength}} 个字符之间。"
+		}
 	},
 	"podcast": {
+		"expand": "展开",
 		"newepisode": "添加新剧集"
 	},
 	"episode": {
-    	"number": "数字",
+		"number": "数字",
 		"download": "下载",
 		"nextepisode": "下一集",
 		"share": "分享",
@@ -161,7 +166,7 @@
 		"nodescription": "无描述",
 		"fetching": "取",
 		"noneToShow": "没有显示..."
-  },
+	},
 	"creator": {
 		"ans": "ANS 地址",
 		"edit": "编辑个人资料",
@@ -181,7 +186,7 @@
 				"nickname": "昵称必须在 {{minLength}} 到 {{maxLength}} 个字符之间。",
 				"bio": "简介必须在 {{minLength}} 到 {{maxLength}} 个字符之间。"
 			}
-		},		
+		},
 		"verification": {
 			"verified": {
 				"text": "已验证",
@@ -215,6 +220,9 @@
 	"fullscreen": {
 		"episode": "剧集"
 	},
+	"cropImage": {
+		"crop": "裁剪"
+	},
 	"view": "看法",
 	"share": {
 		"Checkthis": "看一下这个",
@@ -224,7 +232,7 @@
 		"submitTip": "提交提示",
 		"balance": "平衡"
 	},
-	"errors": { 
+	"errors": {
 		"everpayError": "您的 Everpay 余额/连接有问题",
 		"coverUploadError": "上传您的封面时出现问题。再试一次。",
 		"mediaUploadError": "上传您的媒体时出现问题。再试一次。",
@@ -244,9 +252,12 @@
 		"savingBanner": "上传横幅封面",
 		"uploading": "上传中"
 	},
-	"viewPodcasts": {
+	"feed-page": {
 		"allpodcasts": "所有播客",
 		"showNewest": "显示最新",
-		"showOldest": "显示最旧"
-	}
+		"showOldest": "显示最旧",
+		"hide0EpisodePodcasts": "隐藏 0 集的播客",
+		"show0EpisodePodcasts": "显示有 0 集的播客"
+	},
+	"edit": "编辑"
 }

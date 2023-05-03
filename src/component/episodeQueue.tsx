@@ -1,10 +1,13 @@
-import React, { FC } from 'react';
 import { useTranslation } from 'next-i18next';
-import Track from './reusables/track';
+import React, { FC } from 'react';
 import { useRecoilState } from 'recoil';
+import { PlusIcon } from '@heroicons/react/24/solid';
+
+import Track from './reusables/track';
+
 import { isQueueVisibleAtom, queueAtom } from '../atoms';
 import { FullEpisodeInfo } from '../interfaces';
-import { PlusIcon } from '@heroicons/react/24/solid';
+import { DEFAULT_BACKGROUND_COLOR } from '../constants/ui';
 
 /**
  * Index
@@ -21,7 +24,7 @@ export interface CrossIconProps {
 };
 
 // 2. Stylings
-const episodeQueueStyling = "rounded-l-3xl w-72 text-white h-screen overflow-y-auto p-4 bg-zinc-800 default-animation absolute z-50 bottom-0 right-0";
+const episodeQueueStyling = "rounded-l-3xl w-72 text-white h-screen overflow-y-auto p-4 default-animation absolute z-50 bottom-0 right-0";
 const topTextWrapperStyling = "flex items-center justify-between mb-4 font-bold text-xl";
 const crossStyling = "rotate-45 text-zinc-400 hover:text-white default-animation";
 
@@ -31,7 +34,7 @@ const crossStyling = "rotate-45 text-zinc-400 hover:text-white default-animation
 
 export const CrossIcon: FC<CrossIconProps> = ({ size, onClick }) => (
   <button onClick={onClick}>
-    <PlusIcon className={crossStyling} style={{width: size, height: size}} />
+    <PlusIcon className={crossStyling} style={{ width: size, height: size }} />
   </button>
 );
 
@@ -53,14 +56,14 @@ const EpisodeQueue: FC = () => {
     <div>
       {queue.map((episode: FullEpisodeInfo, index: number) => (
         <div key={index} className="mb-2 relative">
-          <Track {...{episode }} includePlayButton />
+          <Track {...{ episode }} includePlayButton />
         </div>
       )) || <p className="text-zinc-400">{t("queue.emptyqueue")}</p>}
     </div>
   );
 
   return (
-    <div className={episodeQueueStyling}>
+    <div className={episodeQueueStyling} style={{ backgroundColor: DEFAULT_BACKGROUND_COLOR }}>
       <TopText />
       <QueueList />
     </div>
