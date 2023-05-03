@@ -7,7 +7,7 @@ import { useRecoilState } from "recoil";
 import { Divider, Modal } from "@nextui-org/react";
 
 import {
-    HeartIcon,
+    CurrencyDollarIcon,
     PlusIcon,
     ArrowTopRightOnSquareIcon,
     ArrowsPointingOutIcon,
@@ -230,7 +230,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             {props.playButton}
             {address !== props.podcastOwner && (
             <DescriptionButton
-                icon={<HeartIcon className={episodeIconStyling} />} 
+                icon={<CurrencyDollarIcon className={episodeIconStyling} />} 
                 text={""}
                 color={color}
                 onClick={props.setLoadTipModal} 

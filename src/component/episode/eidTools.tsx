@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { DescriptionButton } from "../reusables/buttons";
 import { 
-    HeartIcon, 
+    CurrencyDollarIcon, 
     ArrowDownTrayIcon, 
     ArrowTopRightOnSquareIcon, 
     PlusIcon
@@ -256,7 +256,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
             <>{props.playButton}</>
             {address !== podcastOwner && (
             <DescriptionButton
-                icon={<HeartIcon className={episodeIconStyling} />} 
+                icon={<CurrencyDollarIcon className={episodeIconStyling} />} 
                 text={""}
                 color={color} 
                 onClick={props.setLoadTipModal}
