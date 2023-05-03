@@ -141,7 +141,7 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
     const [isVisible, setIsVisible] = useState<boolean>(false)
     const { address,  } = useArconnect();
     const yourShows = props.shows.filter((item: Podcast) => item.owner === address)
-    console.log("_arweaveAddress: ", address)
+
     let selectedShow;
     let selectedShowIndex;
     if(props.pid.length > 0) {
