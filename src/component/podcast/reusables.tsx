@@ -66,7 +66,7 @@ const podcastTitlePreviewStyling = podcastInfoTitleStyling + ` text-4xl line-cla
 const podcastTitleModalStyling = podcastInfoTitleStyling + ` text-xl mt-2 `;
 const podcastButtonsStyling = "flex flex-row items-center space-x-6 justify-start";
 const podcastInfoTitleDivStyling = "flex flex-col ml-0 m-0 pr-8";
-const episodeIconStyling = "mr-2 w-4 h-4";
+const episodeIconStyling = "w-[20px] h-[20px]";
 const coloredButtonPaddingStying = `rounded-full px-2 py-0.5 `;
 
 export const PodcastInfo: FC<PodcastInfoInter> = ({
@@ -170,7 +170,7 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
                 </h1>
                 <MarkdownRenderer markdownText={markdownText} color={'line-clamp-3 text-white text-sm '} />
                 {(buttonStyles.backgroundColor && buttonStyles.color) && (
-                    <div className="flexCenterGap mt-3 ">
+                    <div className="flexCenterGap mt-3 flex-wrap gap-2">
                         <div className="max-w-max">
                             <TrackCreatorLink {...{ uploader, buttonStyles, coverColor, fontSize: 16 }} />
                         </div>
@@ -231,7 +231,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             {address !== props.podcastOwner && (
             <DescriptionButton
                 icon={<HeartIcon className={episodeIconStyling} />} 
-                text={t("tip")}
+                text={""}
                 color={color}
                 onClick={props.setLoadTipModal} 
             />
@@ -249,21 +249,21 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             <Link href={`/edit-podcast/${props.podcastId}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
                     icon={<PlusIcon className={episodeIconStyling} />} 
-                    text={t("edit")}
+                    text={""}
                     color={color}
                 />
             </Link>
             )}
             <DescriptionButton
                 icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
-                text={t("share.share")}
+                text={""}
                 color={color}
                 onClick={props.setLoadShareModal}
             />
             <a target="_blank" rel="noreferrer" href={RSS_FEED_URL + podcastId}>
                 <DescriptionButton
                     icon={<RssIcon className={episodeIconStyling} />}
-                    text={"rss"}
+                    text={""}
                     color={color}
                 />
             </a>
