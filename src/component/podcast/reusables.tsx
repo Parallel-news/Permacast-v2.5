@@ -88,14 +88,11 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
     const [coverColor, setCoverColor] = useState<string>('');
     const [uploader, setUploader] = useState<string>('');
     const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({ backgroundColor: '', color: '' });
-    console.log("MAG: ", podcast.categories[0])
     const category = getCategoryInCurrentLanguage(categoriesArray, podcast.categories[0]);
     let adjCategory = undefined
     if(category) {
         adjCategory = category[1]
     }
-    //const category = "art"
-    console.log("FUNC: ", categoriesArray)
     const language = languagesArray.find(item => item[0] === podcast.language)[1]
     const formattedDate = getFormattedTimeStamp(podcast.createdAt);
 
