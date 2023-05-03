@@ -266,7 +266,6 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             }, 3500)
         }, 4000)
     }
-    console.log("epThumbnailUrl :", epThumbnailUrl)
     //Submit Episode Function
     return(
         <div className={episodeFormStyling + " pb-10"}>
