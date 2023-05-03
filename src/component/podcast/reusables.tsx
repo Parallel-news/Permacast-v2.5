@@ -14,7 +14,8 @@ import {
     RssIcon,
     HashtagIcon,
     LanguageIcon,
-    AtSymbolIcon
+    AtSymbolIcon,
+    PencilSquareIcon
 } from "@heroicons/react/24/solid";
 
 import MarkdownRenderer from "../markdownRenderer";
@@ -248,7 +249,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             <Link href={`/upload-episode?pid=${props.podcastId}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
                     icon={<PlusIcon className={episodeIconStyling} />} 
-                    text={t("episode.number")}
+                    text={""}
                     color={color}
                 />
             </Link>
@@ -256,7 +257,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             {address === props.podcastOwner && (
             <Link href={`/edit-podcast/${props.podcastId}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
-                    icon={<PlusIcon className={episodeIconStyling} />} 
+                    icon={<PencilSquareIcon className={episodeIconStyling} />} 
                     text={""}
                     color={color}
                 />
