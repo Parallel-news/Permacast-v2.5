@@ -273,8 +273,8 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
             )}
             {downloading ?
             <DescriptionButton
-                icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
-                text={"Fetching"}
+                icon={<span className="animate-ping absolute inline-flex h-[10px] w-[10px] rounded-full bg-white opacity-75"></span>} 
+                text={""}
                 color={color}
                 onClick={() => ""}
             />
