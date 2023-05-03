@@ -126,7 +126,7 @@ export interface ErrorTagInter {
 }
 
 // 2. Stylings
-export const episodeIconStyling = "mr-2 w-4 h-4"
+export const episodeIconStyling = "w-[20px] h-[20px]"
 export const creatorTagDivStyling = "flex flex-row space-x-3"
 export const byStyling = "text-neutral-400 text-[12px] inline"
 export const episodeInfoButtonsStyling = "flex flex-row items-center space-x-1 sm:space-x-3 md:space-x-6 pt-3 sm:pt-0"
@@ -257,7 +257,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
             {address !== podcastOwner && (
             <DescriptionButton
                 icon={<HeartIcon className={episodeIconStyling} />} 
-                text={t("tip")}
+                text={""}
                 color={color} 
                 onClick={props.setLoadTipModal}
             />
@@ -266,7 +266,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
             <Link href={`/edit-episode/${props.pid}/${props.eid}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
                     icon={<PlusIcon className={episodeIconStyling} />} 
-                    text={t("edit")}
+                    text={""}
                     color={color} 
                 />
             </Link>
@@ -274,14 +274,14 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
             {downloading ?
             <DescriptionButton
                 icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
-                text={"Fetching"}
+                text={""}
                 color={color}
                 onClick={() => ""}
             />
             :
             <DescriptionButton
                 icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
-                text={t("episode.download")}
+                text={""}
                 color={color}
                 onClick={() => downloadFile()}
             />
@@ -289,7 +289,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
 
             <DescriptionButton
                 icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
-                text={t("episode.share")}
+                text={""}
                 color={color}
                 onClick={props.setLoadShareModal}
             />
