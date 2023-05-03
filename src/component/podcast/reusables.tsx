@@ -170,7 +170,7 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
                 </h1>
                 <MarkdownRenderer markdownText={markdownText} color={'line-clamp-3 text-white text-sm '} />
                 {(buttonStyles.backgroundColor && buttonStyles.color) && (
-                    <div className="flexCenterGap mt-3 ">
+                    <div className="flexCenterGap mt-3 flex-wrap gap-2">
                         <div className="max-w-max">
                             <TrackCreatorLink {...{ uploader, buttonStyles, coverColor, fontSize: 16 }} />
                         </div>
