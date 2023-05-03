@@ -11,6 +11,7 @@ import { getContractVariables, getFeaturedChannelsContract, getPASOMContract } f
 import { findPodcast } from '../utils/filters';
 import { featuredPocastCarouselStyling } from '../component/home/featuredPodcast';
 import LoadingLogo from '../component/reusables/LoadingLogo';
+import FeaturedPodcastCarousel from '../component/reusables/FeaturedPodcastCarousel';
 
 
 const GetFeatured = React.lazy(() => import('../component/home/getFeatured'))
@@ -119,13 +120,17 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
         }
         {podcasts_.length > 0 ? (
           <>
-            {/* <GetFeatured onClick={() => setIsVisible(true)} /> */}
             {isVisible && <FeaturedChannelModal {...{ isVisible, setIsVisible }} />}
+            {/* 
             <div className={featuredPocastCarouselStyling}>
               {podcasts_.map((podcast: Podcast, index: number) =>
                 <FeaturedPodcast {...podcast} key={index} />
               )}
             </div>
+            */}
+            <FeaturedPodcastCarousel 
+              podcasts={podcasts_}
+            />
           </>
         ) 
         : 
