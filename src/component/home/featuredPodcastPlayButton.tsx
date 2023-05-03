@@ -44,8 +44,8 @@ const FeaturedPodcastPlayButton: FC<FeaturedPodcastPlayButtonInterface> = ({ pla
   const buttonStyleArgs = {
     size: 40,
     iconSize: 20,
-    buttonColor: "rgba(255, 255, 0, 0.05)",
-    accentColor: "#FFFF00"
+    buttonColor: accentColor,
+    accentColor: accentColor
   };
 
   if (episodes.length) {
