@@ -25,7 +25,7 @@ export const podcastInfoMobileStyling = "flex flex-col xl:flex-row items-center 
 export const podcastInfoStyling = "items-center space-x-16 justify-start xl:justify-start hidden xl:flex xl:flex-row"
 export const podcastInfoTitleStyling = "text-3xl font-semibold select-text items-start justify-start"
 
-export const podcastBannerStyling = "flex flex-col xl:flex-row w-full justify-between space-y-8 xl:space-y-0 text-center xl:text-left w-full"
+export const podcastBannerStyling = "flex flex-col xl:flex-row w-[85%] justify-between space-y-8 xl:space-y-0 text-center xl:text-left"
 export const podcastInfoTitleDivStyling = "flex flex-col ml-0 m-0 mr-[64px]"
 
 // 3. Custom Functions
