@@ -129,7 +129,7 @@ export interface ErrorTagInter {
 export const episodeIconStyling = "w-[20px] h-[20px]"
 export const creatorTagDivStyling = "flex flex-row space-x-3"
 export const byStyling = "text-neutral-400 text-[12px] inline"
-export const episodeInfoButtonsStyling = "flex flex-row items-center space-x-1 sm:space-x-3 md:space-x-6 pt-3 sm:pt-0"
+export const episodeInfoButtonsStyling = "flex flex-row items-center space-x-1 sm:space-x-3 md:space-x-6 xl:space-x-8 pt-3 sm:pt-0 w-full"
 export const episodeBoxTitleDataImg = "object-cover h-12 rounded-xl"
 export const errorTagStyle = "w-full flex justify-center items-center"
 export const episodeDateStyling = "text-gray-500 text-[11px] font-bold"
@@ -137,14 +137,14 @@ export const creatorTagImgStyling = "object-cover h-4 rounded-full mr-1"
 export const errorTagMsgStyle = "text-neutral-400 text-xl font-semibold"
 export const episodeBoxTitleStyling = "text-lg text-white font-semibold"
 export const episodeBannerStyling = "flex flex-col lg:flex-row w-full space-x-0 lg:space-x-16 space-y-4 lg:space-y-0 items-start justify-start"
-export const episodeInfoStyling = "flex flex-col xl:flex-row justify-start items-start lg:items-center space-y-4 px-0 xl:px-10 xl:space-x-8"
+export const episodeInfoStyling = "flex flex-col xl:flex-row justify-start items-start lg:items-center space-y-4 px-0 xl:px-2 xl:space-x-8"
 export const episodeInfoSubStyling = "flex flex-row items-center space-x-3 justify-start xl:justify-start pb-2"
 export const podcastIdStyling = "flex flex-col space-y-8 w-[100%] mb-[200px]"
 export const creatorTagStyling = "flex flex-row items-center p-1.5 rounded-3xl"
 export const episodeBoxTitleDataStyling = "flex flex-row items-center space-x-3 w-[30%]"
 export const nextEpisodeTitleStyling = "text-2xl text-neutral-300/90 font-semibold"
 export const episodeNumberStyling = "rounded-2xl bg-gray-400/30 p-2 py-1 text-[11px]"
-export const episodeTitleStyling = "select-text text-[30px] md:text-[35px] xl:text-[40px] font-medium pb-0 flex items-end text-left md:text-center lg:text-start pb-0 xl:pb-4"
+export const episodeTitleStyling = "select-text text-[25px] md:text-[30px] xl:text-[35px] font-medium pb-0 flex items-end text-left md:text-center lg:text-start pb-0 xl:pb-4"
 export const nextEpisodeStyling = "w-full flex flex-col space-y-6  overflow-auto overflow-x-hidden h-[425px]"
 export const textTruncateButtonStyling = "text-gray-400 font-bold hover:text-blue-400 transition duration-400 ease-in-out"
 export const episodeBoxStyling = "w-[98%] rounded-2xl border-2 border-gray-400/30 p-3 flex flex-row justify-between items-center bg-black"
@@ -182,8 +182,8 @@ export const EpisodeBanner = (props: EpisodeBannerInter) => {
 
 export const EpisodeInfo = (props: EpisodeInfoInter) => {
     return (
-        <div className={`${episodeInfoStyling} space-y-3 xl:space-y-0`}>
-            <div className="space-y-3 xl:space-y-0">
+        <div className={`${episodeInfoStyling} space-y-3 xl:space-y-0 w-full`}>
+            <div className="space-y-3 xl:space-y-0 w-full xl:w-[85%]">
                 <p className={episodeTitleStyling} style={{color: "rgb(255, 255, 255)"}}>{props.title}</p>
                 <EpisodeInfoSub 
                     color={props.color}
@@ -274,7 +274,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
             {downloading ?
             <DescriptionButton
                 icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
-                text={""}
+                text={"Fetching"}
                 color={color}
                 onClick={() => ""}
             />

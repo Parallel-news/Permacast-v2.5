@@ -9,7 +9,7 @@ interface DescriptionButtonInter {
     onClick?: MouseEventHandler<HTMLDivElement>;
 };
 
-const descriptionButtonStyling = `flex flex-row items-center justify-center normal-case rounded-full border-0 p-2 px-2 sm:px-2.5 bg-gray-400/30 cursor-pointer w-[20px] h-[40px] `;
+const descriptionButtonStyling = `flex flex-row items-center justify-center normal-case rounded-full border-0 p-2 px-2 sm:px-2.5 bg-gray-400/30 cursor-pointer w-[40px] h-[40px] `;
 
 export const DescriptionButton: FC<DescriptionButtonInter> = ({ color, icon, text, onClick }) => {
     if (icon && color) return (
