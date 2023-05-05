@@ -14,7 +14,23 @@ export interface EverpayTx {
   data: string;
   version: string;
   sig: string;
-}
+};
+
+export interface EverpayTxAPIResponse extends EverpayTx {
+  rawId: number;
+  id: string;
+  everHash: string;
+  status: string;
+  internalStatus: string;
+  timestamp: number;
+  targetChainTxHash: string;
+  express: {
+    chainTxHash: string;
+    withdrawFee: string;
+    refundEverHash: string;
+    err: string;
+  };
+};
 
 export interface Order {
   itemId: string;
