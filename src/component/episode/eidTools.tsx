@@ -4,7 +4,8 @@ import {
     CurrencyDollarIcon, 
     ArrowDownTrayIcon, 
     ArrowTopRightOnSquareIcon, 
-    PlusIcon
+    PlusIcon,
+    PencilSquareIcon
 } from '@heroicons/react/24/solid';
 
 import { hexToRGB } from "../../utils/reusables";
@@ -265,7 +266,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
             {address === podcastOwner && (
             <Link href={`/edit-episode/${props.pid}/${props.eid}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
-                    icon={<PlusIcon className={episodeIconStyling} />} 
+                    icon={<PencilSquareIcon className={episodeIconStyling} />} 
                     text={""}
                     color={color} 
                 />
