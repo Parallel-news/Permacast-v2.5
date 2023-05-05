@@ -266,7 +266,6 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             }, 3500)
         }, 4000)
     }
-    console.log("epThumbnailUrl :", epThumbnailUrl)
     //Submit Episode Function
     return(
         <div className={episodeFormStyling + " pb-10"}>
@@ -313,7 +312,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                     setMedia={setEpMedia}
                 />
             )}
-            {/*Upload Button*/}
+            {/*Upload Button  */}
             <div className={buttonColStyling}>
                 {/*Show Upload Btn, Spinner, or Connect Btn*/}
                 {address && address.length > 0 && !submittingEp && (
@@ -336,7 +335,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                     />
                 )}
                 {/*Is Visible Input*/}
-                {props.edit && (
+                {props.edit && !submittingEp && (
                     <div className="absolute right-0"> 
                         <VisibleInput 
                             setVisible={setVisible}

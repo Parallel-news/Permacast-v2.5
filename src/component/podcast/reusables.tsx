@@ -14,7 +14,8 @@ import {
     RssIcon,
     HashtagIcon,
     LanguageIcon,
-    AtSymbolIcon
+    AtSymbolIcon,
+    PencilSquareIcon
 } from "@heroicons/react/24/solid";
 
 import MarkdownRenderer from "../markdownRenderer";
@@ -87,8 +88,11 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
     const [coverColor, setCoverColor] = useState<string>('');
     const [uploader, setUploader] = useState<string>('');
     const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({ backgroundColor: '', color: '' });
-
-    const category = getCategoryInCurrentLanguage(categoriesArray, podcast.categories[0])?.[1];
+    const category = getCategoryInCurrentLanguage(categoriesArray, podcast.categories[0]);
+    let adjCategory = undefined
+    if(category) {
+        adjCategory = category[1]
+    }
     const language = languagesArray.find(item => item[0] === podcast.language)[1]
     const formattedDate = getFormattedTimeStamp(podcast.createdAt);
 
@@ -145,10 +149,12 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
                         {podcast?.email || "N/A"}
                     </div>
                     <div>{podcast?.episodes?.length} {t("episodes")}</div>
+                    {adjCategory && (
                     <div className="flexCenter gap-x-0.5">
                         <HashtagIcon className="w-4 h-4 " />
-                        {category}
+                        {adjCategory}
                     </div>
+                    )}
                     <div className="flexCenter gap-x-0.5">
                         <LanguageIcon className="w-4 h-4 " />
                         {language}
@@ -240,7 +246,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             <Link href={`/upload-episode?pid=${props.podcastId}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
                     icon={<PlusIcon className={episodeIconStyling} />} 
-                    text={t("episode.number")}
+                    text={""}
                     color={color}
                 />
             </Link>
@@ -248,7 +254,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             {address === props.podcastOwner && (
             <Link href={`/edit-podcast/${props.podcastId}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
-                    icon={<PlusIcon className={episodeIconStyling} />} 
+                    icon={<PencilSquareIcon className={episodeIconStyling} />} 
                     text={""}
                     color={color}
                 />

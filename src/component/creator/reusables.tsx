@@ -71,7 +71,7 @@ export const flexCol = `flex flex-col `;
 export const flexColVertical = `flex flex-col items-center `;
 export const WhiteLargeFont = `text-3xl font-bold text-white `;
 export const CreatorVerificationParentStyling = `ml-2 md:ml-3 mt-1`;
-export const podcastCarouselStyling = `w-full mt-8 carousel gap-x-4 py-3 `;
+export const podcastCarouselStyling = `max-w-[100vw] mt-8 carousel gap-x-4 py-3 `;
 export const creatorLabelStyling = `select-text text-lg font-medium text-[#828282] `;
 export const creatorLabelSmallStyling = `select-text text-sm font-medium text-[#828282] `;
 export const creatorNicknameSmallStyling = `select-text font-medium tracking-wide text-white `;
@@ -226,7 +226,7 @@ export const FeaturedPodcasts: FC<FeaturedPodcastProps> = ({ podcasts }) => {
         {podcasts.length !== 0 ? (
           <div className={podcastCarouselStyling}>
             {podcasts.map((podcast: Podcast, index: number) =>
-              <FeaturedPodcast {...podcast} key={index} />
+              <div className="carousel-item"><FeaturedPodcast {...podcast} key={index} /></div>
             )}
           </div>
         ) : <>{t("creator.nopodcasts")}</>}
