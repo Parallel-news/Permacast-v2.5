@@ -88,7 +88,7 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
     const [uploader, setUploader] = useState<string>('');
     const [buttonStyles, setButtonStyles] = useState<ButtonStyle>({ backgroundColor: '', color: '' });
 
-    const category = getCategoryInCurrentLanguage(categoriesArray, podcast.categories[0])[1];
+    const category = getCategoryInCurrentLanguage(categoriesArray, podcast.categories[0])?.[1];
     const language = languagesArray.find(item => item[0] === podcast.language)[1]
     const formattedDate = getFormattedTimeStamp(podcast.createdAt);
 
