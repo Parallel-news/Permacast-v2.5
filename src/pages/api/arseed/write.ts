@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { EverPayResponse } from '../../../interfaces/everpay';
 import { BufferFile } from '../../../interfaces/arseed';
-import { uploadFileToArseed } from '../../../utils/arseed';
+import { uploadFileToArseedViaNode } from '../../../utils/arseed';
 import { isValidBody } from '../../../utils/validation/api';
 
 
@@ -36,7 +36,7 @@ export default async function handler(
   let status = 200;
 
   let promises = attachments.map(async (attachment: BufferFile, index: number) => 
-    await uploadFileToArseed(attachment.file, attachment.dataType)
+    await uploadFileToArseedViaNode(attachment.file, attachment.dataType)
   );
 
   const allPromises = await Promise.all(promises);
