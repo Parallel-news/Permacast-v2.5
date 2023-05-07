@@ -7,13 +7,12 @@ import { Podcast } from "../../interfaces";
 import { Loading } from "@nextui-org/react";
 import { useTranslation } from "next-i18next";
 import { Transition } from "@headlessui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { getContractVariables } from "../../utils/contract";
 import RssSubmit from "../../component/reusables/RssSubmit";
 import { ArrowSmallRightIcon } from "@heroicons/react/24/solid"
 import { convertLinktoBase64, isValidUrl } from "../../utils/reusables";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import EpisodeRssContainer from "../../component/reusables/episodeRssContainer";
 import { EXM_READ_LINK, NO_SHOW, RSS_IMPORT_LINK, RSS_META_LINK, TOAST_DARK } from "../../constants";
 
 const ValMsg = React.lazy(() => import("../../component/reusables").then(module => ({default: module.ValMsg})))
@@ -31,6 +30,9 @@ export default function rss({yourShows}) {
     const [rssLink, setRssLink] = useState<string>("")
     const [rssLinkError, setRssLinkError] = useState<string>("")
     const [fetchError, setFetchError] = useState<string>("")
+    const [podcastFormSubmitted, setPodcastFormSubmitted] = useState<boolean>(false)
+    const [newPodcasts, setNewPodcasts] = useState<Podcast[]>([])
+    const [pid, setPid] = useState<string>("")
     const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
 
     const { t } = useTranslation();
@@ -38,6 +40,10 @@ export default function rss({yourShows}) {
     useEffect(() => {
         _setLoadingPage(false)
     }, [])
+
+    useMemo(()=> {
+        if(newPodcasts.length > 0) setPid(newPodcasts[newPodcasts.length - 1].pid)
+    }, [newPodcasts])
 
     const [rssMeta, setRssMeta] = useState<Podcast[]>([{
         pid: "",
@@ -96,8 +102,6 @@ export default function rss({yourShows}) {
             toast.error(fetchError, {style: TOAST_DARK})
             return false
         }
-        //console.log(rssFeed)
-        //console.log(rssMetadata)
 
         setRssMeta(prevState => {
             const updatedPodcasts = prevState.map(podcast => {
@@ -109,7 +113,7 @@ export default function rss({yourShows}) {
                 explicit: rssMetadata.data.isExplicit === "false" ? "no": "yes",
                 language: rssMetadata.data.language,
                 categories: [rssMetadata.data.categories],
-                cover: rssMetadata.data.cover
+                cover: rssMetadata.data.cover,
               };
             });
             return updatedPodcasts;
@@ -117,10 +121,13 @@ export default function rss({yourShows}) {
 
         setSubmittingLink(false)
         setStep(1)
+        console.log("rssMeta: ", rssMeta)
+        console.log("RSS FEED: ", rssFeed)
     }
-    console.log("rssMeta: ", rssMeta)
+    
     return (
         <div className="flex flex-col justify-center w-full space-y-7">
+
             {/*Step 1: Fetch RSS Data*/}
             <p className="text-white text-3xl m-auto">{t("rss.importrss")}</p>
             <Transition
@@ -154,6 +161,7 @@ export default function rss({yourShows}) {
 
                 </div>
             </Transition>
+
             {/*Step 2: Show Form*/}
             <Transition
                 show={step === 1}
@@ -170,8 +178,20 @@ export default function rss({yourShows}) {
                     edit={true}
                     rssData={rssMeta}
                     redirect={false}
+                    submitted={setPodcastFormSubmitted}
+                    returnedPodcasts={setNewPodcasts}
                 />
             </Transition>
+            {/*
+            UNDER CONSTRUCTION
+            1. Upload form and retrieve pid
+            2. Once pid is retrieved, open episode column
+            3. Have episode UI appear with a submit
+            4. Check if enough AR in account 
+            5. Conduct upload but check if description is present and needs to be uploaded.
+
+            
+            */}
         </div>
     )
 }
@@ -201,10 +221,36 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 
 /*
+---THIS IS THE EPISODE BOX-----
 <div className="w-[75%]">
     <EpisodeRssContainer 
         rightTitle={<p className="text-white/75 text-2xl">Episode 1: Introduction</p>}
         leftTitle={<p className="text-white/75 text-2xl">{"22 mb"+"         "+"0.1 AR"}</p>}
     />
 </div>
+*/
+
+
+/*
+{
+    "function": "editPodcastMetadata",
+    "name": "Bankless",
+    "desc": "PUWvo3-gtQPaKyOly1Hl4BZsnwIa_2lWaBg77vIJPEU",
+    "author": "Bankless",
+    "lang": "en",
+    "isExplicit": "no",
+    "categories": "Business",
+    "email": "s@s.com",
+    "cover": "kalS4NNpdnJGiHyNZcKeczmBEkhSW0bgKCQMW92MjGE",
+    "minifiedCover": "D3DN9Ga0qC1Jq_Cq4aoaRLVyiksFAsVLbMXOWYAgL0A",
+    "label": "",
+    "jwk_n": "ore9C3L6mJeAfkC7Qpw9E4n8HwaD9HZ00CUKm1ThimUURysKShr_KSkpTYXbW6v8ZM6s8ANRCZ1OzI6PlzoK9ix5jiyd-Pt-uHVA-jyyUc2NPR3GVh6IAtO5t40-1yEDw15J20m0uF_DSzmFfeJ8gS6SZpUNBwXqyhK7qoRanFIVpHacmePrKDigtSpsXn9lIjjsOBMNw1X7KwpkpoSIF76LZ-YFQy9sndfPbmENSfXkU0d7y2fSgopNCVafoQnRS9K9fvYsVz-zptwjHpNqPs-ZhcoApnXpcC6Vy3iQ5i1erHKfJYz5aOVneTD0jUu39hOQ8gCWyMW84kZRPlzctCrMA31f-IFZeblTl1EsE3_iHrkptkq_jG0TxpEzfSjO43W0vvEuriLSUmA-hRBQao5iNPktC4qMBUsNdcHUdSkeOq_YpKKsXYLTfhy2FAHpE3R1KC4dCC_fFSUAHxHSbT4yciR-cF4tuGJPHswUZmfJ4lDdWoKEgNi_968MwUsvXPdo5SCvnrLL_zL-Hr_O3yz4oHoy1RWMLZJ-jphBGOuY8EBjreJQ556Lgnwjmh4NPf_zGw2rDm852QoFY3P2peafqtriUQO3wySYR29Ieu8cZWiwbQ5A-s1HhhsvAGbKjWwAOg2dDKQKzO75AavWqxY5DsgLM4va0Pq7xDZyY48",
+    "txid": "0x22e3c3f6e3df4729a30b477fce1e88011a5fddf2e42f26d17a7a406b78611b57",
+    "sig": "iNIEAriLVnJ2rBOcvTNhBzt2KoxZJ2hpDOW/7qJLka2Ju/vh6IBL1cZo2BaU37Wbl0qzDw+hcEi8/iSoDZesitDN8jsBamcOmKpjj1NF/SRvuKTv2wYAh63nZgVMUisk6SghjZUoQ/D7OGXmzh6esb6M8ylRtGGSehiHUS+qPI860pr+UJjazUi57Q8C1JEWa96m1N6yhR3eqUVdmQ9WJ1dtTDg+vQ7cuQKglNKdBdUcHFK3P+jQagnhpS4I4e2jMcU/cI4Hafu/tT5JNEe9xquVSnZV7fMabGC3NaiDT1FoSAS9AHsK+LyDEFgBtv5eTc2ifhiiACkWzBqb0CLiOo9lbUAPOg6NMoRveDJFb7KKaiMzQk2ZpQtj1bhNGKdO9HUatT3wcYFxGIAHYs9BijX56fXXRP2fEjevYh/9p8jWAiyuvnXqksaAUwaNvY0m2JiBEn7/8iBixM/kxncO2B8y5EFgOHco4yGh/Llf4X1QvmOsp7DoEoLral4n92hhAHuO1JOIhM5auCp+cTyMVe85DekVXKvNI47LTLEIlIMZFz3DQsW0VX7Nam68cmHfnRsskxddr5LLlhfp6/HKqp0AYvU6q8jh65/mreznxEh63WNW3f09F26QBJwplIz2wriPxiHx9B0DSDStg4KmMBwe8NeOD1rYE7jrR/DXrL0=",
+    "isVisible": true
+}
+
+
+
+
 */

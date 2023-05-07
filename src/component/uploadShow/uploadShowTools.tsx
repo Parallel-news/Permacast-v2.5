@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { episodeDescStyling, episodeNameStyling } from "../uploadEpisode/uploadEpisodeTools";
 import { categories_en } from "../../utils/languages";
 
@@ -39,9 +39,12 @@ export default function uploadShowTools() {
 interface ShowFormInter {
     podcasts: Podcast[],
     edit: boolean,
+    redirect: boolean,
+    //optional
     selectedPid?: string,
     rssData?: Podcast[],
-    redirect: boolean
+    submitted?: Dispatch<SetStateAction<boolean>>
+    returnedPodcasts?: Dispatch<SetStateAction<Podcast[]>>
 }
 
 // 2. Stylings
@@ -180,7 +183,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
     //EXM 
     const createShowPayload = {
-        "function": props.edit ? "editPodcastMetadata" : "createPodcast",
+        "function": (props.edit && props.rssData.length === 0) ? "editPodcastMetadata" : "createPodcast",
         "name": podcastName_,
         "desc": "",
         "author": podcastAuthor_,
@@ -242,7 +245,7 @@ export const ShowForm = (props: ShowFormInter) => {
         }
 
         // Fee to Everpay
-        if(!props.edit) {
+        if(!props.edit || props.rssData.length > 0) { //Upload Mode or RSS Mode
             const toastFee = toast.loading(t("loadingToast.payingFee"), {style: TOAST_DARK, duration: 10000000});
             setProgress(60)
             try {
@@ -264,7 +267,9 @@ export const ShowForm = (props: ShowFormInter) => {
         const toastSaving = toast.loading(t("loadingToast.savingChain"), {style: TOAST_DARK, duration: 10000000});
         setProgress(props.edit ? 80: 75)
         setTimeout(async function () {
-            await axios.post('/api/exm/write', createShowPayload);
+            console.log("createShowPayload: ", createShowPayload)
+            const uploadRes = await axios.post('/api/exm/write', createShowPayload);
+            props?.returnedPodcasts(uploadRes.data.data.execution.state.podcasts)
             //EXM call, set timeout, then redirect.
             toast.dismiss(toastSaving); 
             setProgress(100)
@@ -275,6 +280,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     const { locale } = router;
                     router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
                 }
+                props?.submitted(true)
             }, 2500)
         }, 5000)
     }
@@ -350,6 +356,7 @@ export const ShowForm = (props: ShowFormInter) => {
                 {/*
                     Cover
                 */}
+                <p className="text-white">{podcastName_}</p>
                 <div className="w-[25%] flex justify-center mb-4 lg:mb-0">
                     <CoverContainer 
                         setCover={setPodcastCover_}
