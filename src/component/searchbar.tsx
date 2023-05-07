@@ -6,7 +6,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { searchInputAtom } from '../atoms';
 
 export const SearchIconWrapperStyling = `flex absolute inset-y-0 left-0 items-center pl-3 pr-10 pointer-events-none `;
-export const SearchInputStyling = `block pl-10 py-3 w-full placeholder-zinc-600 focus:placeholder-white rounded-full bg-zinc-900 text-zinc-100 outline-none focus:ring-2 focus:ring-white default-animation placeholder:default-animation `;
+export const SearchInputStyling = `block pl-10 py-3 w-full placeholder-zinc-600 focus:placeholder-zinc-400/90 rounded-full bg-zinc-900 text-zinc-400/90 outline-none focus:ring-2 focus:ring-zinc-400/90 default-animation placeholder:default-animation `;
 
 const Searchbar: FC = () => {
   const { t } = useTranslation();
@@ -48,7 +48,7 @@ const Searchbar: FC = () => {
   return (
     <div className="relative w-full">
       <div className={SearchIconWrapperStyling}>
-        <MagnifyingGlassIcon className={`h-5 w-5 default-animation ${inputFocused ? 'text-white' : 'text-zinc-600'}`} />
+        <MagnifyingGlassIcon className={`h-5 w-5 default-animation ${inputFocused ? 'text-zinc-400/90' : 'text-zinc-600'}`} />
       </div>
       <input
         value={searchInput}

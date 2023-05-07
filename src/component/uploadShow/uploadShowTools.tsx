@@ -40,7 +40,8 @@ interface ShowFormInter {
     podcasts: Podcast[],
     edit: boolean,
     selectedPid?: string,
-    rssData?: Podcast[]
+    rssData?: Podcast[],
+    redirect: boolean
 }
 
 // 2. Stylings
@@ -270,8 +271,10 @@ export const ShowForm = (props: ShowFormInter) => {
             toast.success(t("success.showUploaded"), {style: TOAST_DARK})
             setTimeout(async function () {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
-                const { locale } = router;
-                router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
+                if(props.redirect) {
+                    const { locale } = router;
+                    router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
+                }
             }, 2500)
         }, 5000)
     }

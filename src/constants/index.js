@@ -118,6 +118,7 @@ export const PASOM_SIG_MESSAGES = ["so-ans-profile-metadata"]
 
 // EVERPAY
 export const EVERPAY_EOA = '0x6c05FdF443A5c9520af46976A24546191068afbe';
+export const EVERPAY_EOA_UPLOADS = `0x026b7A1Fb83e8c3439a65142D54fD4E0d2b36A30`;
 export const EVERPAY_FEATURE_TREASURY = "0x6c05FdF443A5c9520af46976A24546191068afbe";
 export const EVERPAY_AR_TAG = 'arweave,ethereum-ar-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,0x4fadc7a98f2dc96510e42dd1a74141eeae0c1543';
 export const MIN_UPLOAD_PAYMENT = .25 // 250000000000 winston
@@ -147,4 +148,4 @@ export const startId = "#start"
 //Initial Load
 export const TITLE_WAIT = 100
 export const LOGO_WAIT = 700
-export const FADE_WAIT = 4500
+export const FADE_WAIT = 2500

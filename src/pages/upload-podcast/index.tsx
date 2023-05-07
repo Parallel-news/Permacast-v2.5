@@ -28,6 +28,7 @@ export default function UploadShow({yourShows, error}) {
                 podcasts={yourShows}
                 edit={false}
                 selectedPid=""
+                redirect={true}
             />
         </div>
     )

@@ -169,6 +169,7 @@ export default function rss({yourShows}) {
                     podcasts={yourShows}
                     edit={true}
                     rssData={rssMeta}
+                    redirect={false}
                 />
             </Transition>
         </div>
