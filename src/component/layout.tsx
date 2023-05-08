@@ -1,16 +1,16 @@
-import React, { FC, ReactNode, useEffect } from 'react';
-import { useRecoilState } from 'recoil';
-import { Sidenav, NavBar } from './navigation';
-import Background from './background';
-import EpisodeQueue from './episodeQueue';
 import Fullscreen from './fullscreen';
-import { firstRender, isFullscreenAtom, isQueueVisibleAtom } from '../atoms/index';
-import { FADE_WAIT, MINT_DURATION, TOAST_POSITION } from '../constants';
-import { Toaster } from 'react-hot-toast';
-import { InitialLoad } from './reusables/InitialLoad';
-import { DEFAULT_BACKGROUND_COLOR } from '../constants/ui';
-import LoadingLogo from './reusables/LoadingLogo';
+import Background from './background';
 import { useShikwasa } from '../hooks';
+import { useRecoilState } from 'recoil';
+import EpisodeQueue from './episodeQueue';
+import { Toaster } from 'react-hot-toast';
+import { Sidenav, NavBar } from './navigation';
+import LoadingLogo from './reusables/LoadingLogo';
+import { InitialLoad } from './reusables/InitialLoad';
+import React, { FC, ReactNode, useEffect } from 'react';
+import { DEFAULT_BACKGROUND_COLOR } from '../constants/ui';
+import { FADE_WAIT, MINT_DURATION, TOAST_POSITION } from '../constants';
+import { firstRender, isFullscreenAtom, isQueueVisibleAtom } from '../atoms/index';
 
 interface LayoutInterface {
   children: ReactNode;
@@ -39,7 +39,7 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
       return () => clearTimeout(timer);
     }
   }, [])
-
+  console.log("FR: ", _firstRender)
   return (
     <div className={AppStyling} data-theme="permacast">
       {!_firstRender && (<InitialLoad />)}
