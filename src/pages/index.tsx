@@ -108,7 +108,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
 
   return (
     <Suspense fallback={<HomeLoader />}>
-      <div className="w-full pb-10 mb-10">
+      <div className="w-full pb-10 mb-10"> 
         <Greeting />
         {isProduction !== true &&
           <div className="select-text">
