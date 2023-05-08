@@ -56,14 +56,15 @@ const FeedPage: FC<FeedPageProps> = ({ yourShows }) => {
 
   return (
     <>
-    <Suspense fallback={<div></div>}>
+    
       <div className={titleRow}>
         <div className="flex md:hidden"></div>
         <h2 className={allPodcastHeader}>{t("feed-page.allpodcasts")}</h2>
-        <ViewDropDown />
+        <Suspense fallback={<div></div>}>
+          <ViewDropDown />
+        </Suspense>
       </div>
-      {shows.length !== 0 && <Podcasts shows={shows} />}
-    </Suspense>
+      {shows.length !== 0 && <Suspense fallback={<div></div>}><Podcasts shows={shows} /></Suspense>}
     </>
   );
 };
