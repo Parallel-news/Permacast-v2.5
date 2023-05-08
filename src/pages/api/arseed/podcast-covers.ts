@@ -2,8 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { EverPayResponse } from '../../../interfaces/everpay';
 import { BufferFile } from '../../../interfaces/arseed';
-import { uploadFileToArseed } from '../../../utils/arseed';
-import { isValidBody } from '../../../utils/validation/api';
+import { uploadFileToArseedViaNode } from '../../../utils/arseed';
 
 type RequestBody = {
   text?: string;
@@ -37,7 +36,7 @@ export default async function handler(
   if (covers.length !== 2) return res.status(402);
 
   let promises = covers.map(async (attachment: BufferFile, index: number) => 
-    await uploadFileToArseed(attachment.file, attachment.dataType)
+    await uploadFileToArseedViaNode(attachment.file, attachment.dataType)
   );
 
   const allPromises = await Promise.all(promises);

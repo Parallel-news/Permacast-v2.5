@@ -1,7 +1,8 @@
-import { BufferFile } from "../interfaces/arseed";
 import { genNodeAPI } from "arseeding-js";
+import { BufferFile, SendAndPayInterface } from "../interfaces/arseed";
 import { EverPayResponse } from "../interfaces/everpay";
-
+import { getBundleArFee } from "./arseeding";
+import axios, { AxiosProgressEvent } from "axios";
 
 /**
   Converts a list of files into an array of objects containing their data as Buffers and their data type.
@@ -22,22 +23,54 @@ export async function convertFilesToBuffer(fileList: File[]): Promise<BufferFile
   ));
 }
 
-export async function uploadFileToArseed(file: Buffer, dataType: string): Promise<EverPayResponse | null> {
+export async function uploadFileToArseedViaNode(file: Buffer, dataType: string): Promise<EverPayResponse | null> {
   const fundingWalletPK = process.env.ARSEED_FUNDING_WALLET_PK!;
-  const currency = process.env.ARSEED_FUNDING_CURRENCY || 'ETH';
+  const currency = "AR";
   const instance = await genNodeAPI(fundingWalletPK);
+  const sendAndPay = instance.sendAndPay as SendAndPayInterface;
 
-  const ops = {
-    tags: [
-      {name: "Content-Type", value: dataType},
-    ]
+  const options = {
+    tags: [{ name: "Content-Type", value: dataType }]
   };
 
   try {
-    return await instance.sendAndPay("https://arseed.web3infra.dev", file, currency, ops)
+    const result = await sendAndPay(
+      "https://arseed.web3infra.dev",
+      file,
+      currency,
+      options,
+      false
+    );
+    console.log(result)
+    return result;
   } catch(err) {
-    console.log(err)
-    return null
-  }
-}
+    console.log(err);
+    return null;
+  };
+};
 
+export const uploadURLAndCheckPayment = async (url: string, hash: string, length: number | string, debug=false) => {
+  // const cost = await getBundleArFee('' + length);
+
+  let feeIsPaid; //= checkPayment(hash, cost);
+  // if (!feeIsPaid) return null;
+
+  const downloadedFile = await axios.get(url, { 
+    responseType: "arraybuffer",
+    onDownloadProgress: (progressEvent: AxiosProgressEvent) => {
+      if (debug) console.log(progressEvent.progress);
+    },
+  });
+  // TODO: add a check for supported filetypes
+  const mimeType = downloadedFile?.headers["content-type"] || '';
+  console.log(mimeType)
+  // TODO: check cost
+  // const checkCost = await getBundleArFee('' + downloadedFile.headers["content-length"]);
+  // feeIsPaid = checkPayment(hash, checkCost);
+  // if (!feeIsPaid) return null;
+
+  const fileUpload: EverPayResponse = await uploadFileToArseedViaNode(downloadedFile.data, mimeType);
+  const tx = fileUpload?.order?.itemId;
+  console.log('tx',tx) // this console log could be hoisting the tx, don't remove just in case
+  return { tx, mimeType };
+};

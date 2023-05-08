@@ -10,6 +10,7 @@ export const transferFunds = async (type: string, amount: number, to: string, fr
     // Populate to add more utility
     if(type === "TIP") data = { action: "tip", amount: amount }
     if(type === "UPLOAD_EPISODE_FEE") data = { action: "Upload Episode Fee", amount: amount }
+    if(type === "UPLOAD_CONTENT") data = { action: "Upload Content", amount: amount }
 
     const everpay = new Everpay({ account: from, chainType: ChainType.arweave, arJWK: 'use_wallet'})
 
