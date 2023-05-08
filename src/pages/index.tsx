@@ -9,18 +9,19 @@ import { latestEpisodesAtom, loadingPage, podcastsAtom } from "../atoms/index";
 import { Episode, EXMState, FeaturedChannel, FullEpisodeInfo, Podcast } from '../interfaces';
 import { getContractVariables, getFeaturedChannelsContract, getPASOMContract } from '../utils/contract';
 import { findPodcast } from '../utils/filters';
-import { featuredPocastCarouselStyling } from '../component/home/featuredPodcast';
-import LoadingLogo from '../component/reusables/LoadingLogo';
 import FeaturedPodcastCarousel from '../component/reusables/FeaturedPodcastCarousel';
+import { startTransition } from 'react';
 
 
 const GetFeatured = React.lazy(() => import('../component/home/getFeatured'))
 const Track = React.lazy(() => import('../component/reusables/track'))
-const Loading = React.lazy(() => import('../component/reusables/loading'))
+//const Loading = React.lazy(() => import('../component/reusables/loading'))
 const FeaturedCreators = React.lazy(() => import('../component/creator/featuredCreators'))
 const FeaturedPodcast = React.lazy(() => import('../component/home/featuredPodcast'))
 const FeaturedChannelModal = React.lazy(() => import('../component/home/featuredChannelModal'))
-const GreetingLazy = React.lazy(() => import("../component/featured").then(module => ({ default: module.Greeting })));
+//const GreetingLazy = React.lazy(() => import("../component/featured").then(module => ({ default: module.Greeting })));
+import { Greeting } from '../component/featured';
+import Loading from '../component/reusables/loading';
 
 interface HomeProps {
   isProduction: boolean,
@@ -83,7 +84,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
   const HomeLoader = () => {
     return (
       <div className="w-full pb-10 mb-10">
-        <GreetingLazy />
+        <Greeting />
 
         {isProduction !== true &&
           <div className="select-text">
@@ -108,7 +109,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
   return (
     <Suspense fallback={<HomeLoader />}>
       <div className="w-full pb-10 mb-10">
-        <GreetingLazy />
+        <Greeting />
         {isProduction !== true &&
           <div className="select-text">
             <p className='text-yellow-500 font-bold'>Heads up: isProduction !== "true"</p>
