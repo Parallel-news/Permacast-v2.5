@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, Suspense, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { chronStatusAtom, hide0EpisodesAtom, loadingPage } from "../../atoms";
 import { EXM_READ_LINK, NO_SHOW } from "../../constants";
@@ -56,13 +56,14 @@ const FeedPage: FC<FeedPageProps> = ({ yourShows }) => {
 
   return (
     <>
+    <Suspense fallback={<div></div>}>
       <div className={titleRow}>
-        
         <div className="flex md:hidden"></div>
         <h2 className={allPodcastHeader}>{t("feed-page.allpodcasts")}</h2>
         <ViewDropDown />
       </div>
       {shows.length !== 0 && <Podcasts shows={shows} />}
+    </Suspense>
     </>
   );
 };

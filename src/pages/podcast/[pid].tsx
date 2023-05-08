@@ -44,7 +44,7 @@ const PodcastId: NextPage<{ podcast: Podcast }> = ({ podcast }) => {
                     <meta property="og:image:height" content="630" />
                     <meta property="og:image:alt" content="Show Cover" />
                 </Head>
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={<div></div>}>
                     <PodcastSet 
                         podcast={podcast}
                     />
