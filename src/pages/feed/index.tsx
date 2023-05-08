@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { FC, Suspense, useEffect, useState } from "react";
+import React, { FC, Suspense, startTransition, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { chronStatusAtom, hide0EpisodesAtom, loadingPage } from "../../atoms";
 import { EXM_READ_LINK, NO_SHOW } from "../../constants";
@@ -33,11 +33,13 @@ const FeedPage: FC<FeedPageProps> = ({ yourShows }) => {
     let shows = showsCopy
       .sort((a, b) => a.createdAt - b.createdAt)
       .filter((podcast: Podcast) => hide0Episodes ? podcast.episodes.length > 0: podcast);
-    if (chronStatus % 2) {
-      setShows(shows.reverse());
-    } else {
-      setShows(shows);
-    };
+    startTransition(() => {
+      if (chronStatus % 2) {
+        setShows(shows.reverse());
+      } else {
+        setShows(shows);
+      };
+    })
   }, [chronStatus, hide0Episodes, yourShows]);
 
   useEffect(() => {
@@ -56,15 +58,14 @@ const FeedPage: FC<FeedPageProps> = ({ yourShows }) => {
 
   return (
     <>
-    
-      <div className={titleRow}>
-        <div className="flex md:hidden"></div>
-        <h2 className={allPodcastHeader}>{t("feed-page.allpodcasts")}</h2>
-        <Suspense fallback={<div></div>}>
-          <ViewDropDown />
-        </Suspense>
-      </div>
-      {shows.length !== 0 && <Suspense fallback={<div></div>}><Podcasts shows={shows} /></Suspense>}
+      <Suspense fallback={<div></div>}>
+        <div className={titleRow}>
+          <div className="flex md:hidden"></div>
+          <h2 className={allPodcastHeader}>{t("feed-page.allpodcasts")}</h2>
+            <ViewDropDown />
+        </div>
+        {shows.length !== 0 && <Podcasts shows={shows} />}
+      </Suspense>
     </>
   );
 };
