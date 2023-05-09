@@ -135,7 +135,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
           <meta property="og:url" content={`https://permacast.app/`} />
           <meta property="og:description" content={`Creator Not Found`} /> 
         </Head>
-        <Creator404 address={userInfo?.user || ''} />
+        <Creator404 address={userInfo?.user} />
       </>
       
     )

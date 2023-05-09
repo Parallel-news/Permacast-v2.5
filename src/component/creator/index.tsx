@@ -1,14 +1,13 @@
-import React, { ReactNode } from 'react';
-import { FC, useEffect, useState } from 'react';
-import { shortenAddress, useArconnect } from 'react-arconnect';
+import React from 'react';
 import { useRecoilState } from 'recoil';
-import { FullEpisodeInfo, Podcast } from '../../interfaces';
+import TipButton from '../reusables/tip';
+import { FC, useEffect, useState } from 'react';
+import { flexCenter } from './featuredCreators';
 import { stringToHexColor } from '../../utils/ui';
 import { userBannerImageAtom } from '../../atoms';
-
 import { PASoMProfile } from '../../interfaces/pasom';
-import TipButton from '../reusables/tip';
-import { flexCenter } from './featuredCreators';
+import { FullEpisodeInfo, Podcast } from '../../interfaces';
+import { shortenAddress, useArconnect } from 'react-arconnect';
 import { ExtendedDropdownButtonProps } from '../reusables/dropdown';
 import FeaturedPodcastCarousel from '../reusables/FeaturedPodcastCarousel';
 
@@ -44,22 +43,22 @@ interface CreatorPageComponentProps {
 
 
 // 2. Stylings
-export const creatorHeaderStyling = `flex flex-col md:flex-row items-center justify-between `;
-export const creatorNicknameStyling = `select-text text-3xl font-medium tracking-wide text-white `;
-export const creatorLabelStyling = `select-text text-lg font-medium text-[#828282] `;
-export const creatorNicknameSmallStyling = `select-text font-medium tracking-wide text-white `;
-export const creatorLabelSmallStyling = `select-text text-sm font-medium text-[#828282] `;
-export const WhiteLargeFont = `text-3xl font-bold text-white `;
-export const podcastCarouselStyling = `max-w-[100vw] mt-8 carousel gap-x-4 py-3`;
 export const flexCol = `flex flex-col `;
-export const flexItemsCenter = `flex flex-col gap-y-2 md:gap-y-0 md:flex-row items-center `;
+export const CreatorBioStyling = `h-8 select-text `;
 export const CreatorPageStyling = `mt-12 h-full pb-40 `;
-export const CreatorProfileParentStyling = flexItemsCenter + `gap-x-7 ml-2 text-center md:text-left `;
+export const WhiteLargeFont = `text-3xl font-bold text-white `;
+export const InputFocusStyling = `focus:opacity-0 focus:z-20 `;
 export const CreatorUploadPhotoIconStyling = `h-8 w-8 text-inherit `;
 export const CreatorVerificationParentStyling = `ml-2 md:ml-3 mt-1 `;
-export const CreatorBioStyling = `h-8 select-text `;
 export const TransparentHidden = `absolute opacity-0 pointer-events-none `;
-export const InputFocusStyling = `focus:opacity-0 focus:z-20 `;
+export const podcastCarouselStyling = `max-w-[100vw] mt-8 carousel gap-x-4 py-3`;
+export const creatorLabelStyling = `select-text text-lg font-medium text-[#828282] `;
+export const creatorLabelSmallStyling = `select-text text-sm font-medium text-[#828282] `;
+export const flexItemsCenter = `flex flex-col gap-y-2 md:gap-y-0 md:flex-row items-center `;
+export const creatorHeaderStyling = `flex flex-col md:flex-row items-center justify-between `;
+export const creatorNicknameSmallStyling = `select-text font-medium tracking-wide text-white `;
+export const creatorNicknameStyling = `select-text text-3xl font-medium tracking-wide text-white `;
+export const CreatorProfileParentStyling = flexItemsCenter + `gap-x-7 ml-2 text-center md:text-left `;
 export const CreatorEditBannerInputStyling = TransparentHidden + InputFocusStyling + `top-12 left-40 `;
 export const CreatorEditAvatarInputStyling = TransparentHidden + InputFocusStyling + `top-28 left-5 w-24 `;
 export const CreatorEditBannerStyling = flexCol + `w-full h-32 bg-zinc-800 inset-0 border-dotted border-zinc-600 hover:border-white text-zinc-400 hover:text-white rounded-xl border-2 items-center justify-center default-no-outline-ringed inset default-animation focus:ring-white cursor-pointer `;
