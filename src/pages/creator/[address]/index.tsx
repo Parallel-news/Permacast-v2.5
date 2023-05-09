@@ -64,7 +64,7 @@ export async function getStaticProps(context) {
 };
 
 const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
-  if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) return <Creator404 address={userInfo?.user || ''} />
+  //if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) return <Creator404 address={userInfo?.user || ''} />
 
   const { user, nickname, currentLabel, address_color, bio, avatar } = userInfo;
   const [PASoMProfile, setPASoMProfile] = useState<PASoMProfile | undefined>();
@@ -118,29 +118,53 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
     podcasts,
     episodes,
   };
+  if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) {
+    return (
+      <>
+        <Head>
+          <title>{`Creator Not Found`}</title> 
+          <meta name="description" content={`Creator Not Found`} />
+          <meta name="twitter:card" content="summary"></meta>
+          <meta name="twitter:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
+          <meta name="twitter:title" content={`Permacast Creator`} />
+          <meta name="twitter:url" content={`https://permacast.app/`} />
+          <meta name="twitter:description" content={`None`} />
+          
+          <meta property="og:card" content="summary" />
+          <meta property="og:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
+          <meta property="og:title" content={`Permacast Creator`} />
+          <meta property="og:url" content={`https://permacast.app/`} />
+          <meta property="og:description" content={`Creator Not Found`} /> 
+        </Head>
+        <Creator404 address={userInfo?.user || ''} />
+      </>
+      
+    )
+  } else {
+    return (
+      <>
+        <Head>
+          <title>{`${creatorName} | Creator`}</title> 
+          <meta name="description" content={`${bio}`} />
+          <meta name="twitter:card" content="summary"></meta>
+          <meta name="twitter:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
+          <meta name="twitter:title" content={`${creatorName} | Permacast Creator`} />
+          <meta name="twitter:url" content={`https://permacast.app/`} />
+          <meta name="twitter:description" content={`${bio}`} />
+          
+          <meta property="og:card" content="summary" />
+          <meta property="og:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
+          <meta property="og:title" content={`${creatorName} | Permacast Creator`} />
+          <meta property="og:url" content={`https://permacast.app/`} />
+          <meta property="og:description" content={`${bio}`} /> 
+        </Head>
+          <Suspense fallback={<Loading />}>
+            <CreatorPageComponentLazy {...{ creator }}/>
+          </Suspense>
+      </>
+    )
+  }
 
-  return (
-    <>
-      <Head>
-        <title>{`${creatorName} | Creator`}</title> 
-        <meta name="description" content={`${bio}`} />
-        <meta name="twitter:card" content="summary"></meta>
-        <meta name="twitter:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
-        <meta name="twitter:title" content={`${creatorName} | Permacast Creator`} />
-        <meta name="twitter:url" content={`https://permacast.app/`} />
-        <meta name="twitter:description" content={`${bio}`} />
-        
-        <meta property="og:card" content="summary" />
-        <meta property="og:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
-        <meta property="og:title" content={`${creatorName} | Permacast Creator`} />
-        <meta property="og:url" content={`https://permacast.app/`} />
-        <meta property="og:description" content={`${bio}`} /> 
-      </Head>
-        <Suspense fallback={<Loading />}>
-          <CreatorPageComponentLazy {...{ creator }}/>
-        </Suspense>
-    </>
-  )
 };
 
 
