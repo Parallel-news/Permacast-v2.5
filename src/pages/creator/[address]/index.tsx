@@ -2,7 +2,7 @@ import axios from 'axios';
 import Head from 'next/head';
 import { NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRecoilState } from 'recoil';
 import { Ans, Episode, FullEpisodeInfo, Podcast } from '../../../interfaces';
 import { hexToRGB, RGBobjectToString } from '../../../utils/ui';
@@ -12,6 +12,7 @@ import { ANS_TEMPLATE } from '../../../constants/ui';
 import { ARWEAVE_READ_LINK } from '../../../constants';
 import { shortenAddress } from 'react-arconnect';
 import { PASoMProfile } from '../../../interfaces/pasom';
+import Loading from '../../../component/creator/loading';
 const CreatorPageComponentLazy = React.lazy(() => import('../../../component/creator').then(module => ({ default: module.CreatorPageComponent })));
 
 
@@ -135,7 +136,9 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
         <meta property="og:url" content={`https://permacast.app/`} />
         <meta property="og:description" content={`${bio}`} /> 
       </Head>
-      <CreatorPageComponentLazy {...{ creator }}/>
+        <Suspense fallback={<Loading />}>
+          <CreatorPageComponentLazy {...{ creator }}/>
+        </Suspense>
     </>
   )
 };
