@@ -16,17 +16,18 @@ interface LayoutInterface {
   children: ReactNode;
 };
 
-export const AppStyling = "select-none h-full overflow-hidden bg-black";
-export const AppInnerStyling = "h-screen overflow-x-hidden relative";
-export const BackgroundWrapperStyling = "w-screen overflow-y-scroll overflow-x-hidden z-[1]";
-export const InnerLayoutStyling = "ml-0 md:ml-2 md:pr-8 pt-2 px-5 md:pt-8 z-[3]";
 export const ParentStyling = "w-full overflow-hidden z-[3]";
+export const AppInnerStyling = "h-screen overflow-x-hidden relative";
+export const AppStyling = "select-none h-full overflow-hidden bg-black";
+export const InnerLayoutStyling = "ml-0 md:ml-2 md:pr-8 pt-2 px-5 md:pt-8 z-[3]";
+export const BackgroundWrapperStyling = "w-screen overflow-y-scroll overflow-x-hidden z-[1]";
 
 const Layout: FC<LayoutInterface> = ({ children }) => {
 
   const [isFullscreen] = useRecoilState(isFullscreenAtom);
   const [isQueueVisible] = useRecoilState(isQueueVisibleAtom);
   const [_firstRender, _setFirstRender] = useRecoilState(firstRender)
+  console.log("FRX: ", _firstRender)
   const backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
   const shik = useShikwasa()
