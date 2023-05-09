@@ -11,14 +11,14 @@ import { shortenAddress, useArconnect } from 'react-arconnect';
 import { ExtendedDropdownButtonProps } from '../reusables/dropdown';
 import FeaturedPodcastCarousel from '../reusables/FeaturedPodcastCarousel';
 
-const CreatorNames = React.lazy(() => import('./reusables').then(module => ({default: module.CreatorNames})))
-const CreatorTipModal = React.lazy(() => import('./reusables').then(module => ({default: module.CreatorTipModal})))
-const Followers = React.lazy(() => import('./reusables').then(module => ({default: module.Followers})))
-const LatestEpisodes = React.lazy(() => import('./reusables').then(module => ({default: module.LatestEpisodes})))
-const ViewANSButton = React.lazy(() => import('./reusables').then(module => ({default: module.ViewANSButton})))
-const ProfileImage = React.lazy(() => import('./reusables').then(module => ({default: module.ProfileImage})))
 const EditButton = React.lazy(() => import('./edit').then(module => ({default: module.EditButton}))) 
+const Followers = React.lazy(() => import('./reusables').then(module => ({default: module.Followers})))
 const FollowButton = React.lazy(() => import('./follow').then(module => ({default: module.FollowButton}))) 
+const CreatorNames = React.lazy(() => import('./reusables').then(module => ({default: module.CreatorNames})))
+const ProfileImage = React.lazy(() => import('./reusables').then(module => ({default: module.ProfileImage})))
+const ViewANSButton = React.lazy(() => import('./reusables').then(module => ({default: module.ViewANSButton})))
+const LatestEpisodes = React.lazy(() => import('./reusables').then(module => ({default: module.LatestEpisodes})))
+const CreatorTipModal = React.lazy(() => import('./reusables').then(module => ({default: module.CreatorTipModal})))
 
 /**
  * Index

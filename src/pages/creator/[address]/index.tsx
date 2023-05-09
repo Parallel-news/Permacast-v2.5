@@ -34,7 +34,7 @@ export async function getStaticProps(context) {
   const { address } = params;
   let userInfo: Ans = ANS_TEMPLATE;
   userInfo.address_color = "#000000";
-  userInfo.user = address || '';
+  userInfo.user = 'sebs'; //address || ''
   const isAddress = address.length === 43;
 
   try {
@@ -65,7 +65,7 @@ export async function getStaticProps(context) {
 
 const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
 
-  const { user, nickname, currentLabel, address_color, bio, avatar } = userInfo;
+  const { user, nickname, currentLabel, address_color, bio, avatar, userIsAddress, ANSuserExists  } = userInfo;
   const [PASoMProfile, setPASoMProfile] = useState<PASoMProfile | undefined>();
   const creatorName = nickname || currentLabel || shortenAddress(user);
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
@@ -117,7 +117,8 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
     podcasts,
     episodes,
   };
-  if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) {
+
+  if (ANSuserExists && userIsAddress) {
     return (
       <>
         <Head>
@@ -135,7 +136,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
           <meta property="og:url" content={`https://permacast.app/`} />
           <meta property="og:description" content={`Creator Not Found`} /> 
         </Head>
-        <Creator404 address={userInfo?.user} />
+        <Creator404 address={user} />
       </>
       
     )
