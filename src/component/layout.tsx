@@ -27,7 +27,6 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
   const [isFullscreen] = useRecoilState(isFullscreenAtom);
   const [isQueueVisible] = useRecoilState(isQueueVisibleAtom);
   const [_firstRender, _setFirstRender] = useRecoilState(firstRender)
-  console.log("FRX: ", _firstRender)
   const backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
   const shik = useShikwasa()

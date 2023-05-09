@@ -93,8 +93,8 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
 
   useEffect(() => {setUserBannerImage(banner)}, [banner]);
   useEffect(() => {
-    const isFollowing = PASoMProfile?.followers?.includes(address);
-    setIsFollowing(isFollowing);
+      const isFollowing = PASoMProfile?.followers?.includes(address);
+      setIsFollowing(isFollowing);
   }, [PASoMProfile, address]);
 
   const openModalCallback = () => setIsOpen(prev => !prev);
@@ -112,29 +112,29 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
 
   return (
     <div className={CreatorPageStyling}>
-      <CreatorTipModal {...tipModalArgs} />
-      <div className={creatorHeaderStyling}>
-        <div className={CreatorProfileParentStyling}>
-          <ProfileImage {...{ currentLabel, avatar, address_color }} linkToArPage={ANSuserExists} />
-          <div className={flexCol}>
-            <div className={flexCenter + `justify-center md:justify-start `}>
-              <CreatorNames {...{ nickname, currentLabel, ANSuserExists }} />
-            </div>
-            <div className={CreatorBioStyling}>
-              <p className="line-clamp-2">{bio}</p>
-              <Followers {...{ PASoMProfile, isFollowing, direction: "horizontal" }} />
+        <CreatorTipModal {...tipModalArgs} />
+        <div className={creatorHeaderStyling}>
+          <div className={CreatorProfileParentStyling}>
+            <ProfileImage {...{ currentLabel, avatar, address_color }} linkToArPage={ANSuserExists} />
+            <div className={flexCol}>
+              <div className={flexCenter + `justify-center md:justify-start `}>
+                <CreatorNames {...{ nickname, currentLabel, ANSuserExists }} />
+              </div>
+              <div className={CreatorBioStyling}>
+                <p className="line-clamp-2">{bio}</p>
+                <Followers {...{ PASoMProfile, isFollowing, direction: "horizontal" }} />
+              </div>
             </div>
           </div>
+          <div className={flexItemsCenter + `mr-3 hidden md:flex `}>
+            {ANSuserExists && <ViewANSButton {...{ currentLabel }} />}
+            {address !== user && <TipButton {...{ openModalCallback }} />}
+            {address !== user && <FollowButton {...{ user, walletConnected, isFollowing, setIsFollowing }} />}
+            {address === user && <EditButton {...{ PASoMProfile }} />}
+          </div>
         </div>
-        <div className={flexItemsCenter + `mr-3 hidden md:flex `}>
-          {ANSuserExists && <ViewANSButton {...{ currentLabel }} />}
-          {address !== user && <TipButton {...{ openModalCallback }} />}
-          {address !== user && <FollowButton {...{ user, walletConnected, isFollowing, setIsFollowing }} />}
-          {address === user && <EditButton {...{ PASoMProfile }} />}
-        </div>
-      </div>
-      <>{podcasts.length !== 0 && <FeaturedPodcastCarousel podcasts={podcasts} />}</>
-      <>{episodes.length !== 0 && <LatestEpisodes {...{ episodes }} />}</>
+        <>{podcasts.length !== 0 && <FeaturedPodcastCarousel podcasts={podcasts} />}</>
+        <>{episodes.length !== 0 && <LatestEpisodes {...{ episodes }} />}</>
     </div>
   );
 };

@@ -1,35 +1,22 @@
 import axios from 'axios';
 import Head from 'next/head';
 import { NextPage } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useState, useEffect, Suspense } from 'react';
 import { useRecoilState } from 'recoil';
-import { Ans, Episode, FullEpisodeInfo, Podcast } from '../../../interfaces';
-import { hexToRGB, RGBobjectToString } from '../../../utils/ui';
-import { allPodcasts, loadingPage, podcastColorAtom } from '../../../atoms';
-import { Creator404, sortByDate } from '../../../component/creator';
+import { shortenAddress } from 'react-arconnect';
 import { ANS_TEMPLATE } from '../../../constants/ui';
 import { ARWEAVE_READ_LINK } from '../../../constants';
-import { shortenAddress } from 'react-arconnect';
-import { PASoMProfile } from '../../../interfaces/pasom';
 import Loading from '../../../component/creator/loading';
+import { PASoMProfile } from '../../../interfaces/pasom';
+import React, { useState, useEffect, Suspense } from 'react';
+import { hexToRGB, RGBobjectToString } from '../../../utils/ui';
+import { Creator404, sortByDate } from '../../../component/creator';
+import { allPodcasts, loadingPage, podcastColorAtom } from '../../../atoms';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { Ans, Episode, FullEpisodeInfo, Podcast } from '../../../interfaces';
+
 const CreatorPageComponentLazy = React.lazy(() => import('../../../component/creator').then(module => ({ default: module.CreatorPageComponent })));
 
-
-// pages/blog/[slug].js
-export async function getStaticPaths() {
-  return {
-    paths: [
-      // String variant:
-      '/creator/[address].tsx',
-      // Object variant:
-      // { params: { address } },
-    ],
-    fallback: true,
-  };
-};
-
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   const { locale, params } = context;
   const { address } = params;
   let userInfo: Ans = ANS_TEMPLATE;
@@ -73,6 +60,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
   const [allPodcasts_, setAllPodcasts_] = useRecoilState(allPodcasts);
   const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
+  const [domLoaded, setDomLoaded] = useState(false)
 
   useEffect(() => {
     if (!userInfo) return;
@@ -106,6 +94,10 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
     fetchUserData();
   }, [allPodcasts_, userInfo]);
 
+  useEffect(()=> {
+    setDomLoaded(true)
+  }, [])
+
   useEffect(() => {
     const timer = setTimeout(() =>{_setLoadingPage(false);}, 1000);
     return () => clearTimeout(timer);
@@ -117,8 +109,6 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
     podcasts,
     episodes,
   };
-
-  console.log("creator: ", creator)
 
   if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) {
     return (
@@ -160,14 +150,15 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
           <meta property="og:url" content={`https://permacast.app/`} />
           <meta property="og:description" content={`${bio}`} /> 
         </Head>
+        {domLoaded && (
           <Suspense fallback={<Loading />}>
-            <CreatorPageComponentLazy {...{ creator }}/>
+            <CreatorPageComponentLazy {...{ creator }} />
           </Suspense>
+        )}
       </>
     )
   }
-
 };
 
-
 export default Creator;
+     
