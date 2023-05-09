@@ -118,6 +118,8 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
     episodes,
   };
 
+  console.log("creator: ", creator)
+
   if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) {
     return (
       <>
