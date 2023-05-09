@@ -34,7 +34,7 @@ export async function getStaticProps(context) {
   const { address } = params;
   let userInfo: Ans = ANS_TEMPLATE;
   userInfo.address_color = "#000000";
-  userInfo.user = address;
+  userInfo.user = address || '';
   const isAddress = address.length === 43;
 
   try {
@@ -64,7 +64,6 @@ export async function getStaticProps(context) {
 };
 
 const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
-  //if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) return <Creator404 address={userInfo?.user || ''} />
 
   const { user, nickname, currentLabel, address_color, bio, avatar } = userInfo;
   const [PASoMProfile, setPASoMProfile] = useState<PASoMProfile | undefined>();
