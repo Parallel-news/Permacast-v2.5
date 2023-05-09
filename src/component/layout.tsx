@@ -39,7 +39,7 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
       return () => clearTimeout(timer);
     }
   }, [])
-  console.log("FR: ", _firstRender)
+  
   return (
     <div className={AppStyling} data-theme="permacast">
       {!_firstRender && (<InitialLoad />)}
