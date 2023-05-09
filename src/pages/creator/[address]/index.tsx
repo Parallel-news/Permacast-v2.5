@@ -136,9 +136,9 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
         <meta property="og:url" content={`https://permacast.app/`} />
         <meta property="og:description" content={`${bio}`} /> 
       </Head>
-      <Suspense fallback={<Loading />}>
-        <CreatorPageComponentLazy {...{ creator }}/>
-      </Suspense>
+        <Suspense fallback={<Loading />}>
+          <CreatorPageComponentLazy {...{ creator }}/>
+        </Suspense>
     </>
   )
 };
