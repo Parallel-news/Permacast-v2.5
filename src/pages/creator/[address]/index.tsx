@@ -137,7 +137,6 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
         <meta property="og:description" content={`${bio}`} /> 
       </Head>
       <Suspense fallback={<Loading />}>
-        <Loading />
         <CreatorPageComponentLazy {...{ creator }}/>
       </Suspense>
     </>
