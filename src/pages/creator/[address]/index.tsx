@@ -130,7 +130,6 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
         </Head>
         <Creator404 address={userInfo?.user} />
       </>
-      
     )
   } else {
     return (
