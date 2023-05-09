@@ -7,6 +7,7 @@ import { useTranslation } from "next-i18next";
 import React, { Suspense, useEffect } from "react";
 import { loadingPage } from "../../../atoms";
 import { useRecoilState } from "recoil";
+import LoadingForm from "../../../component/reusables/loadingForm";
 
 const ShowForm = React.lazy(() => import("../../../component/uploadShow/uploadShowTools").then(module => ({ default: module.ShowForm })));
 
@@ -25,7 +26,13 @@ export default function UploadShow({yourShows, error, pid}) {
     return (
         <div className={uploadShowStyling}>
             <p className={showTitleStyling}>{t("uploadshow.editpodcast")}</p>
-            <Suspense fallback={<div></div>}>
+            <Suspense fallback={            
+              <LoadingForm 
+                width={"w-[75%]"}
+                height={"h-[500px]"}
+                justify={"justify-center lg:justify-start"}
+              />
+            }>
               <ShowForm 
                   podcasts={yourShows}
                   edit={true}
