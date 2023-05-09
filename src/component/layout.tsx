@@ -33,7 +33,8 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
   const shik = useShikwasa()
   const playerActivated = shik?.playerState?.player?.current
 
-  // First Render
+  // First Render Value
+  
   useEffect(() => {
     if(!_firstRender) {
       const timer = setTimeout(() =>{_setFirstRender(true);}, FADE_WAIT+1000);
