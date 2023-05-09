@@ -26,9 +26,9 @@ export default function UploadShow({yourShows, error}) {
         <div className={uploadShowStyling}>
           <Suspense fallback={
             <LoadingForm 
-              width={"w-[825px]"}
+              width={"w-[75%]"}
               height={"h-[500px]"}
-              justify={"justify-start"}
+              justify={"justify-center lg:justify-start"}
             />
           }>
             <p className={showTitleStyling}>{t("uploadshow.addpodcast")}</p>
