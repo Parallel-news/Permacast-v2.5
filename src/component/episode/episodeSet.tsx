@@ -67,7 +67,7 @@ export default function EpisodeSet(props: EpisodeSetInter) {
                 label: '',
                 author: '',
                 podcastName: '',
-                pid: '',
+                pid: ''
             }
         } as FullEpisodeInfo
         
@@ -96,13 +96,13 @@ export default function EpisodeSet(props: EpisodeSetInter) {
             }
             fetchColor();
         }, []);
-
+        console.log("CHECK THIS: ", d)
         return (
             <div className={podcastIdStyling}>
             {/*Episode Cover & Info*/}
             <EpisodeBanner 
                 title={d.episodeName}
-                imgSrc={ARSEED_URL + data?.cover}
+                imgSrc={ARSEED_URL + (d.thumbnail.length > 0 ? d?.thumbnail : data?.cover)}
                 color={color}
                 episodeNum={index+1}
                 date={date}
@@ -123,7 +123,7 @@ export default function EpisodeSet(props: EpisodeSetInter) {
             {data?.episodes[index+1] && (
                 <Episodes
                     containerTitle={"Next Episode"} 
-                    imgSrc={ARSEED_URL + data?.cover}
+                    imgSrc={ARSEED_URL + (d.thumbnail.length > 0 ? d?.thumbnail : data?.cover)}
                     color={'rgb(255, 255, 255)'}
                     episodes={[nextEpisodeInfo]}
                     podcastId={data?.obj.pid}
