@@ -1,26 +1,24 @@
-import Image from "next/image";
-import { DescriptionButton } from "../reusables/buttons";
 import { 
     CurrencyDollarIcon, 
     ArrowDownTrayIcon, 
     ArrowTopRightOnSquareIcon, 
-    PlusIcon,
     PencilSquareIcon
 } from '@heroicons/react/24/solid';
-
-import { hexToRGB } from "../../utils/reusables";
-import { ARWEAVE_READ_LINK, STR_LEN_EPISODE_DESC } from "../../constants";
-import { useState } from "react";
-import { getTypeFromMime } from "../../utils/fileTools";
-import { useTranslation } from "next-i18next";
 import Link from "next/link";
-import { FullEpisodeInfo } from "../../interfaces";
-
-import TextTruncate from "../TextTruncate";
+import Image from "next/image";
+import { useState } from "react";
 import Track from "../reusables/track";
-import { useArconnect } from "react-arconnect";
-import { loadingPage } from "../../atoms";
 import { useRecoilState } from "recoil";
+import { loadingPage } from "../../atoms";
+import TextTruncate from "../TextTruncate";
+import { useTranslation } from "next-i18next";
+import { useArconnect } from "react-arconnect";
+import { hexToRGB } from "../../utils/reusables";
+import { FullEpisodeInfo } from "../../interfaces";
+import { getTypeFromMime } from "../../utils/fileTools";
+import { DescriptionButton } from "../reusables/buttons";
+import { ARWEAVE_READ_LINK, STR_LEN_EPISODE_DESC } from "../../constants";
+
 /**
  * Index
  * 1. Interfaces
@@ -328,7 +326,7 @@ export const Episodes = (props: EpisodesInter) => {
             {/*Loop Episodes*/}
             {episodeList.length > 0 ?
                 episodeList.map((episode: FullEpisodeInfo, index) => (
-                    <Track {...{ episode }} includeDescription includePlayButton includeContentType />
+                    <Track {...{ episode }} includeDescription includePlayButton includeContentType key={index} />
                 ))
             :
                 <p className="text-neutral-400">None to Show.</p>
