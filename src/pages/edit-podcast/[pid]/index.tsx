@@ -26,6 +26,7 @@ export default function UploadShow({yourShows, error, pid}) {
         <div className={uploadShowStyling}>
             <p className={showTitleStyling}>{t("uploadshow.editpodcast")}</p>
             <ShowForm 
+                rssData={[]}
                 podcasts={yourShows}
                 edit={true}
                 selectedPid={pid}
