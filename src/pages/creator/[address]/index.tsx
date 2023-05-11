@@ -87,7 +87,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
       const userEpisodes = podcasts.map((podcast: Podcast) => 
         podcast.episodes.map((episode: Episode) => ({episode, podcast}))
       ).flat(1).splice(-3, 3);
-      setPodcasts(podcasts);
+      setPodcasts(podcasts.reverse());
       const sortedEpisodes = sortByDate(userEpisodes)
       setEpisodes(sortedEpisodes.slice().reverse());
     };
