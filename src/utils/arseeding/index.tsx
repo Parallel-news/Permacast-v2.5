@@ -1,6 +1,6 @@
 import { genArweaveAPI, getBundleFee } from 'arseeding-js'
 import { readFileAsArrayBuffer } from '../fileTools';
-import { ARSEED_URL, TEXTMARKDOWN, ARSEED_CURRENCY } from '../../constants';
+import { ARSEED_URL, TEXTMARKDOWN, ARSEED_CURRENCY, GIGABYTE } from '../../constants';
 
 // a. Upload Media Functions
 // Text
@@ -42,3 +42,15 @@ export const getBundleArFee = async (size: string) => {
     return res?.finalFee
 }
 
+
+export const calculateARCost = (gigabyteCost: number, bytes: number) => {
+    return Number(gigabyteCost) * bytes / GIGABYTE;
+}
+
+export const getReadableSize = (bytes: number) => {
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    const s = bytes / Math.pow(1024, i);
+    return Number(s.toFixed(2)) * 1 + ' ' + sizes[i];
+}

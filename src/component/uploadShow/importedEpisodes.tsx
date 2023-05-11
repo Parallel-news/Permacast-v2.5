@@ -1,27 +1,21 @@
 import axios from "axios";
-import Everpay, { ChainType } from "everpay";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
-import React, { Dispatch, FC, SetStateAction, useEffect, useState } from "react"
+import React, { FC, useEffect, useState } from "react"
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import toast from "react-hot-toast"
 import { useRecoilState } from "recoil";
 
-import { episodeDescStyling, episodeNameStyling } from "../uploadEpisode/uploadEpisodeTools";
-import { categories_en } from "../../utils/languages";
+import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EPISODE_UPLOAD_FEE, EVERPAY_EOA, EVERPAY_EOA_UPLOADS, GIGABYTE, TOAST_DARK, USER_SIG_MESSAGES, EPISODE_SLIPPAGE } from "../../constants";
 
-import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EPISODE_UPLOAD_FEE, EVERPAY_AR_TAG, EVERPAY_EOA, EVERPAY_EOA_UPLOADS, GIGABYTE, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, TOAST_DARK, TOAST_MARGIN, USER_SIG_MESSAGES } from "../../constants";
-import { isValidEmail } from "../reusables/formTools";
-import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
-import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob } from "../../utils/fileTools";
+import { calculateARCost, getBundleArFee, getReadableSize, upload2DMedia } from "../../utils/arseeding";
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
-import { allFieldsFilled, byteSize, checkConnection, determineMediaType, handleError, validateLabel } from "../../utils/reusables";
+import { checkConnection, determineMediaType, handleError } from "../../utils/reusables";
 import { arweaveAddress, loadingPage, podcastColorAtom } from "../../atoms";
 
-import { Podcast, rssEpisode } from "../../interfaces";
+import { rssEpisode } from "../../interfaces";
 
 import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
-import ProgressBar from "../reusables/progressBar";
 import { transferFunds } from "../../utils/everpay";
 import { UploadEpisode } from "../../interfaces/exm";
 
@@ -41,6 +35,10 @@ interface ImportedEpisodesProps {
 interface RssEpisodeContentLength {
   link: string;
   length: string;
+};
+
+interface gigabyteCost {
+  gigabyteCost: number | Number;
 }
 
 // 2. Stylings
@@ -51,6 +49,21 @@ export const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex f
 // 3. Custom Functions
 
 // 4. Components
+
+export const RssEpisode: FC<rssEpisode & gigabyteCost> = ({ title, contentLength, gigabyteCost }) => {
+  const size = getReadableSize(Number(contentLength));
+  const cost = calculateARCost(Number(gigabyteCost), Number(contentLength));
+  return (
+    <div className="bg-zinc-800 default-animation rounded-xl px-5 py-3 w-full text-white flex justify-between">
+      <div className="max-w-[200px]">{title}</div>
+      <div className="flex gap-x-2">
+        <div>{size}</div>
+        <div>{cost}</div>
+      </div>
+    </div>
+  );
+};
+
 export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, redirect }) => {
 
   // hooks
@@ -176,7 +189,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
       // @ts-ignore
       uploadEpisodePayload["txid"] = feeTX;
 
-      const CONTENT_COST = Number(gigabyteCost) * (Number(contentLength) / GIGABYTE);
+      const CONTENT_COST = calculateARCost(Number(gigabyteCost), Number(contentLength));
       const FINAL_CONTENT_COST = CONTENT_COST + 0.005; // to avoid rounding errors and a slippage change
       const uploadPaymentTX = await transferFunds("UPLOAD_CONTENT", FINAL_CONTENT_COST, EVERPAY_EOA_UPLOADS, address);
 
@@ -211,9 +224,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
           {/* Preview */}
           <div className="flexCol">
             {[rssEpisodes[0]].map((rssEpisode: rssEpisode) => (
-              <div className="w-40 text-white">
-                {rssEpisode.title}
-              </div>
+              <RssEpisode { ...rssEpisode } gigabyteCost={gigabyteCost}  />
             ))}
           </div>
           {/* Upload */}
@@ -239,114 +250,5 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
         <div className="w-[25%]"></div>
       </div>
     </div>
-  )
-}
-
-
-/*
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!podcastCover_) return;
-      const dominantColor = await fetchDominantColor(podcastCover_, false, false);
-      if (dominantColor.error) return;
-      const [coverColor, _] = getCoverColorScheme(dominantColor.rgba);
-      setPodcastColor(coverColor);
-    };
-    fetchData();
-  }, [podcastCover_]);
-
-  // Hook Calculating Upload Cost
-  useEffect(() => {
-    setUploadCost(0)
-
-    async function calculateTotal() {
-      const descBytes = byteSize(podcastDescription_)
-      const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt");
-      const minCover = await minifyPodcastCover(podcastCover_);
-      const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
-
-      const descFee = await getBundleArFee(String(descBytes))
-      const coverFee = await getBundleArFee(String(convertedCover.size))
-      const miniFee = await getBundleArFee(String(fileMini.size))
-
-      return Number(descFee) + Number(coverFee) + Number(miniFee)
-    }
-    if (podcastDescription_.length > 0 && podcastCover_ !== null) {
-      calculateTotal().then(async total => {
-        const formattedTotal = total / AR_DECIMALS  
-        setUploadCost(props.edit ? formattedTotal : formattedTotal + MIN_UPLOAD_PAYMENT)
-      })
-    } else {
-      setUploadCost(0)
-    }
-  }, [podcastDescription_, podcastCover_])
-
-
-  async function uploadEpisodes(uploadEpisodePayload: any) {
-  }
-
-  // Inserts Editting Info
-  useEffect(() => {
-    if (props.edit && props.rssData.length === 0) {
-      const restoreSavedData = async () => {
-        console.log("Edit capability executed")
-        const podcast = props.podcasts.filter((podcast,) => podcast.pid === props.selectedPid)
-        const p = podcast[0]
-        //Set all state variables
-        setPodcastName_(p.podcastName)
-        const description = (await axios.get(ARSEED_URL + p.description)).data;
-        setPodcastDescription_(description)
-        setPodcastAuthor_(p.author)
-        setPodcastEmail_(p.email)
-
-        //Recreate Cover for Upload
-        setCoverUrl(p.cover)
-        fetch(ARSEED_URL + p.cover)
-          .then((rs) => rs.blob())
-          .then((blob) => {
-            const url = URL.createObjectURL(blob);
-            setPodcastCover_(url);
-          });
-        setPodcastLanguage_(p.language)
-        setPodcastCategory_(categories_en.findIndex(cat => cat === p.categories[0]))
-        setPodcastExplicit_(p.explicit === "no" ? false : true)
-        setPodcastLabel_(p.label ? p.label : "")
-        _setLoadingPage(false)
-      }
-      restoreSavedData()
-      //loading modal NEEDED
-    } else {
-      _setLoadingPage(false)
-    }
-  }, [])
-
-  // Inserts Editting Info
-  useEffect(() => {
-    if (props.rssData.length > 0) {
-      const restoreSavedData = async () => {
-        const p = props.rssData[0]
-        //Set all state variables
-        setPodcastName_(p.podcastName)
-        setPodcastDescription_(p.description)
-        setPodcastAuthor_(p.author)
-
-        //Recreate Cover for Upload
-        setCoverUrl(p.cover)
-        fetch(p.cover)
-          .then((rs) => rs.blob())
-          .then((blob) => {
-            const url = URL.createObjectURL(blob);
-            setPodcastCover_(url);
-          });
-        setPodcastLanguage_(p.language)
-        setPodcastCategory_(categories_en.findIndex(cat => cat === p.categories[0]))
-        setPodcastExplicit_(p.explicit === "no" ? false : true)
-        _setLoadingPage(false)
-      }
-      restoreSavedData()
-    } else {
-      _setLoadingPage(false)
-    }
-  }, [])
-
-*/
+  );
+};
