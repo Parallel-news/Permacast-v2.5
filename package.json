@@ -15,7 +15,6 @@
   "dependencies": {
     "@headlessui/react": "^1.7.14",
     "@heroicons/react": "^2.0.16",
-    "@livepeer/react": "^2.4.2",
     "@next/bundle-analyzer": "^13.3.0",
     "@nextui-org/react": "^1.0.0-beta.12",
     "arseeding-js": "^0.0.23",
@@ -25,7 +24,6 @@
     "daisyui": "^2.51.5",
     "everpay": "^0.6.0",
     "fast-average-color": "^9.3.0",
-    "hls.js": "1.3.5",
     "i18next": "^22.4.9",
     "next": "latest",
     "next-i18next": "^13.0.3",
