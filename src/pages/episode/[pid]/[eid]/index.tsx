@@ -15,10 +15,10 @@ const EpisodeSet = React.lazy(() => import("../../../../component/episode/episod
 
 export default function EpisodeId({data, status, mimeType}) {
 
-    const [, _setLoadingPage] = useRecoilState(loadingPage)
+    const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
     useEffect(() => {
         _setLoadingPage(false)
-    }, [])
+    }, [data])
 
     if (data) {
         return (
