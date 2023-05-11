@@ -10,10 +10,10 @@ const fetchContentLength = async (link: string) => {
     const data = await axios.head(link);
     const headers = data?.headers;
     const length: string = headers['content-length'];
-    return {[link]: length};
+    return {link, length};
   } catch {
-    return {[link]: 0};
-  }
+    return {link, length: '0'};
+  };
 };
 
 export default async function handler(
@@ -22,10 +22,10 @@ export default async function handler(
 ) {
   const { rssLinks } = req.body;
   try {
-    const links = await Promise.all(rssLinks.map(async (link: string) => await fetchContentLength(link)))
+    const links = await Promise.all(rssLinks.map(async (link: string) => await fetchContentLength(link)));
     res.status(200).json({ links });
   } catch (error) {
     console.error(error);
-    return res.status(204).json({links: rssLinks.map(async (link: string) => ({link: '0'}) )});
+    return res.status(204).json({links: rssLinks.map(async (link: string) => ({link, length: '0'}) )});
   }
 }
