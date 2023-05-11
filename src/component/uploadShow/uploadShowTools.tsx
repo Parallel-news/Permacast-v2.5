@@ -37,14 +37,15 @@ export default function uploadShowTools() {
 
 // 1. Interfaces
 interface ShowFormInter {
-    podcasts: Podcast[],
-    edit: boolean,
-    redirect: boolean,
+    podcasts: Podcast[];
+    edit: boolean;
+    redirect: boolean;
     //optional
-    selectedPid?: string,
-    rssData?: Podcast[],
-    submitted?: Dispatch<SetStateAction<boolean>>
-    returnedPodcasts?: Dispatch<SetStateAction<Podcast[]>>
+    selectedPid?: string;
+    rssData?: Podcast[];
+    submitted?: Dispatch<SetStateAction<boolean>>;
+    returnedPodcasts?: Dispatch<SetStateAction<Podcast[]>>;
+    setUploadedPID?: Dispatch<SetStateAction<string>>;
 }
 
 // 2. Stylings
@@ -203,7 +204,8 @@ export const ShowForm = (props: ShowFormInter) => {
 
     async function submitShow(payloadObj: any) {
         // Check Connection
-
+        // props.setUploadedPID("f4ecbcd95f0d16bb2a1555b3a8777f20ee66349c590fe0d5f0954888a4c890c9b974f8657e6f6353cf2043eed36cd218b057ee3156f77f664e07c4c802f54697");
+        // return;
         if (!checkConnection(arweaveAddress_)) {
             toast.error(CONNECT_WALLET, {style: TOAST_DARK})
             return false
@@ -268,8 +270,10 @@ export const ShowForm = (props: ShowFormInter) => {
         setProgress(props.edit ? 80: 75)
         setTimeout(async function () {
             console.log("createShowPayload: ", createShowPayload)
-            const uploadRes = await axios.post('/api/exm/write', createShowPayload);
-            props?.returnedPodcasts(uploadRes.data.data.execution.state.podcasts)
+            const uploadRes = (await axios.post('/api/exm/write', createShowPayload)).data;
+            const podcasts = uploadRes.data.execution.state.podcasts;
+            if(podcasts.length > 0 && props.setUploadedPID) props?.setUploadedPID(podcasts[podcasts.length - 1].pid);
+            props?.returnedPodcasts && props?.returnedPodcasts(podcasts);
             //EXM call, set timeout, then redirect.
             toast.dismiss(toastSaving); 
             setProgress(100)
@@ -356,7 +360,7 @@ export const ShowForm = (props: ShowFormInter) => {
                 {/*
                     Cover
                 */}
-                <p className="text-white">{podcastName_}</p>
+                {/* <p className="text-white">{podcastName_}</p> */}
                 <div className="w-[25%] flex justify-center mb-4 lg:mb-0">
                     <CoverContainer 
                         setCover={setPodcastCover_}

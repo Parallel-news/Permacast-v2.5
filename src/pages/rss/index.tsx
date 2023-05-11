@@ -1,19 +1,22 @@
 import axios from "axios";
-import { useRecoilState } from "recoil";
-import { toast } from "react-hot-toast";
 import { GetServerSideProps } from "next";
-import { loadingPage } from "../../atoms";
-import { Podcast } from "../../interfaces";
-import { Loading } from "@nextui-org/react";
 import { useTranslation } from "next-i18next";
-import { Transition } from "@headlessui/react";
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React, { useEffect, useMemo, useState } from "react";
+import { toast } from "react-hot-toast";
+import { useRecoilState } from "recoil";
+
+import { Transition } from "@headlessui/react";
+import { ArrowSmallRightIcon } from "@heroicons/react/24/solid"
+import { Loading } from "@nextui-org/react";
+
+import { loadingPage } from "../../atoms";
+import { Podcast, rssEpisode } from "../../interfaces";
 import { getContractVariables } from "../../utils/contract";
 import RssSubmit from "../../component/reusables/RssSubmit";
-import { ArrowSmallRightIcon } from "@heroicons/react/24/solid"
 import { convertLinktoBase64, isValidUrl } from "../../utils/reusables";
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { EXM_READ_LINK, NO_SHOW, RSS_IMPORT_LINK, RSS_META_LINK, TOAST_DARK } from "../../constants";
+import { ImportedEpisodes } from "../../component/uploadShow/importedEpisodes";
 
 const ValMsg = React.lazy(() => import("../../component/reusables").then(module => ({default: module.ValMsg})))
 const ShowForm = React.lazy(() => import("../../component/uploadShow/uploadShowTools").then(module => ({ default: module.ShowForm })));
@@ -21,16 +24,17 @@ const ShowForm = React.lazy(() => import("../../component/uploadShow/uploadShowT
 const iconStyling = "w-6 h-6 text-zinc-800"
 const rssContainer = "h-full w-full flex flex-col justify-start items-center space-y-3"
 const rssInputContainer = "w-[80%] md:w-[60%] flex flex-row space-x-2 flex items-center"
-const rssInputStyling = "input input-secondary w-full py-3 pl-5 pr-10 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+const rssInputStyling = "w-full py-3 pl-5 pr-10 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white default-animation "
 
 export default function rss({yourShows}) {
 
     const [step, setStep] = useState(0)
     const [submittingLink, setSubmittingLink] = useState(false)
-    const [rssLink, setRssLink] = useState<string>("")
+    const [rssLink, setRssLink] = useState<string>("https://feeds.libsyn.com/247424/rss")
     const [rssLinkError, setRssLinkError] = useState<string>("")
     const [fetchError, setFetchError] = useState<string>("")
     const [podcastFormSubmitted, setPodcastFormSubmitted] = useState<boolean>(false)
+    const [rssFeed, setRssFeed] = useState<rssEpisode[]>([]);
     const [newPodcasts, setNewPodcasts] = useState<Podcast[]>([])
     const [pid, setPid] = useState<string>("")
     const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
@@ -41,10 +45,10 @@ export default function rss({yourShows}) {
         _setLoadingPage(false)
     }, [])
 
-    useMemo(()=> {
-        if(newPodcasts.length > 0) setPid(newPodcasts[newPodcasts.length - 1].pid)
-    }, [newPodcasts])
-
+    useEffect(() => {
+        if (pid) { setStep(2) };
+    }, [pid]);
+    
     const [rssMeta, setRssMeta] = useState<Podcast[]>([{
         pid: "",
         label: "",
@@ -82,11 +86,11 @@ export default function rss({yourShows}) {
         }
 
         const base64 = convertLinktoBase64(rssLink)
-        let rssFeed;
+        let rssFeed: rssEpisode[];
         let rssMetadata;
         // Fetch Episodes
         try {
-            rssFeed = await axios.get(RSS_IMPORT_LINK+base64)
+            rssFeed = (await axios.get(RSS_IMPORT_LINK+base64)).data
         } catch(e) {
             setFetchError("rss.norssepisode")
             setSubmittingLink(false)
@@ -119,12 +123,13 @@ export default function rss({yourShows}) {
             return updatedPodcasts;
         });
 
-        setSubmittingLink(false)
-        setStep(1)
+        setSubmittingLink(false);
+        setStep(1);
         console.log("rssMeta: ", rssMeta)
         console.log("RSS FEED: ", rssFeed)
-    }
-    
+        setRssFeed(rssFeed)
+    };
+
     return (
         <div className="flex flex-col justify-center w-full space-y-7">
 
@@ -152,9 +157,9 @@ export default function rss({yourShows}) {
                         />
                         <RssSubmit 
                             icon={submittingLink ? <Loading type="spinner" size="lg" color="currentColor" /> : <ArrowSmallRightIcon className={iconStyling} /> }
-                            color="bg-green-500"
+                            color="bg-[rgb(255,255,0)]"
                             dimensions="h-10 w-11"
-                            onClick={() => submitLink()}
+                            onClick={() => submitLink(  )}
                         />
                     </div>
                     <ValMsg valMsg={rssLinkError} className="pl-2" />
@@ -179,14 +184,32 @@ export default function rss({yourShows}) {
                     rssData={rssMeta}
                     redirect={false}
                     submitted={setPodcastFormSubmitted}
+                    setUploadedPID={setPid}
                     returnedPodcasts={setNewPodcasts}
+                />
+            </Transition>
+
+            {/*Step 3: Show Episode List*/}
+            <Transition
+                show={step === 2}
+                appear={true}
+                enter="transform transition duration-[500ms]"
+                enterFrom="opacity-0 scale-75"
+                enterTo="opacity-100 scale-100"
+                leave="transform transition duration-[500ms]"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-75 scale-75"
+            >
+                <ImportedEpisodes
+                    pid={pid}
+                    rssEpisodes={rssFeed}
                 />
             </Transition>
             {/*
             UNDER CONSTRUCTION
-            1. Upload form and retrieve pid
-            2. Once pid is retrieved, open episode column
-            3. Have episode UI appear with a submit
+            1. (DONE) Upload form and retrieve pid
+            2. (DONE) Once pid is retrieved, open episode column
+            3. (DONE) Have episode UI appear with a submit
             4. Check if enough AR in account 
             5. Conduct upload but check if description is present and needs to be uploaded.
 
