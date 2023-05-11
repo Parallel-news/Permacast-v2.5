@@ -6,12 +6,7 @@ import React from 'react';
 import { RecoilRoot } from 'recoil';
 import { ArconnectProvider } from 'react-arconnect';
 import { PERMISSIONS } from '../constants/arconnect';
-import {
-  LivepeerConfig,
-  ThemeConfig,
-  createReactClient,
-  studioProvider
-} from '@livepeer/react';
+
 import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import '../styles/globals.css';
@@ -23,22 +18,6 @@ const QueryANS = React.lazy(() => import('../component/loaders/QueryANS'));
 const Layout = React.lazy(() => import('../component/layout'));
 const ShikwasaProviderLazy = React.lazy(() => import('../hooks').then(module => ({ default: module.ShikwasaProvider })));
 
-// fetch data in _app.tsx -> populate recoil -> re-write search to query from that recoil state, if it fails then fuse.js
-const { publicRuntimeConfig } = getConfig()
-const { STUDIOTOKEN } = publicRuntimeConfig;
-const client = createReactClient({
-  provider: studioProvider({ apiKey: STUDIOTOKEN})
-})
-
-const livepeerTheme: ThemeConfig = {
-  colors: {
-    accent: 'rgb(0, 145, 255)',
-    containerBorderColor: 'rgba(0, 145, 255, 0.9)',
-  },
-  fonts: {
-    display: 'Inter'
-  }
-}
 
 function App({ Component, pageProps }) {
 
