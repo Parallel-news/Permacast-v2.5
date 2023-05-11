@@ -1,4 +1,5 @@
 import { arweaveAddress } from ".";
+import { EXMauth } from "./exm";
 
 export type SupportedSocial = "twitter" | "github" | "telegram" | "instagram" | "discord";
 
@@ -19,10 +20,6 @@ export interface PASoMProfile {
   followings?: arweaveAddress[];
 };
 
-export interface EXMauth {
-  jwk_n: string;
-  sig: string;
-};
 
 export interface EXMBase extends EXMauth {}
 
