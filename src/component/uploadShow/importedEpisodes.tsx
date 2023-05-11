@@ -82,7 +82,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
       setPodcastColor(coverColor);
     };
     const fetchGigabyteCosts = async () => {
-      const cost = Number(await getBundleArFee('' + GIGABYTE)) / 1000000000000;
+      const cost = Number(await getBundleArFee('' + GIGABYTE)) / AR_DECIMALS;
       setGigabyteCost(cost);
     };
     fetchData();
@@ -92,7 +92,8 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
   const tryDescriptionUpload = async (description: string, handleErr: any) => {
     try {
       const descriptionTX = await upload2DMedia(description);
-      return descriptionTX?.order?.itemId;
+      const tx = descriptionTX?.order?.itemId || '';
+      return tx;
     } catch (e) {
       console.log(e);
       handleErr(t("errors.descUploadError"), setUploadingEpisodes);
@@ -102,9 +103,10 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
 
   const tryFeePayment = async (handleErr: any) => {
     try {
-      const tx = await transferFunds("UPLOAD_EPISODE_FEE", EPISODE_UPLOAD_FEE, EVERPAY_EOA, address)
+      const tx = await transferFunds("UPLOAD_EPISODE_FEE", EPISODE_UPLOAD_FEE, EVERPAY_EOA, address);
       //@ts-ignore - refusing to acknowledge everHash
-      return tx[1].everHash
+      const everHash = tx[1].everHash;
+      return everHash;
     } catch(e) {
       console.log(e);
       handleErr(t("error.everpayError"), uploadEpisodes);
@@ -130,7 +132,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
       const contentLength = sizes.find((item: RssEpisodeContentLength) => item.link === rssEpisode.link);
       return {
         ...rssEpisode,
-        contentLength,
+        contentLength: contentLength.length,
       };
     });
   
@@ -163,20 +165,19 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
       uploadEpisodePayload["jwk_n"] = await getPublicKey();
 
       // Description to Arseeding
-      const descriptionTx = tryDescriptionUpload(description, handleErr);
+      const descriptionTx = await tryDescriptionUpload(description, handleErr);
       console.log(descriptionTx);
       // @ts-ignore
       uploadEpisodePayload["desc"] = descriptionTx;
 
       // Pay Upload Fee
-      const feeTX = tryFeePayment(handleErr);
+      const feeTX = await tryFeePayment(handleErr);
       console.log(feeTX);
       // @ts-ignore
       uploadEpisodePayload["txid"] = feeTX;
 
       const CONTENT_COST = Number(gigabyteCost) * (Number(contentLength) / GIGABYTE);
-      const FINAL_CONTENT_COST = CONTENT_COST + 0.1; // to avoid rounding errors and a slippage change
-      //! TODO: FIX PAYMENT ERROR
+      const FINAL_CONTENT_COST = CONTENT_COST + 0.005; // to avoid rounding errors and a slippage change
       const uploadPaymentTX = await transferFunds("UPLOAD_CONTENT", FINAL_CONTENT_COST, EVERPAY_EOA_UPLOADS, address);
 
       const finalPayload = {
@@ -186,6 +187,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
       };
 
       const result = await axios.post('/api/arseed/upload-url', finalPayload);
+      console.log(result.data)
     })
     toast.dismiss(toastSaving);
     toast.success(t("success.showUploaded"), {style: TOAST_DARK})
