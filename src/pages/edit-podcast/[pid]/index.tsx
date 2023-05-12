@@ -37,6 +37,7 @@ export default function UploadShow({yourShows, error, pid}) {
                   podcasts={yourShows}
                   edit={true}
                   selectedPid={pid}
+                  redirect={true}
               />
             </Suspense>
         </div>

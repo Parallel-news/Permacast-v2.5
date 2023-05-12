@@ -97,6 +97,7 @@ export const CoverContainer = (props: CoverContainerInter) => {
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [rotation, setRotation] = useState(0);
     let responseUrl: string;
+    console.log("props.editCover: ", props.editCover)
     //Check if in Edit Mode
     useEffect(() => {
         async function fetchImage() {
@@ -189,7 +190,7 @@ export const CoverContainer = (props: CoverContainerInter) => {
             className={coverContainerLabelStyling}
         >
             {/*Show Selected Image or Empty Cover*/}
-            {podcastCoverRef?.current?.files?.[0] && img.length !== 0 ? <ImgCover img={img} /> : <EmptyCover />}
+            {podcastCoverRef?.current?.files?.[0] && (img.length !== 0 || props.editCover.length > 0) ? <ImgCover img={img.length > 0 ? img : props.editCover} /> : <EmptyCover />}
       </label>
       </>
     )

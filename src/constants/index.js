@@ -62,6 +62,8 @@ export const ANS_MAPPED_STATE_URL = "https://ans-metrics.herokuapp.com/mapped-st
 export const RSS_FEED_URL = PERMACAST_HELPER_URL + "feeds/rss/"; // requires PID at the end
 export const EXM_ANS_CONTRACT_ADDRESS = "VGWeJLDLJ9ify3ezl9tW-9fhB0G-GIUd60FE-5Q-_VI";
 export const MESON_ENDPOINT = "https://pz-znmpfs.meson.network/"
+export const RSS_IMPORT_LINK = PERMACAST_HELPER_URL + "import-rss/"
+export const RSS_META_LINK = PERMACAST_HELPER_URL+"rss-podcast-metadata/"
 
 // SOCIALS
 export const PERMACAST_DISCORD_URL = "https://discord.gg/cQanQVCs7G"
@@ -121,6 +123,7 @@ export const EVERPAY_FEATURE_TREASURY = "0x6c05FdF443A5c9520af46976A24546191068a
 export const EVERPAY_AR_TAG = 'arweave,ethereum-ar-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,0x4fadc7a98f2dc96510e42dd1a74141eeae0c1543';
 export const MIN_UPLOAD_PAYMENT = .25 // 250000000000 winston
 export const EPISODE_UPLOAD_FEE = .01 // 10000000000 winston
+export const EPISODE_SLIPPAGE = 0.001 // 1000000000 winston
 export const FEATURE_COST_BASE = 0.3 //  300000000000 winston
 export const FEATURE_COST_PER_DAY = 0.1 //100000000000 winston
 

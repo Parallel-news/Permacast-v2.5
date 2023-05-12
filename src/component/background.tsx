@@ -14,6 +14,7 @@ interface BackgroundInterface {
 
 export const useDefaultBackgroundPaths = [
   "/",
+  "/rss",
   "/feed",
   "/search",
   "/upload-podcast",

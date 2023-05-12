@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { episodeDescStyling, episodeNameStyling } from "../uploadEpisode/uploadEpisodeTools";
 import { categories_en } from "../../utils/languages";
 
@@ -20,7 +20,6 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast"
 import React from "react";
 import { VisibleInput } from "./reusables";
-import { PermaSpinner } from "../reusables";
 import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 import ProgressBar from "../reusables/progressBar";
 
@@ -38,9 +37,15 @@ export default function uploadShowTools() {
 
 // 1. Interfaces
 interface ShowFormInter {
-    podcasts: Podcast[],
-    edit: boolean,
-    selectedPid?: string
+    podcasts: Podcast[];
+    edit: boolean;
+    redirect: boolean;
+    //optional
+    selectedPid?: string;
+    rssData?: Podcast[];
+    submitted?: Dispatch<SetStateAction<boolean>>;
+    returnedPodcasts?: Dispatch<SetStateAction<Podcast[]>>;
+    setUploadedPID?: Dispatch<SetStateAction<string>>;
 }
 
 // 2. Stylings
@@ -179,7 +184,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
     //EXM 
     const createShowPayload = {
-        "function": props.edit ? "editPodcastMetadata" : "createPodcast",
+        "function": (props.edit && props.rssData.length === 0) ? "editPodcastMetadata" : "createPodcast",
         "name": podcastName_,
         "desc": "",
         "author": podcastAuthor_,
@@ -199,7 +204,8 @@ export const ShowForm = (props: ShowFormInter) => {
 
     async function submitShow(payloadObj: any) {
         // Check Connection
-
+        // props.setUploadedPID("f4ecbcd95f0d16bb2a1555b3a8777f20ee66349c590fe0d5f0954888a4c890c9b974f8657e6f6353cf2043eed36cd218b057ee3156f77f664e07c4c802f54697");
+        // return;
         if (!checkConnection(arweaveAddress_)) {
             toast.error(CONNECT_WALLET, {style: TOAST_DARK})
             return false
@@ -241,7 +247,7 @@ export const ShowForm = (props: ShowFormInter) => {
         }
 
         // Fee to Everpay
-        if(!props.edit) {
+        if(!props.edit || props.rssData.length > 0) { //Upload Mode or RSS Mode
             const toastFee = toast.loading(t("loadingToast.payingFee"), {style: TOAST_DARK, duration: 10000000});
             setProgress(60)
             try {
@@ -263,23 +269,31 @@ export const ShowForm = (props: ShowFormInter) => {
         const toastSaving = toast.loading(t("loadingToast.savingChain"), {style: TOAST_DARK, duration: 10000000});
         setProgress(props.edit ? 80: 75)
         setTimeout(async function () {
-            await axios.post('/api/exm/write', createShowPayload);
+            console.log("createShowPayload: ", createShowPayload)
+            const uploadRes = (await axios.post('/api/exm/write', createShowPayload)).data;
+            const podcasts = uploadRes.data.execution.state.podcasts;
+            if(podcasts.length > 0 && props.setUploadedPID) props?.setUploadedPID(podcasts[podcasts.length - 1].pid);
+            props?.returnedPodcasts && props?.returnedPodcasts(podcasts);
             //EXM call, set timeout, then redirect.
             toast.dismiss(toastSaving); 
             setProgress(100)
             toast.success(t("success.showUploaded"), {style: TOAST_DARK})
             setTimeout(async function () {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
-                const { locale } = router;
-                router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
+                if(props.redirect) {
+                    const { locale } = router;
+                    router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
+                }
+                props?.submitted(true)
             }, 2500)
         }, 5000)
     }
 
     // Inserts Editting Info
     useEffect(() => {
-        if(props.edit) {
+        if(props.edit && props.rssData.length === 0) {
             const restoreSavedData = async () => {
+                console.log("Edit capability executed")
                 const podcast = props.podcasts.filter((podcast, ) => podcast.pid === props.selectedPid)
                 const p = podcast[0]
                 //Set all state variables
@@ -310,6 +324,35 @@ export const ShowForm = (props: ShowFormInter) => {
         }
     }, [])
 
+    // Inserts Editting Info
+    useEffect(() => {
+        if(props.rssData.length > 0) {
+            const restoreSavedData = async () => {
+                const p = props.rssData[0]
+                //Set all state variables
+                setPodcastName_(p.podcastName)
+                setPodcastDescription_(p.description)
+                setPodcastAuthor_(p.author)
+                
+                //Recreate Cover for Upload
+                setCoverUrl(p.cover)
+                fetch(p.cover)
+                .then((rs) => rs.blob())
+                .then((blob) => {
+                  const url = URL.createObjectURL(blob);
+                  setPodcastCover_(url);
+                });
+                setPodcastLanguage_(p.language)
+                setPodcastCategory_(categories_en.findIndex(cat => cat === p.categories[0]))
+                setPodcastExplicit_(p.explicit === "no" ? false : true)
+                _setLoadingPage(false)
+            }
+            restoreSavedData()
+        } else {
+            _setLoadingPage(false)
+        }
+    }, [])
+
     return (
         <div className={showFormStyling}>
             {/*First Row*/}
@@ -317,11 +360,12 @@ export const ShowForm = (props: ShowFormInter) => {
                 {/*
                     Cover
                 */}
+                {/* <p className="text-white">{podcastName_}</p> */}
                 <div className="w-[25%] flex justify-center mb-4 lg:mb-0">
                     <CoverContainer 
                         setCover={setPodcastCover_}
-                        isEdit={props.edit}
-                        editCover={ARSEED_URL+coverUrl}
+                        isEdit={props.edit || props.rssData.length > 0}
+                        editCover={(props.edit && !props.rssData.length) ? ARSEED_URL+coverUrl : coverUrl}
                     />
                 </div>
                 <div className="flex flex-col w-[95%] md:w-[75%] lg:w-[50%] space-y-3">
