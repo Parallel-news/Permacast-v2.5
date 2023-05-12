@@ -193,10 +193,9 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
 
       let interlen = 0;
       const inter = setInterval(() => {
-        if (interlen > 100) return;
+        if (interlen > 95) return;
         setProgress(prev => prev + (percentPerEpisode / 100))
         ++interlen;
-        console.log(interlen)
       }, 1000);
       const result = await axios.post('/api/arseed/upload-url', finalPayload);
       setProgress(prev => prev + percentPerEpisode);
