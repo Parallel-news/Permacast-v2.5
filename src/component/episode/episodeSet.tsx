@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
-import { backgroundColorAtom } from "../../atoms";
-import { detectTimestampType, hasBeen10Min } from "../../utils/reusables";
-import { FullEpisodeInfo } from "../../interfaces";
-import { determinePodcastURL, fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
-import { ARSEED_URL, MESON_ENDPOINT } from "../../constants";
-import { podcastIdStyling } from "./eidTools";
 import { TipModal } from "../tipModal";
+import { useRecoilState } from "recoil";
+import { podcastIdStyling } from "./eidTools";
 import { ShareButtons } from "../shareButtons";
 import { trimChars } from "../../utils/filters";
+import { backgroundColorAtom } from "../../atoms";
+import React, { useEffect, useState } from "react";
+import { FullEpisodeInfo } from "../../interfaces";
+import { ARSEED_URL, MESON_ENDPOINT } from "../../constants";
+import { detectTimestampType, hasBeen10Min } from "../../utils/reusables";
+import { determinePodcastURL, fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 
-const EpisodeBanner = React.lazy(() => import("./eidTools").then(module => ({ default: module.EpisodeBanner })));
-const EpisodeDescription = React.lazy(() => import("./eidTools").then(module => ({ default: module.EpisodeDescription })));
-const Episodes = React.lazy(() => import("./eidTools").then(module => ({ default: module.Episodes })));
 const FeaturedPodcastPlayButton = React.lazy(() => import("../home/featuredPodcastPlayButton"))
+const Episodes = React.lazy(() => import("./eidTools").then(module => ({ default: module.Episodes })))
+const EpisodeBanner = React.lazy(() => import("./eidTools").then(module => ({ default: module.EpisodeBanner })))
+const EpisodeDescription = React.lazy(() => import("./eidTools").then(module => ({ default: module.EpisodeDescription })))
 
 interface EpisodeSetInter {
     data: any
@@ -49,12 +49,10 @@ export default function EpisodeSet(props: EpisodeSetInter) {
         const year = ts.getFullYear().toString(); // get the year
         const formattedDate = `${day}/${month}/${year}`;
         const d = data?.obj
-        console.log("DDD: ", d)
         const date = formattedDate
 
         // Assemble Player Data
         const podcastInfo = data.podcast
-        console.log("podcastInfo: ", podcastInfo)
         const episodes = data?.episodes
         const cover = data.cover
         // Create Data for Next Episode
@@ -67,7 +65,7 @@ export default function EpisodeSet(props: EpisodeSetInter) {
                 label: '',
                 author: '',
                 podcastName: '',
-                pid: '',
+                pid: ''
             }
         } as FullEpisodeInfo
         
@@ -102,7 +100,7 @@ export default function EpisodeSet(props: EpisodeSetInter) {
             {/*Episode Cover & Info*/}
             <EpisodeBanner 
                 title={d.episodeName}
-                imgSrc={ARSEED_URL + data?.cover}
+                imgSrc={ARSEED_URL + ((d?.thumbnail && d?.thumbnail.length > 0) ? d?.thumbnail : data?.cover)}
                 color={color}
                 episodeNum={index+1}
                 date={date}
@@ -123,7 +121,7 @@ export default function EpisodeSet(props: EpisodeSetInter) {
             {data?.episodes[index+1] && (
                 <Episodes
                     containerTitle={"Next Episode"} 
-                    imgSrc={ARSEED_URL + data?.cover}
+                    imgSrc={ARSEED_URL + ((d?.thumbnail && d?.thumbnail.length > 0) ? d?.thumbnail : data?.cover)}
                     color={'rgb(255, 255, 255)'}
                     episodes={[nextEpisodeInfo]}
                     podcastId={data?.obj.pid}

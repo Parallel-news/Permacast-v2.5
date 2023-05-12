@@ -1,11 +1,12 @@
 import axios from 'axios';
-import React, { useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import { EXM_READ_LINK, NO_SHOW } from '../../../../constants';
 import { getContractVariables } from '../../../../utils/contract';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRecoilState } from 'recoil';
 import { loadingPage } from '../../../../atoms';
+import LoadingForm from '../../../../component/reusables/loadingForm';
 
 const episodeTitleStyling = "text-white text-xl mt-4"
 const showErrorTag = "flex justify-center items-center m-auto text-white font-semibold text-xl"
@@ -28,13 +29,21 @@ export default function UploadEpisode({yourShows, error, pid, eid}) {
     } else {
       return (
         <div className={uploadEpisodeStyling}>
-            <p className={episodeTitleStyling}>{t("uploadshow.editpodcast")}</p>
+          <Suspense fallback={
+            <LoadingForm 
+              width={"w-[55%]"}
+              height={"h-[500px]"}
+              justify={"justify-center"}
+            />
+          }>
+            <p className={episodeTitleStyling}>{t("uploadshow.editepisode")}</p>
             <EpisodeForm 
               shows={yourShows}
               pid={pid}
               eid={eid}
               edit={true}
             />
+          </Suspense>
         </div>
       )
     }

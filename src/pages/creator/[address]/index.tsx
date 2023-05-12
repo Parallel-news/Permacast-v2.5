@@ -1,39 +1,27 @@
 import axios from 'axios';
 import Head from 'next/head';
 import { NextPage } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
-import { Ans, Episode, FullEpisodeInfo, Podcast } from '../../../interfaces';
-import { hexToRGB, RGBobjectToString } from '../../../utils/ui';
-import { allPodcasts, loadingPage, podcastColorAtom } from '../../../atoms';
-import { Creator404, sortByDate } from '../../../component/creator';
+import { shortenAddress } from 'react-arconnect';
 import { ANS_TEMPLATE } from '../../../constants/ui';
 import { ARWEAVE_READ_LINK } from '../../../constants';
-import { shortenAddress } from 'react-arconnect';
+import Loading from '../../../component/creator/loading';
 import { PASoMProfile } from '../../../interfaces/pasom';
+import React, { useState, useEffect, Suspense } from 'react';
+import { hexToRGB, RGBobjectToString } from '../../../utils/ui';
+import { Creator404, sortByDate } from '../../../component/creator';
+import { allPodcasts, loadingPage, podcastColorAtom } from '../../../atoms';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { Ans, Episode, FullEpisodeInfo, Podcast } from '../../../interfaces';
+
 const CreatorPageComponentLazy = React.lazy(() => import('../../../component/creator').then(module => ({ default: module.CreatorPageComponent })));
 
-
-// pages/blog/[slug].js
-export async function getStaticPaths() {
-  return {
-    paths: [
-      // String variant:
-      '/creator/[address].tsx',
-      // Object variant:
-      // { params: { address } },
-    ],
-    fallback: true,
-  };
-};
-
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   const { locale, params } = context;
   const { address } = params;
   let userInfo: Ans = ANS_TEMPLATE;
   userInfo.address_color = "#000000";
-  userInfo.user = address;
+  userInfo.user = address.length > 0 ? address : ''; 
   const isAddress = address.length === 43;
 
   try {
@@ -63,9 +51,8 @@ export async function getStaticProps(context) {
 };
 
 const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
-  if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) return <Creator404 address={userInfo?.user || ''} />
 
-  const { user, nickname, currentLabel, address_color, bio, avatar } = userInfo;
+  const { user, nickname, currentLabel, address_color, bio, avatar  } = userInfo;
   const [PASoMProfile, setPASoMProfile] = useState<PASoMProfile | undefined>();
   const creatorName = nickname || currentLabel || shortenAddress(user);
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
@@ -73,6 +60,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
   const [allPodcasts_, setAllPodcasts_] = useRecoilState(allPodcasts);
   const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
+  const [domLoaded, setDomLoaded] = useState(false)
 
   useEffect(() => {
     if (!userInfo) return;
@@ -99,12 +87,16 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
       const userEpisodes = podcasts.map((podcast: Podcast) => 
         podcast.episodes.map((episode: Episode) => ({episode, podcast}))
       ).flat(1).splice(-3, 3);
-      setPodcasts(podcasts);
+      setPodcasts(podcasts.reverse());
       const sortedEpisodes = sortByDate(userEpisodes)
       setEpisodes(sortedEpisodes.slice().reverse());
     };
     fetchUserData();
   }, [allPodcasts_, userInfo]);
+
+  useEffect(()=> {
+    setDomLoaded(true)
+  }, [])
 
   useEffect(() => {
     const timer = setTimeout(() =>{_setLoadingPage(false);}, 1000);
@@ -118,27 +110,54 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
     episodes,
   };
 
-  return (
-    <>
-      <Head>
-        <title>{`${creatorName} | Creator`}</title> 
-        <meta name="description" content={`${bio}`} />
-        <meta name="twitter:card" content="summary"></meta>
-        <meta name="twitter:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
-        <meta name="twitter:title" content={`${creatorName} | Permacast Creator`} />
-        <meta name="twitter:url" content={`https://permacast.app/`} />
-        <meta name="twitter:description" content={`${bio}`} />
-        
-        <meta property="og:card" content="summary" />
-        <meta property="og:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
-        <meta property="og:title" content={`${creatorName} | Permacast Creator`} />
-        <meta property="og:url" content={`https://permacast.app/`} />
-        <meta property="og:description" content={`${bio}`} /> 
-      </Head>
-      <CreatorPageComponentLazy {...{ creator }}/>
-    </>
-  )
+  if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) {
+    return (
+      <>
+        <Head>
+          <title>{`Creator Not Found`}</title> 
+          <meta name="description" content={`Creator Not Found`} />
+          <meta name="twitter:card" content="summary"></meta>
+          <meta name="twitter:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
+          <meta name="twitter:title" content={`Permacast Creator`} />
+          <meta name="twitter:url" content={`https://permacast.app/`} />
+          <meta name="twitter:description" content={`None`} />
+          
+          <meta property="og:card" content="summary" />
+          <meta property="og:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
+          <meta property="og:title" content={`Permacast Creator`} />
+          <meta property="og:url" content={`https://permacast.app/`} />
+          <meta property="og:description" content={`Creator Not Found`} /> 
+        </Head>
+        <Creator404 address={userInfo?.user} />
+      </>
+    )
+  } else {
+    return (
+      <>
+        <Head>
+          <title>{`${creatorName} | Creator`}</title> 
+          <meta name="description" content={`${bio}`} />
+          <meta name="twitter:card" content="summary"></meta>
+          <meta name="twitter:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
+          <meta name="twitter:title" content={`${creatorName} | Permacast Creator`} />
+          <meta name="twitter:url" content={`https://permacast.app/`} />
+          <meta name="twitter:description" content={`${bio}`} />
+          
+          <meta property="og:card" content="summary" />
+          <meta property="og:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
+          <meta property="og:title" content={`${creatorName} | Permacast Creator`} />
+          <meta property="og:url" content={`https://permacast.app/`} />
+          <meta property="og:description" content={`${bio}`} /> 
+        </Head>
+        {domLoaded && (
+          <Suspense fallback={<Loading />}>
+            <CreatorPageComponentLazy {...{ creator }} />
+          </Suspense>
+        )}
+      </>
+    )
+  }
 };
 
-
 export default Creator;
+     
