@@ -18,6 +18,12 @@ import { convertLinktoBase64, isValidUrl } from "../../utils/reusables";
 import { EXM_READ_LINK, NO_SHOW, RSS_IMPORT_LINK, RSS_META_LINK, TOAST_DARK } from "../../constants";
 import { ImportedEpisodes } from "../../component/uploadShow/importedEpisodes";
 
+
+interface RssEpisodeContentLength {
+    link: string;
+    length: string;
+};
+
 const ValMsg = React.lazy(() => import("../../component/reusables").then(module => ({default: module.ValMsg})))
 const ShowForm = React.lazy(() => import("../../component/uploadShow/uploadShowTools").then(module => ({ default: module.ShowForm })));
 
@@ -30,7 +36,7 @@ export default function rss({yourShows}) {
 
     const [step, setStep] = useState(0)
     const [submittingLink, setSubmittingLink] = useState(false)
-    const [rssLink, setRssLink] = useState<string>("https://feeds.libsyn.com/247424/rss")
+    const [rssLink, setRssLink] = useState<string>("")
     const [rssLinkError, setRssLinkError] = useState<string>("")
     const [fetchError, setFetchError] = useState<string>("")
     const [podcastFormSubmitted, setPodcastFormSubmitted] = useState<boolean>(false)
@@ -38,6 +44,7 @@ export default function rss({yourShows}) {
     const [newPodcasts, setNewPodcasts] = useState<Podcast[]>([])
     const [pid, setPid] = useState<string>("")
     const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
+    const [coverUrl, setCoverUrl] = useState<string>('');
 
     const { t } = useTranslation();
 
@@ -106,7 +113,7 @@ export default function rss({yourShows}) {
             toast.error(fetchError, {style: TOAST_DARK})
             return false
         }
-
+        setCoverUrl(rssMetadata.data.cover);
         setRssMeta(prevState => {
             const updatedPodcasts = prevState.map(podcast => {
               return {
@@ -127,7 +134,21 @@ export default function rss({yourShows}) {
         setStep(1);
         console.log("rssMeta: ", rssMeta)
         console.log("RSS FEED: ", rssFeed)
-        setRssFeed(rssFeed)
+
+        const fetchHeaders = async () => {
+            const rssLinks = rssFeed.map((rssEpisode: rssEpisode) => rssEpisode.link);
+            const sizes = (await axios.post('/api/rss/get-headers', { rssLinks })).data.links;
+
+            const rssEpisodesFinal = rssFeed.map((rssEpisode: rssEpisode) => {
+                const contentLength = sizes.find((item: RssEpisodeContentLength) => item.link === rssEpisode.link);
+                return {
+                    ...rssEpisode,
+                    contentLength: contentLength.length,
+                };
+            });
+            setRssFeed(rssEpisodesFinal);
+        };
+        fetchHeaders();
     };
 
     return (
@@ -201,6 +222,7 @@ export default function rss({yourShows}) {
                 leaveTo="opacity-75 scale-75"
             >
                 <ImportedEpisodes
+                    coverUrl={coverUrl}
                     pid={pid}
                     rssEpisodes={rssFeed}
                 />
