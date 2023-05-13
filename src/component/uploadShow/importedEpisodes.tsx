@@ -21,6 +21,7 @@ import { arweaveAddress, loadingPage, podcastColorAtom } from "../../atoms";
 
 import { ImgCover } from "./reusables";
 import ProgressBar from "../reusables/progressBar";
+import Everpay from "everpay";
 const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.ConnectButton })));
 const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
 
@@ -80,11 +81,13 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
   const [uploadingEpisodes, setUploadingEpisodes] = useState<boolean>(false);
   const [totalUploadCost, setTotalUploadCost] = useState<number>(0);
   const [gigabyteCost, setGigabyteCost] = useState<number>(0)
+  const [userHasEnoughAR, setUserHasEnoughAR] = useState<boolean>(false);
 
   const [progress, setProgress] = useState(0)
   const [, _setLoadingPage] = useRecoilState(loadingPage)
   
   useEffect(() => {
+
     const fetchData = async () => {
       if (!coverUrl) return;
       const dominantColor = await fetchDominantColor(coverUrl, false, false);
@@ -95,13 +98,28 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
 
     const fetchGigabyteCosts = async () => Number(await getBundleArFee('' + GIGABYTE)) / AR_DECIMALS;
     const calculateTotal = async () => {
+      // calculate all episodes cost
       const cost = await fetchGigabyteCosts();
       const total = rssEpisodes.map((rssEpisode: rssEpisode) => 
         calculateARCost(Number(cost), Number(rssEpisode.contentLength)) + EPISODE_SLIPPAGE
       );
       const totalCost = total.reduce((a, b) => a + b, 0);
       setTotalUploadCost(totalCost);
+
+      // check if user has enough AR
+      const everpay = new Everpay({
+        account: arweaveAddress_,
+        //@ts-ignore
+        chainType: 'arweave',
+        arJWK: 'use_wallet',
+      });
+      const balances = await everpay.balances({ account: arweaveAddress_ });
+      //@ts-ignore
+      const arBalance = balances.find((el: any) => el.chainType === "arweave,ethereum")?.balance;
+      const isEnough = Number(arBalance) >= totalCost;
+      setUserHasEnoughAR(isEnough);
     };
+
     fetchData();
     fetchGigabyteCosts().then(setGigabyteCost);
     calculateTotal();
@@ -147,9 +165,9 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
 
     const percentPerEpisode = (100 / rssEpisodes.length);
     const episodeUploadPromises = rssEpisodes.map(async (rssEpisode: rssEpisode) => {
+      
       const { description, title, fileType, link, contentLength } = rssEpisode;
 
-      // Package EXM Call
       const uploadEpisodePayload: UploadEpisode = {
         "function": "addEpisode",
         "jwk_n": "",
@@ -164,6 +182,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
         "mimeType": determineMediaType(fileType),
       };
 
+      // get user auth
       const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
       // @ts-ignore
       uploadEpisodePayload["sig"] = await createSignature(data, defaultSignatureParams, "base64");
@@ -185,19 +204,30 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
       const FINAL_CONTENT_COST = CONTENT_COST + EPISODE_SLIPPAGE; // to avoid rounding errors and a slippage change
       const uploadPaymentTX = await transferFunds("UPLOAD_CONTENT", FINAL_CONTENT_COST, EVERPAY_EOA_UPLOADS, address);
 
-      const finalPayload = {
-        url: link,
-        uploadPaymentTX,
-        episodeMetadata: uploadEpisodePayload,
-      };
-
+      // start progress bar
       let interlen = 0;
       const inter = setInterval(() => {
-        if (interlen > 95) return;
+        // prevent full progress bar
+        if (interlen > 90) return;
         setProgress(prev => prev + (percentPerEpisode / 100))
         ++interlen;
       }, 1000);
-      const result = await axios.post('/api/arseed/upload-url', finalPayload);
+
+      // upload content to arseeding
+      const finalPayload = {
+        url: link,
+        uploadPaymentTX,
+      };
+      const tx = (await axios.post('/api/arseed/upload-url', finalPayload)).data.response;
+      if (!tx) {
+        console.log('Failed to upload url to arseeding: ', link);
+        return
+      };
+      // add uploaded content tx to payload
+      uploadEpisodePayload['content'] = tx;
+
+      setProgress(prev => prev + ((percentPerEpisode / 100) * 5));
+      const result = await axios.post('/api/exm/write', uploadEpisodePayload);
       setProgress(prev => prev + percentPerEpisode);
       clearInterval(inter)
       console.log(result.data)
@@ -234,11 +264,16 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
           <div className="w-full flex justify-center items-center flex-col">
             {/*Show Upload Btn, Spinner, or Connect Btn*/}
             {address && address.length > 0 && !uploadingEpisodes && (
-              <UploadButton
-                disable={false}
-                width="w-[50%]"
-                click={uploadEpisodes}
-              />
+              <>
+                <UploadButton
+                  disable={!userHasEnoughAR}
+                  width="w-[50%]"
+                  click={uploadEpisodes}
+                />
+                {!userHasEnoughAR && (
+                  <p>{t("home.insufficient-balance")}</p>
+                )}
+              </>
             )}
             {address && address.length > 0 && uploadingEpisodes && (
               <ProgressBar

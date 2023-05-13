@@ -204,7 +204,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
     async function submitShow(payloadObj: any) {
         // Check Connection
-        // props.setUploadedPID("f4ecbcd95f0d16bb2a1555b3a8777f20ee66349c590fe0d5f0954888a4c890c9b974f8657e6f6353cf2043eed36cd218b057ee3156f77f664e07c4c802f54697");
+        // props.setUploadedPID("b4fa345dd57b6a006353fbb94f38b0b274eef55093fcd75079ebe804ccb66ac1f51c5afc41be124c3599f001c04e4a6fd60a7fa63cb83c9aaa02209e4deaa988");
         // return;
         if (!checkConnection(arweaveAddress_)) {
             toast.error(CONNECT_WALLET, {style: TOAST_DARK})
