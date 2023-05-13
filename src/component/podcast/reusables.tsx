@@ -35,6 +35,7 @@ import {
     getCoverColorScheme
 } from "../../utils/ui";
 import { getFormattedTimeStamp } from "../../utils/reusables";
+import NftButton from "../../features/nft-mint/components/nft-button";
 
 const TrackCreatorLink = React.lazy(() => import("../reusables/track").then(module => ({ default: module.TrackCreatorLink })));
 const DescriptionButton = React.lazy(() => import("../reusables/buttons").then(module => ({ default: module.DescriptionButton })));
@@ -273,6 +274,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
                     color={color}
                 />
             </a>
+            { address === props.podcastOwner && <NftButton /> }
         </div>
     )
 }

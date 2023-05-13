@@ -10,13 +10,7 @@ import Image from 'next/image';
 
 import { FiFile } from 'react-icons/fi';
 import { ArrowUpTrayIcon, XMarkIcon, WalletIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
-/*
-const FiFile = React.lazy(() => import('react-icons/fi').then(module => ({ default: module.FiFile })))
-const ArrowUpTrayIcon = React.lazy(() => import('@heroicons/react/24/outline').then(module => ({ default: module.ArrowUpTrayIcon })))
-const XMarkIcon = React.lazy(() => import('@heroicons/react/24/outline').then(module => ({ default: module.XMarkIcon })))
-const WalletIcon = React.lazy(() => import('@heroicons/react/24/outline').then(module => ({ default: module.WalletIcon })))
-const CurrencyDollarIcon = React.lazy(() => import('@heroicons/react/24/outline').then(module => ({ default: module.CurrencyDollarIcon })))
-*/
+
 interface EpisodeMediaInter {
     media: File | null;
     setMedia: (v: any) => void;
@@ -77,7 +71,6 @@ const labelEpisodeMediaStyling = "flex items-center text-zinc-400 transition dur
 export const EpisodeMedia = (props: EpisodeMediaInter) => {
 
     const { t } = useTranslation();
-
     return (
         <div className={episodeMediaStyling}>
             <input className={inputEpisodeMediaStyling} id="file" required type="file" onChange={(e) => props.setMedia(e.target.files?.[0])} name="episodeMedia" />

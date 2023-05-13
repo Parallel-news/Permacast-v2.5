@@ -3,29 +3,28 @@ import router from 'next/router';
 import toast from 'react-hot-toast';
 import { useRecoilState } from 'recoil';
 import { Podcast } from '../../interfaces';
-import { arweaveAddress, loadingPage } from '../../atoms';
 import { useTranslation } from 'next-i18next';
-import React, {  useEffect, useState } from 'react';
+import { ValMsg } from '../reusables/formTools';
+import ProgressBar from '../reusables/progressBar';
 import { transferFunds } from '../../utils/everpay';
+import React, {  useEffect, useState } from 'react';
+import { VisibleInput } from '../uploadShow/reusables';
+import { arweaveAddress, loadingPage } from '../../atoms';
+import { createFileFromBlobUrl } from '../../utils/fileTools';
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
 import { descContainerStyling, spinnerClass } from '../uploadShow/uploadShowTools';
 import { getBundleArFee, upload2DMedia, upload3DMedia } from '../../utils/arseeding';
 import { allFieldsFilled, byteSize, checkConnection, determineMediaType, handleError } from '../../utils/reusables';
 import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EVERPAY_EOA, GIGABYTE, SPINNER_COLOR, TOAST_DARK, TOAST_MARGIN, USER_SIG_MESSAGES } from '../../constants';
-import { ValMsg } from '../reusables/formTools';
-import { PermaSpinner } from '../reusables/PermaSpinner';
-import { VisibleInput } from '../uploadShow/reusables';
-import { createFileFromBlobUrl } from '../../utils/fileTools';
-import ProgressBar from '../reusables/progressBar';
 
-const CoverContainer = React.lazy(() => import('../uploadShow/reusables').then(module => ({ default: module.CoverContainer })));
 
-const UploadButton = React.lazy(() => import('./reusables').then(module => ({ default: module.UploadButton })));
-const EpisodeMedia = React.lazy(() => import('./reusables').then(module => ({ default: module.EpisodeMedia })));
-const SelectPodcast = React.lazy(() => import('./reusables').then(module => ({ default: module.SelectPodcast })));
-const ConnectButton = React.lazy(() => import('./reusables').then(module => ({ default: module.ConnectButton })));
+const UploadButton = React.lazy(() => import('./reusables').then(module => ({ default: module.UploadButton })))
+const EpisodeMedia = React.lazy(() => import('./reusables').then(module => ({ default: module.EpisodeMedia })))
+const SelectPodcast = React.lazy(() => import('./reusables').then(module => ({ default: module.SelectPodcast })))
+const ConnectButton = React.lazy(() => import('./reusables').then(module => ({ default: module.ConnectButton })))
 const MarkDownToolTip = React.lazy(() => import('../reusables/tooltip').then(module => ({ default: module.MarkDownToolTip })))
+const CoverContainer = React.lazy(() => import('../uploadShow/reusables').then(module => ({ default: module.CoverContainer })))
 
 export default function uploadEpisode() {
     return false
