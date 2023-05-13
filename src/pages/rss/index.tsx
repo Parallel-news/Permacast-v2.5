@@ -137,7 +137,7 @@ export default function rss({yourShows}) {
 
         const fetchHeaders = async () => {
             const MAX_EPISODES = 10;
-            const episodes = rssFeed.slice(0, MAX_EPISODES);
+            const episodes = rssFeed.slice(0, 1);
             const rssLinks = episodes.map((rssEpisode: rssEpisode) => rssEpisode.link);
             const sizes = (await axios.post('/api/rss/get-headers', { rssLinks })).data.links;
 
