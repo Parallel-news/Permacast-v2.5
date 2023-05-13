@@ -136,14 +136,16 @@ export default function rss({yourShows}) {
         console.log("RSS FEED: ", rssFeed)
 
         const fetchHeaders = async () => {
-            const rssLinks = rssFeed.map((rssEpisode: rssEpisode) => rssEpisode.link);
+            const MAX_EPISODES = 10;
+            const episodes = rssFeed.slice(0, MAX_EPISODES);
+            const rssLinks = episodes.map((rssEpisode: rssEpisode) => rssEpisode.link);
             const sizes = (await axios.post('/api/rss/get-headers', { rssLinks })).data.links;
 
-            const rssEpisodesFinal = rssFeed.map((rssEpisode: rssEpisode) => {
+            const rssEpisodesFinal = episodes.map((rssEpisode: rssEpisode) => {
                 const contentLength = sizes.find((item: RssEpisodeContentLength) => item.link === rssEpisode.link);
                 return {
                     ...rssEpisode,
-                    contentLength: contentLength.length,
+                    contentLength: contentLength?.length || '0',
                 };
             });
             setRssFeed(rssEpisodesFinal);
