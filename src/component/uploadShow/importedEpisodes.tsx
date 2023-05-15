@@ -208,7 +208,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
   };
 
   const uploadEpisode = async (rssEpisode: rssEpisode | rssEpisodeRetry, handleErr,) => {
-    const testing = 1;
+    const testing = 0;
     if (testing) return 'testing';
 
     const { description, title, fileType, link, contentLength } = rssEpisode;
