@@ -104,6 +104,12 @@ export default class LocalStorageObjectManager {
   
 };
 
+export const getOrSaveToLocalStorage = (key: string, value: string, manager: LocalStorageObjectManager) => {
+  const foundValue = manager.getValueFromObject(key);
+  if (foundValue) return foundValue;
+  manager.addValueToObject(key, value);
+}
+
 export const RSS_FEED_MANAGER = 'RSS_FEED_MANAGER';
 export const PODCAST_COVER_COLORS_MANAGER = 'PODCAST_COVER_COLORS_MANAGER';
 export const PODCAST_DESCRIPTION_MANAGER = 'PODCAST_DESCRIPTION_MANAGER';

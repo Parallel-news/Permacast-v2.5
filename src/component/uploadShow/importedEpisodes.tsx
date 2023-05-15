@@ -14,7 +14,7 @@ import { checkConnection, determineMediaType, handleError } from "../../utils/re
 import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 import { transferFunds } from "../../utils/everpay";
 
-import { rssEpisode } from "../../interfaces";
+import { rssEpisode, rssEpisodeRetry } from "../../interfaces";
 import { UploadEpisode } from "../../interfaces/exm";
 
 import { arweaveAddress, loadingPage, podcastColorAtom } from "../../atoms";
@@ -22,23 +22,29 @@ import { arweaveAddress, loadingPage, podcastColorAtom } from "../../atoms";
 import { ImgCover } from "./reusables";
 import ProgressBar from "../reusables/progressBar";
 import Everpay from "everpay";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.ConnectButton })));
 const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
 
 
+const MAX_EPISODES_TO_UPLOAD_AT_ONCE = 5;
 
 // 1. Interfaces
 interface ImportedEpisodesProps {
   pid: string;
   coverUrl: string;
   rssEpisodes: rssEpisode[];
-  retryEpisodes?: string[];
   redirect?: boolean;
 };
 
 interface RssEpisodeUI extends rssEpisode {
   number: number;
   gigabyteCost: number;
+};
+
+interface RssEpisodeContentLength {
+  link: string;
+  length: string;
 };
 
 
@@ -61,35 +67,80 @@ export const RssEpisode: FC<RssEpisodeUI> = ({ title, contentLength, gigabyteCos
     <div className="bg-zinc-800 default-animation rounded-xl px-5 py-3 w-full text-white flex justify-between">
       <div className="">{t("home.episode")} {number}: {title}</div>
       <div className="ml-4 flex gap-x-2">
-        <div>{size}</div>
-        <div>{cost} AR</div>
+        <div>{size || ""}</div>
+        <div>{cost || "?"} AR</div>
       </div>
     </div>
   );
 };
 
-export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, coverUrl, retryEpisodes, redirect }) => {
+// Rube Goldberg would be proud
+export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, coverUrl, redirect }) => {
 
   // hooks
   const { t } = useTranslation();
   const { address, ANS, getPublicKey, createSignature, arconnectConnect } = useArconnect();
   const router = useRouter();
   const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
-  
+
   const [arweaveAddress_,] = useRecoilState(arweaveAddress);
   const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
-  
+
   const [uploadingEpisodes, setUploadingEpisodes] = useState<boolean>(false);
+  const [uploadRetryEpisodes, setUploadRetryEpisodes] = useState<boolean>(false);
   const [totalUploadCost, setTotalUploadCost] = useState<number>(0);
   const [gigabyteCost, setGigabyteCost] = useState<number>(0)
   const [userHasEnoughAR, setUserHasEnoughAR] = useState<boolean>(false);
 
+  const [currentEpisodes, setCurrentEpisodes] = useState<rssEpisode[]>([]);
+  const [retryEpisodes, setRetryEpisodes] = useState<rssEpisodeRetry[]>([]);
+  const [uploadedCount, setUploadCount] = useState<number>(0);
   const [progress, setProgress] = useState(0)
   const [, _setLoadingPage] = useRecoilState(loadingPage)
-  
+
+  const calculateFailedEpisodeSizes = async () => {
+    let episodes = [];
+    for (let i = 0; i < retryEpisodes.length; i++) {
+      const file = (await axios.get(retryEpisodes[i].link, { responseType: 'arraybuffer' })).data;
+      episodes.push({
+        ...retryEpisodes[i],
+        contentLength: file.byteLength,
+        file
+      });
+    };
+    setRetryEpisodes(episodes);
+    return episodes;
+  };
+
+  // fetches content length for each episode, and splices it into the rssFeed array
+  const fetchEpisodeData = async () => {
+    const customRetryList = [];
+
+    const maxEpisodes = rssEpisodes.slice(uploadedCount, uploadedCount + MAX_EPISODES_TO_UPLOAD_AT_ONCE);
+    const rssLinks = maxEpisodes.map((rssEpisode: rssEpisode) => rssEpisode.link);
+
+    const sizes = (await axios.post('/api/rss/get-headers', { rssLinks })).data.links;
+
+    // splice rss episodes with content length
+    const rssEpisodesFinal = maxEpisodes.map((rssEpisode: rssEpisode) => {
+      const episode = sizes.find((ep: RssEpisodeContentLength) => ep.link === rssEpisode.link);
+      if (!episode?.length) {
+        customRetryList.push(rssEpisode);
+        return null;
+      };
+      return {
+        ...rssEpisode,
+        contentLength: episode?.length || '0'
+      };
+    }).filter((item: rssEpisode) => item !== null);
+    setRetryEpisodes(customRetryList);
+    setCurrentEpisodes(rssEpisodesFinal);
+    return rssEpisodesFinal;
+  };
+
   useEffect(() => {
 
-    const fetchData = async () => {
+    const fetchCover = async () => {
       if (!coverUrl) return;
       const dominantColor = await fetchDominantColor(coverUrl, false, false);
       if (dominantColor.error) return;
@@ -98,10 +149,11 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     };
 
     const fetchGigabyteCosts = async () => Number(await getBundleArFee('' + GIGABYTE)) / AR_DECIMALS;
-    const calculateTotal = async () => {
+
+    const calculateTotal = async (currEpisodes: rssEpisode[]) => {
       // calculate all episodes cost
       const cost = await fetchGigabyteCosts();
-      const total = rssEpisodes.map((rssEpisode: rssEpisode) => 
+      const total = currEpisodes.map((rssEpisode: rssEpisode) =>
         calculateARCost(Number(cost), Number(rssEpisode.contentLength)) + EPISODE_SLIPPAGE
       );
       const totalCost = total.reduce((a, b) => a + b, 0);
@@ -121,10 +173,14 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
       setUserHasEnoughAR(isEnough);
     };
 
-    fetchData();
-    fetchGigabyteCosts().then(setGigabyteCost);
-    calculateTotal();
-  }, []);
+    const asyncs = async () => {
+      await fetchCover();
+      await fetchGigabyteCosts().then(setGigabyteCost);
+      const currEpisodes = await fetchEpisodeData();
+      await calculateTotal(currEpisodes);
+    };
+    asyncs();
+  }, [uploadedCount]);
 
   const tryDescriptionUpload = async (description: string, handleErr: any) => {
     try {
@@ -144,112 +200,156 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
       //@ts-ignore - refusing to acknowledge everHash
       const everHash = tx[1].everHash;
       return everHash;
-    } catch(e) {
+    } catch (e) {
       console.log(e);
-      handleErr(t("error.everpayError"), uploadEpisodes);
+      handleErr(t("error.everpayError"), setUploadingEpisodes);
       return;
     };
   };
 
-  const uploadEpisodes = async () => {
+  const uploadEpisode = async (rssEpisode: rssEpisode | rssEpisodeRetry, handleErr,) => {
+    const testing = 1;
+    if (testing) return 'testing';
+
+    const { description, title, fileType, link, contentLength } = rssEpisode;
+
+    const uploadEpisodePayload: UploadEpisode = {
+      "function": "addEpisode",
+      "jwk_n": "",
+      "pid": pid,
+      "name": title,
+      "desc": "",
+      "sig": "",
+      "txid": "",
+      "isVisible": true,
+      "thumbnail": "",
+      "content": "",
+      "mimeType": determineMediaType(fileType),
+    };
+
+    // get user auth
+    const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
+    // @ts-ignore
+    uploadEpisodePayload["sig"] = await createSignature(data, defaultSignatureParams, "base64");
+    uploadEpisodePayload["jwk_n"] = await getPublicKey();
+
+    // Description to Arseeding
+    const descriptionTx = await tryDescriptionUpload(description, handleErr);
+    console.log(descriptionTx);
+    // @ts-ignore
+    uploadEpisodePayload["desc"] = descriptionTx;
+
+    // Pay Upload Fee
+    const feeTX = await tryFeePayment(handleErr);
+    console.log(feeTX);
+    // @ts-ignore
+    uploadEpisodePayload["txid"] = feeTX;
+
+    const CONTENT_COST = calculateARCost(Number(gigabyteCost), Number(contentLength));
+    const FINAL_CONTENT_COST = CONTENT_COST + EPISODE_SLIPPAGE; // to avoid rounding errors and a slippage change
+    const uploadPaymentTX = await transferFunds("UPLOAD_CONTENT", FINAL_CONTENT_COST, EVERPAY_EOA_UPLOADS, address);
+
+    // start progress bar
+    let interlen = 0;
+    const percentPerEpisode = (100 / currentEpisodes.length);
+    const inter = setInterval(() => {
+      // prevent full progress bar
+      if (interlen > 90) return;
+      setProgress(prev => prev + (percentPerEpisode / 100))
+      ++interlen;
+    }, 1000);
+
+    // upload content to arseeding
+    const finalPayload = {
+      url: link,
+      uploadPaymentTX,
+    };
+    let tx: AxiosResponse | undefined;
+    try {
+      tx = await axios.post('/api/arseed/upload-url', finalPayload);
+      console.log(tx.data);
+      if (!tx) {
+        throw new Error('Failed to upload url to arseeding: ' + link + "\n Reason: " + tx.status);
+      };
+    } catch {
+      console.error('Failed to upload url to arseeding: ', link, "\n Reason: ", tx.status);
+      return
+    };
+    // add uploaded content tx to payload
+    uploadEpisodePayload['content'] = tx.data.response;
+
+    setProgress(prev => prev + ((percentPerEpisode / 100) * 5));
+    const result = await axios.post('/api/exm/write', uploadEpisodePayload);
+    setProgress(prev => prev + percentPerEpisode);
+    clearInterval(inter);
+    console.log(result.data);
+  };
+
+  const startEpisodesUpload = async () => {
 
     // Check Wallet Connection
     if (!checkConnection(arweaveAddress_)) {
       toast.error(CONNECT_WALLET, { style: TOAST_DARK })
       return false;
-    }
-    
-    setUploadingEpisodes(true)
+    };
+
+    setUploadingEpisodes(true);
 
     const handleErr = handleError;
-    const toastSaving = toast.loading(t("loadingToast.savingChain"), {style: TOAST_DARK, duration: 10000000});
+    const toastSaving = toast.loading(t("loadingToast.savingChain"), { style: TOAST_DARK, duration: 10000000 });
 
-    const percentPerEpisode = (100 / rssEpisodes.length);
-    const episodeUploadPromises = rssEpisodes.map(async (rssEpisode: rssEpisode) => {
-      
-      const { description, title, fileType, link, contentLength } = rssEpisode;
-
-      const uploadEpisodePayload: UploadEpisode = {
-        "function": "addEpisode",
-        "jwk_n": "",
-        "pid": pid,
-        "name": title,
-        "desc": "",
-        "sig": "",
-        "txid": "",
-        "isVisible": true,
-        "thumbnail": "",
-        "content": "",
-        "mimeType": determineMediaType(fileType),
-      };
-
-      // get user auth
-      const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
-      // @ts-ignore
-      uploadEpisodePayload["sig"] = await createSignature(data, defaultSignatureParams, "base64");
-      uploadEpisodePayload["jwk_n"] = await getPublicKey();
-
-      // Description to Arseeding
-      const descriptionTx = await tryDescriptionUpload(description, handleErr);
-      console.log(descriptionTx);
-      // @ts-ignore
-      uploadEpisodePayload["desc"] = descriptionTx;
-
-      // Pay Upload Fee
-      const feeTX = await tryFeePayment(handleErr);
-      console.log(feeTX);
-      // @ts-ignore
-      uploadEpisodePayload["txid"] = feeTX;
-
-      const CONTENT_COST = calculateARCost(Number(gigabyteCost), Number(contentLength));
-      const FINAL_CONTENT_COST = CONTENT_COST + EPISODE_SLIPPAGE; // to avoid rounding errors and a slippage change
-      const uploadPaymentTX = await transferFunds("UPLOAD_CONTENT", FINAL_CONTENT_COST, EVERPAY_EOA_UPLOADS, address);
-
-      // start progress bar
-      let interlen = 0;
-      const inter = setInterval(() => {
-        // prevent full progress bar
-        if (interlen > 90) return;
-        setProgress(prev => prev + (percentPerEpisode / 100))
-        ++interlen;
-      }, 1000);
-
-      // upload content to arseeding
-      const finalPayload = {
-        url: link,
-        uploadPaymentTX,
-      };
-      let tx: AxiosResponse | undefined;
-      try {
-        tx = await axios.post('/api/arseed/upload-url', finalPayload);
-        console.log(tx.data);
-        if (!tx) {
-          throw new Error('Failed to upload url to arseeding: ' + link + "\n Reason: " + tx.status);
-        };
-      } catch {
-        console.error('Failed to upload url to arseeding: ', link, "\n Reason: ", tx.status);
-        return
-      };
-      // add uploaded content tx to payload
-      uploadEpisodePayload['content'] = tx.data.response;
-
-      setProgress(prev => prev + ((percentPerEpisode / 100) * 5));
-      const result = await axios.post('/api/exm/write', uploadEpisodePayload);
-      setProgress(prev => prev + percentPerEpisode);
-      clearInterval(inter)
-      console.log(result.data)
-    });
+    const episodeUploadPromises = currentEpisodes.map((episode: rssEpisode) => uploadEpisode(episode, handleErr));
 
     const result = await Promise.all(episodeUploadPromises);
+    console.log(result);
+    setUploadingEpisodes(false);
     setProgress(100);
+    setTimeout(() => setProgress(0), 1000);
     toast.dismiss(toastSaving);
-    toast.success(t("success.showUploaded"), {style: TOAST_DARK})
+    toast.success(t("success.showUploaded"), { style: TOAST_DARK })
+
+    // this will trigger a refetch of the episodes
+    setUploadCount(prev => prev + result.length);
+
+    if (rssEpisodes.length !== uploadedCount) return;
     setTimeout(async function () {
       const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
       const { locale } = router;
       router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
-    }, 3500)
+    }, 3500);
+  };
+
+  const startEpisodesRetryUpload = async () => {
+    // Check Wallet Connection
+    if (!checkConnection(arweaveAddress_)) {
+      toast.error(CONNECT_WALLET, { style: TOAST_DARK })
+      return false;
+    };
+
+    setUploadRetryEpisodes(true);
+
+    const handleErr = handleError;
+    const toastSaving = toast.loading(t("loadingToast.savingChain"), { style: TOAST_DARK, duration: 10000000 });
+
+    const episodeUploadPromises = retryEpisodes.map((episode: rssEpisode) => uploadEpisode(episode, handleErr));
+
+    const result = await Promise.all(episodeUploadPromises);
     console.log(result);
+    setUploadRetryEpisodes(false);
+    setProgress(100);
+    setTimeout(() => setProgress(0), 1000);
+    toast.dismiss(toastSaving);
+    toast.success(t("success.showUploaded"), { style: TOAST_DARK })
+
+    // this will trigger a refetch of the episodes
+    setUploadCount(prev => prev + result.length);
+
+    if (rssEpisodes.length !== uploadedCount) return;
+    setTimeout(async function () {
+      const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
+      const { locale } = router;
+      router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
+    }, 3500);
   };
 
   return (
@@ -263,9 +363,54 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
         <div className="flex flex-col w-[95%] md:w-[75%] lg:w-[50%] space-y-3">
           {/* Preview */}
           <div className="flexCol gap-y-2">
-            {rssEpisodes.map((rssEpisode: rssEpisode, number: number) => (
-              <RssEpisode { ...rssEpisode } gigabyteCost={gigabyteCost} number={number+1} />
+            {retryEpisodes.length > 0 && (
+              <>
+                <div className="text-center text-white text-xl font-bold">{t("failed-to-estimate")}</div>
+                {retryEpisodes.map((rssEpisode: rssEpisode, number: number) => (
+                  <React.Fragment key={number}>
+                    <RssEpisode {...rssEpisode} gigabyteCost={gigabyteCost} number={number + 1} />
+                  </React.Fragment>
+                ))}
+                <div className="flex gap-x-3">
+                  <button onClick={calculateFailedEpisodeSizes}>
+                    Retry calculation
+                  </button>
+                  <button onClick={() => startEpisodesRetryUpload()}>
+                    Attempt upload
+                  </button>
+                  <button onClick={() => setRetryEpisodes([])}>
+                    Skip
+                  </button>
+                </div>
+              </>
+            )}
+            {currentEpisodes.map((rssEpisode: rssEpisode, number: number) => (
+              <React.Fragment key={number}>
+                <RssEpisode {...rssEpisode} gigabyteCost={gigabyteCost} number={number + uploadedCount + 1} />
+              </React.Fragment>
             ))}
+            <div className="text-center">
+              {uploadedCount} / {rssEpisodes.length}
+            </div>
+            <div>
+              {/* <button
+                className="bg-zinc-800 text-white rounded-full h-10 w-10 flex items-center justify-center"
+                onClick={() => {}}
+              >
+                <ChevronLeftIcon className="h-6 w-6 mr-1" />
+              </button> */}
+              {/* {rssEpisodes.length > 0 && rssEpisodes.map((episode) => (
+                <button onClick={}>
+
+                </button>
+              ))} */}
+              {/* <button
+                className="bg-zinc-800 text-white rounded-full h-10 w-10 flex items-center justify-center"
+                onClick={() => {}}
+              >
+                <ChevronRightIcon className="h-6 w-6 mr-1" />
+              </button> */}
+            </div>
           </div>
           {/* Upload */}
           <div className="w-full flex justify-center items-center flex-col">
@@ -275,7 +420,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
                 <UploadButton
                   disable={!userHasEnoughAR}
                   width="w-[50%]"
-                  click={uploadEpisodes}
+                  click={startEpisodesUpload}
                 />
                 {!userHasEnoughAR && (
                   <p>{t("home.insufficient-balance")}</p>

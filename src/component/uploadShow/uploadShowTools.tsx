@@ -356,7 +356,7 @@ export const ShowForm = (props: ShowFormInter) => {
     }, [])
 
     return (
-        <div className={showFormStyling}>
+        <div className={showFormStyling + (props?.allowSelect ? " pb-20": "")}>
             {/*First Row*/}
             <div className="flex flex-col justify-center items-center lg:items-start lg:flex-row w-full">
                 {/*
@@ -494,7 +494,7 @@ export const ShowForm = (props: ShowFormInter) => {
                         )}
                     </div>
                 </div>
-                <div className={`w-[25%] ${props?.allowSelect ? "pb-20": ""}`}></div>
+                <div className={`w-[25%]`}></div>
             </div>
         </div>
     )

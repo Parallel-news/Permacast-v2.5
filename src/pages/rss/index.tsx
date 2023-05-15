@@ -20,11 +20,6 @@ import { ImportedEpisodes } from "../../component/uploadShow/importedEpisodes";
 import { MOCK_RSS_FEED_EPISODES } from "../../utils/mockdata/rssfeed";
 
 
-interface RssEpisodeContentLength {
-    link: string;
-    length: string;
-};
-
 const ValMsg = React.lazy(() => import("../../component/reusables").then(module => ({default: module.ValMsg})))
 const ShowForm = React.lazy(() => import("../../component/uploadShow/uploadShowTools").then(module => ({ default: module.ShowForm })));
 
@@ -44,7 +39,6 @@ export default function rss({yourShows}) {
     const [rssFeed, setRssFeed] = useState<rssEpisode[]>([]);
     const [newPodcasts, setNewPodcasts] = useState<Podcast[]>([])
     const [pid, setPid] = useState<string>("")
-    const [rssEpisodesRetryList, setRssEpisodesRetryList] = useState<string[]>([]);
     const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
 
     const [allPodcastsState, setAllPodcastsState] = useRecoilState<Podcast[]>(allPodcasts);
@@ -109,7 +103,9 @@ export default function rss({yourShows}) {
         let rssMetadata;
         // Fetch Episodes
         try {
-            rssFeed = (await axios.get(RSS_IMPORT_LINK+base64)).data;// MOCK_RSS_FEED_EPISODES // 
+            const testing = 0;
+            rssFeed = testing ? MOCK_RSS_FEED_EPISODES: (await axios.get(RSS_IMPORT_LINK+base64)).data;
+            setRssFeed(rssFeed);
         } catch(e) {
             setFetchError("rss.norssepisode")
             setSubmittingLink(false)
@@ -146,31 +142,6 @@ export default function rss({yourShows}) {
         setStep(1);
         console.log("rssMeta: ", rssMeta)
         console.log("RSS FEED: ", rssFeed)
-
-        // fetches content length for each episode, and splices it into the rssFeed array
-        const fetchSizesForEpisodes = async () => {
-            const MAX_EPISODES = 1;
-            const customRetryList: string[] = [];
-            const allowedEpisodes = rssFeed.slice(0, MAX_EPISODES);
-            const rssLinks = allowedEpisodes.map((rssEpisode: rssEpisode) => rssEpisode.link);
-            const sizes = (await axios.post('/api/rss/get-headers', { rssLinks })).data.links;
-
-            // splice rss episodes with content length
-            const rssEpisodesFinal = allowedEpisodes.map((rssEpisode: rssEpisode) => {
-                const episode = sizes.find((ep: RssEpisodeContentLength) => ep.link === rssEpisode.link);
-                if (!episode?.length) {
-                    customRetryList.push(rssEpisode.link);
-                    return null;
-                };
-                return {
-                    ...rssEpisode,
-                    contentLength: episode?.length || '0'
-                };
-            }).filter((item: rssEpisode) => item !== null);
-
-            setRssFeed(rssEpisodesFinal);
-        };
-        fetchSizesForEpisodes();
     };
 
     return (
@@ -269,7 +240,6 @@ export default function rss({yourShows}) {
                     coverUrl={coverUrl}
                     pid={pid}
                     rssEpisodes={rssFeed}
-                    retryEpisodes={rssEpisodesRetryList}
                 />
             </Transition>
             {/*

@@ -114,3 +114,7 @@ export interface rssEpisode {
   title: string;
   contentLength?: string;
 };
+
+export interface rssEpisodeRetry extends rssEpisode {
+  file?: ArrayBuffer;
+}
