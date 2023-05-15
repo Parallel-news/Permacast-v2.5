@@ -57,11 +57,11 @@ export const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex f
 
 // 4. Components
 
-export const RssEpisode: FC<RssEpisodeUI> = ({ title, contentLength, gigabyteCost, number }) => {
+export const RssEpisode: FC<RssEpisodeUI> = ({ title, length, gigabyteCost, number }) => {
   const { t } = useTranslation();
 
-  const size = getReadableSize(Number(contentLength));
-  const cost = (calculateARCost(Number(gigabyteCost), Number(contentLength)) + EPISODE_SLIPPAGE).toFixed(2);
+  const size = getReadableSize(Number(length));
+  const cost = (calculateARCost(Number(gigabyteCost), Number(length)) + EPISODE_SLIPPAGE).toFixed(2);
 
   return (
     <div className="bg-zinc-800 default-animation rounded-xl px-5 py-3 w-full text-white flex justify-between">
@@ -117,8 +117,8 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     const customRetryList = [];
 
     const maxEpisodes = rssEpisodes.slice(uploadedCount, uploadedCount + MAX_EPISODES_TO_UPLOAD_AT_ONCE);
-    const rssLinks = maxEpisodes.map((rssEpisode: rssEpisode) => rssEpisode.link);
-
+    const rssLinks = maxEpisodes.filter((rssEpisode: rssEpisode) => !rssEpisode.length);
+    if (!rssLinks.length) return maxEpisodes;
     const sizes = (await axios.post('/api/rss/get-headers', { rssLinks })).data.links;
 
     // splice rss episodes with content length
