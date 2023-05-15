@@ -108,7 +108,7 @@ export interface rssEpisode {
   description: string;
   duration: string;
   fileType: string;
-  isExplicit: "yes" | "no";
+  isExplicit: "yes" | "no" | string;
   link: string;
   pubDate: string;
   title: string;

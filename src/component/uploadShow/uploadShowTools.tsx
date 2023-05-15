@@ -30,6 +30,7 @@ const SelectDropdownRow = React.lazy(() => import("./reusables").then(module => 
 const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.ConnectButton })));
 const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
 const ValMsg = React.lazy(() => import("../reusables/formTools").then(module => ({default: module.ValMsg})))
+const SelectPodcast = React.lazy(() => import("../../component/uploadEpisode/reusables").then(module => ({default: module.SelectPodcast})));
 
 export default function uploadShowTools() {
     return false
@@ -41,6 +42,7 @@ interface ShowFormInter {
     edit: boolean;
     redirect: boolean;
     //optional
+    allowSelect?: boolean;
     selectedPid?: string;
     rssData?: Podcast[];
     submitted?: Dispatch<SetStateAction<boolean>>;
@@ -444,6 +446,22 @@ export const ShowForm = (props: ShowFormInter) => {
                         />
                         )}
                     </div>
+
+                    {/* Allow Select */}
+                    {props?.allowSelect && (
+                        <div>
+                            <div className="my-1 border-t-[2px] border-white rounded-full"></div>
+                            <div className='text-center mb-2'>or</div>
+                            <SelectPodcast
+                                pid={props.selectedPid}
+                                setPid={(pid) => {
+                                    props?.setUploadedPID && props.setUploadedPID(pid);
+                                }}
+                                shows={props?.podcasts || []}
+                            />
+                        </div>
+                    )}
+
                     {/*
                         Upload
                     */}
@@ -476,7 +494,7 @@ export const ShowForm = (props: ShowFormInter) => {
                         )}
                     </div>
                 </div>
-                <div className="w-[25%]"></div>
+                <div className={`w-[25%] ${props?.allowSelect ? "pb-20": ""}`}></div>
             </div>
         </div>
     )

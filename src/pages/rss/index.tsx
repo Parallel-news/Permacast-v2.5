@@ -7,16 +7,17 @@ import { toast } from "react-hot-toast";
 import { useRecoilState } from "recoil";
 
 import { Transition } from "@headlessui/react";
-import { ArrowSmallRightIcon } from "@heroicons/react/24/solid"
+import { ArrowSmallRightIcon, ChevronLeftIcon } from "@heroicons/react/24/solid"
 import { Loading } from "@nextui-org/react";
 
-import { loadingPage } from "../../atoms";
+import { loadingPage, allPodcasts } from "../../atoms";
 import { Podcast, rssEpisode } from "../../interfaces";
 import { getContractVariables } from "../../utils/contract";
 import RssSubmit from "../../component/reusables/RssSubmit";
 import { convertLinktoBase64, isValidUrl } from "../../utils/reusables";
-import { EXM_READ_LINK, NO_SHOW, RSS_IMPORT_LINK, RSS_META_LINK, TOAST_DARK } from "../../constants";
+import { ARSEED_URL, EXM_READ_LINK, NO_SHOW, RSS_IMPORT_LINK, RSS_META_LINK, TOAST_DARK } from "../../constants";
 import { ImportedEpisodes } from "../../component/uploadShow/importedEpisodes";
+import { MOCK_RSS_FEED_EPISODES } from "../../utils/mockdata/rssfeed";
 
 
 interface RssEpisodeContentLength {
@@ -43,17 +44,28 @@ export default function rss({yourShows}) {
     const [rssFeed, setRssFeed] = useState<rssEpisode[]>([]);
     const [newPodcasts, setNewPodcasts] = useState<Podcast[]>([])
     const [pid, setPid] = useState<string>("")
+    const [rssEpisodesRetryList, setRssEpisodesRetryList] = useState<string[]>([]);
     const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
+
+    const [allPodcastsState, setAllPodcastsState] = useRecoilState<Podcast[]>(allPodcasts);
+
     const [coverUrl, setCoverUrl] = useState<string>('');
 
     const { t } = useTranslation();
 
     useEffect(() => {
         _setLoadingPage(false)
-    }, [])
+    }, []);
 
     useEffect(() => {
-        if (pid) { setStep(2) };
+        if (pid) {
+            const cover = allPodcastsState.find(show => show.pid === pid)?.cover;
+            if (cover) {
+                console.log("cover: ", cover)
+                setCoverUrl(ARSEED_URL + cover);
+            };
+            setStep(2);
+        };
     }, [pid]);
     
     const [rssMeta, setRssMeta] = useState<Podcast[]>([{
@@ -97,7 +109,7 @@ export default function rss({yourShows}) {
         let rssMetadata;
         // Fetch Episodes
         try {
-            rssFeed = (await axios.get(RSS_IMPORT_LINK+base64)).data
+            rssFeed = (await axios.get(RSS_IMPORT_LINK+base64)).data;// MOCK_RSS_FEED_EPISODES // 
         } catch(e) {
             setFetchError("rss.norssepisode")
             setSubmittingLink(false)
@@ -135,22 +147,30 @@ export default function rss({yourShows}) {
         console.log("rssMeta: ", rssMeta)
         console.log("RSS FEED: ", rssFeed)
 
-        const fetchHeaders = async () => {
-            const MAX_EPISODES = 10;
-            const episodes = rssFeed.slice(0, 1);
-            const rssLinks = episodes.map((rssEpisode: rssEpisode) => rssEpisode.link);
+        // fetches content length for each episode, and splices it into the rssFeed array
+        const fetchSizesForEpisodes = async () => {
+            const MAX_EPISODES = 1;
+            const customRetryList: string[] = [];
+            const allowedEpisodes = rssFeed.slice(0, MAX_EPISODES);
+            const rssLinks = allowedEpisodes.map((rssEpisode: rssEpisode) => rssEpisode.link);
             const sizes = (await axios.post('/api/rss/get-headers', { rssLinks })).data.links;
 
-            const rssEpisodesFinal = episodes.map((rssEpisode: rssEpisode) => {
-                const contentLength = sizes.find((item: RssEpisodeContentLength) => item.link === rssEpisode.link);
+            // splice rss episodes with content length
+            const rssEpisodesFinal = allowedEpisodes.map((rssEpisode: rssEpisode) => {
+                const episode = sizes.find((ep: RssEpisodeContentLength) => ep.link === rssEpisode.link);
+                if (!episode?.length) {
+                    customRetryList.push(rssEpisode.link);
+                    return null;
+                };
                 return {
                     ...rssEpisode,
-                    contentLength: contentLength?.length || '0',
+                    contentLength: episode?.length || '0'
                 };
-            });
+            }).filter((item: rssEpisode) => item !== null);
+
             setRssFeed(rssEpisodesFinal);
         };
-        fetchHeaders();
+        fetchSizesForEpisodes();
     };
 
     return (
@@ -170,7 +190,12 @@ export default function rss({yourShows}) {
             >
                 <div className={rssContainer}>
                     
-                    <div className={rssInputContainer}>
+                    <form className={rssInputContainer} 
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            submitLink( )}
+                        }
+                    >
                         <input 
                             type="text" 
                             className={rssInputStyling} 
@@ -184,7 +209,7 @@ export default function rss({yourShows}) {
                             dimensions="h-10 w-11"
                             onClick={() => submitLink(  )}
                         />
-                    </div>
+                    </form>
                     <ValMsg valMsg={rssLinkError} className="pl-2" />
 
                 </div>
@@ -201,11 +226,19 @@ export default function rss({yourShows}) {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-75 scale-75"
             >
+                <button
+                    className="bg-zinc-800 text-white rounded-full h-10 w-10 flex items-center justify-center"
+                    onClick={() => setStep(0)}
+                >
+                    <ChevronLeftIcon className="h-6 w-6 mr-1" />
+                </button>
                 <ShowForm 
                     podcasts={yourShows}
                     edit={true}
+                    selectedPid={pid}
                     rssData={rssMeta}
                     redirect={false}
+                    allowSelect={true}
                     submitted={setPodcastFormSubmitted}
                     setUploadedPID={setPid}
                     returnedPodcasts={setNewPodcasts}
@@ -223,10 +256,20 @@ export default function rss({yourShows}) {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-75 scale-75"
             >
+                <button 
+                    className="bg-zinc-800 text-white rounded-full h-10 w-10 flex items-center justify-center"
+                    onClick={() => {
+                        setPid('');
+                        setStep(1)
+                    }}
+                >
+                    <ChevronLeftIcon className="h-6 w-6 mr-1" />
+                </button>
                 <ImportedEpisodes
                     coverUrl={coverUrl}
                     pid={pid}
                     rssEpisodes={rssFeed}
+                    retryEpisodes={rssEpisodesRetryList}
                 />
             </Transition>
             {/*

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import React, { FC, useEffect, useState } from "react"
@@ -32,6 +32,7 @@ interface ImportedEpisodesProps {
   pid: string;
   coverUrl: string;
   rssEpisodes: rssEpisode[];
+  retryEpisodes?: string[];
   redirect?: boolean;
 };
 
@@ -67,7 +68,7 @@ export const RssEpisode: FC<RssEpisodeUI> = ({ title, contentLength, gigabyteCos
   );
 };
 
-export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, coverUrl, redirect }) => {
+export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, coverUrl, retryEpisodes, redirect }) => {
 
   // hooks
   const { t } = useTranslation();
@@ -218,13 +219,19 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
         url: link,
         uploadPaymentTX,
       };
-      const tx = (await axios.post('/api/arseed/upload-url', finalPayload)).data.response;
-      if (!tx) {
-        console.log('Failed to upload url to arseeding: ', link);
+      let tx: AxiosResponse | undefined;
+      try {
+        tx = await axios.post('/api/arseed/upload-url', finalPayload);
+        console.log(tx.data);
+        if (!tx) {
+          throw new Error('Failed to upload url to arseeding: ' + link + "\n Reason: " + tx.status);
+        };
+      } catch {
+        console.error('Failed to upload url to arseeding: ', link, "\n Reason: ", tx.status);
         return
       };
       // add uploaded content tx to payload
-      uploadEpisodePayload['content'] = tx;
+      uploadEpisodePayload['content'] = tx.data.response;
 
       setProgress(prev => prev + ((percentPerEpisode / 100) * 5));
       const result = await axios.post('/api/exm/write', uploadEpisodePayload);

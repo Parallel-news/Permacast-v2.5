@@ -13,20 +13,6 @@ interface ResponseData {
   // response: string[] | null;
 }
 
-//! DO NOT EXPOSE THIS FUNCTION TO THE UI
-const getContractVariables = () => {
-  const PROD_CONTRACT = process.env.EXM_PROD_CONTRACT_ADDRESS;
-  const DEV_CONTRACT = process.env.EXM_DEV_CONTRACT_ADDRESS;
-  const PROD_TOKEN = process.env.EXM_PROD_API_TOKEN;
-  const DEV_TOKEN = process.env.EXM_DEV_API_TOKEN;
-  const IS_PROD = process.env.IS_PROD;
-
-  const contractAddress = IS_PROD === 'true' ? PROD_CONTRACT : DEV_CONTRACT;
-  const contractAPIToken = IS_PROD === 'true' ? PROD_TOKEN : DEV_TOKEN;
-  const isProduction = IS_PROD === 'true' ? true : false;
-
-  return { contractAddress, contractAPIToken, isProduction };
-};
 
 export default async function handler(
   req: NextApiRequest,
@@ -34,8 +20,8 @@ export default async function handler(
 ) {
   const { url, uploadPaymentTX } = req.body;
 
-  const { tx } = await uploadURLAndCheckPayment(url, uploadPaymentTX, '', true);
-
+  // const tx = "WvUITx9o7ASiK1MHmsgXdWsy1xLTNYAoz_83dbW5r0o";
+  const { tx } = await uploadURLAndCheckPayment(url, uploadPaymentTX);
   if (!tx) return res.json({ status: 'ERROR', error: "Upload failed", response: tx });
 
   return res.json({ status: 'SUCCESS', response: tx });
