@@ -1,6 +1,8 @@
 import toast from "react-hot-toast";
-import { CONNECT_WALLET, PODCAST_LABEL_MAX_LEN, PODCAST_LABEL_MIN_LEN, TOAST_DARK } from "../constants";
+import { CONNECT_WALLET, PODCAST_LABEL_MAX_LEN, PODCAST_LABEL_MIN_LEN, TOAST_DARK, USER_SIG_MESSAGES } from "../constants";
 import { Podcast } from "../interfaces";
+import { defaultSignatureParams } from "react-arconnect";
+import { AuthenticationActions } from "../types";
 
 interface hexToRgbInter {
   hex: string
@@ -157,4 +159,14 @@ export function findKey(obj, key) {
     }
   }
   return null; // key not found
+}
+
+export async function generateAuthentication({ getPublicKey, createSignature } : AuthenticationActions) {
+  const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
+  const sig = await createSignature(data, defaultSignatureParams, "base64");
+  const jwk_n = await getPublicKey();
+  return {
+    sig: sig,
+    jwk_n: jwk_n
+  }
 }

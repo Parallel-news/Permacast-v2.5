@@ -1,3 +1,5 @@
+import { AuthenticationActions } from "../../../types";
+
 export type Record = {
     record_id: string;
     cid: string;
@@ -26,3 +28,15 @@ export interface NftObject {
 export type RetrieveNftObject = {
     pid: string;
 }
+
+export type GetNftInfo = {
+    enabled: boolean;
+    pid: string;
+}
+
+export type AuthenticationObject = {
+    jwk_n: string;
+    sig: string;
+}
+
+export type CreateCollectionObject = RetrieveNftObject & AuthenticationActions
