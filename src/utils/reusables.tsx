@@ -149,3 +149,12 @@ export function svgToDataUrl(svg) {
 export const reRoute = (url, router) => {
   router.push(url, undefined, { scroll: true });
 };
+
+export function findKey(obj, key) {
+  for (let objKey in obj) {
+    if (objKey === key) {
+      return obj[objKey];
+    }
+  }
+  return null; // key not found
+}

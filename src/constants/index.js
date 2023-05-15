@@ -62,6 +62,8 @@ export const ANS_MAPPED_STATE_URL = "https://ans-metrics.herokuapp.com/mapped-st
 export const RSS_FEED_URL = PERMACAST_HELPER_URL + "feeds/rss/"; // requires PID at the end
 export const EXM_ANS_CONTRACT_ADDRESS = "VGWeJLDLJ9ify3ezl9tW-9fhB0G-GIUd60FE-5Q-_VI";
 export const MESON_ENDPOINT = "https://pz-znmpfs.meson.network/"
+export const NFT_CONTRACT = "PIn2MzAi8E-mUK6zrKyrwXZ8xyY2ItSk1lMB74RNGLc"
+export const NFT_ENDPOINT = EXM_READ_LINK+NFT_CONTRACT
 
 // SOCIALS
 export const PERMACAST_DISCORD_URL = "https://discord.gg/cQanQVCs7G"
@@ -147,3 +149,4 @@ export const startId = "#start"
 export const TITLE_WAIT = 100
 export const LOGO_WAIT = 700
 export const FADE_WAIT = 2500
+
