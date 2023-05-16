@@ -51,7 +51,7 @@ export async function uploadFileToArseedViaNode(file: Buffer, dataType: string):
 };
 
 export const uploadURLAndCheckPayment = async (url: string, debug=false) => {
-
+  // TODO add check for cost
   const downloadedFile = await axios.get(url, { 
     responseType: "arraybuffer",
     onDownloadProgress: (progressEvent: AxiosProgressEvent) => {
@@ -66,5 +66,5 @@ export const uploadURLAndCheckPayment = async (url: string, debug=false) => {
 
   const fileUpload: EverPayResponse = await uploadFileToArseedViaNode(downloadedFile.data, mimeType);
   const tx = fileUpload?.order?.itemId;
-  return { tx, mimeType };
+  return tx;
 };

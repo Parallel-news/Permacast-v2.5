@@ -27,7 +27,7 @@ const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then
 const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
 
 
-const MAX_EPISODES_TO_UPLOAD_AT_ONCE = 5;
+const MAX_EPISODES_TO_UPLOAD_AT_ONCE = 1;
 
 // 1. Interfaces
 interface ImportedEpisodesProps {
@@ -172,21 +172,28 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     };
   };
 
-  const uploadEpisode = async (link: string, number: number): Promise<uploadEpisodeInter> => {
-    const testing = 0;
-    if (testing) return {tx: 'WvUITx9o7ASiK1MHmsgXdWsy1xLTNYAoz_83dbW5r0o', number};
-
+  const payStorageFee = async (length: string) => {
     // Pay for content storage on API side
     const CONTENT_COST = calculateARCost(Number(gigabyteCost), Number(length));
     const FINAL_CONTENT_COST = CONTENT_COST + EPISODE_SLIPPAGE; // to avoid rounding errors and a slippage change
     const uploadPaymentTX = await transferFunds("UPLOAD_CONTENT", FINAL_CONTENT_COST, EVERPAY_EOA_UPLOADS, address);
+    return uploadPaymentTX;
+  };
+
+  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  const uploadEpisode = async (link: string, number: number): Promise<uploadEpisodeInter> => {
+    const testing = 0;
+    if (testing) return {tx: 'WvUITx9o7ASiK1MHmsgXdWsy1xLTNYAoz_83dbW5r0o', number};
 
     try {
-      const tx = (await axios.post('/api/arseed/upload-url', {link, uploadPaymentTX})).data.response;
+      const tx = (await axios.post('/api/arseed/upload-url', {link})).data.response;
+      debugger;
       if (tx) return {tx, number};
-      throw new Error('Failed to upload url to arseeding: ' + link + "\n Reason: " + tx.status);
-    } catch {
-      console.error('Failed to upload url to arseeding: ', link);
+      throw new Error("\n Reason: " + tx.status);
+    } catch (error) {
+      // TODO: call refund function
+      console.error('Failed to upload url to arseeding: ', error);
       return {tx: '', number};
     };
   };
@@ -245,8 +252,14 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
 
     setUploadingEpisodes(true);
 
-    const handleErr = handleError;
     const toastSaving = toast.loading(t("loadingToast.savingChain"), { style: TOAST_DARK, duration: 10000000 });
+
+    const paymentTXes = [];
+    for (let i = 0; i < currentEpisodes.length; i++) {
+      const tx = await payStorageFee(currentEpisodes[i].length);
+      paymentTXes.push(tx);
+      await sleep(1000);
+    };
 
     const contentTXPromises = currentEpisodes.map((episode: rssEpisode, number: number) => uploadEpisode(episode.link, number));
     const contentTXResults = (
@@ -257,6 +270,11 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     const uploadedEpisodes = [];
     for (let i = 0; i < contentTXResults.length; i++) {
       const episode = contentTXResults[i];
+      if (!episode.tx) {
+        toast.dismiss(toastSaving);
+        console.log('Failed to upload episode: ', episode);
+        continue;
+      }
       const EXMUpload = await saveEpisodeToEXM(currentEpisodes[episode.number], episode.tx);
       uploadedEpisodes.push(EXMUpload);
     };
@@ -264,8 +282,6 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     setUploadingEpisodes(false);
     setProgress(100);
     setTimeout(() => setProgress(0), 1000);
-    toast.dismiss(toastSaving);
-    toast.success(t("success.showUploaded"), { style: TOAST_DARK })
 
     let uploadedCount = 0;
     // this will trigger a refetch of the episodes
@@ -273,9 +289,11 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
       uploadedCount = prev + uploadedEpisodes.length;
       return prev + uploadedEpisodes.length
     });
-
+    
+    toast.dismiss(toastSaving);
     if (rssEpisodes.length !== uploadedCount) return;
     setTimeout(async function () {
+      toast.success(t("success.showUploaded"), { style: TOAST_DARK })  
       const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
       const { locale } = router;
       router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })

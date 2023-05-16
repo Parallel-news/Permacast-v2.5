@@ -21,7 +21,7 @@ export default async function handler(
   const { url, uploadPaymentTX } = req.body;
 
   // const tx = "WvUITx9o7ASiK1MHmsgXdWsy1xLTNYAoz_83dbW5r0o";
-  const { tx } = await uploadURLAndCheckPayment(url, uploadPaymentTX);
+  const tx = await uploadURLAndCheckPayment(url);
   if (!tx) return res.json({ status: 'ERROR', error: "Upload failed", response: tx });
 
   return res.json({ status: 'SUCCESS', response: tx });
