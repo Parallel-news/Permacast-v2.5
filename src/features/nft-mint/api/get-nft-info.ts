@@ -1,10 +1,10 @@
 import { CreateCollectionObject, GetNftInfo, NftObject, RetrieveNftObject } from '../types'
 import { apiClient } from '../../../lib/api-client'
 import { findKey, generateAuthentication } from '../../../utils/reusables'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { defaultSignatureParams, useArconnect } from 'react-arconnect'
-import { USER_SIG_MESSAGES } from '../../../constants'
+import { CLAIM_FACTORY, USER_SIG_MESSAGES } from '../../../constants'
 
 export const getNftInfo = (): Promise<NftObject> => apiClient.get('/api/exm/collections/read')
 
@@ -24,13 +24,28 @@ export function useNftInfo({ enabled, pid } : GetNftInfo) {
   });
 }
 
-export const createNftCollection = async ({pid, getPublicKey, createSignature} : CreateCollectionObject) => {
-  const { sig, jwk_n } = await generateAuthentication({getPublicKey, createSignature})
-  console.log("sig: ", sig)
-  console.log("jwk: ", jwk_n)
-  return false
+//UNDER CONSTRUCTION
+//Now test to make sure it can save to the blockchain
+
+export function useCreateCollection() {
+  return useMutation({
+    mutationFn: createNftCollection,
+    onSuccess: data => data
+  });
 }
 
-//mutation needed to post to address
+export const createNftCollection = async ({pid, getPublicKey, createSignature} : CreateCollectionObject) => {
+
+  const { sig, jwk_n } = await generateAuthentication({getPublicKey, createSignature})
+  const collectionArgs = {
+    "function": CLAIM_FACTORY,
+    "jwk_n": jwk_n,
+    "cid": pid,
+    "sig": sig
+  }
+  const res = await apiClient.post('/api/exm/collections/write', collectionArgs)
+  console.log(res)
+  return res
+}
 
 // Another function that retrieve get and determines if there is a collection already

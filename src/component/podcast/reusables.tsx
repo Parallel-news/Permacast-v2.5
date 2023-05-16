@@ -274,7 +274,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
                     color={color}
                 />
             </a>
-            { address === props.podcastOwner && <NftButton /> }
+            { address === props.podcastOwner && <NftButton pid={props.podcastId} /> }
         </div>
     )
 }

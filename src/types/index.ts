@@ -6,6 +6,5 @@ export type SignatureParams = {
 
 export type AuthenticationActions = {
   getPublicKey: () => void;
-  //createSignature: (data: Uint8Array | null, params?: SignatureParams | null, encoding?: string | null) => Promise<string>;
   createSignature: createSignatureInterface;
 }

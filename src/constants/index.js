@@ -150,3 +150,6 @@ export const TITLE_WAIT = 100
 export const LOGO_WAIT = 700
 export const FADE_WAIT = 2500
 
+//Contract Input Names
+export const CLAIM_FACTORY = "claimFactory"
+
