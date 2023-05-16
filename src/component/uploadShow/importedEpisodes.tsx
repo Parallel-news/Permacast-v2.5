@@ -261,12 +261,13 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     };
 
     const contentTXPromises = currentEpisodes.map((episode: rssEpisode, number: number) => uploadEpisode(episode.link, number));
-    toast.loading(t("loadingToast.savingChain"), { style: TOAST_DARK, duration: 10000000 });
 
     const contentTXResults = (
       await Promise.all(contentTXPromises)
     ).sort((a: uploadEpisodeInter, b: uploadEpisodeInter) => a.number - b.number);
     console.log(contentTXResults);
+    toast.dismiss(toastSaving);
+    const savingBlockchainToast = toast.loading(t("loadingToast.savingChain"), { style: TOAST_DARK, duration: 10000000 });
 
     const uploadedEpisodes = [];
     for (let i = 0; i < contentTXResults.length; i++) {
@@ -291,7 +292,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
       return prev + uploadedEpisodes.length
     });
     
-    toast.dismiss(toastSaving);
+    toast.dismiss(savingBlockchainToast);
     if (rssEpisodes.length !== uploadedCount) return;
     setTimeout(async function () {
       toast.success(t("success.showUploaded"), { style: TOAST_DARK })  
@@ -300,6 +301,14 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
       router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
     }, 3500);
   };
+
+
+  //TODO:
+  // 1. Start uploading episodes from the last point if the upload fails
+  // 2. Arrows and navigation for the episodes
+  // 3. Total estimation cost
+  // 4. Styles and text fixes
+  // 5. Trigger balance update after upload
 
   return (
     <div className={showFormStyling}>
