@@ -27,7 +27,7 @@ const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then
 const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
 
 
-const MAX_EPISODES_TO_UPLOAD_AT_ONCE = 1;
+const MAX_EPISODES_TO_UPLOAD_AT_ONCE = 5;
 
 // 1. Interfaces
 interface ImportedEpisodesProps {
@@ -187,8 +187,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     if (testing) return {tx: 'WvUITx9o7ASiK1MHmsgXdWsy1xLTNYAoz_83dbW5r0o', number};
 
     try {
-      const tx = (await axios.post('/api/arseed/upload-url', {link})).data.response;
-      debugger;
+      const tx = (await axios.post('/api/arseed/upload-url', {url: link})).data.response;
       if (tx) return {tx, number};
       throw new Error("\n Reason: " + tx.status);
     } catch (error) {
@@ -252,7 +251,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
 
     setUploadingEpisodes(true);
 
-    const toastSaving = toast.loading(t("loadingToast.savingChain"), { style: TOAST_DARK, duration: 10000000 });
+    const toastSaving = toast.loading("Downloading Episodes...", { style: TOAST_DARK, duration: 10000000 });
 
     const paymentTXes = [];
     for (let i = 0; i < currentEpisodes.length; i++) {
@@ -262,6 +261,8 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     };
 
     const contentTXPromises = currentEpisodes.map((episode: rssEpisode, number: number) => uploadEpisode(episode.link, number));
+    toast.loading(t("loadingToast.savingChain"), { style: TOAST_DARK, duration: 10000000 });
+
     const contentTXResults = (
       await Promise.all(contentTXPromises)
     ).sort((a: uploadEpisodeInter, b: uploadEpisodeInter) => a.number - b.number);
