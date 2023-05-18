@@ -28,11 +28,13 @@ const rssContainer = "h-full w-full flex flex-col justify-start items-center spa
 const rssInputContainer = "w-[80%] md:w-[60%] flex flex-row space-x-2 flex items-center"
 const rssInputStyling = "w-full py-3 pl-5 pr-10 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white default-animation "
 
+const FULL_TESTING = 0;
+const TESTING_URL = "https://feeds.libsyn.com/247424/rss";
 export default function rss({yourShows}) {
 
     const [step, setStep] = useState(0)
     const [submittingLink, setSubmittingLink] = useState(false)
-    const [rssLink, setRssLink] = useState<string>("")
+    const [rssLink, setRssLink] = useState<string>(FULL_TESTING ? TESTING_URL : "")
     const [rssLinkError, setRssLinkError] = useState<string>("")
     const [fetchError, setFetchError] = useState<string>("")
     const [podcastFormSubmitted, setPodcastFormSubmitted] = useState<boolean>(false)
@@ -103,8 +105,7 @@ export default function rss({yourShows}) {
         let rssMetadata;
         // Fetch Episodes
         try {
-            const testing = 0;
-            rssFeed = testing ? MOCK_RSS_FEED_EPISODES: (await axios.get(RSS_IMPORT_LINK+base64)).data;
+            rssFeed = FULL_TESTING ? MOCK_RSS_FEED_EPISODES: (await axios.get(RSS_IMPORT_LINK+base64)).data;
             setRssFeed(rssFeed);
         } catch(e) {
             setFetchError("rss.norssepisode")
