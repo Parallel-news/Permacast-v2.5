@@ -25,12 +25,13 @@ import Everpay from "everpay";
 import { ArrowDownIcon, ArrowUpIcon, CheckIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Tooltip } from "@nextui-org/react";
 import { fetchARPriceInUSD } from "../../utils/redstone";
+import { RSSFeedManager } from "../../utils/localstorage";
 
 const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.ConnectButton })));
 const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
 
 const RSS_TESTING_URL = "https://permacast-bloodstone-helper.herokuapp.com/feeds/rss/T7HWHKp-AjIj69TQRvV4EZRVTY1J8J9zSgE668aOmC4";
-const FULL_TESTING = 0;
+const FULL_TESTING = 1;
 const MAX_EPISODES_TO_UPLOAD_AT_ONCE = 5;
 
 // 1. Interfaces
@@ -97,6 +98,12 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
   const [progress, setProgress] = useState(0);
 
   const MAX_PAGES = Math.floor(rssEpisodes.length / MAX_EPISODES_TO_UPLOAD_AT_ONCE) + 1;
+
+  useEffect(() => {
+    const savedPIDpages = RSSFeedManager.getValueFromObject(pid);
+    console.log(savedPIDpages);
+    if (savedPIDpages) setUploadedPages(JSON.parse(savedPIDpages));
+  }, []);
 
   useEffect(() => {
     setCurrentEpisodes(prev => prev.reverse());
@@ -308,6 +315,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
 
     const paymentTXes = [];
     for (let i = 0; i < currentEpisodes.length; i++) {
+      if (FULL_TESTING) break;
       const tx = await payStorageFee(currentEpisodes[i].length);
       paymentTXes.push(tx);
       await sleep(1000);
@@ -332,6 +340,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
         continue;
       }
       console.log({ currentEpisode: currentEpisodes[i], episode });
+      if (FULL_TESTING) break;
       const EXMUpload = await saveEpisodeToEXM(currentEpisodes[i], episode.tx);
       uploadedEpisodes.push(EXMUpload);
     };
@@ -340,6 +349,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     setIsUploadingEpisodes(false);
     setProgress(100);
     setTimeout(() => setProgress(0), 1000);
+    RSSFeedManager.addValueToObject(pid, JSON.stringify([...uploadedPages, currentPage]));
 
     let totalUploadedCount = uploadedCount + uploadedEpisodes.length;
     setUploadCount(totalUploadedCount);
