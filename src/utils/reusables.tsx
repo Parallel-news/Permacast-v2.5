@@ -162,7 +162,7 @@ export function findKey(obj, key) {
 }
 
 export async function generateAuthentication({ getPublicKey, createSignature } : AuthenticationActions) {
-  const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
+  const data = new TextEncoder().encode(USER_SIG_MESSAGES[0]+ await getPublicKey());
   const sig = await createSignature(data, defaultSignatureParams, "base64");
   const jwk_n = await getPublicKey();
   return {

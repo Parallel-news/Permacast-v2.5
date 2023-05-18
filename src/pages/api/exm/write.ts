@@ -32,8 +32,19 @@ export default async function handler(
         "input": JSON.stringify(req.body)
       }],
     }, {})
-    
-    res.status(200).json(data)
+    const responseData = JSON.stringify(data.data, (key, value) => {
+      if (typeof value === "object" && value !== null) {
+        if (
+          key === "socket" &&
+          value.constructor.name === "TLSSocket"
+        ) {
+          // Exclude the 'socket' property
+          return undefined;
+        }
+      }
+      return value;
+    });
+    res.status(200).json(responseData)
   } catch (error) {
     console.error(error)
     return res.status(error.status || 500).end(error.message)

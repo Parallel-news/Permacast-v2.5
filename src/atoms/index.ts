@@ -226,3 +226,24 @@ export const loadingPage = atom<boolean>({
     key: 'loadingPage',
     default: false
 })
+
+//MINT NFT COLLECTION
+export const nftPid = atom<string>({
+    key: 'nftPid',
+    default: ''
+})
+
+export const collectionMinted = atom<boolean>({
+    key: 'collectionMinted',
+    default: false
+})
+
+export const showName = atom<string>({
+    key: 'showName',
+    default: ""
+})
+
+export const showCover = atom<string>({
+    key: 'showCover',
+    default: ""
+})

@@ -13,9 +13,8 @@ export default async function handler(
     const DEV_TOKEN = process.env.EXM_DEV_API_TOKEN;
     const IS_PROD = process.env.IS_PROD;
     const contractAPIToken = IS_PROD === 'true' ? PROD_TOKEN : DEV_TOKEN;
-
-  try {
     const { collectionsContract } = getContractVariables();
+  try {
     
     const data = await axios.post(`https://api.exm.dev/api/transactions?token=${contractAPIToken}`, {
       functionId: collectionsContract,
@@ -24,7 +23,22 @@ export default async function handler(
       }],
     }, {})
     
-    res.status(200).json(data)
+   
+    const responseData = JSON.stringify(data.data, (key, value) => {
+      if (typeof value === "object" && value !== null) {
+        if (
+          key === "socket" &&
+          value.constructor.name === "TLSSocket"
+        ) {
+          // Exclude the 'socket' property
+          return undefined;
+        }
+      }
+      return value;
+    });
+
+    res.status(200).json(responseData)
+
   } catch (error) {
     console.error(error)
     return res.status(error.status || 500).end(error.message)

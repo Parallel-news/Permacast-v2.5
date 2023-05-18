@@ -1,4 +1,6 @@
+import { Dispatch, SetStateAction } from "react";
 import { AuthenticationActions } from "../../../types";
+import { Podcast } from "../../../interfaces";
 
 export type Record = {
     record_id: string;
@@ -27,6 +29,7 @@ export interface NftObject {
 
 export type RetrieveNftObject = {
     pid: string;
+    nftPayload: NftObject;
 }
 
 export type GetNftInfo = {
@@ -40,3 +43,24 @@ export type AuthenticationObject = {
 }
 
 export type CreateCollectionObject = RetrieveNftObject & AuthenticationActions
+
+export type CreateCollectionViewObject = {
+    showPic: string;
+    showTitle: string;
+}
+
+export type GenericNftButtonObject = {
+    text: string;
+    onClick: () => void;
+}
+
+export type NftModalObject = {
+    pid: string;
+    isOpen: boolean;
+    setIsOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+export type compiledShowObject = {
+    pid: string;
+    podcasts: Podcast[]
+}

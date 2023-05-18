@@ -15,7 +15,7 @@ import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
 import { descContainerStyling, spinnerClass } from '../uploadShow/uploadShowTools';
 import { getBundleArFee, upload2DMedia, upload3DMedia } from '../../utils/arseeding';
-import { allFieldsFilled, byteSize, checkConnection, determineMediaType, handleError } from '../../utils/reusables';
+import { allFieldsFilled, byteSize, checkConnection, determineMediaType, generateAuthentication, handleError } from '../../utils/reusables';
 import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EVERPAY_EOA, GIGABYTE, SPINNER_COLOR, TOAST_DARK, TOAST_MARGIN, USER_SIG_MESSAGES } from '../../constants';
 
 
@@ -191,9 +191,9 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         setSubmittingEp(true)
         const handleErr = handleError
         // Package EXM Call
-        const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
-        epPayload["sig"] = await createSignature(data, defaultSignatureParams, "base64");
-        epPayload["jwk_n"] = await getPublicKey()
+        const { sig, jwk_n } = await generateAuthentication({getPublicKey, createSignature})
+        epPayload["sig"] = sig
+        epPayload["jwk_n"] = jwk_n 
 
         // Description to Arseeding
         const toastDesc = toast.loading(t("loadingToast.savingDesc"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
@@ -254,6 +254,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         // EXM REDIRECT AND ERROR HANDLING NEEDED
         setTimeout(async function () {
             const result = await axios.post('/api/exm/write', createEpPayload);
+            console.log("EXM RES: ", result)
             //EXM call, set timeout, then redirect. 
             toast.dismiss(toastSaving);
             toast.success(t("success.episodeUploaded"), {style: TOAST_DARK, className:TOAST_MARGIN})
@@ -352,22 +353,4 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     )
 }  
 
-/*
-{
-    "function": "editEpisodeMetadata",
-    "jwk_n": "lHogurZNFhu_xnTV4HDHpDNhUNbZUL14pJUlBlzydgY8SwNMGTZCEGwJIuzLC5t8S8WfHqAvy5wRG5qu0fKE1SAMdhFFe4-jpesBGmfh9VyF43AQuM_3B5Hl-cjes9-C1PA8Ql25X4aJ2Ln-pfUBZe7oe9PAykEvF5wLb-zBNVfBdvLCj_oBrILe-YOvvqp2NPzcoOecbBNjpM4wCPmd41_tvN1qSfw3znPE0HbK5Ukzs9ETlqEzvOMJYAQ2WFd6lA5Zx3kDYKm68-VNA8vrTHp5yNldrXk8GJW8gsHru2fv2_MrBmdi30CSHNC-rDIh3BQQbcaHQ3W8Fx8RZsKsnZHZBsqiD2zJcTmXuRQDrh8Kw_2mtVYvDh7PWsSNPI_izm45lYNSxw7Wjr2SO9JbpWe_57PgU3eUWbMYHWAMkbneTiGvgDpinYdltEtpA9-Im4I_pCq1FXvWCea4sc5IcP30V8boMsQ6xw-y-07UcCogr9krVTDMdGYEVHkIfObt8d6ZzpcigPVIQLqDEAx6EKeC3I_6dP_G8axSKebdK_5IhZYot39biqPKzWZnZaz5D7zHpBjp1gRDHOJ5cV-XKjPcDvoTKbsFWdno0r6Nutaac6ksP_YPneZvP6Qxxq6To3ieVQyq4sFUMHR5UvslYoDASlE8VDnDu2EZfZhvfI8",
-    "pid": "671ab527a71cded3500cf3b4ad3919a729a6660386ec5fe51f78888c30626da37507e549be9d3dbf801793a6345fc396e2134825cbc977d02e5ba7dcf69cd11f",
-    "name": "Fancy Streets2",
-    "desc": "rySx2WKQyjp2GTUZmgGtMfPWujYK0K2_ReF1y-ifrM8",
-    "sig": "inQzfpOQsr8D6RAX1+eBJvo5uL3JelvJLP5GdAEYRzTI8EOzCxS9J44Rlg/C49d3BAfyCd6nCEcanAbo9ugsGwbouDHoMt7haU1wSh6VI9gUlZSYRQd3Osn2YzDLGrwyjEU61RoR9lpYAg6BYUw3aBYTVZPDu2sXC0LcmCO2RfT6ZeF3sx0XW0bJeR62BkeLHlC/IEHQrKZ+98vQPJK9WfRM9xHMOZrPLcLiFjEjILIAOSZz2r7ajeG4ESb9xbc2/ydD7jexgHf9EB3GTYbmEweINrAV+e1U04GGkzE92InWL+fgfZMcJbE2K15dx/f2XgaHYnKn+K7Ms+hV/OPOWmkBENPUsGkUV4vFMhLbNg1Ap94sAVB2v0ntUq1YVx/AgCck6p71xceAPkeYo2s4CwXwopJj2I1R4K+BZ5xmyoDA+aAL2PcnBILBm07HGDbDkBjrKLLPcWVxZTuRfUGsh3mLGUo9MiyD/kX6hOUzBYw3luFUG/PTSmbRWppapT3BvBglTSkWAp50+IymgKsa03p8IzP3/2tVLwmoQy8aCgw0wysqfMIzSKi4vG4K9bGEVX8H8Pt3ibQoqKDz7xqrIXfFKdrxQOj2BaYe+0UunHernoODgwhnRLGli/uG+1usnA8Ppgb8Yg/EZ+nk3EqiBR28ACtitDWB5TaAjVdfEhw=",
-    "txid": "",
-    "isVisible": false,
-    "thumbnail": "qSSTDA_iIlorslnxi22KoFzAgj4YpitI02VB-Wpc1m0",
-    "content": "",
-    "mimeType": "",
-    "eid": "f12d4503b251e66968ea82b24ade99768232022b9f8b4676f675fc586572e175f4ef544c66f055f4c3f5d01fec453dab1fe26c55872d4474531cb04ec20fe215"
-}
-
-
-*/
 

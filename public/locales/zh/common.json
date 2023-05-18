@@ -259,5 +259,10 @@
 		"hide0EpisodePodcasts": "隐藏 0 集的播客",
 		"show0EpisodePodcasts": "显示有 0 集的播客"
 	},
-	"edit": "编辑"
+	"edit": "编辑",
+	"nft-collection": {
+		"confirm-msg": "创建一个新集合",
+		"for": "为了"
+	}
+	
 }

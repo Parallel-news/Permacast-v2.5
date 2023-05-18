@@ -265,6 +265,10 @@
 		"hide0EpisodePodcasts": "Hide 0 Episode Podcasts",
 		"show0EpisodePodcasts": "Show 0 Episode Podcasts"
 	},
-	"edit": "Edit"
+	"edit": "Edit",
+	"nft-collection": {
+		"confirm-msg": "Create a new collection on",
+		"for": "for"
+	}
 	
 }
