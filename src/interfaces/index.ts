@@ -113,7 +113,8 @@ export interface rssEpisode {
   link: string;
   pubDate: string;
   title: string;
-  contentLength?: string;
+  // UI only
+  order?: number;
 };
 
 export interface rssEpisodeRetry extends rssEpisode {
