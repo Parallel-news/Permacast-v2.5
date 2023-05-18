@@ -44,6 +44,11 @@ export type AuthenticationObject = {
 
 export type CreateCollectionObject = RetrieveNftObject & AuthenticationActions
 
+export type CreateEpisodeNftObject = {
+    eid: string;
+    target: string;
+} & AuthenticationActions
+
 export type CreateCollectionViewObject = {
     showPic: string;
     showTitle: string;
@@ -62,5 +67,6 @@ export type NftModalObject = {
 
 export type compiledShowObject = {
     pid: string;
-    podcasts: Podcast[]
+    podcasts: Podcast[];
+    nftPayload: NftObject;
 }

@@ -9,6 +9,9 @@ import { XMarkIcon } from '@heroicons/react/24/solid'
 import { Dialog, Transition } from '@headlessui/react'
 import { determineMintStatus } from '../api/get-nft-info'
 import { CreateCollectionViewObject, NftModalObject } from '../types'
+import { ARSEED_URL } from '../../../constants'
+import { Episode } from '../../../interfaces'
+import { PermaSpinner } from '../../../component/reusables'
 
 export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
     // Will call state variables
@@ -18,20 +21,17 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
      * & API pull is not heavy
      */
     const { t } = useTranslation();
-    const { address, getPublicKey, createSignature } = useArconnect();
-
     const queryNftInfo = determineMintStatus({enabled: true, pid: pid})
+    const payload = queryNftInfo?.data
     if(!queryNftInfo.isLoading) {
         console.log(queryNftInfo.data)
     } else {
         console.log("Loading...")
     }
 
-    //react query everything. We just need pid
-    //function use react query here where loading will be placed and the modal will change based on what results are returned
     const collectionStyling = "flex flex-col items-center space-y-4"
     const xStyling = "text-white cursor-pointer h-6 absolute right-4 top-2"
-    const modalContainer = "w-full max-w-2xl transform overflow-hidden rounded-2xl bg-zinc-700 p-6 text-left align-middle shadow-xl transition-all relative"
+    const modalContainer = "w-full max-w-2xl transform overflow-hidden rounded-2xl bg-zinc-800 p-6 text-left align-middle shadow-xl transition-all relative min-h-[200px] flex justify-center items-center"
     
     return (
         <>
@@ -63,23 +63,29 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                   <Dialog.Panel className={modalContainer}>
                     <XMarkIcon className={xStyling} onClick={() => setIsOpen(false)}/>
                     {/*Views*/}
-
-                    {queryNftInfo.isLoading && (<p>Loading</p>)}
+                    {queryNftInfo.isLoading && (<PermaSpinner spinnerColor="#FFF" size={25}/>)}
 
                     {queryNftInfo.isError && (<p>Error</p>)}
 
-                    {!queryNftInfo.isLoading && !queryNftInfo.data.collectionAddr &&  (
+                    {/*Create Collection*/}
+                    {!queryNftInfo.isLoading && !payload.collectionAddr &&  (
                         <div className={collectionStyling}>
-                            {`Data: ${queryNftInfo.data}    `}
-                            <CreateCollectionView showPic="/logo512.png" showTitle="The Boob" />
+                            <CreateCollectionView showPic={ARSEED_URL+payload.cover} showTitle={payload?.name} />
                             <GenericNftButton 
                                 text={t("uploadshow.upload")}
                                 onClick={() => alert('hi')}
                             />
                         </div> 
                     )}
-                    {!queryNftInfo.isLoading && queryNftInfo.data.collectionAddr &&  (
-                        <p>step 2</p>
+                    {/*Mint Episode NFT*/}
+                    {!queryNftInfo.isLoading && payload.collectionAddr && payload.episodes.length && (
+                        <MintEpisodeView 
+                          episodes={payload.episodes}
+                        />
+                    )}
+                    {/*No Episode Found*/}
+                    {!queryNftInfo.isLoading && payload.collectionAddr && payload.episodes.length === 0 && (
+                      <NoEpisodesMessage />
                     )}
                   </Dialog.Panel>
                 </Transition.Child>
@@ -95,7 +101,7 @@ export const CreateCollectionView = ({showPic, showTitle} : CreateCollectionView
 
     const { t } = useTranslation();
 
-    const firstRowStyle = "flex flex-col md:flex-row justify-around items-center space-y-4 w-full"
+    const firstRowStyle = "flex flex-col md:flex-row justify-around items-center space-y-4 w-full space-x-2"
     const textStyle = "text-2xl text-white text-center"
     
     return (
@@ -122,7 +128,29 @@ export const CreateCollectionView = ({showPic, showTitle} : CreateCollectionView
     )
 }
 
+type MintEpisodeViewObject = {
+  episodes: Episode[]
+}
+
+export const MintEpisodeView = ({ episodes }: MintEpisodeViewObject) => {
+  const r = episodes
+  return (
+    <div className="flex justify-start w-[50%] text-white">
+      <p>Mint Episodes for <span className="font-bold">The Illiad</span></p>
+    </div>
+  )
+  //target and eid are needed for submission
+}
+
+export const NoEpisodesMessage = () => {
+  return (
+    <div className="flex flex-col space-y-8 justify-center items-center min-h-[300px] text-white font-semibold">
+      <p>No Episodes Have Been Made Yet!</p>
+      <p>Make an episode and come back</p>
+    </div>
+  )
+}
+
 // UNDER CONSTRUCTION
-// Integrate the state variables to take the name of the show
-// Build the view that will show the episodes
-// Build the check if minted collection function --> Test between the two shows to see if the modal is showing the right version
+
+//Build the view

@@ -1,9 +1,8 @@
-import { CLAIM_FACTORY } from '../../../constants'
 import { apiClient } from '../../../lib/api-client'
+import { CLAIM_FACTORY, MINT_NFT } from '../../../constants'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { findKey, generateAuthentication } from '../../../utils/reusables'
-import { CreateCollectionObject, GetNftInfo, NftObject, RetrieveNftObject, compiledShowObject } from '../types'
-import { Podcast } from '../../../interfaces'
+import { CreateCollectionObject, CreateEpisodeNftObject, GetNftInfo, NftObject, RetrieveNftObject, compiledShowObject } from '../types'
 
 export const getNftInfo = (): Promise<NftObject> => apiClient.get('/api/exm/collections/read')
 export const getPodcastPayload = (): Promise<any> => apiClient.get('/api/exm/read')
@@ -18,11 +17,20 @@ export const collectionExists = async ({ pid, nftPayload }: RetrieveNftObject | 
     }
 }
 
-export const compileShowData = async({pid, podcasts}: compiledShowObject) => {
-  const podcast = podcasts.find(obj => obj.pid === pid)
+export const compileShowData = async({pid, podcasts, nftPayload}: compiledShowObject) => {
+  const podcast = podcasts.find(obj => obj.pid === pid) //Grab all podcasts
+  const mintedEpisodes = podcast.episodes.map(episode => nftPayload.records.find(record => record.eid === episode.eid)) //which ones minted?
+  const jointEpisodes = podcast.episodes.map((episode, index) => { //create new payload showing mint status
+      if (mintedEpisodes[index]) {
+        return { ...episode, minted: true };
+      } else {
+        return { ...episode, minted: false };
+      }
+  })
   return {
     name: podcast.podcastName,
-    cover: podcast.cover
+    cover: podcast.cover,
+    episodes: jointEpisodes
   }
 }
 
@@ -38,7 +46,7 @@ export function determineMintStatus({ enabled, pid } : GetNftInfo) {
 
       const [isMinted, showData] = await Promise.all([
         collectionExists({ pid: pid, nftPayload: nftPayload }),
-        compileShowData({ pid: pid, podcasts: podcasts.podcasts })
+        compileShowData({ pid: pid, podcasts: podcasts.podcasts, nftPayload: nftPayload })
       ])
 
       return {
@@ -77,5 +85,31 @@ export const createNftCollection = async ({pid, getPublicKey, createSignature} :
   }
 
   const res = await apiClient.post('/api/exm/collections/write', collectionArgs)
+  return res
+}
+
+/**
+ * Mint an Episode
+ */
+export function useMintEpisode() {
+  return useMutation({
+    mutationFn: mintEpisode,
+    onSuccess: data => data
+  });
+}
+
+export const mintEpisode = async({eid, target, getPublicKey, createSignature} : CreateEpisodeNftObject) => {
+
+  const { sig, jwk_n } = await generateAuthentication({getPublicKey, createSignature})
+
+  const mintArgs = {
+    "function": MINT_NFT,
+    "jwk_n": jwk_n,
+    "eid": eid,
+    "target": target,
+    "sig": sig
+  }
+  console.log("Mint Payload:", mintArgs)
+  const res = await apiClient.post('/api/exm/collections/write', mintArgs)
   return res
 }

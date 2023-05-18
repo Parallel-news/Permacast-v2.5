@@ -153,4 +153,5 @@ export const FADE_WAIT = 2500
 
 //Contract Input Names
 export const CLAIM_FACTORY = "claimFactory"
+export const MINT_NFT = "submitRequest"
 
