@@ -31,7 +31,7 @@ const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then
 const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
 
 const RSS_TESTING_URL = "https://permacast-bloodstone-helper.herokuapp.com/feeds/rss/T7HWHKp-AjIj69TQRvV4EZRVTY1J8J9zSgE668aOmC4";
-const FULL_TESTING = 1;
+const FULL_TESTING = 0;
 const MAX_EPISODES_TO_UPLOAD_AT_ONCE = 5;
 
 // 1. Interfaces
@@ -383,7 +383,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
       <div className="bg-zinc-800 default-animation rounded-xl px-5 py-3 w-full text-white flex justify-between">
         <div className="line-clamp-2">{t("home.episode")} {number}: {title}</div>
         <div className="ml-4 flex gap-x-2">
-          {uploaded ? <CheckIcon className="bg-green-500 rounded-full w-5 h-5 text-white" /> : ""}
+          {uploaded ? <CheckIcon className="bg-green-500 rounded-full w-5 h-5 text-white shrink-0" /> : ""}
           <div>{size || ""}</div>
           <div>{cost || "?"} AR</div>
         </div>
