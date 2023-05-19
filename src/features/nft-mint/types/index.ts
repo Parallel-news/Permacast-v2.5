@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { AuthenticationActions } from "../../../types";
-import { Podcast } from "../../../interfaces";
+import { Episode, Podcast } from "../../../interfaces";
 
 export type Record = {
     record_id: string;
@@ -57,6 +57,7 @@ export type CreateCollectionViewObject = {
 export type GenericNftButtonObject = {
     text: string;
     onClick: () => void;
+    disabled?: boolean;
 }
 
 export type NftModalObject = {
@@ -70,3 +71,18 @@ export type compiledShowObject = {
     podcasts: Podcast[];
     nftPayload: NftObject;
 }
+
+export type GetPid = {
+    pid: string;
+}
+
+export type MintEpisodeViewObject = {
+    episodes: Episode[];
+    showName: string;
+}
+
+export type EpisodeTitleObject = {
+    episodeName: string;
+    thumbnail: string;
+}
+  

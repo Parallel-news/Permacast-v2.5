@@ -268,7 +268,10 @@
 	"edit": "Edit",
 	"nft-collection": {
 		"confirm-msg": "Create a new collection on",
-		"for": "for"
+		"for": "for",
+		"no-episodes": "No Episodes Have Been Published!",
+		"click-to-make": "Click here to make an episode.",
+		"mint-for": "Mint Episodes For",
+		"mint": "Mint"
 	}
-	
 }

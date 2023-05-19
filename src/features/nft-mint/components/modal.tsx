@@ -5,17 +5,17 @@ import { Fragment } from 'react'
 import { GenericNftButton } from './buttons'
 import { useArconnect } from 'react-arconnect'
 import { useTranslation } from 'react-i18next'
+import { ARSEED_URL } from '../../../constants'
 import { XMarkIcon } from '@heroicons/react/24/solid'
 import { Dialog, Transition } from '@headlessui/react'
 import { determineMintStatus } from '../api/get-nft-info'
-import { CreateCollectionViewObject, NftModalObject } from '../types'
-import { ARSEED_URL } from '../../../constants'
-import { Episode } from '../../../interfaces'
 import { PermaSpinner } from '../../../component/reusables'
+import { CreateCollectionViewObject, EpisodeTitleObject, GetPid, MintEpisodeViewObject, NftModalObject } from '../types'
+
+
 
 export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
-    // Will call state variables
-    //Be injected into each of these views
+
     /**
      * Recoil Vars & React Query will be set to keep far from parent 
      * & API pull is not heavy
@@ -31,7 +31,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
 
     const collectionStyling = "flex flex-col items-center space-y-4"
     const xStyling = "text-white cursor-pointer h-6 absolute right-4 top-2"
-    const modalContainer = "w-full max-w-2xl transform overflow-hidden rounded-2xl bg-zinc-800 p-6 text-left align-middle shadow-xl transition-all relative min-h-[200px] flex justify-center items-center"
+    const modalContainer = "w-full max-w-2xl transform overflow-hidden rounded-2xl bg-zinc-800 p-10 text-left align-middle shadow-xl transition-all relative min-h-[200px] flex justify-center items-center"
     
     return (
         <>
@@ -79,13 +79,22 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                     )}
                     {/*Mint Episode NFT*/}
                     {!queryNftInfo.isLoading && payload.collectionAddr && payload.episodes.length && (
+                      <div className="flex flex-col w-full space-y-8">
                         <MintEpisodeView 
                           episodes={payload.episodes}
+                          showName={payload.name}
                         />
+                        <div className="flex flex-row w-full justify-end">
+                          <GenericNftButton 
+                            text={t("nft-collection.mint")}
+                            onClick={() => alert('hi')}
+                          />
+                        </div>
+                      </div>
                     )}
                     {/*No Episode Found*/}
                     {!queryNftInfo.isLoading && payload.collectionAddr && payload.episodes.length === 0 && (
-                      <NoEpisodesMessage />
+                      <NoEpisodesMessage pid={pid} />
                     )}
                   </Dialog.Panel>
                 </Transition.Child>
@@ -105,52 +114,100 @@ export const CreateCollectionView = ({showPic, showTitle} : CreateCollectionView
     const textStyle = "text-2xl text-white text-center"
     
     return (
-            <div className={firstRowStyle}>
-                <Image 
-                    src={showPic}
-                    alt="Podcast Logo"
-                    height={100}
-                    width={100}
-                    className="rounded-3xl"
-                />
-                <p className={textStyle}>
-                    {t("nft-collection.confirm-msg")} 
-                    <Image 
-                        src="/polygon_logo.svg" 
-                        alt="Polygon Logo" 
-                        height={45} 
-                        width={45}
-                        className="inline p-0 m-0" 
-                    />{t("nft-collection.for")} 
-                    <span className="font-bold"> {showTitle}</span>
-                </p>
-            </div>
+      <div className={firstRowStyle}>
+          <Image 
+              src={showPic}
+              alt="Podcast Logo"
+              height={100}
+              width={100}
+              className="rounded-3xl"
+          />
+          <p className={textStyle}>
+              {t("nft-collection.confirm-msg")} 
+              <Image 
+                  src="/polygon_logo.svg" 
+                  alt="Polygon Logo" 
+                  height={45} 
+                  width={45}
+                  className="inline p-0 m-0" 
+              />{t("nft-collection.for")} 
+              <span className="font-bold"> {showTitle}</span>
+          </p>
+      </div>
     )
 }
 
-type MintEpisodeViewObject = {
-  episodes: Episode[]
-}
+export const MintEpisodeView = ({ episodes, showName }: MintEpisodeViewObject) => {
 
-export const MintEpisodeView = ({ episodes }: MintEpisodeViewObject) => {
+  const { t } = useTranslation();
+
+  const episodeRow = "w-full flex justify-between items-center"
+  const episodeContainer = "bg-zinc-700 rounded-md w-full p-4 space-y-2"
+  const titleStyling = "flex justify-start w-full text-white text-2xl mb-6"
+  const checkBoxStyling = "form-checkbox accent-[#FFFF00] bg-zinc-800 rounded-xl inline w-5 h-5"
+
   const r = episodes
   return (
-    <div className="flex justify-start w-[50%] text-white">
-      <p>Mint Episodes for <span className="font-bold">The Illiad</span></p>
+    <div className="flex flex-col w-full">
+      <div className={titleStyling}>
+        <p>{t('nft-collection.mint-for')} <span className="font-bold">{showName}</span></p>
+      </div>
+      <div className={episodeContainer}>
+        {episodes.map((episode, index) => (
+          <div className={episodeRow} key={index}>
+            <EpisodeTitle 
+              episodeName={episode.episodeName}
+              thumbnail={episode?.thumbnail.length > 0 ? ARSEED_URL+episode?.thumbnail : "/logo512.png"}
+            />
+            <label className="inline items-center">
+              {episode.minted ? 
+                <input type="checkbox" className={checkBoxStyling} checked disabled /> 
+              :
+                <input type="checkbox" className={checkBoxStyling} />
+              }
+            </label>
+          </div>
+        ))}
+      </div>
     </div>
   )
   //target and eid are needed for submission
 }
 
-export const NoEpisodesMessage = () => {
+export const NoEpisodesMessage = ({ pid }: GetPid) => {
+
+  const { t } = useTranslation();
+
+  
+  const linkStyling = "text-white hover:text-[#FFFF00] transform transition-all duration-500 text-xl"
+  const containerStyling = "flex flex-col space-y-6 justify-center items-center font-semibold text-2xl"
+
   return (
-    <div className="flex flex-col space-y-8 justify-center items-center min-h-[300px] text-white font-semibold">
-      <p>No Episodes Have Been Made Yet!</p>
-      <p>Make an episode and come back</p>
+    <div className={containerStyling}>
+      <p className="text-white">{t("nft-collection.no-episodes")}</p>
+      <a href={`/upload-episode?pid=${pid}`} className={linkStyling}>{t("nft-collection.click-to-make")}</a>
+    </div>
+  )
+}
+
+export const EpisodeTitle = ({episodeName, thumbnail}: EpisodeTitleObject) => {
+
+  const textStyling = "text-white text-lg line-clamp-1"
+  const containerStyling = "flex items-center space-x-4 w-fit inline"
+  
+  return (
+    <div className={containerStyling}>
+      <Image 
+        src={thumbnail}
+        alt="Episode Thumbnail"
+        height={45}
+        width={45}
+        className="rounded-xl"
+      />
+      <p className={textStyling}>{episodeName}</p>
     </div>
   )
 }
 
 // UNDER CONSTRUCTION
 
-//Build the view
