@@ -335,7 +335,8 @@ export const ShowForm = (props: ShowFormInter) => {
                 setPodcastName_(p.podcastName)
                 setPodcastDescription_(p.description)
                 setPodcastAuthor_(p.author)
-                
+                setPodcastEmail_(p.email)
+
                 //Recreate Cover for Upload
                 setCoverUrl(p.cover)
                 fetch(p.cover)
@@ -352,8 +353,8 @@ export const ShowForm = (props: ShowFormInter) => {
             restoreSavedData()
         } else {
             _setLoadingPage(false)
-        }
-    }, [])
+        };
+    }, []);
 
     return (
         <div className={showFormStyling + (props?.allowSelect ? " pb-20": "")}>
@@ -410,7 +411,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Email
                     */}
-                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Email" type="text" name="showName" placeholder={t("uploadshow.email")} value={podcastEmail_}                   
+                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Email" type="text" name="showName" placeholder={t("uploadshow.email")} value={podcastEmail_}
                     onChange={(e) => {
                         setPodEmailMsg(handleValMsg(e.target.value, "podEmail"));
                         setPodcastEmail_(e.target.value);

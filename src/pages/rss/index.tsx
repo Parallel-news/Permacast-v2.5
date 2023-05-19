@@ -130,6 +130,7 @@ export default function rss({yourShows}) {
                 podcastName: rssMetadata.data.title,
                 description: rssMetadata.data.description,
                 author: rssMetadata.data.author,
+                email: rssMetadata.data.email,
                 explicit: rssMetadata.data.isExplicit === "false" ? "no": "yes",
                 language: rssMetadata.data.language,
                 categories: [rssMetadata.data.categories],
@@ -141,7 +142,6 @@ export default function rss({yourShows}) {
 
         setSubmittingLink(false);
         setStep(1);
-        console.log("rssMeta: ", rssMeta)
         console.log("RSS FEED: ", rssFeed)
     };
 
