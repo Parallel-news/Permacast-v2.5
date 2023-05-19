@@ -20,8 +20,10 @@ export const collectionExists = async ({ pid, nftPayload }: RetrieveNftObject | 
 export const compileShowData = async({pid, podcasts, nftPayload}: compiledShowObject) => {
   const podcast = podcasts.find(obj => obj.pid === pid) //Grab all podcasts
   const mintedEpisodes = podcast.episodes.map(episode => nftPayload.records.find(record => record.eid === episode.eid)) //which ones minted?
+  let countMinted = 0
   const jointEpisodes = podcast.episodes.map((episode, index) => { //create new payload showing mint status
       if (mintedEpisodes[index]) {
+        countMinted += 1
         return { ...episode, minted: true };
       } else {
         return { ...episode, minted: false };
@@ -30,7 +32,8 @@ export const compileShowData = async({pid, podcasts, nftPayload}: compiledShowOb
   return {
     name: podcast.podcastName,
     cover: podcast.cover,
-    episodes: jointEpisodes
+    episodes: jointEpisodes,
+    allMinted: countMinted === podcast.episodes.length
   }
 }
 

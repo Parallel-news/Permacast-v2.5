@@ -83,13 +83,17 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                         <MintEpisodeView 
                           episodes={payload.episodes}
                           showName={payload.name}
+                          cover={payload.cover}
                         />
-                        <div className="flex flex-row w-full justify-end">
-                          <GenericNftButton 
-                            text={t("nft-collection.mint")}
-                            onClick={() => alert('hi')}
-                          />
-                        </div>
+                        {!payload.allMinted && (
+                          <div className="flex flex-row w-full justify-end">
+                            <GenericNftButton 
+                              text={t("nft-collection.mint")}
+                              onClick={() => alert('hi')}
+                              disabled={payload.allMinted}
+                            />
+                          </div>
+                        )}
                       </div>
                     )}
                     {/*No Episode Found*/}
@@ -137,7 +141,7 @@ export const CreateCollectionView = ({showPic, showTitle} : CreateCollectionView
     )
 }
 
-export const MintEpisodeView = ({ episodes, showName }: MintEpisodeViewObject) => {
+export const MintEpisodeView = ({ episodes, showName, cover }: MintEpisodeViewObject) => {
 
   const { t } = useTranslation();
 
@@ -146,7 +150,12 @@ export const MintEpisodeView = ({ episodes, showName }: MintEpisodeViewObject) =
   const titleStyling = "flex justify-start w-full text-white text-2xl mb-6"
   const checkBoxStyling = "form-checkbox accent-[#FFFF00] bg-zinc-800 rounded-xl inline w-5 h-5"
 
-  const r = episodes
+  const handleCheckboxChange = (event, itemId) => {
+    const isChecked = event.target.checked;
+    // Perform any necessary logic based on the checkbox change
+    console.log(`Checkbox with id ${itemId} is now ${isChecked ? 'checked' : 'unchecked'}`);
+  };
+
   return (
     <div className="flex flex-col w-full">
       <div className={titleStyling}>
@@ -157,13 +166,15 @@ export const MintEpisodeView = ({ episodes, showName }: MintEpisodeViewObject) =
           <div className={episodeRow} key={index}>
             <EpisodeTitle 
               episodeName={episode.episodeName}
-              thumbnail={episode?.thumbnail.length > 0 ? ARSEED_URL+episode?.thumbnail : "/logo512.png"}
+              thumbnail={episode?.thumbnail.length > 0 ? ARSEED_URL+episode?.thumbnail : ARSEED_URL+cover}
             />
-            <label className="inline items-center">
+            <label className="inline items-center" key={episode.eid}>
               {episode.minted ? 
                 <input type="checkbox" className={checkBoxStyling} checked disabled /> 
               :
-                <input type="checkbox" className={checkBoxStyling} />
+                <input type="checkbox" className={checkBoxStyling} 
+                  onChange={(event) => handleCheckboxChange(event, episode.eid)}
+                />
               }
             </label>
           </div>

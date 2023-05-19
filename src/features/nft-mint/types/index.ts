@@ -79,6 +79,7 @@ export type GetPid = {
 export type MintEpisodeViewObject = {
     episodes: Episode[];
     showName: string;
+    cover: string;
 }
 
 export type EpisodeTitleObject = {
