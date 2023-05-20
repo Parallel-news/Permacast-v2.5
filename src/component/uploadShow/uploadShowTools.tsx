@@ -55,7 +55,7 @@ interface ShowFormInter {
 // 2. Stylings
 export const spinnerClass = "w-full flex justify-center mt-4"
 export const showFormStyling = "w-full flex flex-col justify-center items-center space-y-2"
-export const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex flex-row justify-start items-start focus-within:ring-white focus-within:ring-2"
+export const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex flex-row justify-start items-start focus-within:ring-white focus-within:ring-2 default-animation "
 
 // 3. Custom Functions
 /**
