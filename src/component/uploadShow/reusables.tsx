@@ -76,7 +76,7 @@ export const cropScreenStyling = "absolute top-0 left-0 w-full h-full flex flex-
 export const cropSelectionDivStyling = "min-w-[50px] min-h-[10px] rounded-[4px] bg-black/10 hover:bg-black/20 border-[1px] border-solid border-white/10 m-2 p-1 px-2 cursor-pointer flex flex-col justify-center items-center"
 export const cropSelectionTextStyling = "flex flex-col justify-center items-center text-white/60"
 const emptyCoverIconStyling = "input input-secondary flex flex-col items-center justify-center cursor-pointer bg-zinc-800 h-48 w-48 rounded-[20px] outline-none focus:ring-2 focus:ring-inset focus:ring-white hover:bg-zinc-600"
-const selectDropdownStyling="select select-secondary w-[30%] py-2 px-5 text-base font-normal input-styling bg-zinc-800"
+const selectDropdownStyling="select select-secondary w-[30%] py-2 px-5 text-base font-normal input-styling bg-zinc-800 default-animation "
 const selectDropdownRowStyling = "flex flex-col sm:flex-row w-full justify-between space-y-2 sm:space-y-0"
 const coverContainerLabelStyling = "cursor-pointer transition duration-300 ease-in-out text-zinc-600 hover:text-white flex md:block h-fit w-48"
 const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
@@ -85,7 +85,7 @@ const photoIconStyling = "h-11 w-11 text-zinc-400"
 const explicitLabelStyling = "flex items-center"
 const imgStyling = "h-48 w-48 text-slate-400 rounded-[20px]"
 const explicitCheckBoxStyling = "checkbox checkbox-primary mr-2 border-2 border-zinc-600"
-const visibleCheckBoxStyling = "checkbox mr-2 border-2 border-zinc-600 ml-2 mr-0"
+const visibleCheckBoxStyling = "checkbox checkbox-primary mr-2 border-2 border-zinc-600 ml-2 mr-0"
 
 export const CoverContainer = (props: CoverContainerInter) => {
 
