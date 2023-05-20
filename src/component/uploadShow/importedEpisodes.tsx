@@ -1,10 +1,13 @@
 import axios, { AxiosResponse } from "axios";
+import Everpay from "everpay";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import React, { FC, useEffect, useState } from "react"
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import toast from "react-hot-toast"
 import { useRecoilState } from "recoil";
+import { ArrowDownIcon, ArrowUpIcon, CheckIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
+import { Tooltip } from "@nextui-org/react";
 
 import { AR_DECIMALS, CONNECT_WALLET, EPISODE_UPLOAD_FEE, EVERPAY_EOA, EVERPAY_EOA_UPLOADS, GIGABYTE, TOAST_DARK, USER_SIG_MESSAGES, EPISODE_SLIPPAGE } from "../../constants";
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
@@ -14,19 +17,17 @@ import { checkConnection, determineMediaType, handleError } from "../../utils/re
 import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 import { transferFunds } from "../../utils/everpay";
 
-import { rssEpisode, rssEpisodeRetry } from "../../interfaces";
+import { EXMState, rssEpisode, rssEpisodeRetry } from "../../interfaces";
 import { UploadEpisode } from "../../interfaces/exm";
 
 import { arweaveAddress, loadingPage, podcastColorAtom } from "../../atoms";
 
-import { ImgCover } from "./reusables";
-import ProgressBar from "../reusables/progressBar";
-import Everpay from "everpay";
-import { ArrowDownIcon, ArrowUpIcon, CheckIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { Tooltip } from "@nextui-org/react";
 import { fetchARPriceInUSD } from "../../utils/redstone";
 import { RSSFeedManager } from "../../utils/localstorage";
+import { findPodcast } from "../../utils/filters";
 
+import { ImgCover } from "./reusables";
+import ProgressBar from "../reusables/progressBar";
 const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.ConnectButton })));
 const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
 
@@ -40,6 +41,8 @@ interface ImportedEpisodesProps {
   coverUrl: string;
   rssEpisodes: rssEpisode[];
   redirect?: boolean;
+  // temp
+  index?: number;
 };
 
 interface uploadEpisodeInter {
@@ -63,14 +66,15 @@ interface RssEpisodeContentLength {
 export const spinnerClass = "w-full flex justify-center mt-4"
 export const showFormStyling = "w-full flex flex-col justify-center items-center space-y-2"
 export const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex flex-row justify-start items-start focus-within:ring-white focus-within:ring-2"
-export const buttonStyling = `hover:bg-zinc-900 bg-zinc-700 disabled:zinc-900 text-white disabled:text-gray-300 rounded-lg h-8 w-8 flexFullCenter `;
+export const buttonStyling = `hover:bg-black bg-zinc-700 disabled:bg-black text-white disabled:text-gray-300 text-white rounded-lg h-8 w-8 flexFullCenter `;
 // 3. Custom Functions
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 // 4. Components
 
 
 // Rube Goldberg would be proud
-export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, coverUrl, redirect }) => {
+export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, coverUrl, index, redirect }) => {
 
   // hooks
   const { t } = useTranslation();
@@ -82,6 +86,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
   const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
   const [, _setLoadingPage] = useRecoilState(loadingPage)
 
+  const [realPid, setRealPid] = useState<string>('');
   const [totalUploadCost, setTotalUploadCost] = useState<number>(0);
   const [gigabyteCost, setGigabyteCost] = useState<number>(0);
   const [arPrice, setArPrice] = useState<number>(0);
@@ -99,11 +104,44 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
 
   const MAX_PAGES = Math.floor(rssEpisodes.length / MAX_EPISODES_TO_UPLOAD_AT_ONCE) + 1;
 
+  const fetchPodcast = async () => {
+    const data: EXMState = (await axios.get('/api/exm/read')).data;
+    const podcast = data.podcasts[index];
+    console.log(podcast);
+    return podcast;
+  };
+
+  const attemptIndexPodcastID = async () => {
+    let attempts = 3;
+
+    console.log(index);
+    for (let i = 0; i < attempts; i++) {
+      const foundPod = await fetchPodcast();
+      console.log(foundPod);
+      if (foundPod) {
+        setRealPid(foundPod.pid);
+        console.log("Podcast found");
+        return foundPod;
+      } else {
+        await sleep(3500);
+        if (i === attempts - 1) {
+          console.log("Podcast not found");
+          return null;
+        };
+      };
+    };
+  };
+
+
   useEffect(() => {
-    const savedPIDpages = RSSFeedManager.getValueFromObject(pid);
+    if (!realPid) {
+      attemptIndexPodcastID();
+      return
+    };
+    const savedPIDpages = RSSFeedManager.getValueFromObject(realPid);
     console.log(savedPIDpages);
     if (savedPIDpages) setUploadedPages(JSON.parse(savedPIDpages));
-  }, []);
+  }, [realPid]);
 
   useEffect(() => {
     setCurrentEpisodes(prev => prev.reverse());
@@ -241,8 +279,6 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     return uploadPaymentTX;
   };
 
-  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
   const uploadEpisode = async (link: string, number: number): Promise<uploadEpisodeInter> => {
     if (FULL_TESTING) return { tx: 'WvUITx9o7ASiK1MHmsgXdWsy1xLTNYAoz_83dbW5r0o', number };
 
@@ -266,7 +302,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     const uploadEpisodePayload: UploadEpisode = {
       "function": "addEpisode",
       "jwk_n": "",
-      "pid": pid,
+      "pid": realPid,
       "name": title,
       "desc": "",
       "sig": "",
@@ -309,8 +345,23 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
       return false;
     };
 
+    if (!userHasEnoughAR) {
+      toast.error("Not enough AR to upload", { style: TOAST_DARK })
+      return false;
+    };
+
     setIsUploadingEpisodes(true);
 
+    if (!realPid) {
+      const attemptPid = await attemptIndexPodcastID();
+      if (!attemptPid) {
+        toast.error("Podcast not found, wait a little more before attempting download", { style: TOAST_DARK });
+        console.log('FAILED TO DOWNLOAD: ', pid);
+        setIsUploadingEpisodes(false);
+        return false;
+      };
+    };
+    
     const toastSaving = toast.loading("Downloading Episodes...", { style: TOAST_DARK, duration: 10000000 });
 
     const paymentTXes = [];
@@ -349,7 +400,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     setIsUploadingEpisodes(false);
     setProgress(100);
     setTimeout(() => setProgress(0), 1000);
-    RSSFeedManager.addValueToObject(pid, JSON.stringify([...uploadedPages, currentPage]));
+    RSSFeedManager.addValueToObject(realPid, JSON.stringify([...uploadedPages, currentPage]));
 
     let totalUploadedCount = uploadedCount + uploadedEpisodes.length;
     setUploadCount(totalUploadedCount);
@@ -392,8 +443,10 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
   };
 
   //TODO:
-  // 1. Start uploading episodes from the last point if the upload fails
-  // 4. Styles and text fixes
+  // 1. Cover needs 1:1 ratio
+  // 2. Fix page number on big rss feeds
+  // 3. Styles and text fixes
+  // 4. Download episodes if size unavailable
   // 5. Trigger balance update after upload
 
   return (
