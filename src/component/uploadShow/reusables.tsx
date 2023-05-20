@@ -84,7 +84,7 @@ const explicitTextStyling = "label-text cursor-pointer text-zinc-400 font-semibo
 const photoIconStyling = "h-11 w-11 text-zinc-400"
 const explicitLabelStyling = "flex items-center"
 const imgStyling = "h-48 w-48 text-slate-400 rounded-[20px]"
-const explicitCheckBoxStyling = "checkbox mr-2 border-2 border-zinc-600"
+const explicitCheckBoxStyling = "checkbox checkbox-primary mr-2 border-2 border-zinc-600"
 const visibleCheckBoxStyling = "checkbox mr-2 border-2 border-zinc-600 ml-2 mr-0"
 
 export const CoverContainer = (props: CoverContainerInter) => {
