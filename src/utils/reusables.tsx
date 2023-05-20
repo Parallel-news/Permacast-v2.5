@@ -170,3 +170,13 @@ export async function generateAuthentication({ getPublicKey, createSignature } :
     jwk_n: jwk_n
   }
 }
+
+export function isERCAddress(address: string) {
+  // Check if the address starts with "0x" and has a length of 42 characters
+  if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
+    return false;
+  }
+
+  return true;
+  
+}

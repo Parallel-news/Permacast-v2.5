@@ -146,12 +146,15 @@ export const NO_SHOW = "Unable to fetch shows. Refresh and try again."
 // ID
 export const startId = "#start"
 
-//Initial Load
+// Initial Load
 export const TITLE_WAIT = 100
 export const LOGO_WAIT = 700
 export const FADE_WAIT = 2500
 
-//Contract Input Names
+// Contract Input Names
 export const CLAIM_FACTORY = "claimFactory"
 export const MINT_NFT = "submitRequest"
+
+// React Query Keys
+export const NFT_INFO = "nftInfo"
 

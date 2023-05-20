@@ -1,7 +1,7 @@
 
 
 import Image from 'next/image'
-import { Fragment } from 'react'
+import { Fragment, useRef } from 'react'
 import { GenericNftButton } from './buttons'
 import { useArconnect } from 'react-arconnect'
 import { useTranslation } from 'react-i18next'
@@ -11,6 +11,8 @@ import { Dialog, Transition } from '@headlessui/react'
 import { determineMintStatus } from '../api/get-nft-info'
 import { PermaSpinner } from '../../../component/reusables'
 import { CreateCollectionViewObject, EpisodeTitleObject, GetPid, MintEpisodeViewObject, NftModalObject } from '../types'
+import { isERCAddress } from '../../../utils/reusables'
+import toast from 'react-hot-toast'
 
 
 
@@ -21,8 +23,10 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
      * & API pull is not heavy
      */
     const { t } = useTranslation();
+    const targetInputRef = useRef(null);
     const queryNftInfo = determineMintStatus({enabled: true, pid: pid})
     const payload = queryNftInfo?.data
+
     if(!queryNftInfo.isLoading) {
         console.log(queryNftInfo.data)
     } else {
@@ -32,7 +36,19 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
     const collectionStyling = "flex flex-col items-center space-y-4"
     const xStyling = "text-white cursor-pointer h-6 absolute right-4 top-2"
     const modalContainer = "w-full max-w-2xl transform overflow-hidden rounded-2xl bg-zinc-800 p-10 text-left align-middle shadow-xl transition-all relative min-h-[200px] flex justify-center items-center"
-    
+    const targetInputStyle = "input input-secondary w-full py-3 pl-5 pr-10 bg-zinc-700 border-0 rounded-md outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+    async function handleEpisodeMint() {
+      await queryNftInfo.refetch()
+      const targetAddr = targetInputRef.current.value;
+      if(!isERCAddress(targetAddr)) {
+        toast.error("Invalid Address")
+        targetInputRef.current.className = "border-2 border-red-300 focus:ring-0 "+targetInputStyle;
+        return false
+      }
+      
+      console.log("Done Fetching")
+    }
+
     return (
         <>
         <Transition appear show={isOpen} as={Fragment}>
@@ -67,7 +83,9 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
 
                     {queryNftInfo.isError && (<p>Error</p>)}
 
-                    {/*Create Collection*/}
+                    {/*
+                      Create Collection
+                    */}
                     {!queryNftInfo.isLoading && !payload.collectionAddr &&  (
                         <div className={collectionStyling}>
                             <CreateCollectionView showPic={ARSEED_URL+payload.cover} showTitle={payload?.name} />
@@ -77,7 +95,9 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                             />
                         </div> 
                     )}
-                    {/*Mint Episode NFT*/}
+                    {/*
+                      Mint Episode NFT
+                    */}
                     {!queryNftInfo.isLoading && payload.collectionAddr && payload.episodes.length && (
                       <div className="flex flex-col w-full space-y-8">
                         <MintEpisodeView 
@@ -86,17 +106,31 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                           cover={payload.cover}
                         />
                         {!payload.allMinted && (
+                        <div className={"w-full mt-[20px]"}>
+                          <input 
+                            type="text"
+                            ref={targetInputRef}
+                            className={targetInputStyle} 
+                            placeholder={t('nft-collection.target-address')}
+                          />
+                        </div>
+                        )}
+                        {!payload.allMinted && (
                           <div className="flex flex-row w-full justify-end">
                             <GenericNftButton 
                               text={t("nft-collection.mint")}
-                              onClick={() => alert('hi')}
+                              onClick={() => {
+                                handleEpisodeMint()
+                              }}
                               disabled={payload.allMinted}
                             />
                           </div>
                         )}
                       </div>
                     )}
-                    {/*No Episode Found*/}
+                    {/*
+                      No Episode Found
+                    */}
                     {!queryNftInfo.isLoading && payload.collectionAddr && payload.episodes.length === 0 && (
                       <NoEpisodesMessage pid={pid} />
                     )}
@@ -179,6 +213,7 @@ export const MintEpisodeView = ({ episodes, showName, cover }: MintEpisodeViewOb
             </label>
           </div>
         ))}
+
       </div>
     </div>
   )
@@ -188,7 +223,6 @@ export const MintEpisodeView = ({ episodes, showName, cover }: MintEpisodeViewOb
 export const NoEpisodesMessage = ({ pid }: GetPid) => {
 
   const { t } = useTranslation();
-
   
   const linkStyling = "text-white hover:text-[#FFFF00] transform transition-all duration-500 text-xl"
   const containerStyling = "flex flex-col space-y-6 justify-center items-center font-semibold text-2xl"

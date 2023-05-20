@@ -273,6 +273,7 @@
 		"click-to-make": "Click here to make an episode.",
 		"mint-for": "Mint Episodes For",
 		"mint": "Mint",
-		"all-minted": "All Minted"
+		"all-minted": "All Minted",
+		"target-address": "Target Polygon Address"
 	}
 }
