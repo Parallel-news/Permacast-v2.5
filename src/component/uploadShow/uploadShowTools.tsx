@@ -48,6 +48,8 @@ interface ShowFormInter {
     submitted?: Dispatch<SetStateAction<boolean>>;
     returnedPodcasts?: Dispatch<SetStateAction<Podcast[]>>;
     setUploadedPID?: Dispatch<SetStateAction<string>>;
+    // tempfix
+    setUploadedIndex?: Dispatch<SetStateAction<number>>;
 }
 
 // 2. Stylings
@@ -274,7 +276,12 @@ export const ShowForm = (props: ShowFormInter) => {
             console.log("createShowPayload: ", createShowPayload)
             const uploadRes = (await axios.post('/api/exm/write', createShowPayload)).data;
             const podcasts = uploadRes.data.execution.state.podcasts;
-            if(podcasts.length > 0 && props.setUploadedPID) props?.setUploadedPID(podcasts[podcasts.length - 1].pid);
+            const podcast = podcasts[podcasts.length - 1];
+            console.log('uploaded podcast', podcast);
+            if(podcasts.length > 0 && props.setUploadedPID) {
+                props?.setUploadedPID(podcast.pid);
+                props?.setUploadedIndex(podcasts.length - 1);
+            };
             props?.returnedPodcasts && props?.returnedPodcasts(podcasts);
             //EXM call, set timeout, then redirect.
             toast.dismiss(toastSaving); 

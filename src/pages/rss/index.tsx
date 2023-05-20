@@ -40,6 +40,8 @@ export default function rss({yourShows}) {
     const [podcastFormSubmitted, setPodcastFormSubmitted] = useState<boolean>(false)
     const [rssFeed, setRssFeed] = useState<rssEpisode[]>([]);
     const [newPodcasts, setNewPodcasts] = useState<Podcast[]>([])
+    // temp
+    const [index, setIndex] = useState<number>(0);
     const [pid, setPid] = useState<string>("")
     const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
 
@@ -115,26 +117,28 @@ export default function rss({yourShows}) {
         }
         // Fetch Metadata
         try {
-            rssMetadata = await axios.get(RSS_META_LINK+base64)
+            rssMetadata = (await axios.get(RSS_META_LINK+base64)).data;
+            // attempt to unpack, fail if the standard is not followed
+            const { title, description, author, email, isExplicit, language, categories, cover } = rssMetadata;
         } catch(e) {
             setFetchError("rss.norsspodcast")
             setSubmittingLink(false)
             toast.error(fetchError, {style: TOAST_DARK})
             return false
         }
-        setCoverUrl(rssMetadata.data.cover);
+        setCoverUrl(rssMetadata.cover);
         setRssMeta(prevState => {
             const updatedPodcasts = prevState.map(podcast => {
               return {
                 ...podcast,
-                podcastName: rssMetadata.data.title,
-                description: rssMetadata.data.description,
-                author: rssMetadata.data.author,
-                email: rssMetadata.data.email,
-                explicit: rssMetadata.data.isExplicit === "false" ? "no": "yes",
-                language: rssMetadata.data.language,
-                categories: [rssMetadata.data.categories],
-                cover: rssMetadata.data.cover,
+                podcastName: rssMetadata.title,
+                description: rssMetadata.description,
+                author: rssMetadata.author,
+                email: rssMetadata.email,
+                explicit: rssMetadata.isExplicit === "false" ? "no": "yes",
+                language: rssMetadata.language,
+                categories: [rssMetadata.categories],
+                cover: rssMetadata.cover,
               };
             });
             return updatedPodcasts;
@@ -213,6 +217,7 @@ export default function rss({yourShows}) {
                     allowSelect={true}
                     submitted={setPodcastFormSubmitted}
                     setUploadedPID={setPid}
+                    setUploadedIndex={setIndex}
                     returnedPodcasts={setNewPodcasts}
                 />
             </Transition>
@@ -238,6 +243,7 @@ export default function rss({yourShows}) {
                     <ChevronLeftIcon className="h-6 w-6 mr-1" />
                 </button>
                 <ImportedEpisodes
+                    index={index}
                     coverUrl={coverUrl}
                     pid={pid}
                     rssEpisodes={rssFeed}
