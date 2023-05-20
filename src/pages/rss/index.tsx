@@ -30,6 +30,11 @@ const rssInputStyling = "w-full py-3 pl-5 pr-10 bg-zinc-800 border-0 rounded-xl 
 
 const FULL_TESTING = 0;
 const TESTING_URL = "https://feeds.libsyn.com/247424/rss";
+
+interface RSSDownloadError {
+    error: string;
+};
+
 export default function rss({yourShows}) {
 
     const [step, setStep] = useState(0)
@@ -102,17 +107,19 @@ export default function rss({yourShows}) {
             return false;
         }
 
-        const base64 = convertLinktoBase64(rssLink)
-        let rssFeed: rssEpisode[];
+        const base64 = convertLinktoBase64(rssLink);
+        let rssFeed: rssEpisode[] = [];
         let rssMetadata;
         // Fetch Episodes
         try {
-            rssFeed = FULL_TESTING ? MOCK_RSS_FEED_EPISODES: (await axios.get(RSS_IMPORT_LINK+base64)).data;
-            setRssFeed(rssFeed);
+            const download = FULL_TESTING ? MOCK_RSS_FEED_EPISODES: (await axios.get(RSS_IMPORT_LINK+base64)).data;
+            if (download?.error) throw new Error("Incorrect url");
+            rssFeed = download.episodes;
+            setRssFeed(download.episodes);
         } catch(e) {
             setFetchError("rss.norssepisode")
             setSubmittingLink(false)
-            toast.error(fetchError, {style: TOAST_DARK})
+            toast.error("Incorrect Link", {style: TOAST_DARK})
             return false
         }
         // Fetch Metadata
