@@ -104,3 +104,14 @@ export interface FeaturedChannel {
   start: number,
   expiry: number
 };
+
+export interface rssEpisode {
+  description: string;
+  duration: string;
+  fileType: string;
+  isExplicit: "yes" | "no";
+  link: string;
+  pubDate: string;
+  title: string;
+  contentLength?: string;
+};
