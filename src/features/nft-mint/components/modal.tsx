@@ -1,7 +1,7 @@
 
 
 import Image from 'next/image'
-import { Fragment, useRef } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import { GenericNftButton } from './buttons'
 import { useArconnect } from 'react-arconnect'
 import { useTranslation } from 'react-i18next'
@@ -27,24 +27,34 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
     const queryNftInfo = determineMintStatus({enabled: true, pid: pid})
     const payload = queryNftInfo?.data
 
+    const [checkedEid, setCheckedEid] = useState([""])
+    const [mintAll, setMintAll] = useState(false)
+
+    console.log("Checked ID: ", checkedEid)
+
+    /*
     if(!queryNftInfo.isLoading) {
         console.log(queryNftInfo.data)
     } else {
         console.log("Loading...")
     }
+    */
 
     const collectionStyling = "flex flex-col items-center space-y-4"
     const xStyling = "text-white cursor-pointer h-6 absolute right-4 top-2"
     const modalContainer = "w-full max-w-2xl transform overflow-hidden rounded-2xl bg-zinc-800 p-10 text-left align-middle shadow-xl transition-all relative min-h-[200px] flex justify-center items-center"
     const targetInputStyle = "input input-secondary w-full py-3 pl-5 pr-10 bg-zinc-700 border-0 rounded-md outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+
     async function handleEpisodeMint() {
       await queryNftInfo.refetch()
       const targetAddr = targetInputRef.current.value;
+      // Real Target Address?
       if(!isERCAddress(targetAddr)) {
         toast.error("Invalid Address")
         targetInputRef.current.className = "border-2 border-red-300 focus:ring-0 "+targetInputStyle;
         return false
       }
+      // Checkbox Selected?
       
       console.log("Done Fetching")
     }
@@ -84,7 +94,9 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                     {queryNftInfo.isError && (<p>Error</p>)}
 
                     {/*
+
                       Create Collection
+
                     */}
                     {!queryNftInfo.isLoading && !payload.collectionAddr &&  (
                         <div className={collectionStyling}>
@@ -96,7 +108,9 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                         </div> 
                     )}
                     {/*
+
                       Mint Episode NFT
+
                     */}
                     {!queryNftInfo.isLoading && payload.collectionAddr && payload.episodes.length && (
                       <div className="flex flex-col w-full space-y-8">
@@ -104,7 +118,10 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                           episodes={payload.episodes}
                           showName={payload.name}
                           cover={payload.cover}
+                          setCheckedEid={setCheckedEid}
+                          checkedEid={checkedEid}
                         />
+                        {/*Input for Address*/}
                         {!payload.allMinted && (
                         <div className={"w-full mt-[20px]"}>
                           <input 
@@ -115,6 +132,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                           />
                         </div>
                         )}
+                        {/*Mint Button*/}
                         {!payload.allMinted && (
                           <div className="flex flex-row w-full justify-end">
                             <GenericNftButton 
@@ -175,7 +193,7 @@ export const CreateCollectionView = ({showPic, showTitle} : CreateCollectionView
     )
 }
 
-export const MintEpisodeView = ({ episodes, showName, cover }: MintEpisodeViewObject) => {
+export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, checkedEid }: MintEpisodeViewObject) => {
 
   const { t } = useTranslation();
 
@@ -186,8 +204,16 @@ export const MintEpisodeView = ({ episodes, showName, cover }: MintEpisodeViewOb
 
   const handleCheckboxChange = (event, itemId) => {
     const isChecked = event.target.checked;
+    if(itemId !== checkedEid[0]) {
+      setCheckedEid([itemId])
+      console.log("First")
+    } else {
+      setCheckedEid([])
+      console.log("Second")
+    }
+    
     // Perform any necessary logic based on the checkbox change
-    console.log(`Checkbox with id ${itemId} is now ${isChecked ? 'checked' : 'unchecked'}`);
+    //console.log(`Checkbox with id ${itemId} is now ${isChecked ? 'checked' : 'unchecked'}`);
   };
 
   return (
@@ -207,7 +233,7 @@ export const MintEpisodeView = ({ episodes, showName, cover }: MintEpisodeViewOb
                 <input type="checkbox" className={checkBoxStyling} checked disabled /> 
               :
                 <input type="checkbox" className={checkBoxStyling} 
-                  onChange={(event) => handleCheckboxChange(event, episode.eid)}
+                  onChange={(event) => handleCheckboxChange(event, episode.eid)} checked={checkedEid[0] === episode.eid}
                 />
               }
             </label>
@@ -217,7 +243,6 @@ export const MintEpisodeView = ({ episodes, showName, cover }: MintEpisodeViewOb
       </div>
     </div>
   )
-  //target and eid are needed for submission
 }
 
 export const NoEpisodesMessage = ({ pid }: GetPid) => {
@@ -254,5 +279,4 @@ export const EpisodeTitle = ({episodeName, thumbnail}: EpisodeTitleObject) => {
   )
 }
 
-// UNDER CONSTRUCTION
 
