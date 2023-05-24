@@ -1,9 +1,9 @@
 import NftModal from "./modal"
 import { useState } from "react"
-import { GenericNftButtonObject, RetrieveNftObject } from "../types"
+import { GenericNftButtonObject, GetPid } from "../types"
 
 
-export function NftButton({ pid } : RetrieveNftObject) {
+export function NftButton({ pid } : GetPid) {
     
     const [showModal, setShowModal] = useState(false)
 
