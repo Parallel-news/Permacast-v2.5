@@ -34,9 +34,12 @@ export default function UploadShow({yourShows, error, pid}) {
               />
             }>
               <ShowForm 
+                  rssData={[]}
                   podcasts={yourShows}
                   edit={true}
                   selectedPid={pid}
+                  redirect={true}
+                  submitted={(arg) => {}}
               />
             </Suspense>
         </div>

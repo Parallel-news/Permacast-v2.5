@@ -15,7 +15,7 @@ export const EverPayBalance = (props: everpayBalanceInterface) => {
     const { textClassname } = props
     const [_everPayBalance, _setEverPayBalance] = useRecoilState(everPayBalance)
     const [_calculateEverPayBalance, _setCalculateEverPayBalance] = useRecoilState(calculateEverPayBalance)
-    const [_arweaveAddress, _setArweaveAddress] = useRecoilState<String>(arweaveAddress);
+    const [_arweaveAddress, _setArweaveAddress] = useRecoilState<string>(arweaveAddress);
     const [balanceError, setBalanceError] = useState<boolean>(false)
     const [balanceLoading, setBalanceLoading] = useState<boolean>(true)
   
@@ -26,7 +26,6 @@ export const EverPayBalance = (props: everpayBalanceInterface) => {
 
         async function everBalance() {
             const everpay = new Everpay({
-                //@ts-ignore string vs String
                 account: _arweaveAddress,
                 //@ts-ignore
                 chainType: 'arweave',

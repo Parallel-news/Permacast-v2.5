@@ -152,36 +152,45 @@ export const LinkWithProgress: FC<LinkWithProgressProps> = ({ loading, onClick, 
   </div>
 );
 
-
 export const UploadDropdown: FC<UploadDropdownProps> = ({ routeMatches }) => {
   const router = useRouter();
   const { t } = useTranslation();
 
   const [podcastClickLoad, setPodcastClickLoad] = useState<boolean>(false)
   const [episodeClickLoad, setEpisodeClickLoad] = useState<boolean>(false)
+  const [rssClickLoad, setRssClickLoad] = useState<boolean>(false)
   const [,_setLoadingPage] = useRecoilState(loadingPage)
   const isUploadPodcast = router.pathname === "/upload-podcast"
   const isUploadEpisode = router.pathname === "/upload-episode"
+  const isRss = router.pathname === "/rss"
 
   const clickSwitch = (type: string) => {
-    if(!podcastClickLoad && !episodeClickLoad) {
+    if(!podcastClickLoad && !episodeClickLoad && !rssClickLoad) {
       if (type === "podcast") setPodcastClickLoad(true)
       if (type === "episode") setEpisodeClickLoad(true)
+      if (type === "rss") setRssClickLoad(true)
     } else if(podcastClickLoad) {
       setPodcastClickLoad(false)
+      setRssClickLoad(false)
       setEpisodeClickLoad(true)
     } else if(episodeClickLoad) {
       setPodcastClickLoad(true)
+      setRssClickLoad(false)
       setEpisodeClickLoad(false)
-    };
+    } else if(rssClickLoad) {
+      setPodcastClickLoad(false)
+      setRssClickLoad(true)
+      setEpisodeClickLoad(false)
+    }
   };
 
   useEffect(() => {
     setTimeout(() => {
       setPodcastClickLoad(false)
       setEpisodeClickLoad(false)
+      setRssClickLoad(false)
     }, 2000)
-  }, [podcastClickLoad, episodeClickLoad])
+  }, [podcastClickLoad, episodeClickLoad, rssClickLoad])
 
   const switchToPodcast = () => {
     clickSwitch("podcast");
@@ -190,6 +199,11 @@ export const UploadDropdown: FC<UploadDropdownProps> = ({ routeMatches }) => {
   const switchToEpisode = () => {
     clickSwitch("episode");
     if(!isUploadEpisode) _setLoadingPage(true)
+  }
+
+  const switchToRss = () => {
+    clickSwitch("rss");
+    if(!isRss) _setLoadingPage(true)
   }
 
   const routeIsMatchingClassName = routeMatches ? SIDENAV_BUTTON + " w-9 hover:text-white ": SIDENAV_BUTTON_BASE + " hover:text-zinc-100";
@@ -211,6 +225,9 @@ export const UploadDropdown: FC<UploadDropdownProps> = ({ routeMatches }) => {
         </li>
         <li>
           <LinkWithProgress href="/upload-episode" onClick={switchToEpisode} loading={episodeClickLoad} hrefText={t("home.add-episode")} />
+        </li>
+        <li>
+          <LinkWithProgress href="/rss" onClick={switchToRss} loading={rssClickLoad} hrefText={t("rss.importrss")} />
         </li>
       </ul>
     </div>
