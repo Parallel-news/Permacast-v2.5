@@ -1,3 +1,4 @@
+import { Episode } from "../../../interfaces"
 import { findKey } from "../../../utils/reusables"
 import { RetrieveNftObject, compiledShowObject } from "../types"
 
@@ -27,3 +28,8 @@ export const compileShowData = async({pid, podcasts, nftPayload}: compiledShowOb
       allMinted: countMinted === podcast.episodes.length
     }
 }
+
+export const grabEpisodeData = (episodes: Episode[], eid: string) => {
+  const episode = episodes.map((episode) => episode.eid === eid)
+  return episode
+}   

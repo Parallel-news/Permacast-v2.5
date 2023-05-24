@@ -47,7 +47,7 @@ export function NftButton({ pid } : RetrieveNftObject) {
 }
 
 export const GenericNftButton = ({ text, onClick, disabled } : GenericNftButtonObject) => {
-    const btnStyling = "bg-[#FFFF00] rounded-md h-22 w-32 p-1 text-black text-lg hover:bg-white hover:font-bold transform transition-all duration-200"
+    const btnStyling = "bg-[#FFFF00] rounded-md h-22 w-32 p-1 text-black text-lg disabled:bg-gray-600"
     return (
         <button className={btnStyling} onClick={onClick} disabled={disabled}>
             {text}
