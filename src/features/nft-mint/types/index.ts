@@ -42,7 +42,7 @@ export type AuthenticationObject = {
     sig: string;
 }
 
-export type CreateCollectionObject = RetrieveNftObject & AuthenticationActions
+export type CreateCollectionObject = { pid: string } & AuthenticationActions
 
 export type CreateEpisodeNftObject = {
     eid: string;

@@ -282,6 +282,12 @@
 		"mint-for": "М'ятні епізоди для",
 		"mint": "Монетний двір",
 		"all-minted": "Усі карбовані",
-		"target-address": "Цільова адреса"
-	}
+		"target-address": "Цільова адреса",
+		"minting-episode": "Епізод карбування...",
+		"mint-successful": "Монетний двір Успішний",
+		"uploading-collection": "Завантаження колекції...",
+		"collection-uploaded": "Колекція завантажена"
+	},
+	"invalid-address": "Недійсна адреса",
+	"general-error": "Там була помилка. Спробуйте знову."
 }

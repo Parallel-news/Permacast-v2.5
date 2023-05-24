@@ -268,7 +268,13 @@
 		"mint-for": "薄荷剧集",
 		"mint": "薄荷",
 		"all-minted": "全部铸造",
-		"target-address": "目标地址"
-	}
+		"target-address": "目标地址",
+		"minting-episode": "铸造情节...",
+		"mint-successful": "铸币成功",
+		"uploading-collection": "上传收藏...",
+		"collection-uploaded": "收藏上传"
+	},
+	"invalid-address": "无效地址",
+	"general-error": "有一个错误。再试一次。"
 	
 }

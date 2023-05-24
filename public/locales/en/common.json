@@ -274,6 +274,12 @@
 		"mint-for": "Mint Episodes For",
 		"mint": "Mint",
 		"all-minted": "All Minted",
-		"target-address": "Target Polygon Address"
-	}
+		"target-address": "Target Polygon Address",
+		"minting-episode": "Minting Episode...",
+		"mint-successful": "Mint Successful",
+		"uploading-collection": "Uploading Collection...",
+		"collection-uploaded": "Collection Uploaded"
+	},
+	"invalid-address": "Invalid Address",
+	"general-error": "There was an error. Try Again."
 }

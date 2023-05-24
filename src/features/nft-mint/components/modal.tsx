@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { ARSEED_URL, TOAST_DARK, TOAST_MARGIN } from '../../../constants'
 import { XMarkIcon } from '@heroicons/react/24/solid'
 import { Dialog, Transition } from '@headlessui/react'
-import { determineMintStatus, useMintEpisode } from '../api/get-nft-info'
+import { determineMintStatus, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
 import { PermaSpinner } from '../../../component/reusables'
 import { CreateCollectionViewObject, EpisodeTitleObject, GetPid, MintEpisodeViewObject, NftModalObject } from '../types'
 import { isERCAddress } from '../../../utils/reusables'
@@ -23,9 +23,12 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
      * & API pull is not heavy
      */
     const { t } = useTranslation();
-    const { address, getPublicKey, createSignature } = useArconnect();
+    const { getPublicKey, createSignature } = useArconnect()
+
     const mintEpisodeMutation = useMintEpisode()
-    const targetInputRef = useRef(null);
+    const collectionMutation = useCreateCollection()
+
+    const targetInputRef = useRef(null)
     const queryNftInfo = determineMintStatus({enabled: true, pid: pid})
     const payload = queryNftInfo?.data
 
@@ -49,11 +52,11 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
       const targetAddr = targetInputRef.current.value;
       // Real Target Address?
       if(!isERCAddress(targetAddr)) {
-        toast.error("Invalid Address")
+        toast.error(t("invalid-address"))
         targetInputRef.current.className = "border-2 border-red-300 focus:ring-0 "+targetInputStyle;
         return false
       }
-      const toastLoading = toast.loading("Minting Episode...", {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000})
+      const toastLoading = toast.loading(t("nft-collection.minting-episode"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000})
       // Post Mint Data
       mintEpisodeMutation.mutate({
         eid: checkedEid[0],
@@ -66,11 +69,29 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
           setTimeout(async () => {
             toast.dismiss(toastLoading)
             await queryNftInfo.refetch();
-            toast.success("Mint Successful");
+            toast.success(t("nft-collection.mint-successful"));
           }, 6000);
         }
       })
     }
+
+    async function handleCollectionCreation () {
+      const toastLoading = toast.loading(t("nft-collection.uploading-collection"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000})
+      await collectionMutation.mutate({
+        pid: pid,
+        getPublicKey: getPublicKey,
+        createSignature: createSignature
+      },
+      {
+        onSuccess: async () => {
+          setTimeout(async () => {
+            toast.dismiss(toastLoading)
+            await queryNftInfo.refetch();
+            toast.success(t("nft-collection.collection-uploaded"));
+          }, 6000);
+        }
+      })
+    } 
 
     return (
         <>
@@ -104,7 +125,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                     {/*Views*/}
                     {queryNftInfo.isLoading && (<PermaSpinner spinnerColor="#FFF" size={25}/>)}
 
-                    {queryNftInfo.isError && (<p>Error</p>)}
+                    {queryNftInfo.isError && (<p>{t("general-error")}</p>)}
 
                     {/*
 
@@ -116,7 +137,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                             <CreateCollectionView showPic={ARSEED_URL+payload.cover} showTitle={payload?.name} />
                             <GenericNftButton 
                                 text={t("uploadshow.upload")}
-                                onClick={() => alert('hi')}
+                                onClick={() => handleCollectionCreation()}
                             />
                         </div> 
                     )}
@@ -125,7 +146,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                       Mint Episode NFT
 
                     */}
-                    {!queryNftInfo.isLoading && payload.collectionAddr && payload.episodes.length && (
+                    {!queryNftInfo.isLoading && payload.collectionAddr && payload.episodes.length > 0 && (
                       <div className="flex flex-col w-full space-y-8">
                         <MintEpisodeView 
                           episodes={payload.episodes}
@@ -150,9 +171,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                           <div className="flex flex-row w-full justify-end">
                             <GenericNftButton 
                               text={t("nft-collection.mint")}
-                              onClick={() => {
-                                handleEpisodeMint()
-                              }}
+                              onClick={() => handleEpisodeMint()}
                               disabled={payload.allMinted || checkedEid[0].length === 0}
                             />
                           </div>
