@@ -114,8 +114,8 @@ export default function rss({yourShows}) {
         try {
             const download = FULL_TESTING ? MOCK_RSS_FEED_EPISODES: (await axios.get(RSS_IMPORT_LINK+base64)).data;
             if (download?.error) throw new Error("Incorrect url");
-            rssFeed = download.episodes;
-            setRssFeed(download.episodes);
+            rssFeed = download || [];
+            setRssFeed(download);
         } catch(e) {
             setFetchError("rss.norssepisode")
             setSubmittingLink(false)
@@ -125,6 +125,7 @@ export default function rss({yourShows}) {
         // Fetch Metadata
         try {
             rssMetadata = (await axios.get(RSS_META_LINK+base64)).data;
+            console.log('rssMetadata', rssMetadata)
             // attempt to unpack, fail if the standard is not followed
             const { title, description, author, email, isExplicit, language, categories, cover } = rssMetadata;
         } catch(e) {
