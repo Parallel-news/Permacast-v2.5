@@ -266,6 +266,22 @@
 		"show0EpisodePodcasts": "Show 0 Episode Podcasts"
 	},
 	"edit": "Edit",
+	"nft-collection": {
+		"confirm-msg": "Create a new collection on",
+		"for": "for",
+		"no-episodes": "No Episodes Have Been Published!",
+		"click-to-make": "Click here to make an episode.",
+		"mint-for": "Mint Episodes For",
+		"mint": "Mint",
+		"all-minted": "All Minted",
+		"target-address": "Target Polygon Address",
+		"minting-episode": "Minting Episode...",
+		"mint-successful": "Mint Successful",
+		"uploading-collection": "Uploading Collection...",
+		"collection-uploaded": "Collection Uploaded"
+	},
+	"invalid-address": "Invalid Address",
+	"general-error": "There was an error. Try Again."
 	"rss": {
 		"importrss": "Import RSS",
 		"rssfeedurl": "RSS Feed Url",
@@ -274,5 +290,4 @@
 		"emptyinput": "Please enter a URL.",
 		"invalidurl": "Enter a Valid Url"
 	}
-	
 }

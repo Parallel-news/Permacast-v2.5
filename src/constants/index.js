@@ -62,6 +62,8 @@ export const ANS_MAPPED_STATE_URL = "https://ans-metrics.herokuapp.com/mapped-st
 export const RSS_FEED_URL = PERMACAST_HELPER_URL + "feeds/rss/"; // requires PID at the end
 export const EXM_ANS_CONTRACT_ADDRESS = "VGWeJLDLJ9ify3ezl9tW-9fhB0G-GIUd60FE-5Q-_VI";
 export const MESON_ENDPOINT = "https://pz-znmpfs.meson.network/"
+export const NFT_CONTRACT = "Pagb13mULiD4GJpPW0kwiSlh7eL58dL1bzdoJzeyczw"
+export const NFT_ENDPOINT = EXM_READ_LINK+NFT_CONTRACT
 export const RSS_IMPORT_LINK = PERMACAST_HELPER_URL + "import-rss/"
 export const RSS_META_LINK = PERMACAST_HELPER_URL+"rss-podcast-metadata/"
 
@@ -111,7 +113,8 @@ export const TEXTMARKDOWN = {
 }
 
 // PK
-export const USER_SIG_MESSAGES = ["my Arweave PK for Permacast is "]
+export const USER_SIG_MESSAGES = ["my Arweave PK for Permacast is ", "hello world"]
+//export const USER_SIG_MESSAGES = ["hello world"]
 
 // PASOM
 export const PASOM_SIG_MESSAGES = ["so-ans-profile-metadata"]
@@ -146,7 +149,15 @@ export const NO_SHOW = "Unable to fetch shows. Refresh and try again."
 // ID
 export const startId = "#start"
 
-//Initial Load
+// Initial Load
 export const TITLE_WAIT = 100
 export const LOGO_WAIT = 700
 export const FADE_WAIT = 2500
+
+// Contract Input Names
+export const CLAIM_FACTORY = "claimFactory"
+export const MINT_NFT = "submitRequest"
+
+// React Query Keys
+export const NFT_INFO = "nftInfo"
+

@@ -1,6 +1,8 @@
 import toast from "react-hot-toast";
-import { CONNECT_WALLET, PODCAST_LABEL_MAX_LEN, PODCAST_LABEL_MIN_LEN, TOAST_DARK } from "../constants";
+import { CONNECT_WALLET, PODCAST_LABEL_MAX_LEN, PODCAST_LABEL_MIN_LEN, TOAST_DARK, USER_SIG_MESSAGES } from "../constants";
 import { Podcast } from "../interfaces";
+import { defaultSignatureParams } from "react-arconnect";
+import { AuthenticationActions } from "../types";
 
 interface hexToRgbInter {
   hex: string
@@ -150,6 +152,34 @@ export const reRoute = (url, router) => {
   router.push(url, undefined, { scroll: true });
 };
 
+export function findKey(obj, key) {
+  for (let objKey in obj) {
+    if (objKey === key) {
+      return obj[objKey];
+    }
+  }
+  return null; // key not found
+}
+
+export async function generateAuthentication({ getPublicKey, createSignature } : AuthenticationActions) {
+  const data = new TextEncoder().encode(USER_SIG_MESSAGES[0]+ await getPublicKey());
+  const sig = await createSignature(data, defaultSignatureParams, "base64");
+  const jwk_n = await getPublicKey();
+  return {
+    sig: sig,
+    jwk_n: jwk_n
+  }
+}
+
+export function isERCAddress(address: string) {
+  // Check if the address starts with "0x" and has a length of 42 characters
+  if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
+    return false;
+  }
+
+  return true;
+  
+=======
 export function convertLinktoBase64(url: string) {
   //return btoa(encodeURIComponent(url).toString())
   return btoa(url.toString())
