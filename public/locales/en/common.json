@@ -281,7 +281,7 @@
 		"collection-uploaded": "Collection Uploaded"
 	},
 	"invalid-address": "Invalid Address",
-	"general-error": "There was an error. Try Again."
+	"general-error": "There was an error. Try Again.",
 	"rss": {
 		"importrss": "Import RSS",
 		"rssfeedurl": "RSS Feed Url",

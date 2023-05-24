@@ -289,7 +289,7 @@
 		"collection-uploaded": "Колекція завантажена"
 	},
 	"invalid-address": "Недійсна адреса",
-	"general-error": "Там була помилка. Спробуйте знову."
+	"general-error": "Там була помилка. Спробуйте знову.",
 	"rss": {
 		"importrss": "Імпорт RSS",
 		"rssfeedurl": "URL-адреса каналу RSS",

@@ -275,7 +275,7 @@
 		"collection-uploaded": "收藏上传"
 	},
 	"invalid-address": "无效地址",
-	"general-error": "有一个错误。再试一次。"
+	"general-error": "有一个错误。再试一次。",
 	"rss": {
 		"importrss": "导入 RSS",
 		"rssfeedurl": "RSS 提要网址",
