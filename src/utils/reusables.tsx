@@ -179,7 +179,7 @@ export function isERCAddress(address: string) {
 
   return true;
   
-=======
+}
 export function convertLinktoBase64(url: string) {
   //return btoa(encodeURIComponent(url).toString())
   return btoa(url.toString())
