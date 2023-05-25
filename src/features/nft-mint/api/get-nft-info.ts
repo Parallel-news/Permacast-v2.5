@@ -61,8 +61,9 @@ export const createNftCollection = async ({pid, getPublicKey, createSignature} :
     "cid": pid,
     "sig": sig
   }
-
+  
   const res = await apiClient.post('/api/exm/collections/write', collectionArgs)
+
   return res
 }
 

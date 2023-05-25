@@ -18,10 +18,6 @@ import toast from 'react-hot-toast'
 
 export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
 
-    /**
-     * Recoil Vars & React Query will be set to keep far from parent 
-     * & API pull is not heavy
-     */
     const { t } = useTranslation();
     const { getPublicKey, createSignature } = useArconnect()
 
@@ -33,7 +29,6 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
     const payload = queryNftInfo?.data
 
     const [checkedEid, setCheckedEid] = useState([""])
-    const [mintAll, setMintAll] = useState(false)
 
     
     if(!queryNftInfo.isLoading) {
@@ -48,6 +43,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
     const modalContainer = "w-full max-w-2xl transform overflow-hidden rounded-2xl bg-zinc-800 p-10 text-left align-middle shadow-xl transition-all relative min-h-[200px] flex justify-center items-center"
     const targetInputStyle = "input input-secondary w-full py-3 pl-5 pr-10 bg-zinc-700 border-0 rounded-md outline-none focus:ring-2 focus:ring-inset focus:ring-white"
 
+    // Handlers 
     async function handleEpisodeMint() {
       const targetAddr = targetInputRef.current.value;
       // Real Target Address?
@@ -87,7 +83,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
           setTimeout(async () => {
             toast.dismiss(toastLoading)
             await queryNftInfo.refetch();
-            toast.success(t("nft-collection.collection-uploaded"));
+            toast.success(t("nft-collection.collection-uploaded"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 5000});
           }, 6000);
         }
       })
@@ -234,7 +230,7 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
   const titleStyling = "flex justify-start w-full text-white text-2xl mb-6"
   const checkBoxStyling = "form-checkbox accent-[#FFFF00] bg-zinc-800 rounded-xl inline w-5 h-5"
 
-  const handleCheckboxChange = (event, itemId) => {
+  const handleCheckboxChange = (itemId) => {
     if(itemId !== checkedEid[0]) {
       setCheckedEid([itemId])
     } else {
@@ -259,7 +255,7 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
                 <input type="checkbox" className={checkBoxStyling} checked disabled /> 
               :
                 <input type="checkbox" className={checkBoxStyling} 
-                  onChange={(event) => handleCheckboxChange(event, episode.eid)} checked={checkedEid[0] === episode.eid}
+                  onChange={() => handleCheckboxChange(episode.eid)} checked={checkedEid[0] === episode.eid}
                 />
               }
             </label>
