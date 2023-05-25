@@ -10,7 +10,7 @@ import { XMarkIcon } from '@heroicons/react/24/solid'
 import { Dialog, Transition } from '@headlessui/react'
 import { determineMintStatus, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
 import { PermaSpinner } from '../../../component/reusables'
-import { CreateCollectionViewObject, EpisodeTitleObject, GetPid, MintEpisodeViewObject, NftModalObject } from '../types'
+import { CreateCollectionViewObject, EpisodeTitleObject, ErrorModalObject, GetPid, MintEpisodeViewObject, NftModalObject } from '../types'
 import { isERCAddress } from '../../../utils/reusables'
 import toast from 'react-hot-toast'
 
@@ -178,7 +178,11 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                       No Episode Found
                     */}
                     {!queryNftInfo.isLoading && payload.collectionAddr && payload.episodes.length === 0 && (
-                      <NoEpisodesMessage pid={pid} />
+                      <ErrorModalMessage 
+                        helpSrc={`/upload-episode?pid=${pid}`}
+                        primaryMsg={t("nft-collection.no-episodes")}
+                        secondaryMsg={t("nft-collection.click-to-make")} 
+                      />
                     )}
                   </Dialog.Panel>
                 </Transition.Child>
@@ -267,17 +271,15 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
   )
 }
 
-export const NoEpisodesMessage = ({ pid }: GetPid) => {
-
-  const { t } = useTranslation();
+export const ErrorModalMessage = ({ helpSrc, primaryMsg, secondaryMsg }: ErrorModalObject) => {
   
   const linkStyling = "text-white hover:text-[#FFFF00] transform transition-all duration-500 text-xl"
   const containerStyling = "flex flex-col space-y-6 justify-center items-center font-semibold text-2xl"
 
   return (
     <div className={containerStyling}>
-      <p className="text-white">{t("nft-collection.no-episodes")}</p>
-      <a href={`/upload-episode?pid=${pid}`} className={linkStyling}>{t("nft-collection.click-to-make")}</a>
+      <p className="text-white">{primaryMsg}</p>
+      <a href={helpSrc} className={linkStyling}>{secondaryMsg}</a>
     </div>
   )
 }

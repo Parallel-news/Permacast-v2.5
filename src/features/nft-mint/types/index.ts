@@ -76,6 +76,12 @@ export type GetPid = {
     pid: string;
 }
 
+export type ErrorModalObject = {
+    helpSrc: string;
+    primaryMsg: string;
+    secondaryMsg: string;
+}
+
 export type MintEpisodeViewObject = {
     episodes: Episode[];
     showName: string;
