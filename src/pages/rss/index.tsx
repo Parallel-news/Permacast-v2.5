@@ -139,14 +139,14 @@ export default function rss({yourShows}) {
             const updatedPodcasts = prevState.map(podcast => {
               return {
                 ...podcast,
-                podcastName: rssMetadata.title,
-                description: rssMetadata.description,
-                author: rssMetadata.author,
-                email: rssMetadata.email,
+                podcastName: rssMetadata.title || '',
+                description: rssMetadata.description || '',
+                author: rssMetadata.author || '',
+                email: rssMetadata.email || '',
                 explicit: rssMetadata.isExplicit === "false" ? "no": "yes",
-                language: rssMetadata.language,
+                language: rssMetadata.language || '',
                 categories: [rssMetadata.categories],
-                cover: rssMetadata.cover,
+                cover: rssMetadata.cover || '',
               };
             });
             return updatedPodcasts;
