@@ -6,6 +6,11 @@ import { RecoilRoot } from 'recoil';
 import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import { SSRProvider } from '@react-aria/ssr';
+
+import { queryClient } from '../lib/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
 import { appWithTranslation } from 'next-i18next';
 import { ArconnectProvider } from 'react-arconnect';
 import { PERMISSIONS } from '../constants/arconnect';
@@ -38,6 +43,8 @@ function App({ Component, pageProps }) {
         <ArconnectProvider permissions={PERMISSIONS}>
           <QueryPodcasts />
           <QueryANS />
+          <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools initialIsOpen={true} />
           <Script
             async
             src="https://www.googletagmanager.com/gtag/js?id=G-4XDV8F7VJB"
@@ -54,10 +61,11 @@ function App({ Component, pageProps }) {
           <ShikwasaProviderLazy>
             <Layout>
               <SSRProvider>
-                <Component {...pageProps} className="scrollbar-container"/>
+                    <Component {...pageProps} className="scrollbar-container"/>
               </SSRProvider>
             </Layout>
           </ShikwasaProviderLazy>
+          </QueryClientProvider>
         </ArconnectProvider>
     </RecoilRoot>
   )
