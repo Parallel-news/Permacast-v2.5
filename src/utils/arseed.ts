@@ -1,8 +1,9 @@
+import axios, { AxiosProgressEvent } from "axios";
 import { genNodeAPI } from "arseeding-js";
+
 import { BufferFile, SendAndPayInterface } from "../interfaces/arseed";
 import { EverPayResponse } from "../interfaces/everpay";
-import { getBundleArFee } from "./arseeding";
-import axios, { AxiosProgressEvent } from "axios";
+import { determineMediaType } from "./reusables";
 
 /**
   Converts a list of files into an array of objects containing their data as Buffers and their data type.
@@ -49,28 +50,21 @@ export async function uploadFileToArseedViaNode(file: Buffer, dataType: string):
   };
 };
 
-export const uploadURLAndCheckPayment = async (url: string, hash: string, length: number | string, debug=false) => {
-  // const cost = await getBundleArFee('' + length);
-
-  let feeIsPaid; //= checkPayment(hash, cost);
-  // if (!feeIsPaid) return null;
-
+export const uploadURLAndCheckPayment = async (url: string, debug=false) => {
+  // TODO add check for cost
   const downloadedFile = await axios.get(url, { 
     responseType: "arraybuffer",
     onDownloadProgress: (progressEvent: AxiosProgressEvent) => {
       if (debug) console.log(progressEvent.progress);
     },
   });
+
   // TODO: add a check for supported filetypes
   const mimeType = downloadedFile?.headers["content-type"] || '';
-  console.log(mimeType)
-  // TODO: check cost
-  // const checkCost = await getBundleArFee('' + downloadedFile.headers["content-length"]);
-  // feeIsPaid = checkPayment(hash, checkCost);
-  // if (!feeIsPaid) return null;
+  const validMimeType = determineMediaType(mimeType);
+  if (validMimeType === null) throw new Error('Invalid file type', mimeType);
 
   const fileUpload: EverPayResponse = await uploadFileToArseedViaNode(downloadedFile.data, mimeType);
   const tx = fileUpload?.order?.itemId;
-  console.log('tx',tx) // this console log could be hoisting the tx, don't remove just in case
-  return { tx, mimeType };
+  return tx;
 };

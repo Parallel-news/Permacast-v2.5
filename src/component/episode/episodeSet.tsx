@@ -35,7 +35,7 @@ export default function EpisodeSet(props: EpisodeSetInter) {
     
     if (data) {
         // Find Episode Number
-        for(let i = 0; i < data.episodes.length; i++) {
+        for(let i = 0; i < (data?.episodes?.length || 0); i++) {
             //@ts-ignore
             if(data.episodes[i].eid === data.obj.eid) {
                 index = i
@@ -121,7 +121,7 @@ export default function EpisodeSet(props: EpisodeSetInter) {
             {data?.episodes[index+1] && (
                 <Episodes
                     containerTitle={"Next Episode"} 
-                    imgSrc={ARSEED_URL + ((d?.thumbnail && d?.thumbnail.length > 0) ? d?.thumbnail : data?.cover)}
+                    imgSrc={ARSEED_URL + ((d?.thumbnail && d?.thumbnail?.length > 0) ? d?.thumbnail : data?.cover)}
                     color={'rgb(255, 255, 255)'}
                     episodes={[nextEpisodeInfo]}
                     podcastId={data?.obj.pid}

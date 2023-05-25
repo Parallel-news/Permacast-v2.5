@@ -108,10 +108,16 @@ export interface FeaturedChannel {
 export interface rssEpisode {
   description: string;
   duration: string;
+  length: string;
   fileType: string;
-  isExplicit: "yes" | "no";
+  isExplicit: "yes" | "no" | string;
   link: string;
   pubDate: string;
   title: string;
-  contentLength?: string;
+  // UI only
+  order?: number;
 };
+
+export interface rssEpisodeRetry extends rssEpisode {
+  file?: ArrayBuffer;
+}

@@ -30,6 +30,7 @@ const SelectDropdownRow = React.lazy(() => import("./reusables").then(module => 
 const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.ConnectButton })));
 const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
 const ValMsg = React.lazy(() => import("../reusables/formTools").then(module => ({default: module.ValMsg})))
+const SelectPodcast = React.lazy(() => import("../../component/uploadEpisode/reusables").then(module => ({default: module.SelectPodcast})));
 
 export default function uploadShowTools() {
     return false
@@ -41,17 +42,20 @@ interface ShowFormInter {
     edit: boolean;
     redirect: boolean;
     //optional
+    allowSelect?: boolean;
     selectedPid?: string;
     rssData?: Podcast[];
     submitted?: Dispatch<SetStateAction<boolean>>;
     returnedPodcasts?: Dispatch<SetStateAction<Podcast[]>>;
     setUploadedPID?: Dispatch<SetStateAction<string>>;
+    // tempfix
+    setUploadedIndex?: Dispatch<SetStateAction<number>>;
 }
 
 // 2. Stylings
 export const spinnerClass = "w-full flex justify-center mt-4"
 export const showFormStyling = "w-full flex flex-col justify-center items-center space-y-2"
-export const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex flex-row justify-start items-start focus-within:ring-white focus-within:ring-2"
+export const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex flex-row justify-start items-start focus-within:ring-white focus-within:ring-2 default-animation "
 
 // 3. Custom Functions
 /**
@@ -272,7 +276,12 @@ export const ShowForm = (props: ShowFormInter) => {
             console.log("createShowPayload: ", createShowPayload)
             const uploadRes = (await axios.post('/api/exm/write', createShowPayload)).data;
             const podcasts = uploadRes.data.execution.state.podcasts;
-            if(podcasts.length > 0 && props.setUploadedPID) props?.setUploadedPID(podcasts[podcasts.length - 1].pid);
+            const podcast = podcasts[podcasts.length - 1];
+            console.log('uploaded podcast', podcast);
+            if(podcasts.length > 0 && props.setUploadedPID) {
+                props?.setUploadedPID(podcast.pid);
+                props?.setUploadedIndex(podcasts.length - 1);
+            };
             props?.returnedPodcasts && props?.returnedPodcasts(podcasts);
             //EXM call, set timeout, then redirect.
             toast.dismiss(toastSaving); 
@@ -333,7 +342,8 @@ export const ShowForm = (props: ShowFormInter) => {
                 setPodcastName_(p.podcastName)
                 setPodcastDescription_(p.description)
                 setPodcastAuthor_(p.author)
-                
+                setPodcastEmail_(p.email)
+
                 //Recreate Cover for Upload
                 setCoverUrl(p.cover)
                 fetch(p.cover)
@@ -350,11 +360,11 @@ export const ShowForm = (props: ShowFormInter) => {
             restoreSavedData()
         } else {
             _setLoadingPage(false)
-        }
-    }, [])
+        };
+    }, []);
 
     return (
-        <div className={showFormStyling}>
+        <div className={showFormStyling + (props?.allowSelect ? " pb-20": "")}>
             {/*First Row*/}
             <div className="flex flex-col justify-center items-center lg:items-start lg:flex-row w-full">
                 {/*
@@ -408,7 +418,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Email
                     */}
-                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Email" type="text" name="showName" placeholder={t("uploadshow.email")} value={podcastEmail_}                   
+                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Email" type="text" name="showName" placeholder={t("uploadshow.email")} value={podcastEmail_}
                     onChange={(e) => {
                         setPodEmailMsg(handleValMsg(e.target.value, "podEmail"));
                         setPodcastEmail_(e.target.value);
@@ -444,6 +454,22 @@ export const ShowForm = (props: ShowFormInter) => {
                         />
                         )}
                     </div>
+
+                    {/* Allow Select */}
+                    {props?.allowSelect && (
+                        <div>
+                            <div className="my-1 border-t-[2px] border-white rounded-full"></div>
+                            <div className='text-center mb-2'>or</div>
+                            <SelectPodcast
+                                pid={props.selectedPid}
+                                setPid={(pid) => {
+                                    props?.setUploadedPID && props.setUploadedPID(pid);
+                                }}
+                                shows={props?.podcasts || []}
+                            />
+                        </div>
+                    )}
+
                     {/*
                         Upload
                     */}
@@ -476,7 +502,7 @@ export const ShowForm = (props: ShowFormInter) => {
                         )}
                     </div>
                 </div>
-                <div className="w-[25%]"></div>
+                <div className={`w-[25%]`}></div>
             </div>
         </div>
     )

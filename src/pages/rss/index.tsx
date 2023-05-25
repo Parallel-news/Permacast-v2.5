@@ -7,22 +7,18 @@ import { toast } from "react-hot-toast";
 import { useRecoilState } from "recoil";
 
 import { Transition } from "@headlessui/react";
-import { ArrowSmallRightIcon } from "@heroicons/react/24/solid"
+import { ArrowSmallRightIcon, ChevronLeftIcon } from "@heroicons/react/24/solid"
 import { Loading } from "@nextui-org/react";
 
-import { loadingPage } from "../../atoms";
+import { loadingPage, allPodcasts } from "../../atoms";
 import { Podcast, rssEpisode } from "../../interfaces";
 import { getContractVariables } from "../../utils/contract";
 import RssSubmit from "../../component/reusables/RssSubmit";
 import { convertLinktoBase64, isValidUrl } from "../../utils/reusables";
-import { EXM_READ_LINK, NO_SHOW, RSS_IMPORT_LINK, RSS_META_LINK, TOAST_DARK } from "../../constants";
+import { ARSEED_URL, EXM_READ_LINK, NO_SHOW, RSS_IMPORT_LINK, RSS_META_LINK, TOAST_DARK } from "../../constants";
 import { ImportedEpisodes } from "../../component/uploadShow/importedEpisodes";
+import { MOCK_RSS_FEED_EPISODES } from "../../utils/mockdata/rssfeed";
 
-
-interface RssEpisodeContentLength {
-    link: string;
-    length: string;
-};
 
 const ValMsg = React.lazy(() => import("../../component/reusables").then(module => ({default: module.ValMsg})))
 const ShowForm = React.lazy(() => import("../../component/uploadShow/uploadShowTools").then(module => ({ default: module.ShowForm })));
@@ -32,28 +28,47 @@ const rssContainer = "h-full w-full flex flex-col justify-start items-center spa
 const rssInputContainer = "w-[80%] md:w-[60%] flex flex-row space-x-2 flex items-center"
 const rssInputStyling = "w-full py-3 pl-5 pr-10 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white default-animation "
 
+const FULL_TESTING = 0;
+const TESTING_URL = "https://feeds.libsyn.com/247424/rss";
+
+interface RSSDownloadError {
+    error: string;
+};
+
 export default function rss({yourShows}) {
 
     const [step, setStep] = useState(0)
     const [submittingLink, setSubmittingLink] = useState(false)
-    const [rssLink, setRssLink] = useState<string>("")
+    const [rssLink, setRssLink] = useState<string>(FULL_TESTING ? TESTING_URL : "")
     const [rssLinkError, setRssLinkError] = useState<string>("")
     const [fetchError, setFetchError] = useState<string>("")
     const [podcastFormSubmitted, setPodcastFormSubmitted] = useState<boolean>(false)
     const [rssFeed, setRssFeed] = useState<rssEpisode[]>([]);
     const [newPodcasts, setNewPodcasts] = useState<Podcast[]>([])
+    // temp
+    const [index, setIndex] = useState<number>(0);
     const [pid, setPid] = useState<string>("")
     const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
+
+    const [allPodcastsState, setAllPodcastsState] = useRecoilState<Podcast[]>(allPodcasts);
+
     const [coverUrl, setCoverUrl] = useState<string>('');
 
     const { t } = useTranslation();
 
     useEffect(() => {
         _setLoadingPage(false)
-    }, [])
+    }, []);
 
     useEffect(() => {
-        if (pid) { setStep(2) };
+        if (pid) {
+            const cover = allPodcastsState.find(show => show.pid === pid)?.cover;
+            if (cover) {
+                console.log("cover: ", cover)
+                setCoverUrl(ARSEED_URL + cover);
+            };
+            setStep(2);
+        };
     }, [pid]);
     
     const [rssMeta, setRssMeta] = useState<Podcast[]>([{
@@ -92,39 +107,46 @@ export default function rss({yourShows}) {
             return false;
         }
 
-        const base64 = convertLinktoBase64(rssLink)
-        let rssFeed: rssEpisode[];
+        const base64 = convertLinktoBase64(rssLink);
+        let rssFeed: rssEpisode[] = [];
         let rssMetadata;
         // Fetch Episodes
         try {
-            rssFeed = (await axios.get(RSS_IMPORT_LINK+base64)).data
+            const download = FULL_TESTING ? MOCK_RSS_FEED_EPISODES: (await axios.get(RSS_IMPORT_LINK+base64)).data;
+            if (download?.error) throw new Error("Incorrect url");
+            rssFeed = download || [];
+            setRssFeed(download);
         } catch(e) {
             setFetchError("rss.norssepisode")
             setSubmittingLink(false)
-            toast.error(fetchError, {style: TOAST_DARK})
+            toast.error("Incorrect Link", {style: TOAST_DARK})
             return false
         }
         // Fetch Metadata
         try {
-            rssMetadata = await axios.get(RSS_META_LINK+base64)
+            rssMetadata = (await axios.get(RSS_META_LINK+base64)).data;
+            console.log('rssMetadata', rssMetadata)
+            // attempt to unpack, fail if the standard is not followed
+            const { title, description, author, email, isExplicit, language, categories, cover } = rssMetadata;
         } catch(e) {
             setFetchError("rss.norsspodcast")
             setSubmittingLink(false)
             toast.error(fetchError, {style: TOAST_DARK})
             return false
         }
-        setCoverUrl(rssMetadata.data.cover);
+        setCoverUrl(rssMetadata.cover);
         setRssMeta(prevState => {
             const updatedPodcasts = prevState.map(podcast => {
               return {
                 ...podcast,
-                podcastName: rssMetadata.data.title,
-                description: rssMetadata.data.description,
-                author: rssMetadata.data.author,
-                explicit: rssMetadata.data.isExplicit === "false" ? "no": "yes",
-                language: rssMetadata.data.language,
-                categories: [rssMetadata.data.categories],
-                cover: rssMetadata.data.cover,
+                podcastName: rssMetadata.title || '',
+                description: rssMetadata.description || '',
+                author: rssMetadata.author || '',
+                email: rssMetadata.email || '',
+                explicit: rssMetadata.isExplicit === "false" ? "no": "yes",
+                language: rssMetadata.language || '',
+                categories: [rssMetadata.categories],
+                cover: rssMetadata.cover || '',
               };
             });
             return updatedPodcasts;
@@ -132,25 +154,7 @@ export default function rss({yourShows}) {
 
         setSubmittingLink(false);
         setStep(1);
-        console.log("rssMeta: ", rssMeta)
         console.log("RSS FEED: ", rssFeed)
-
-        const fetchHeaders = async () => {
-            const MAX_EPISODES = 10;
-            const episodes = rssFeed.slice(0, 1);
-            const rssLinks = episodes.map((rssEpisode: rssEpisode) => rssEpisode.link);
-            const sizes = (await axios.post('/api/rss/get-headers', { rssLinks })).data.links;
-
-            const rssEpisodesFinal = episodes.map((rssEpisode: rssEpisode) => {
-                const contentLength = sizes.find((item: RssEpisodeContentLength) => item.link === rssEpisode.link);
-                return {
-                    ...rssEpisode,
-                    contentLength: contentLength?.length || '0',
-                };
-            });
-            setRssFeed(rssEpisodesFinal);
-        };
-        fetchHeaders();
     };
 
     return (
@@ -170,7 +174,12 @@ export default function rss({yourShows}) {
             >
                 <div className={rssContainer}>
                     
-                    <div className={rssInputContainer}>
+                    <form className={rssInputContainer} 
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            submitLink( )}
+                        }
+                    >
                         <input 
                             type="text" 
                             className={rssInputStyling} 
@@ -184,7 +193,7 @@ export default function rss({yourShows}) {
                             dimensions="h-10 w-11"
                             onClick={() => submitLink(  )}
                         />
-                    </div>
+                    </form>
                     <ValMsg valMsg={rssLinkError} className="pl-2" />
 
                 </div>
@@ -201,13 +210,22 @@ export default function rss({yourShows}) {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-75 scale-75"
             >
+                <button
+                    className="bg-zinc-800 text-white rounded-full h-10 w-10 flex items-center justify-center"
+                    onClick={() => setStep(0)}
+                >
+                    <ChevronLeftIcon className="h-6 w-6 mr-1" />
+                </button>
                 <ShowForm 
                     podcasts={yourShows}
                     edit={true}
+                    selectedPid={pid}
                     rssData={rssMeta}
                     redirect={false}
+                    allowSelect={true}
                     submitted={setPodcastFormSubmitted}
                     setUploadedPID={setPid}
+                    setUploadedIndex={setIndex}
                     returnedPodcasts={setNewPodcasts}
                 />
             </Transition>
@@ -223,7 +241,17 @@ export default function rss({yourShows}) {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-75 scale-75"
             >
+                <button 
+                    className="bg-zinc-800 text-white rounded-full h-10 w-10 flex items-center justify-center"
+                    onClick={() => {
+                        setPid('');
+                        setStep(1)
+                    }}
+                >
+                    <ChevronLeftIcon className="h-6 w-6 mr-1" />
+                </button>
                 <ImportedEpisodes
+                    index={index}
                     coverUrl={coverUrl}
                     pid={pid}
                     rssEpisodes={rssFeed}

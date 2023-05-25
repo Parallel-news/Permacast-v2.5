@@ -102,6 +102,7 @@ export function handleError(errorMessage: string, loadingSetter: (v: boolean) =>
 }
 
 export const determineMediaType = (mime: string) => mime.match(/^(audio\/|video\/)/)[0];
+export const audioOrVideoAllowed = (mime: string) => determineMediaType(mime) !== null;
 
 export function validateLabel(label, podcasts: Podcast[]) {
 

@@ -28,6 +28,11 @@ html, body {
   .flexCenterGap {
     @apply flex items-center gap-x-2;
   }
+  
+  .flexFullCenter {
+    @apply flex justify-center items-center;
+  }
+
   .flexFullCenterGap {
     @apply flex w-full items-center gap-x-2;
   }
@@ -81,6 +86,10 @@ html, body {
 
   .error-tooltip {
     @apply tooltip-base hover:text-red-300 text-red-500 hover:border-red-300 border-red-500;
+  }
+
+  .tooltip-button {
+    @apply text-sm text-gray-400 border-2 border-gray-400 rounded-full w-4 h-4 leading-[0] flex items-center justify-center cursor-pointer;
   }
 
   .hover-up-effect {

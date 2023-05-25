@@ -151,6 +151,7 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
         setIsVisible(false)
     }, [props.pid])
 
+    const tx = selectedShow?.[selectedShowIndex]?.minifiedCover;
     return (
         <>
             {props.pid.length === 0 ? 
@@ -160,8 +161,8 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
             :
             <div onClick={() => setIsVisible(true)}>
                 <PodcastOption 
-                    imgSrc={ARSEED_URL+selectedShow[selectedShowIndex].minifiedCover}
-                    title={selectedShow[selectedShowIndex].podcastName}
+                    imgSrc={tx ? ARSEED_URL+tx : ''}
+                    title={selectedShow?.[selectedShowIndex]?.podcastName}
                     disableClick={false}
                 />
             </div>
