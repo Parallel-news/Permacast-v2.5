@@ -41,6 +41,6 @@ export default async function handler(
     res.status(200).json({ links });
   } catch (error) {
     console.error(error);
-    return res.status(204).json({ links: fileLinks.map(async (link: string) => ({ link, size: 0, type: '' })) });
+    return res.status(204).json({ links: fileLinks.map((link: string) => ({ link, size: 0, type: '' }))});
   }
 }
