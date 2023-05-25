@@ -272,7 +272,9 @@
 		"minting-episode": "铸造情节...",
 		"mint-successful": "铸币成功",
 		"uploading-collection": "上传收藏...",
-		"collection-uploaded": "收藏上传"
+		"collection-uploaded": "收藏上传",
+		"no-factories": "没有可声明的工厂来创建集合！",
+		"no-factories-help": "在 Telegram 上给我们留言以提供更多"
 	},
 	"invalid-address": "无效地址",
 	"general-error": "有一个错误。再试一次。",

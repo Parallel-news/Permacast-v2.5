@@ -278,7 +278,9 @@
 		"minting-episode": "Minting Episode...",
 		"mint-successful": "Mint Successful",
 		"uploading-collection": "Uploading Collection...",
-		"collection-uploaded": "Collection Uploaded"
+		"collection-uploaded": "Collection Uploaded",
+		"no-factories": "No Claimable Factories to Create Collection!",
+		"no-factories-help": "Message us on Telegram to supply more."
 	},
 	"invalid-address": "Invalid Address",
 	"general-error": "There was an error. Try Again.",

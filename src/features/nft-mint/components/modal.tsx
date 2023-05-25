@@ -5,7 +5,7 @@ import { Fragment, useRef, useState } from 'react'
 import { GenericNftButton } from './buttons'
 import { useArconnect } from 'react-arconnect'
 import { useTranslation } from 'react-i18next'
-import { ARSEED_URL, TOAST_DARK, TOAST_MARGIN } from '../../../constants'
+import { ARSEED_URL, PERMACAST_TELEGRAM_URL, TOAST_DARK, TOAST_MARGIN } from '../../../constants'
 import { XMarkIcon } from '@heroicons/react/24/solid'
 import { Dialog, Transition } from '@headlessui/react'
 import { determineMintStatus, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
@@ -13,6 +13,8 @@ import { PermaSpinner } from '../../../component/reusables'
 import { CreateCollectionViewObject, EpisodeTitleObject, ErrorModalObject, GetPid, MintEpisodeViewObject, NftModalObject } from '../types'
 import { isERCAddress } from '../../../utils/reusables'
 import toast from 'react-hot-toast'
+import MintedNotification from './MintedNotification'
+import { grabEpisodeData } from '../utils'
 
 
 
@@ -63,10 +65,17 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
       {
         onSuccess: async () => {
           setTimeout(async () => {
-            toast.dismiss(toastLoading)
             await queryNftInfo.refetch();
-            toast.success(t("nft-collection.mint-successful"));
-          }, 6000);
+            toast.dismiss(toastLoading)
+            const episode = grabEpisodeData(payload.episodes, checkedEid[0])
+            toast.custom(() => (
+              <MintedNotification 
+                thumbnail={episode?.thumbnail.length > 0 ? ARSEED_URL+episode?.thumbnail : ARSEED_URL+payload.cover} 
+                primaryMsg={t("nft-collection.mint-successful")} 
+                secondaryMsg={episode.episodeName}
+              />
+            ))
+          }, 8000);
         }
       })
     }
@@ -83,7 +92,13 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
           setTimeout(async () => {
             toast.dismiss(toastLoading)
             await queryNftInfo.refetch();
-            toast.success(t("nft-collection.collection-uploaded"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 5000});
+            toast.custom(() => (
+              <MintedNotification 
+                thumbnail={ARSEED_URL+payload.cover} 
+                primaryMsg={t("nft-collection.collection-uploaded")} 
+                secondaryMsg={payload.name}
+              />
+            ))
           }, 6000);
         }
       })
@@ -122,13 +137,24 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                     {queryNftInfo.isLoading && (<PermaSpinner spinnerColor="#FFF" size={25}/>)}
 
                     {queryNftInfo.isError && (<p>{t("general-error")}</p>)}
+                    {/*
 
+                      No Claimable Factories
+
+                    */}
+                    {!queryNftInfo.isLoading && !payload.collectionAddr && !payload.claimableFactories && (
+                      <ErrorModalMessage 
+                        helpSrc={PERMACAST_TELEGRAM_URL}
+                        primaryMsg={t("nft-collection.no-factories")} //
+                        secondaryMsg={t("nft-collection.no-factories-help")} 
+                      />
+                    )}
                     {/*
 
                       Create Collection
 
                     */}
-                    {!queryNftInfo.isLoading && !payload.collectionAddr &&  (
+                    {!queryNftInfo.isLoading && !payload.collectionAddr && payload.claimableFactories && (
                         <div className={collectionStyling}>
                             <CreateCollectionView showPic={ARSEED_URL+payload.cover} showTitle={payload?.name} />
                             <GenericNftButton 
@@ -175,7 +201,9 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                       </div>
                     )}
                     {/*
+
                       No Episode Found
+
                     */}
                     {!queryNftInfo.isLoading && payload.collectionAddr && payload.episodes.length === 0 && (
                       <ErrorModalMessage 

@@ -30,12 +30,12 @@ export const compileShowData = async({pid, podcasts, nftPayload}: compiledShowOb
 }
 
 export const grabEpisodeData = (episodes: Episode[], eid: string) => {
-  const episode = episodes.map((episode) => episode.eid === eid)
+  const episode = episodes.find((episode) => episode.eid === eid)
   return episode
 }
 
 export const existsClaimableFactories = (nftPayload : NftObject) => {
-  if(nftPayload.claimable_factories.length) {
+  if(nftPayload.claimable_factories.length) { 
     return { claimableFactories: true }
   } else {
     return { claimableFactories: false }

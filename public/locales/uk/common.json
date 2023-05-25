@@ -286,7 +286,9 @@
 		"minting-episode": "Епізод карбування...",
 		"mint-successful": "Монетний двір Успішний",
 		"uploading-collection": "Завантаження колекції...",
-		"collection-uploaded": "Колекція завантажена"
+		"collection-uploaded": "Колекція завантажена",
+		"no-factories": "Немає претензійних фабрик для створення колекції!",
+		"no-factories-help": "Напишіть нам у Telegram, щоб надати більше."
 	},
 	"invalid-address": "Недійсна адреса",
 	"general-error": "Там була помилка. Спробуйте знову.",
