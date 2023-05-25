@@ -443,7 +443,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
       const nonZeroResults = result.filter((ep: RSSEpisodeEstimate) => Number(ep.size) > 0);
       if (nonZeroResults.length === 0) {
         toast.dismiss(toastEstimating);
-        toast.error(t("error.estimate"), { style: TOAST_DARK });
+        toast.error(t("errors.failedToEstimate"), { style: TOAST_DARK });
         setIsCalculating(false);
         return false;
       };
@@ -537,7 +537,10 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
                       </span>
                     </Tooltip>
                   </button>
-                  <button className={buttonColorStyling + "py-3 px-4 "} onClick={() => setRetryEpisodes}>
+                  <button className={buttonColorStyling + "py-3 px-4 "} onClick={() => {
+                    setRetryEpisodes([]);
+                    setCurrentPage(prev => prev + 1);
+                  }}>
                     {t("rss.skip-failed")}
                   </button>
                 </div>
@@ -568,7 +571,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
                 {/* Manual page input */}
                 {MAX_PAGES >= 4 && (
                   <DebouncedInput 
-                    className={buttonStyling + 'text-center '}
+                    className={buttonStyling + 'text-center font-bold '}
                     input={navigatePage}
                     setInput={setNavigatePage}
                     timeout={800}
@@ -619,12 +622,12 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
             {address && address.length > 0 && !isUploadingEpisodes && (
               <>
                 <UploadButton
-                  disable={!userHasEnoughAR || isCalculating || retryEpisodes.length > 0 || uploadedPages.includes(currentPage) }
+                  disable={!userHasEnoughAR || isCalculating || !!retryEpisodes?.length || uploadedPages.includes(currentPage) }
                   width="w-[50%]"
                   click={startEpisodesUpload}
                 />
                 {!userHasEnoughAR && (
-                  <p>{t("home.insufficient-balance")}</p>
+                  <p>{t("home.featured-modal.insufficient-balance")}</p>
                 )}
               </>
             )}

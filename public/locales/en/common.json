@@ -243,7 +243,8 @@
 		"coverUploadError": "There was an issue uploading your cover. Try Again.",
 		"mediaUploadError": "There was an issue uploading your media. Try Again.",
 		"descUploadError": "There was an issue uploading description. Try Again.",
-		"noShowError": "Unable to fetch shows. Refresh and try again."
+		"noShowError": "Unable to fetch shows. Refresh and try again.",
+		"failedToEstimate": "Failed to estimate fee. Try again."
 	},
 	"success": {
 		"showUploaded": "Show Uploaded. Redirecting.",
@@ -256,7 +257,8 @@
 		"savingChain": "Saving to Blockchain",
 		"savingCover": "Uploading Cover",
 		"savingBanner": "Uploading Banner Cover",
-		"uploading": "Uploading"
+		"uploading": "Uploading",
+		"estimating": "Estimating Fee"
 	},
 	"feed-page": {
 		"allpodcasts": "All Podcasts",
@@ -272,7 +274,12 @@
 		"norssepisode": "Could not fetch episode data from RSS link.",
 		"norsspodcast": "Could not fetch podcast metadata from RSS link.",
 		"emptyinput": "Please enter a URL.",
-		"invalidurl": "Enter a Valid Url"
+		"invalidurl": "Enter a Valid Url",
+		"estimation-failed": "Estimation Failed For These Episodes. Try again.",
+		"retry-estimation": "Retry Estimation",
+		"skip-failed": "Skip Failed Estimations",
+		"limited-size": "File size is limited to 250MB to avoid spamming the network.",
+		"downloaded": "Downloaded"
 	}
 	
 }

@@ -237,7 +237,8 @@
 		"coverUploadError": "上传您的封面时出现问题。再试一次。",
 		"mediaUploadError": "上传您的媒体时出现问题。再试一次。",
 		"descUploadError": "上传说明时出现问题。再试一次。",
-		"noShowError": "无法获取节目。刷新并重试。"
+		"noShowError": "无法获取节目。刷新并重试。",
+		"failedToEstimate": "无法估算费用。请重试。"
 	},
 	"success": {
 		"showUploaded": "显示已上传。重定向。",
@@ -250,7 +251,8 @@
 		"savingChain": "保存到区块链",
 		"savingCover": "上传封面",
 		"savingBanner": "上传横幅封面",
-		"uploading": "上传中"
+		"uploading": "上传中",
+		"estimating": "估算费用"
 	},
 	"feed-page": {
 		"allpodcasts": "所有播客",
@@ -266,6 +268,11 @@
 		"norssepisode": "无法从 RSS 链接获取剧集数据",
 		"norsspodcast": "无法从 RSS 链接获取播客元数据",
 		"emptyinput": "请输入网址",
-		"invalidurl": "输入有效网址"
+		"invalidurl": "输入有效网址",
+		"estimation-failed": "这些剧集的估计失败。再试一次。",
+		"retry-estimation": "重试估计",
+		"skip-failed": "跳过失败的估计",
+		"limited-size": "文件大小限制为 250MB 以避免网络垃圾邮件。",
+		"downloaded": "已下载"
 	}
 }
