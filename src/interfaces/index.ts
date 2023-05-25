@@ -54,7 +54,8 @@ export interface Episode {
   uploadedAt:  number;
   isVisible?:  boolean;
   order?:      number; // UI only
-  thumbnail?:  string | null
+  thumbnail?:  string | null;
+  minted?:        boolean;
 }
 
 export interface FullEpisodeInfo {

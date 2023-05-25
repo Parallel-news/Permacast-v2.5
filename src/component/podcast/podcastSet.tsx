@@ -25,7 +25,6 @@ interface podcastInter {
 
 export default function PodcastSet(props: podcastInter) {
     const {podcast} = props
-    console.log("Podcast: ", podcast)
 
     const [, setBackgroundColor] = useRecoilState(backgroundColorAtom);
     const [loadTipModal, setLoadTipModal] = useState<boolean>(false)

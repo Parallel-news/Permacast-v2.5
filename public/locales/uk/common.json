@@ -276,6 +276,22 @@
 		"show0EpisodePodcasts": "Показати подкасти з 0 епізодами"
 	},
 	"edit": "Редагувати",
+	"nft-collection": {
+		"confirm-msg": "Створити нову колекцію на",
+		"for": "для",
+		"no-episodes": "Жодної серії не опубліковано!",
+		"click-to-make": "Натисніть тут, щоб створити епізод.",
+		"mint-for": "М'ятні епізоди для",
+		"mint": "Монетний двір",
+		"all-minted": "Усі карбовані",
+		"target-address": "Цільова адреса",
+		"minting-episode": "Епізод карбування...",
+		"mint-successful": "Монетний двір Успішний",
+		"uploading-collection": "Завантаження колекції...",
+		"collection-uploaded": "Колекція завантажена"
+	},
+	"invalid-address": "Недійсна адреса",
+	"general-error": "Там була помилка. Спробуйте знову.",
 	"rss": {
 		"importrss": "Імпорт RSS",
 		"rssfeedurl": "URL-адреса каналу RSS",
