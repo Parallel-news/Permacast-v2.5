@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next';
 import { FC } from 'react';
 
 export const DEFAULT_LANGUAGE = 'en';
-
+export const DEFAULT_CATEGORY = 'Arts';
 export const categories_en = [
   "Arts",
   "Business",
