@@ -1,5 +1,5 @@
 import { apiClient } from '../../../lib/api-client'
-import { collectionExists, compileShowData } from '../utils'
+import { collectionExists, compileShowData, existsClaimableFactories } from '../utils'
 import { CLAIM_FACTORY, MINT_NFT, NFT_INFO } from '../../../constants'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { generateAuthentication } from '../../../utils/reusables'
@@ -22,14 +22,16 @@ export function determineMintStatus({ enabled, pid } : GetNftInfo) {
         getPodcastPayload()
       ])
 
-      const [isMinted, showData] = await Promise.all([
+      const [isMinted, showData, claimableFactories] = await Promise.all([
         collectionExists({ pid: pid, nftPayload: nftPayload }),
-        compileShowData({ pid: pid, podcasts: podcasts.podcasts, nftPayload: nftPayload })
+        compileShowData({ pid: pid, podcasts: podcasts.podcasts, nftPayload: nftPayload }),
+        existsClaimableFactories(nftPayload)
       ])
 
       return {
         ...isMinted,
-        ...showData
+        ...showData,
+        ...claimableFactories
       }
       
     },
@@ -61,8 +63,9 @@ export const createNftCollection = async ({pid, getPublicKey, createSignature} :
     "cid": pid,
     "sig": sig
   }
-
+  
   const res = await apiClient.post('/api/exm/collections/write', collectionArgs)
+
   return res
 }
 

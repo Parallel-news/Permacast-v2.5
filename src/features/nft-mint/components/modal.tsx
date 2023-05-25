@@ -5,23 +5,21 @@ import { Fragment, useRef, useState } from 'react'
 import { GenericNftButton } from './buttons'
 import { useArconnect } from 'react-arconnect'
 import { useTranslation } from 'react-i18next'
-import { ARSEED_URL, TOAST_DARK, TOAST_MARGIN } from '../../../constants'
+import { ARSEED_URL, PERMACAST_TELEGRAM_URL, TOAST_DARK, TOAST_MARGIN } from '../../../constants'
 import { XMarkIcon } from '@heroicons/react/24/solid'
 import { Dialog, Transition } from '@headlessui/react'
 import { determineMintStatus, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
 import { PermaSpinner } from '../../../component/reusables'
-import { CreateCollectionViewObject, EpisodeTitleObject, GetPid, MintEpisodeViewObject, NftModalObject } from '../types'
+import { CreateCollectionViewObject, EpisodeTitleObject, ErrorModalObject, GetPid, MintEpisodeViewObject, NftModalObject } from '../types'
 import { isERCAddress } from '../../../utils/reusables'
 import toast from 'react-hot-toast'
+import MintedNotification from './MintedNotification'
+import { grabEpisodeData } from '../utils'
 
 
 
 export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
 
-    /**
-     * Recoil Vars & React Query will be set to keep far from parent 
-     * & API pull is not heavy
-     */
     const { t } = useTranslation();
     const { getPublicKey, createSignature } = useArconnect()
 
@@ -33,7 +31,6 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
     const payload = queryNftInfo?.data
 
     const [checkedEid, setCheckedEid] = useState([""])
-    const [mintAll, setMintAll] = useState(false)
 
     
     if(!queryNftInfo.isLoading) {
@@ -48,6 +45,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
     const modalContainer = "w-full max-w-2xl transform overflow-hidden rounded-2xl bg-zinc-800 p-10 text-left align-middle shadow-xl transition-all relative min-h-[200px] flex justify-center items-center"
     const targetInputStyle = "input input-secondary w-full py-3 pl-5 pr-10 bg-zinc-700 border-0 rounded-md outline-none focus:ring-2 focus:ring-inset focus:ring-white"
 
+    // Handlers 
     async function handleEpisodeMint() {
       const targetAddr = targetInputRef.current.value;
       // Real Target Address?
@@ -67,10 +65,17 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
       {
         onSuccess: async () => {
           setTimeout(async () => {
-            toast.dismiss(toastLoading)
             await queryNftInfo.refetch();
-            toast.success(t("nft-collection.mint-successful"));
-          }, 6000);
+            toast.dismiss(toastLoading)
+            const episode = grabEpisodeData(payload.episodes, checkedEid[0])
+            toast.custom(() => (
+              <MintedNotification 
+                thumbnail={episode?.thumbnail.length > 0 ? ARSEED_URL+episode?.thumbnail : ARSEED_URL+payload.cover} 
+                primaryMsg={t("nft-collection.mint-successful")} 
+                secondaryMsg={episode.episodeName}
+              />
+            ))
+          }, 8000);
         }
       })
     }
@@ -87,7 +92,13 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
           setTimeout(async () => {
             toast.dismiss(toastLoading)
             await queryNftInfo.refetch();
-            toast.success(t("nft-collection.collection-uploaded"));
+            toast.custom(() => (
+              <MintedNotification 
+                thumbnail={ARSEED_URL+payload.cover} 
+                primaryMsg={t("nft-collection.collection-uploaded")} 
+                secondaryMsg={payload.name}
+              />
+            ))
           }, 6000);
         }
       })
@@ -126,13 +137,24 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                     {queryNftInfo.isLoading && (<PermaSpinner spinnerColor="#FFF" size={25}/>)}
 
                     {queryNftInfo.isError && (<p>{t("general-error")}</p>)}
+                    {/*
 
+                      No Claimable Factories
+
+                    */}
+                    {!queryNftInfo.isLoading && !payload.collectionAddr && !payload.claimableFactories && (
+                      <ErrorModalMessage 
+                        helpSrc={PERMACAST_TELEGRAM_URL}
+                        primaryMsg={t("nft-collection.no-factories")} //
+                        secondaryMsg={t("nft-collection.no-factories-help")} 
+                      />
+                    )}
                     {/*
 
                       Create Collection
 
                     */}
-                    {!queryNftInfo.isLoading && !payload.collectionAddr &&  (
+                    {!queryNftInfo.isLoading && !payload.collectionAddr && payload.claimableFactories && (
                         <div className={collectionStyling}>
                             <CreateCollectionView showPic={ARSEED_URL+payload.cover} showTitle={payload?.name} />
                             <GenericNftButton 
@@ -179,10 +201,16 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                       </div>
                     )}
                     {/*
+
                       No Episode Found
+
                     */}
                     {!queryNftInfo.isLoading && payload.collectionAddr && payload.episodes.length === 0 && (
-                      <NoEpisodesMessage pid={pid} />
+                      <ErrorModalMessage 
+                        helpSrc={`/upload-episode?pid=${pid}`}
+                        primaryMsg={t("nft-collection.no-episodes")}
+                        secondaryMsg={t("nft-collection.click-to-make")} 
+                      />
                     )}
                   </Dialog.Panel>
                 </Transition.Child>
@@ -234,7 +262,7 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
   const titleStyling = "flex justify-start w-full text-white text-2xl mb-6"
   const checkBoxStyling = "form-checkbox accent-[#FFFF00] bg-zinc-800 rounded-xl inline w-5 h-5"
 
-  const handleCheckboxChange = (event, itemId) => {
+  const handleCheckboxChange = (itemId) => {
     if(itemId !== checkedEid[0]) {
       setCheckedEid([itemId])
     } else {
@@ -259,7 +287,7 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
                 <input type="checkbox" className={checkBoxStyling} checked disabled /> 
               :
                 <input type="checkbox" className={checkBoxStyling} 
-                  onChange={(event) => handleCheckboxChange(event, episode.eid)} checked={checkedEid[0] === episode.eid}
+                  onChange={() => handleCheckboxChange(episode.eid)} checked={checkedEid[0] === episode.eid}
                 />
               }
             </label>
@@ -271,17 +299,15 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
   )
 }
 
-export const NoEpisodesMessage = ({ pid }: GetPid) => {
-
-  const { t } = useTranslation();
+export const ErrorModalMessage = ({ helpSrc, primaryMsg, secondaryMsg }: ErrorModalObject) => {
   
   const linkStyling = "text-white hover:text-[#FFFF00] transform transition-all duration-500 text-xl"
   const containerStyling = "flex flex-col space-y-6 justify-center items-center font-semibold text-2xl"
 
   return (
     <div className={containerStyling}>
-      <p className="text-white">{t("nft-collection.no-episodes")}</p>
-      <a href={`/upload-episode?pid=${pid}`} className={linkStyling}>{t("nft-collection.click-to-make")}</a>
+      <p className="text-white">{primaryMsg}</p>
+      <a href={helpSrc} className={linkStyling}>{secondaryMsg}</a>
     </div>
   )
 }

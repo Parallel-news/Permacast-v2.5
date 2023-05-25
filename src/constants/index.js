@@ -71,6 +71,7 @@ export const RSS_META_LINK = PERMACAST_HELPER_URL+"rss-podcast-metadata/"
 export const PERMACAST_DISCORD_URL = "https://discord.gg/cQanQVCs7G"
 export const PERMACAST_TWITTER_URL = "https://twitter.com/permacastapp"
 export const PERMACAST_TELEGRAM_URL = "https://t.me/permacast"
+export const DECENTLAND_TELEGRAM_URL = "https://t.me/decentland"
 
 const iconStyling = "w-4 h-4 text-zinc-300"
 

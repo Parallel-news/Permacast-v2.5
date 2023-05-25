@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { AuthenticationActions } from "../../../types";
 import { Episode, Podcast } from "../../../interfaces";
+import { Toast } from "react-hot-toast";
 
 export type Record = {
     record_id: string;
@@ -76,6 +77,12 @@ export type GetPid = {
     pid: string;
 }
 
+export type ErrorModalObject = {
+    helpSrc: string;
+    primaryMsg: string;
+    secondaryMsg: string;
+}
+
 export type MintEpisodeViewObject = {
     episodes: Episode[];
     showName: string;
@@ -87,5 +94,11 @@ export type MintEpisodeViewObject = {
 export type EpisodeTitleObject = {
     episodeName: string;
     thumbnail: string;
+}
+
+export type MintNotifObject = {
+    thumbnail: string;
+    primaryMsg: string;
+    secondaryMsg: string;
 }
   

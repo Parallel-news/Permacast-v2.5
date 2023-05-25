@@ -1,6 +1,6 @@
 import { Episode } from "../../../interfaces"
 import { findKey } from "../../../utils/reusables"
-import { RetrieveNftObject, compiledShowObject } from "../types"
+import { NftObject, RetrieveNftObject, compiledShowObject } from "../types"
 
 export const collectionExists = async ({ pid, nftPayload }: RetrieveNftObject | null) => {
     const foundCollection = findKey(nftPayload.factories, pid)
@@ -30,6 +30,14 @@ export const compileShowData = async({pid, podcasts, nftPayload}: compiledShowOb
 }
 
 export const grabEpisodeData = (episodes: Episode[], eid: string) => {
-  const episode = episodes.map((episode) => episode.eid === eid)
+  const episode = episodes.find((episode) => episode.eid === eid)
   return episode
-}   
+}
+
+export const existsClaimableFactories = (nftPayload : NftObject) => {
+  if(nftPayload.claimable_factories.length) { 
+    return { claimableFactories: true }
+  } else {
+    return { claimableFactories: false }
+  }
+}
