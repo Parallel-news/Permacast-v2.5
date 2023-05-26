@@ -22,6 +22,7 @@ import React from "react";
 import { VisibleInput } from "./reusables";
 import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 import ProgressBar from "../reusables/progressBar";
+import { EditPodcastProps, UploadPodcastProps } from "../../interfaces/exm";
 
 const MarkDownToolTip = React.lazy(() => import("../reusables/tooltip").then(module => ({ default: module.MarkDownToolTip })));
 const CoverContainer = React.lazy(() => import("./reusables").then(module => ({ default: module.CoverContainer })));
@@ -187,8 +188,9 @@ export const ShowForm = (props: ShowFormInter) => {
     }, [podcastDescription_, podcastCover_])
 
     //EXM 
-    const createShowPayload = {
+    const createShowPayload: UploadPodcastProps | EditPodcastProps = {
         "function": (props.edit && props.rssData.length === 0) ? "editPodcastMetadata" : "createPodcast",
+        "parsed": true, // To receive data parsed as json
         "name": podcastName_,
         "desc": "",
         "author": podcastAuthor_,
@@ -293,7 +295,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     const { locale } = router;
                     router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
                 }
-                props?.submitted(true)
+                props?.submitted && props?.submitted(true);
             }, 2500)
         }, 5000)
     }
