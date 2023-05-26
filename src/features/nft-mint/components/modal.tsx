@@ -5,7 +5,7 @@ import { Fragment, useRef, useState } from 'react'
 import { GenericNftButton } from './buttons'
 import { useArconnect } from 'react-arconnect'
 import { useTranslation } from 'react-i18next'
-import { ARSEED_URL, PERMACAST_TELEGRAM_URL, TOAST_DARK, TOAST_MARGIN } from '../../../constants'
+import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, PERMACAST_TELEGRAM_URL, PERMA_TOAST_SETTINGS, TOAST_DARK, TOAST_MARGIN } from '../../../constants'
 import { XMarkIcon } from '@heroicons/react/24/solid'
 import { Dialog, Transition } from '@headlessui/react'
 import { determineMintStatus, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
@@ -50,11 +50,11 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
       const targetAddr = targetInputRef.current.value;
       // Real Target Address?
       if(!isERCAddress(targetAddr)) {
-        toast.error(t("invalid-address"))
+        toast.error(t("invalid-address"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
         targetInputRef.current.className = "border-2 border-red-300 focus:ring-0 "+targetInputStyle;
         return false
       }
-      const toastLoading = toast.loading(t("nft-collection.minting-episode"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000})
+      const toastLoading = toast.loading(t("nft-collection.minting-episode"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
       // Post Mint Data
       mintEpisodeMutation.mutate({
         eid: checkedEid[0],
@@ -81,7 +81,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
     }
 
     async function handleCollectionCreation () {
-      const toastLoading = toast.loading(t("nft-collection.uploading-collection"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000})
+      const toastLoading = toast.loading(t("nft-collection.uploading-collection"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
       await collectionMutation.mutate({
         pid: pid,
         getPublicKey: getPublicKey,
@@ -214,7 +214,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                     )}
                     {/*Test Moving Alerts - TEMPORARY*/}
                     <div className="flex flex-row space-x-10 mt-10">
-                        <button onClick={() => toast.loading(t("nft-collection.uploading-collection"), {style: TOAST_DARK, className:TOAST_MARGIN})}>
+                        <button onClick={() => toast.loading(t("nft-collection.uploading-collection"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))}>
                           1
                         </button>
                         <button onClick={() => {
@@ -224,7 +224,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                               primaryMsg={t("nft-collection.collection-uploaded")} 
                               secondaryMsg={payload.name}
                             />
-                          ), {className:TOAST_MARGIN})
+                          ))
                         }}>
                           2
                         </button>

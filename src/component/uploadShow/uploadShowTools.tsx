@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { episodeDescStyling, episodeNameStyling } from "../uploadEpisode/uploadEpisodeTools";
 import { categories_en } from "../../utils/languages";
 
-import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EVERPAY_AR_TAG, EVERPAY_EOA, MIN_UPLOAD_PAYMENT, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
+import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, ERROR_TOAST_TIME, EVERPAY_AR_TAG, EVERPAY_EOA, EXTENDED_TOAST_TIME, MIN_UPLOAD_PAYMENT, PERMA_TOAST_SETTINGS, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
 import { isValidEmail } from "../reusables/formTools";
 import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
 import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob } from "../../utils/fileTools";
@@ -211,7 +211,7 @@ export const ShowForm = (props: ShowFormInter) => {
         // props.setUploadedPID("b4fa345dd57b6a006353fbb94f38b0b274eef55093fcd75079ebe804ccb66ac1f51c5afc41be124c3599f001c04e4a6fd60a7fa63cb83c9aaa02209e4deaa988");
         // return;
         if (!checkConnection(arweaveAddress_)) {
-            toast.error(CONNECT_WALLET, {style: TOAST_DARK})
+            toast.error(CONNECT_WALLET, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
             return false
         }
 
@@ -226,7 +226,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
 
         // Description to Arseeding
-        const toastDesc = toast.loading(t("loadingToast.savingDesc"), {style: TOAST_DARK, duration: 10000000});
+        const toastDesc = toast.loading(t("loadingToast.savingDesc"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
         setProgress(props.edit ? 25 : 20)
         try {
             const description = await upload2DMedia(podcastDescription_); payloadObj["desc"] = description?.order?.itemId
@@ -237,7 +237,7 @@ export const ShowForm = (props: ShowFormInter) => {
         }
 
         // Covers to Arseeding
-        const toastCover = toast.loading(t("loadingToast.savingCover"), {style: TOAST_DARK, duration: 10000000});
+        const toastCover = toast.loading(t("loadingToast.savingCover"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
         setProgress(props.edit ? 50 : 40)
         try {
             const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
@@ -252,7 +252,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
         // Fee to Everpay
         if(!props.edit || props.rssData.length > 0) { //Upload Mode or RSS Mode
-            const toastFee = toast.loading(t("loadingToast.payingFee"), {style: TOAST_DARK, duration: 10000000});
+            const toastFee = toast.loading(t("loadingToast.payingFee"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
             setProgress(60)
             try {
                 const everpay = new Everpay({account: address, chainType: ChainType.arweave, arJWK: 'use_wallet',});
@@ -270,7 +270,7 @@ export const ShowForm = (props: ShowFormInter) => {
             }
         }
         //Error handling and timeout needed for this to complete redirect
-        const toastSaving = toast.loading(t("loadingToast.savingChain"), {style: TOAST_DARK, duration: 10000000});
+        const toastSaving = toast.loading(t("loadingToast.savingChain"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
         setProgress(props.edit ? 80: 75)
         setTimeout(async function () {
             console.log("createShowPayload: ", createShowPayload)
@@ -286,7 +286,7 @@ export const ShowForm = (props: ShowFormInter) => {
             //EXM call, set timeout, then redirect.
             toast.dismiss(toastSaving); 
             setProgress(100)
-            toast.success(t("success.showUploaded"), {style: TOAST_DARK})
+            toast.success(t("success.showUploaded"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
             setTimeout(async function () {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
                 if(props.redirect) {

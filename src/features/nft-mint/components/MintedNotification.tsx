@@ -31,7 +31,7 @@ export default function MintedNotification({thumbnail, primaryMsg, secondaryMsg}
             className={`w-full flex justify-center`}
         >
             <div
-                className={`w-[33%] bg-[#333] shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+                className={`w-[33%] bg-[#333] shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 ${TOAST_MARGIN}`}
             >
                 <div className="flex-1 w-0 p-4">
                 <div className="flex items-start">
