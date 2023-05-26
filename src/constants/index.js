@@ -71,6 +71,7 @@ export const RSS_META_LINK = PERMACAST_HELPER_URL+"rss-podcast-metadata/"
 export const PERMACAST_DISCORD_URL = "https://discord.gg/cQanQVCs7G"
 export const PERMACAST_TWITTER_URL = "https://twitter.com/permacastapp"
 export const PERMACAST_TELEGRAM_URL = "https://t.me/permacast"
+export const DECENTLAND_TELEGRAM_URL = "https://t.me/decentland"
 
 const iconStyling = "w-4 h-4 text-zinc-300"
 
@@ -142,6 +143,15 @@ export const TOAST_DARK = {
     color: '#fff',
 }
 export const TOAST_MARGIN = "ml-0 md:ml-[100px] lg:ml-[136px]"
+export const EXTENDED_TOAST_TIME = 10000000
+export const ERROR_TOAST_TIME = 4000
+export const PERMA_TOAST_SETTINGS = (time) => {
+    return {
+        style: TOAST_DARK, 
+        className:TOAST_MARGIN, 
+        duration: time
+    }
+} 
 
 // API ERRORS
 export const NO_SHOW = "Unable to fetch shows. Refresh and try again."

@@ -15,7 +15,7 @@ import { Podcast, rssEpisode } from "../../interfaces";
 import { getContractVariables } from "../../utils/contract";
 import RssSubmit from "../../component/reusables/RssSubmit";
 import { convertLinktoBase64, isValidUrl } from "../../utils/reusables";
-import { ARSEED_URL, EXM_READ_LINK, NO_SHOW, RSS_IMPORT_LINK, RSS_META_LINK, TOAST_DARK } from "../../constants";
+import { ARSEED_URL, ERROR_TOAST_TIME, EXM_READ_LINK, NO_SHOW, PERMA_TOAST_SETTINGS, RSS_IMPORT_LINK, RSS_META_LINK, TOAST_DARK } from "../../constants";
 import { ImportedEpisodes } from "../../component/uploadShow/importedEpisodes";
 import { MOCK_RSS_FEED_EPISODES } from "../../utils/mockdata/rssfeed";
 
@@ -119,7 +119,7 @@ export default function rss({yourShows}) {
         } catch(e) {
             setFetchError("rss.norssepisode")
             setSubmittingLink(false)
-            toast.error("Incorrect Link", {style: TOAST_DARK})
+            toast.error("Incorrect Link", PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
             return false
         }
         // Fetch Metadata
@@ -131,7 +131,7 @@ export default function rss({yourShows}) {
         } catch(e) {
             setFetchError("rss.norsspodcast")
             setSubmittingLink(false)
-            toast.error(fetchError, {style: TOAST_DARK})
+            toast.error(fetchError, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
             return false
         }
         setCoverUrl(rssMetadata.cover);

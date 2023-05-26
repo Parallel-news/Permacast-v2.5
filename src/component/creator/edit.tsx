@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 
 import { flexCenter, flexCenterGap } from './featuredCreators';
 import { Modal } from '../reusables';
-import { ARSEED_URL, GIGABYTE, PASOM_SIG_MESSAGES, } from '../../constants';
+import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, GIGABYTE, PASOM_SIG_MESSAGES, PERMA_TOAST_SETTINGS, } from '../../constants';
 import { PASoMProfile, updateWalletMetadata } from '../../interfaces/pasom';
 import { ArConnectButtonStyling } from '../wallets/arconnect';
 import ThemedButton from '../reusables/themedButton';
@@ -190,13 +190,13 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
   const validate = () => {
     const error = validatePASoMForm({address, nickname, bio, banner, avatar});
     if (error) {
-      toast.error(error, {style: TOAST_DARK});
+      toast.error(error, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME));
       return false;
     }
   };
 
   const uploadImage = async (fileURL: string, name: string, setSize: Dispatch<SetStateAction<number>>) => {
-    const toastUploadImage = toast.loading(`${t("loadingToast.uploading")} ${name}`, {style: TOAST_DARK, duration: 10000000});
+    const toastUploadImage = toast.loading(`${t("loadingToast.uploading")} ${name}`, PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
     let finalTX;
     try {
       const file = await createFileFromBlobUrl(fileURL, name);
@@ -215,7 +215,7 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
   const uploadAvatar = async () => await uploadImage(avatar, "avatar", setAvatarSize);
 
   const uploadEdits = async () => {
-    const toastBanner = toast.loading(t("loadingToast.savingBanner"), {style: TOAST_DARK, duration: 10000000});
+    const toastBanner = toast.loading(t("loadingToast.savingBanner"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
 
     console.log('uploading edits');
     // if (!validate()) return;

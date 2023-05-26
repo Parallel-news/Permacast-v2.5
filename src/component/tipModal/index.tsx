@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import { useRecoilState } from "recoil";
 import { arweaveAddress, everPayBalance } from "../../atoms";
-import { FADE_IN_STYLE, FADE_OUT_STYLE, SPINNER_COLOR } from "../../constants";
+import { ERROR_TOAST_TIME, FADE_IN_STYLE, FADE_OUT_STYLE, PERMA_TOAST_SETTINGS, SPINNER_COLOR } from "../../constants";
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { transferFunds } from "../../utils/everpay";
 import { fetchARPriceInUSD } from "../../utils/redstone";
@@ -74,17 +74,17 @@ export const TipModal = (props: TipModalInter) => {
         const numTipAmount = Number(tipAmount)
         // Check Balance
         if(numTipAmount >= _everPayBalance) {
-            toast.error("Insufficient Balance")
+            toast.error("Insufficient Balance", PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
             return false
         }
         setTipLoading(true)
         const tx = await transferFunds("TIP", numTipAmount, props.toAddress, address)
         setTipLoading(false)
         if(tx[0]) {
-            toast.success(`${numTipAmount} AR Tip Sent!`)
+            toast.success(`${numTipAmount} AR Tip Sent!`, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
             props.setVisible(false)
         } else {
-            toast.error("Error sending tip.")
+            toast.error("Error sending tip.", PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
         }
         console.log(tx)
     }
