@@ -18,9 +18,9 @@ import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 import { transferFunds } from "../../utils/everpay";
 
 import { EXMState, rssEpisode, rssEpisodeRetry } from "../../interfaces";
-import { UploadEpisode } from "../../interfaces/exm";
+import { UploadEpisodeProps } from "../../interfaces/exm";
 
-import { arweaveAddress, loadingPage, podcastColorAtom } from "../../atoms";
+import { arweaveAddress, calculateEverPayBalance, loadingPage, podcastColorAtom } from "../../atoms";
 
 import { fetchARPriceInUSD } from "../../utils/redstone";
 import { RSSFeedManager } from "../../utils/localstorage";
@@ -89,6 +89,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
   const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
 
   const [arweaveAddress_,] = useRecoilState(arweaveAddress);
+  const [_calculateEverPayBalance, _setCalculateEverPayBalance] = useState(0) //(calculateEverPayBalance);
   const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
   const [, _setLoadingPage] = useRecoilState(loadingPage)
 
@@ -275,12 +276,13 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     };
   };
 
-  const payStorageFee = async (length: string) => {
+  const payStorageFee = async (length: string, count: number) => {
     if (FULL_TESTING) return "0x8fac6c0c2c1c50e029a75ff0df2bcb8b643e279f1c218f9c2074f2c28f65b8ac";
     // Pay for content storage on API side
     const CONTENT_COST = calculateARCost(Number(gigabyteCost), Number(length));
     const FINAL_CONTENT_COST = CONTENT_COST + EPISODE_SLIPPAGE; // to avoid rounding errors and a slippage change
     const uploadPaymentTX = await transferFunds("UPLOAD_CONTENT", FINAL_CONTENT_COST, EVERPAY_EOA_UPLOADS, address);
+    _setCalculateEverPayBalance(count);
     return uploadPaymentTX;
   };
 
@@ -298,13 +300,13 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     };
   };
 
-  const saveEpisodeToEXM = async (rssEpisode: rssEpisode, uploadPaymentTX: string) => {
+  const saveEpisodeToEXM = async (rssEpisode: rssEpisode, uploadPaymentTX: string, count: number) => {
     console.log('Uploading to EXM, ', rssEpisode);
     const handleErr = handleError;
     const { description, title, fileType } = rssEpisode;
     const percentPerEpisode = (100 / currentEpisodes.length);
 
-    const uploadEpisodePayload: UploadEpisode = {
+    const uploadEpisodePayload: UploadEpisodeProps = {
       "function": "addEpisode",
       "jwk_n": "",
       "pid": realPid,
@@ -332,6 +334,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
 
     // Pay Permacast's Episode Upload Fee
     const feeTX = await tryFeePayment(handleErr);
+     _setCalculateEverPayBalance(count);
     console.log(feeTX);
     // @ts-ignore
     uploadEpisodePayload["txid"] = feeTX;
@@ -372,7 +375,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     const paymentTXes = [];
     for (let i = 0; i < currentEpisodes.length; i++) {
       if (FULL_TESTING) break;
-      const tx = await payStorageFee(currentEpisodes[i].length);
+      const tx = await payStorageFee(currentEpisodes[i].length, i);
       paymentTXes.push(tx);
       await sleep(1000);
     };
@@ -397,7 +400,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
       }
       console.log({ currentEpisode: currentEpisodes[i], episode });
       if (FULL_TESTING) break;
-      const EXMUpload = await saveEpisodeToEXM(currentEpisodes[i], episode.tx);
+      const EXMUpload = await saveEpisodeToEXM(currentEpisodes[i], episode.tx, i);
       uploadedEpisodes.push(EXMUpload);
     };
     console.log(uploadedEpisodes);
