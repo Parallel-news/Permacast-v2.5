@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import { useRecoilState } from "recoil";
 import { allPodcasts, arweaveAddress, everPayBalance } from "../../atoms";
-import { EVERPAY_AR_TAG, EVERPAY_FEATURE_TREASURY, FADE_IN_STYLE, FADE_OUT_STYLE, FEATURE_COST_BASE, FEATURE_COST_PER_DAY, SPINNER_COLOR, USER_SIG_MESSAGES } from "../../constants";
+import { ERROR_TOAST_TIME, EVERPAY_AR_TAG, EVERPAY_FEATURE_TREASURY, FADE_IN_STYLE, FADE_OUT_STYLE, FEATURE_COST_BASE, FEATURE_COST_PER_DAY, PERMA_TOAST_SETTINGS, SPINNER_COLOR, USER_SIG_MESSAGES } from "../../constants";
 import { APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { Podcast } from "../../interfaces";
 import { fetchARPriceInUSD } from "../../utils/redstone";
@@ -116,7 +116,7 @@ const FeaturedChannelModal: FC<TipModalInter> = ({isVisible, setIsVisible}) => {
     };
     const res = (await axios.post('/api/exm/featured-channels/write', req)).data;
     console.log(res);
-    toast.success("Your channel is now featured! 🎉");
+    toast.success("Your channel is now featured! 🎉", PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME));
     setLoading(false)
     setShowModal(false);
     setIsVisible(false);

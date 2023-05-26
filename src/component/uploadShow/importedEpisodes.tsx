@@ -9,7 +9,7 @@ import { useRecoilState } from "recoil";
 import { ArrowDownIcon, ArrowUpIcon, CheckIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Spacer, Loading, Tooltip } from "@nextui-org/react";
 
-import { AR_DECIMALS, CONNECT_WALLET, EPISODE_UPLOAD_FEE, EVERPAY_EOA, EVERPAY_EOA_UPLOADS, GIGABYTE, TOAST_DARK, USER_SIG_MESSAGES, EPISODE_SLIPPAGE } from "../../constants";
+import { AR_DECIMALS, CONNECT_WALLET, EPISODE_UPLOAD_FEE, EVERPAY_EOA, EVERPAY_EOA_UPLOADS, GIGABYTE, TOAST_DARK, USER_SIG_MESSAGES, EPISODE_SLIPPAGE, ERROR_TOAST_TIME, PERMA_TOAST_SETTINGS, EXTENDED_TOAST_TIME } from "../../constants";
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 
 import { calculateARCost, getBundleArFee, getReadableSize, upload2DMedia } from "../../utils/arseeding";
@@ -346,12 +346,12 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
 
     // Check Wallet Connection
     if (!checkConnection(arweaveAddress_)) {
-      toast.error(CONNECT_WALLET, { style: TOAST_DARK })
+      toast.error(CONNECT_WALLET, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
       return false;
     };
 
     if (!userHasEnoughAR) {
-      toast.error("Not enough AR to upload", { style: TOAST_DARK })
+      toast.error("Not enough AR to upload", PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
       return false;
     };
 
@@ -367,7 +367,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
       };
     };
     
-    const toastSaving = toast.loading("Downloading Episodes...", { style: TOAST_DARK, duration: 10000000 });
+    const toastSaving = toast.loading("Downloading Episodes...", PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
 
     const paymentTXes = [];
     for (let i = 0; i < currentEpisodes.length; i++) {
@@ -385,7 +385,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     ).sort((a: uploadEpisodeInter, b: uploadEpisodeInter) => a.number - b.number);
     console.log(contentTXResults);
     toast.dismiss(toastSaving);
-    const savingBlockchainToast = toast.loading(t("loadingToast.savingChain"), { style: TOAST_DARK, duration: 10000000 });
+    const savingBlockchainToast = toast.loading(t("loadingToast.savingChain"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
 
     const uploadedEpisodes = [];
     for (let i = 0; i < contentTXResults.length; i++) {
@@ -421,7 +421,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
 
     if (totalUploadedCount >= rssEpisodes.length) {
       setTimeout(async function () {
-        toast.success(t("success.showUploaded"), { style: TOAST_DARK })
+        toast.success(t("success.showUploaded"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
         const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
         const { locale } = router;
         router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
@@ -436,14 +436,14 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
   };
 
   const startEstimating = async () => {
-    const toastEstimating = toast.loading(t("loadingToast.estimating"), { style: TOAST_DARK, duration: 10000000 });
+    const toastEstimating = toast.loading(t("loadingToast.estimating"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
     setIsCalculating(true);
     try {
       const result = await estimateUploadCost(retryEpisodes);
       const nonZeroResults = result.filter((ep: RSSEpisodeEstimate) => Number(ep.size) > 0);
       if (nonZeroResults.length === 0) {
         toast.dismiss(toastEstimating);
-        toast.error(t("errors.failedToEstimate"), { style: TOAST_DARK });
+        toast.error(t("errors.failedToEstimate"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME));
         setIsCalculating(false);
         return false;
       };

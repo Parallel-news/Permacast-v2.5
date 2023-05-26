@@ -55,7 +55,8 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
               position={TOAST_POSITION}
               reverseOrder={false}
               toastOptions={{
-                duration: MINT_DURATION
+                duration: MINT_DURATION,
+                className: "flex justify-center items-center"
               }}
             />
             <NavBar />

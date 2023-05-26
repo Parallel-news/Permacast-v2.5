@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { CONNECT_WALLET, PODCAST_LABEL_MAX_LEN, PODCAST_LABEL_MIN_LEN, TOAST_DARK, USER_SIG_MESSAGES } from "../constants";
+import { CONNECT_WALLET, ERROR_TOAST_TIME, PERMA_TOAST_SETTINGS, PODCAST_LABEL_MAX_LEN, PODCAST_LABEL_MIN_LEN, TOAST_DARK, USER_SIG_MESSAGES } from "../constants";
 import { Podcast } from "../interfaces";
 import { defaultSignatureParams } from "react-arconnect";
 import { AuthenticationActions } from "../types";
@@ -65,7 +65,7 @@ export function formatStringByLen(str, beginLength, endLength) {
  */
 export const checkConnection = (arAddress: string) => {
   if (arAddress === undefined) {
-    toast.error(CONNECT_WALLET)
+    toast.error(CONNECT_WALLET, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
     return false
   } else {
     return true
@@ -97,7 +97,7 @@ export const allFieldsFilled = (fieldsObj: any) => {
 }
 
 export function handleError(errorMessage: string, loadingSetter: (v: boolean) => void) {
-  toast.error(errorMessage, { style: TOAST_DARK })
+  toast.error(errorMessage, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
   loadingSetter(false)
 }
 

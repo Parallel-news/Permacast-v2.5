@@ -5,7 +5,7 @@ import { Fragment, useRef, useState } from 'react'
 import { GenericNftButton } from './buttons'
 import { useArconnect } from 'react-arconnect'
 import { useTranslation } from 'react-i18next'
-import { ARSEED_URL, PERMACAST_TELEGRAM_URL, TOAST_DARK, TOAST_MARGIN } from '../../../constants'
+import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, PERMACAST_TELEGRAM_URL, PERMA_TOAST_SETTINGS, TOAST_DARK, TOAST_MARGIN } from '../../../constants'
 import { XMarkIcon } from '@heroicons/react/24/solid'
 import { Dialog, Transition } from '@headlessui/react'
 import { determineMintStatus, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
@@ -42,7 +42,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
 
     const collectionStyling = "flex flex-col items-center space-y-4"
     const xStyling = "text-white cursor-pointer h-6 absolute right-4 top-2"
-    const modalContainer = "w-full max-w-2xl transform overflow-hidden rounded-2xl bg-zinc-800 p-10 text-left align-middle shadow-xl transition-all relative min-h-[200px] flex justify-center items-center"
+    const modalContainer = "w-full max-w-2xl transform overflow-hidden rounded-2xl bg-zinc-800 p-10 text-left align-middle shadow-xl transition-all relative min-h-[200px] flex flex-col justify-center items-center"
     const targetInputStyle = "input input-secondary w-full py-3 pl-5 pr-10 bg-zinc-700 border-0 rounded-md outline-none focus:ring-2 focus:ring-inset focus:ring-white"
 
     // Handlers 
@@ -50,11 +50,11 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
       const targetAddr = targetInputRef.current.value;
       // Real Target Address?
       if(!isERCAddress(targetAddr)) {
-        toast.error(t("invalid-address"))
+        toast.error(t("invalid-address"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
         targetInputRef.current.className = "border-2 border-red-300 focus:ring-0 "+targetInputStyle;
         return false
       }
-      const toastLoading = toast.loading(t("nft-collection.minting-episode"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000})
+      const toastLoading = toast.loading(t("nft-collection.minting-episode"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
       // Post Mint Data
       mintEpisodeMutation.mutate({
         eid: checkedEid[0],
@@ -81,7 +81,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
     }
 
     async function handleCollectionCreation () {
-      const toastLoading = toast.loading(t("nft-collection.uploading-collection"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000})
+      const toastLoading = toast.loading(t("nft-collection.uploading-collection"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
       await collectionMutation.mutate({
         pid: pid,
         getPublicKey: getPublicKey,

@@ -143,6 +143,15 @@ export const TOAST_DARK = {
     color: '#fff',
 }
 export const TOAST_MARGIN = "ml-0 md:ml-[100px] lg:ml-[136px]"
+export const EXTENDED_TOAST_TIME = 10000000
+export const ERROR_TOAST_TIME = 4000
+export const PERMA_TOAST_SETTINGS = (time) => {
+    return {
+        style: TOAST_DARK, 
+        className:TOAST_MARGIN, 
+        duration: time
+    }
+} 
 
 // API ERRORS
 export const NO_SHOW = "Unable to fetch shows. Refresh and try again."

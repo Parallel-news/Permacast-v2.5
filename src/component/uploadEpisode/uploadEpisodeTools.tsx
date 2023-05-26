@@ -16,7 +16,7 @@ import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
 import { descContainerStyling, spinnerClass } from '../uploadShow/uploadShowTools';
 import { getBundleArFee, upload2DMedia, upload3DMedia } from '../../utils/arseeding';
 import { allFieldsFilled, byteSize, checkConnection, determineMediaType, generateAuthentication, handleError } from '../../utils/reusables';
-import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EVERPAY_EOA, GIGABYTE, SPINNER_COLOR, TOAST_DARK, TOAST_MARGIN, USER_SIG_MESSAGES } from '../../constants';
+import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, ERROR_TOAST_TIME, EVERPAY_EOA, EXTENDED_TOAST_TIME, GIGABYTE, PERMA_TOAST_SETTINGS, SPINNER_COLOR, TOAST_DARK, TOAST_MARGIN, USER_SIG_MESSAGES } from '../../constants';
 
 
 const UploadButton = React.lazy(() => import('./reusables').then(module => ({ default: module.UploadButton })))
@@ -185,7 +185,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     const submitEpisode = async (epPayload: any) => {
         // Check Connection
         if (!checkConnection(arweaveAddress_)) {
-            toast.error(CONNECT_WALLET, {style: TOAST_DARK, className:TOAST_MARGIN})
+            toast.error(CONNECT_WALLET, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
             return false
         }
         setSubmittingEp(true)
@@ -196,7 +196,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         epPayload["jwk_n"] = jwk_n 
 
         // Description to Arseeding
-        const toastDesc = toast.loading(t("loadingToast.savingDesc"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
+        const toastDesc = toast.loading(t("loadingToast.savingDesc"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
         setProgress(props.edit ? 25 : 16)
         try {
             const description = await upload2DMedia(epDesc); epPayload["desc"] = description?.order?.itemId
@@ -208,7 +208,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
 
         // Thumbnail to Arseeding
         if(epThumbnail) {
-            const toastCover = toast.loading(t("loadingToast.savingCover"), {style: TOAST_DARK, duration: 10000000});
+            const toastCover = toast.loading(t("loadingToast.savingCover"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
             setProgress(props.edit ? 50 : 32)
             try {
                 const convertedCover = await createFileFromBlobUrl(epThumbnail, "thumbnail.txt")
@@ -222,7 +222,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
 
         // Media to Arseeding
         if(!props.edit) {
-            const toastCover = toast.loading(t("loadingToast.savingMedia"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
+            const toastCover = toast.loading(t("loadingToast.savingMedia"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
             setProgress(48)
             try {
                 const media = await upload3DMedia(epMedia, epMedia.type); epPayload["content"] = media?.order?.itemId
@@ -237,7 +237,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
 
         // Pay Upload Fee
         if(!props.edit) {
-            const toastFee = toast.loading(t("loadingToast.payingFee"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
+            const toastFee = toast.loading(t("loadingToast.payingFee"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
             setProgress(66)
             try {
                 const tx = await transferFunds("UPLOAD_EPISODE_FEE", EPISODE_UPLOAD_FEE, EVERPAY_EOA, address)
@@ -249,7 +249,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                 console.log(e); handleErr(t("error.everpayError"), setSubmittingEp); return;
             }
         }
-        const toastSaving = toast.loading(t("loadingToast.savingChain"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
+        const toastSaving = toast.loading(t("loadingToast.savingChain"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
         setProgress(props.edit ? 75 : 82)
         // EXM REDIRECT AND ERROR HANDLING NEEDED
         setTimeout(async function () {
@@ -257,7 +257,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             console.log("EXM RES: ", result)
             //EXM call, set timeout, then redirect. 
             toast.dismiss(toastSaving);
-            toast.success(t("success.episodeUploaded"), {style: TOAST_DARK, className:TOAST_MARGIN})
+            toast.success(t("success.episodeUploaded"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
             setProgress(100)
             setTimeout(async function () {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
