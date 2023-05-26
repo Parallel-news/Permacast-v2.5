@@ -1,5 +1,5 @@
 import { arweaveAddress } from ".";
-import { EXMauth } from "./exm";
+import { EXMBase } from "./exm";
 
 export type SupportedSocial = "twitter" | "github" | "telegram" | "instagram" | "discord";
 
@@ -20,8 +20,6 @@ export interface PASoMProfile {
   followings?: arweaveAddress[];
 };
 
-
-export interface EXMBase extends EXMauth {}
 
 export interface updateWalletMetadata extends EXMBase {
   function: "updateWalletMetadata";

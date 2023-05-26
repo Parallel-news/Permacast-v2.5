@@ -7,6 +7,10 @@ export interface EXMauth {
   sig: string;
 };
 
+export interface EXMBase extends EXMauth {
+  parsed?: boolean; // for parsing received data into JSON
+};
+
 export interface EpisodePayloadBase extends EXMauth {
   pid: string;
   name: string;
