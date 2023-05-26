@@ -17,6 +17,7 @@ import { descContainerStyling, spinnerClass } from '../uploadShow/uploadShowTool
 import { getBundleArFee, upload2DMedia, upload3DMedia } from '../../utils/arseeding';
 import { allFieldsFilled, byteSize, checkConnection, determineMediaType, generateAuthentication, handleError } from '../../utils/reusables';
 import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EVERPAY_EOA, GIGABYTE, SPINNER_COLOR, TOAST_DARK, TOAST_MARGIN, USER_SIG_MESSAGES } from '../../constants';
+import { EditEpisodeProps, UploadEpisodeProps } from '../../interfaces/exm';
 
 
 const UploadButton = React.lazy(() => import('./reusables').then(module => ({ default: module.UploadButton })))
@@ -167,7 +168,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         }
     }
 
-    const createEpPayload = {
+    const createEpPayload: UploadEpisodeProps | EditEpisodeProps = {
         "function": props.edit ? "editEpisodeMetadata" : "addEpisode",
         "jwk_n": "",
         "pid": pid,
@@ -180,7 +181,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         "content": "",
         "mimeType": "",
         "eid": props.edit ? props.eid : ""
-    }
+    };
 
     const submitEpisode = async (epPayload: any) => {
         // Check Connection
