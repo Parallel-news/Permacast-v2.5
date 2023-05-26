@@ -73,7 +73,7 @@ export const EpisodeMedia = (props: EpisodeMediaInter) => {
     const { t } = useTranslation();
     return (
         <div className={episodeMediaStyling}>
-            <input className={inputEpisodeMediaStyling} id="file" required type="file" onChange={(e) => props.setMedia(e.target.files?.[0])} name="episodeMedia" />
+            <input className={inputEpisodeMediaStyling} id="file" required type="file" accept="audio/*,video/*" onChange={(e) => props.setMedia(e.target.files?.[0])} name="episodeMedia" />
             <label htmlFor="file" className={labelEpisodeMediaStyling}>
                 <FiFile className={episodeFaFileStyling} />
                 <div>
