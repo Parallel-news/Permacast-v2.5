@@ -189,6 +189,7 @@ export const ShowForm = (props: ShowFormInter) => {
     //EXM 
     const createShowPayload = {
         "function": (props.edit && props.rssData.length === 0) ? "editPodcastMetadata" : "createPodcast",
+        "parsed": true, // To receive data parsed as json
         "name": podcastName_,
         "desc": "",
         "author": podcastAuthor_,
@@ -293,7 +294,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     const { locale } = router;
                     router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
                 }
-                props?.submitted(true)
+                props?.submitted && props?.submitted(true);
             }, 2500)
         }, 5000)
     }

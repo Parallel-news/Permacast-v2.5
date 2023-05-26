@@ -18,6 +18,8 @@ const getContractVariables = () => {
   return { contractAddress, contractAPIToken, isProduction };
 };
 
+// Optional params:
+// parsed: boolean - if true, will return JSON parsed data from the contract instead of stringified
 
 export default async function handler(
   req: NextApiRequest,
@@ -31,7 +33,8 @@ export default async function handler(
       inputs: [{
         "input": JSON.stringify(req.body)
       }],
-    }, {})
+    }, {});
+    if (req.body?.parsed) res.status(200).json(data.data);
     const responseData = JSON.stringify(data.data, (key, value) => {
       if (typeof value === "object" && value !== null) {
         if (
