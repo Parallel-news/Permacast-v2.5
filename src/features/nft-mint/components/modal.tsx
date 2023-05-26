@@ -212,26 +212,6 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                         secondaryMsg={t("nft-collection.click-to-make")} 
                       />
                     )}
-                    {/*Test Moving Alerts - TEMPORARY*/}
-                    <div className="flex flex-row space-x-10 mt-10">
-                        <button onClick={() => toast.loading(t("nft-collection.uploading-collection"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))}>
-                          1
-                        </button>
-                        <button onClick={() => {
-                          toast.custom(() => (
-                            <MintedNotification 
-                              thumbnail={ARSEED_URL+payload.cover} 
-                              primaryMsg={t("nft-collection.collection-uploaded")} 
-                              secondaryMsg={payload.name}
-                            />
-                          ))
-                        }}>
-                          2
-                        </button>
-                        <button onClick={() => ""}>
-                          3
-                        </button>
-                    </div>
                   </Dialog.Panel>
                 </Transition.Child>
               </div>
