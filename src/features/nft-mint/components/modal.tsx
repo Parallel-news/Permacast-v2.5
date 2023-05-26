@@ -42,7 +42,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
 
     const collectionStyling = "flex flex-col items-center space-y-4"
     const xStyling = "text-white cursor-pointer h-6 absolute right-4 top-2"
-    const modalContainer = "w-full max-w-2xl transform overflow-hidden rounded-2xl bg-zinc-800 p-10 text-left align-middle shadow-xl transition-all relative min-h-[200px] flex justify-center items-center"
+    const modalContainer = "w-full max-w-2xl transform overflow-hidden rounded-2xl bg-zinc-800 p-10 text-left align-middle shadow-xl transition-all relative min-h-[200px] flex flex-col justify-center items-center"
     const targetInputStyle = "input input-secondary w-full py-3 pl-5 pr-10 bg-zinc-700 border-0 rounded-md outline-none focus:ring-2 focus:ring-inset focus:ring-white"
 
     // Handlers 
@@ -212,6 +212,26 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                         secondaryMsg={t("nft-collection.click-to-make")} 
                       />
                     )}
+                    {/*Test Moving Alerts - TEMPORARY*/}
+                    <div className="flex flex-row space-x-10 mt-10">
+                        <button onClick={() => toast.loading(t("nft-collection.uploading-collection"), {style: TOAST_DARK, className:TOAST_MARGIN})}>
+                          1
+                        </button>
+                        <button onClick={() => {
+                          toast.custom(() => (
+                            <MintedNotification 
+                              thumbnail={ARSEED_URL+payload.cover} 
+                              primaryMsg={t("nft-collection.collection-uploaded")} 
+                              secondaryMsg={payload.name}
+                            />
+                          ), {className:TOAST_MARGIN})
+                        }}>
+                          2
+                        </button>
+                        <button onClick={() => ""}>
+                          3
+                        </button>
+                    </div>
                   </Dialog.Panel>
                 </Transition.Child>
               </div>

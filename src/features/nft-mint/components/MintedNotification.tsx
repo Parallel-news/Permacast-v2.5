@@ -2,7 +2,7 @@ import toast, { ToastBar, Toaster } from "react-hot-toast";
 import { MintNotifObject } from "../types";
 import { Transition } from "@headlessui/react";
 import { useEffect, useState } from "react";
-import { FADE_WAIT, TITLE_WAIT } from "../../../constants";
+import { FADE_WAIT, TITLE_WAIT, TOAST_MARGIN } from "../../../constants";
 import Image from "next/image";
 
 export default function MintedNotification({thumbnail, primaryMsg, secondaryMsg}: MintNotifObject)  {
@@ -18,7 +18,7 @@ export default function MintedNotification({thumbnail, primaryMsg, secondaryMsg}
         const timer = setTimeout(() => setShowNotif(false), FADE_WAIT+1500);
         return () => clearTimeout(timer);
     }, [])
-
+//max-w-[300px]
     return (
         <Transition
             show={showNotif}
@@ -28,10 +28,10 @@ export default function MintedNotification({thumbnail, primaryMsg, secondaryMsg}
             leave="transition ease-out duration-500"
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
-            className="max-w-md w-full"
+            className={`w-full flex justify-center`}
         >
             <div
-                className={`max-w-[300px] w-full bg-[#333] shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+                className={`w-[33%] bg-[#333] shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
             >
                 <div className="flex-1 w-0 p-4">
                 <div className="flex items-start">
