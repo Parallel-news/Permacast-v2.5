@@ -2,13 +2,13 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { episodeDescStyling, episodeNameStyling } from "../uploadEpisode/uploadEpisodeTools";
 import { categories_en } from "../../utils/languages";
 
-import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, ERROR_TOAST_TIME, EVERPAY_AR_TAG, EVERPAY_EOA, EXTENDED_TOAST_TIME, MIN_UPLOAD_PAYMENT, PERMA_TOAST_SETTINGS, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
+import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, ERROR_TOAST_TIME, EVERPAY_AR_TAG, EVERPAY_EOA, EXTENDED_TOAST_TIME, GIGABYTE, MIN_UPLOAD_PAYMENT, PERMA_TOAST_SETTINGS, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
 import { isValidEmail } from "../reusables/formTools";
-import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
+import { calculateARCost, getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
 import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob } from "../../utils/fileTools";
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
-import { allFieldsFilled, byteSize, checkConnection, handleError, validateLabel} from "../../utils/reusables";
+import { allFieldsFilled, byteSize, checkConnection, handleError, validateLabel } from "../../utils/reusables";
 import Everpay, { ChainType } from "everpay";
 import { useRecoilState } from "recoil";
 import { arweaveAddress, loadingPage, podcastColorAtom } from "../../atoms";
@@ -30,8 +30,8 @@ const ExplicitInput = React.lazy(() => import("./reusables").then(module => ({ d
 const SelectDropdownRow = React.lazy(() => import("./reusables").then(module => ({ default: module.SelectDropdownRow })));
 const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.ConnectButton })));
 const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
-const ValMsg = React.lazy(() => import("../reusables/formTools").then(module => ({default: module.ValMsg})))
-const SelectPodcast = React.lazy(() => import("../../component/uploadEpisode/reusables").then(module => ({default: module.SelectPodcast})));
+const ValMsg = React.lazy(() => import("../reusables/formTools").then(module => ({ default: module.ValMsg })))
+const SelectPodcast = React.lazy(() => import("../../component/uploadEpisode/reusables").then(module => ({ default: module.SelectPodcast })));
 
 export default function uploadShowTools() {
     return false
@@ -66,52 +66,53 @@ export const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex f
  * @returns Validation message || ""
  */
 
-export const handleValMsg = (input: string, type: string, input2: any ="") => {
-    switch(type) {
+export const handleValMsg = (input: string, type: string, input2: any = "") => {
+    switch (type) {
         case 'podName':
-        if((input.length > PODCAST_NAME_MAX_LEN || input.length < PODCAST_NAME_MIN_LEN)) {
-            return "uploadshow.validation.name"//, { minLength: PODCAST_NAME_MIN_LEN, maxLength: PODCAST_NAME_MAX_LEN });
-        } else {
-            return "";
-        }
+            if ((input.length > PODCAST_NAME_MAX_LEN || input.length < PODCAST_NAME_MIN_LEN)) {
+                return "uploadshow.validation.name"//, { minLength: PODCAST_NAME_MIN_LEN, maxLength: PODCAST_NAME_MAX_LEN });
+            } else {
+                return "";
+            }
         case 'podDesc':
-        if((input.length > PODCAST_DESC_MAX_LEN || input.length < PODCAST_DESC_MIN_LEN)) {
-            return "uploadshow.validation.description"//, { minLength: PODCAST_DESC_MIN_LEN, maxLength: PODCAST_DESC_MAX_LEN });
-        } else {
-            return "";
-        }
+            if ((input.length > PODCAST_DESC_MAX_LEN || input.length < PODCAST_DESC_MIN_LEN)) {
+                return "uploadshow.validation.description"//, { minLength: PODCAST_DESC_MIN_LEN, maxLength: PODCAST_DESC_MAX_LEN });
+            } else {
+                return "";
+            }
         case 'podAuthor':
-        if((input.length > PODCAST_AUTHOR_MAX_LEN || input.length < PODCAST_AUTHOR_MIN_LEN)) {
-            return "uploadshow.validation.author"//, { minLength: PODCAST_AUTHOR_MIN_LEN, maxLength: PODCAST_AUTHOR_MAX_LEN };
-        } else {
-            return "";
-        }
+            if ((input.length > PODCAST_AUTHOR_MAX_LEN || input.length < PODCAST_AUTHOR_MIN_LEN)) {
+                return "uploadshow.validation.author"//, { minLength: PODCAST_AUTHOR_MIN_LEN, maxLength: PODCAST_AUTHOR_MAX_LEN };
+            } else {
+                return "";
+            }
         case 'podEmail':
-        if(isValidEmail(input)) {
-            return "";
-        } else {
-            return "uploadshow.validation.email";
-        }
+            if (isValidEmail(input)) {
+                return "";
+            } else {
+                return "uploadshow.validation.email";
+            }
         case 'podLabel':
-        if(validateLabel(input, input2).res) {
-            return "";
-        } else {
-            return validateLabel(input, input2).msg
-        }   
+            if (validateLabel(input, input2).res) {
+                return "";
+            } else {
+                return validateLabel(input, input2).msg
+            }
     }
 }
-  
+
 // 4. Components
 export const ShowForm = (props: ShowFormInter) => {
-    
+
     // hooks
     const { t } = useTranslation();
     const { address, ANS, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
-    const [arweaveAddress_, ] = useRecoilState(arweaveAddress);
+    const [arweaveAddress_,] = useRecoilState(arweaveAddress);
     const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
     const [submittingShow, setSubmittingShow] = useState<boolean>(false);
-    const [uploadCost, setUploadCost] = useState<Number>(0);
+    const [arseedCostPerGig, setArseedCostPerGig] = useState<number>(0);
+    const [uploadCost, setUploadCost] = useState<number>(0);
     const router = useRouter();
 
     // inputs
@@ -159,33 +160,35 @@ export const ShowForm = (props: ShowFormInter) => {
             setPodcastColor(coverColor);
         };
         fetchData();
-      }, [podcastCover_]);
+    }, [podcastCover_]);
+
+    useEffect(() => {getBundleArFee(String(GIGABYTE)).then(setArseedCostPerGig)}, []);
 
     // Hook Calculating Upload Cost
     useEffect(() => {
-        setUploadCost(0)
-        
+        setUploadCost(0);
+
         async function calculateTotal() {
             const descBytes = byteSize(podcastDescription_)
-            const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
-            const minCover = await minifyPodcastCover(podcastCover_); 
+            const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt");
+            const minCover = await minifyPodcastCover(podcastCover_);
             const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
 
-            const descFee = await getBundleArFee(String(descBytes))
-            const coverFee = await getBundleArFee(String(convertedCover.size))
-            const miniFee = await getBundleArFee(String(fileMini.size))
+            const descFee = calculateARCost(arseedCostPerGig, descBytes);
+            const coverFee =  calculateARCost(arseedCostPerGig, convertedCover.size);
+            const miniFee = calculateARCost(arseedCostPerGig, fileMini.size);
 
-            return Number(descFee) + Number(coverFee) + Number(miniFee)
+            return descFee + coverFee + miniFee;
         }
-        if(podcastDescription_.length > 0 && podcastCover_ !== null) {
+        if (podcastDescription_.length > 0 && podcastCover_ !== null) {
             calculateTotal().then(async total => {
                 const formattedTotal = total / AR_DECIMALS
-                setUploadCost(props.edit ? formattedTotal : formattedTotal+MIN_UPLOAD_PAYMENT)
+                setUploadCost(props.edit ? formattedTotal : formattedTotal + MIN_UPLOAD_PAYMENT)
             })
         } else {
             setUploadCost(0)
         }
-    }, [podcastDescription_, podcastCover_])
+    }, [podcastDescription_, podcastCover_, coverUrl])
 
     //EXM 
     const createShowPayload: UploadPodcastProps | EditPodcastProps = {
@@ -210,8 +213,6 @@ export const ShowForm = (props: ShowFormInter) => {
 
     async function submitShow(payloadObj: any) {
         // Check Connection
-        // props.setUploadedPID("b4fa345dd57b6a006353fbb94f38b0b274eef55093fcd75079ebe804ccb66ac1f51c5afc41be124c3599f001c04e4a6fd60a7fa63cb83c9aaa02209e4deaa988");
-        // return;
         if (!checkConnection(arweaveAddress_)) {
             toast.error(CONNECT_WALLET, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
             return false
@@ -253,16 +254,16 @@ export const ShowForm = (props: ShowFormInter) => {
         }
 
         // Fee to Everpay
-        if(!props.edit || props.rssData.length > 0) { //Upload Mode or RSS Mode
+        if (!props.edit || props.rssData.length > 0) { //Upload Mode or RSS Mode
             const toastFee = toast.loading(t("loadingToast.payingFee"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
             setProgress(60)
             try {
-                const everpay = new Everpay({account: address, chainType: ChainType.arweave, arJWK: 'use_wallet',});
+                const everpay = new Everpay({ account: address, chainType: ChainType.arweave, arJWK: 'use_wallet', });
                 const transaction = await everpay.transfer({
                     tag: EVERPAY_AR_TAG,
                     amount: String(MIN_UPLOAD_PAYMENT),
                     to: EVERPAY_EOA,
-                    data: {action: "createPodcast", name: podcastName_,}
+                    data: { action: "createPodcast", name: podcastName_, }
                 })
                 payloadObj["txid"] = transaction?.everHash
                 toast.dismiss(toastFee);
@@ -273,26 +274,25 @@ export const ShowForm = (props: ShowFormInter) => {
         }
         //Error handling and timeout needed for this to complete redirect
         const toastSaving = toast.loading(t("loadingToast.savingChain"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
-        setProgress(props.edit ? 80: 75)
+        setProgress(props.edit ? 80 : 75)
         setTimeout(async function () {
-            console.log("createShowPayload: ", createShowPayload)
+            console.log("createShowPayload: ", createShowPayload);
             const uploadRes = (await axios.post('/api/exm/write', createShowPayload)).data;
             const podcasts = uploadRes.data.execution.state.podcasts;
             const podcast = podcasts[podcasts.length - 1];
             console.log('uploaded podcast', podcast);
-            if(podcasts.length > 0 && props.setUploadedPID) {
+            if (podcasts.length > 0 && props.setUploadedPID) {
                 props?.setUploadedPID(podcast.pid);
                 props?.setUploadedIndex(podcasts.length - 1);
             };
             props?.returnedPodcasts && props?.returnedPodcasts(podcasts);
             //EXM call, set timeout, then redirect.
-
             setTimeout(async function () {
                 toast.dismiss(toastSaving); 
                 setProgress(100)
                 toast.success(t("success.showUploaded"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
-                if(props.redirect) {
+                if (props.redirect) {
                     const { locale } = router;
                     router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
                 }
@@ -303,10 +303,10 @@ export const ShowForm = (props: ShowFormInter) => {
 
     // Inserts Editting Info
     useEffect(() => {
-        if(props.edit && props.rssData.length === 0) {
+        if (props.edit && props.rssData.length === 0) {
             const restoreSavedData = async () => {
                 console.log("Edit capability executed")
-                const podcast = props.podcasts.filter((podcast, ) => podcast.pid === props.selectedPid)
+                const podcast = props.podcasts.filter((podcast,) => podcast.pid === props.selectedPid)
                 const p = podcast[0]
                 //Set all state variables
                 setPodcastName_(p.podcastName)
@@ -314,15 +314,15 @@ export const ShowForm = (props: ShowFormInter) => {
                 setPodcastDescription_(description)
                 setPodcastAuthor_(p.author)
                 setPodcastEmail_(p.email)
-                
+
                 //Recreate Cover for Upload
-                setCoverUrl(p.cover)
-                fetch(ARSEED_URL+p.cover)
-                .then((rs) => rs.blob())
-                .then((blob) => {
-                  const url = URL.createObjectURL(blob);
-                  setPodcastCover_(url);
-                });
+                fetch(ARSEED_URL + p.cover)
+                    .then((rs) => rs.blob())
+                    .then((blob) => {
+                        const url = URL.createObjectURL(blob);
+                        setCoverUrl(p.cover)
+                        setPodcastCover_(url);
+                    });
                 setPodcastLanguage_(p.language)
                 setPodcastCategory_(categories_en.findIndex(cat => cat === p.categories[0]))
                 setPodcastExplicit_(p.explicit === "no" ? false : true)
@@ -338,7 +338,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
     // Inserts Editting Info
     useEffect(() => {
-        if(props.rssData.length > 0) {
+        if (props.rssData.length > 0) {
             const restoreSavedData = async () => {
                 const p = props.rssData[0]
                 //Set all state variables
@@ -348,13 +348,16 @@ export const ShowForm = (props: ShowFormInter) => {
                 setPodcastEmail_(p.email)
 
                 //Recreate Cover for Upload
-                setCoverUrl(p.cover)
                 fetch(p.cover)
-                .then((rs) => rs.blob())
-                .then((blob) => {
-                  const url = URL.createObjectURL(blob);
-                  setPodcastCover_(url);
-                });
+                    .then((rs) => rs.blob())
+                    .then((blob) => {
+                        const url = URL.createObjectURL(blob);
+                        setPodcastCover_(url);
+                        setCoverUrl(p.cover);
+                    })
+                    .catch((err) => 
+                        toast.error(t("errors.mediaDownloadError"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
+                    );
                 setPodcastLanguage_(p.language)
                 setPodcastCategory_(categories_en.findIndex(cat => cat === p.categories[0]))
                 setPodcastExplicit_(p.explicit === "no" ? false : true)
@@ -366,8 +369,10 @@ export const ShowForm = (props: ShowFormInter) => {
         };
     }, []);
 
+    const editCover = (props.edit && !props.rssData.length) ? ARSEED_URL + coverUrl : coverUrl;
+
     return (
-        <div className={showFormStyling + (props?.allowSelect ? " pb-20": "")}>
+        <div className={showFormStyling + (props?.allowSelect ? " pb-20" : "")}>
             {/*First Row*/}
             <div className="flex flex-col justify-center items-center lg:items-start lg:flex-row w-full">
                 {/*
@@ -375,32 +380,32 @@ export const ShowForm = (props: ShowFormInter) => {
                 */}
                 {/* <p className="text-white">{podcastName_}</p> */}
                 <div className="w-[25%] flex justify-center mb-4 lg:mb-0">
-                    <CoverContainer 
+                    <CoverContainer
                         setCover={setPodcastCover_}
                         isEdit={props.edit || props.rssData.length > 0}
-                        editCover={(props.edit && !props.rssData.length) ? ARSEED_URL+coverUrl : coverUrl}
+                        editCover={editCover}
                     />
                 </div>
                 <div className="flex flex-col w-[95%] md:w-[75%] lg:w-[50%] space-y-3">
                     {/*
                         Episode Name
                     */}
-                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="showName" placeholder={t("uploadshow.name")} value={podcastName_} 
-                    onChange={(e) => {
-                      setPodNameMsg(handleValMsg(e.target.value, "podName"));
-                      setPodcastName_(e.target.value);
-                    }}/>
+                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Between 3 and 500 characters" type="text" name="showName" placeholder={t("uploadshow.name")} value={podcastName_}
+                        onChange={(e) => {
+                            setPodNameMsg(handleValMsg(e.target.value, "podName"));
+                            setPodcastName_(e.target.value);
+                        }} />
                     <ValMsg valMsg={podNameMsg} className="pl-2" />
 
                     {/*
                         Episode Description
                     */}
                     <div className={descContainerStyling}>
-                        <textarea className={"w-[93%] "+episodeDescStyling + " h-32 "} required title="Between 1 and 5000 characters" name="showShowNotes" placeholder={t("uploadshow.description")} value={podcastDescription_}                     
-                        onChange={(e) => {
-                        setPodDescMsg(handleValMsg(e.target.value, "podDesc"));
-                        setPodcastDescription_(e.target.value);
-                        }}></textarea>
+                        <textarea className={"w-[93%] " + episodeDescStyling + " h-32 "} required title="Between 1 and 5000 characters" name="showShowNotes" placeholder={t("uploadshow.description")} value={podcastDescription_}
+                            onChange={(e) => {
+                                setPodDescMsg(handleValMsg(e.target.value, "podDesc"));
+                                setPodcastDescription_(e.target.value);
+                            }}></textarea>
                         <MarkDownToolTip
                             placement="top"
                             size={40}
@@ -411,27 +416,27 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Author
                     */}
-                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Author" type="text" name="showName" placeholder={t("uploadshow.author")} value={podcastAuthor_}                  
-                    onChange={(e) => {
-                        setPodAuthMsg(handleValMsg(e.target.value, "podAuthor"));
-                        setPodcastAuthor_(e.target.value);
-                    }} />
+                    <input className={episodeNameStyling} required pattern=".{3,500}" title="Author" type="text" name="showName" placeholder={t("uploadshow.author")} value={podcastAuthor_}
+                        onChange={(e) => {
+                            setPodAuthMsg(handleValMsg(e.target.value, "podAuthor"));
+                            setPodcastAuthor_(e.target.value);
+                        }} />
                     <ValMsg valMsg={podAuthMsg} className="pl-2" />
 
                     {/*
                         Email
                     */}
                     <input className={episodeNameStyling} required pattern=".{3,500}" title="Email" type="text" name="showName" placeholder={t("uploadshow.email")} value={podcastEmail_}
-                    onChange={(e) => {
-                        setPodEmailMsg(handleValMsg(e.target.value, "podEmail"));
-                        setPodcastEmail_(e.target.value);
-                    }}/>
+                        onChange={(e) => {
+                            setPodEmailMsg(handleValMsg(e.target.value, "podEmail"));
+                            setPodcastEmail_(e.target.value);
+                        }} />
                     <ValMsg valMsg={podEmailMsg} className="pl-2" />
 
                     {/*
                         Genre and Language
                     */}
-                    <SelectDropdownRow 
+                    <SelectDropdownRow
                         setLanguage={setPodcastLanguage_}
                         setCategory={setPodcastCategory_}
                         setLabel={setPodcastLabel_}
@@ -446,44 +451,28 @@ export const ShowForm = (props: ShowFormInter) => {
                         Explicit & Is Visible
                     */}
                     <div className="flex flex-row justify-between items-center">
-                        <ExplicitInput 
+                        <ExplicitInput
                             setExplicit={setPodcastExplicit_}
                             explicit={podcastExplicit_}
                         />
                         {props.edit && (
-                        <VisibleInput 
-                            setVisible={setIsVisible}
-                            visible={isVisible}
-                        />
+                            <VisibleInput
+                                setVisible={setIsVisible}
+                                visible={isVisible}
+                            />
                         )}
                     </div>
-
-                    {/* Allow Select */}
-                    {props?.allowSelect && (
-                        <div>
-                            <div className="my-1 border-t-[2px] border-white rounded-full"></div>
-                            <div className='text-center mb-2'>or</div>
-                            <SelectPodcast
-                                pid={props.selectedPid}
-                                setPid={(pid) => {
-                                    props?.setUploadedPID && props.setUploadedPID(pid);
-                                }}
-                                shows={props?.podcasts || []}
-                            />
-                        </div>
-                    )}
-
                     {/*
                         Upload
                     */}
                     <div className="w-full flex justify-center items-center flex-col">
                         {/*Show Upload Btn, Spinner, or Connect Btn*/}
                         {address && address.length > 0 && !submittingShow && (
-                        <UploadButton 
-                            width="w-[50%]"
-                            disable={!allFieldsFilled(validationObject)}
-                            click={() =>submitShow(createShowPayload)}
-                        />
+                            <UploadButton
+                                width="w-[50%]"
+                                disable={!allFieldsFilled(validationObject)}
+                                click={() => submitShow(createShowPayload)}
+                            />
                         )}
                         {address && address.length > 0 && submittingShow && (
                             <ProgressBar
@@ -491,18 +480,34 @@ export const ShowForm = (props: ShowFormInter) => {
                             />
                         )}
                         {!address && (
-                            <ConnectButton 
+                            <ConnectButton
                                 width="w-[75%] md:w-[50%]"
                                 disable={false}
                                 click={() => connect()}
                             />
                         )}
                         {uploadCost === 0 && podcastDescription_.length > 0 && podcastCover_ && (
-                        <p className="mt-2 text-neutral-400">{t("uploadshow.calculatingFee")}</p> 
+                            <p className="mt-2 text-neutral-400">{t("uploadshow.calculatingFee")}</p>
                         )}
                         {uploadCost !== 0 && podcastDescription_.length > 0 && podcastCover_ && (
-                        <p className="mt-2 text-neutral-400">{t("uploadshow.uploadCost")+": "+(Number(uploadCost)).toFixed(6) +" AR"}</p>
+                            <p className="mt-2 text-neutral-400">{t("uploadshow.uploadCost") + ": " + (Number(uploadCost)).toFixed(6) + " AR"}</p>
                         )}
+
+                        {/* Show Podcasts for selection */}
+                        {props?.allowSelect && (
+                            <div className="w-full mt-4">
+                                <div className="my-1 border-t-[2px] border-white rounded-full"></div>
+                                <div className='text-center mb-2'>{t("rss.or")}</div>
+                                <SelectPodcast
+                                    pid={props.selectedPid}
+                                    setPid={(pid) => {
+                                        props?.setUploadedPID && props.setUploadedPID(pid);
+                                    }}
+                                    shows={props?.podcasts || []}
+                                />
+                            </div>
+                        )}
+
                     </div>
                 </div>
                 <div className={`w-[25%]`}></div>

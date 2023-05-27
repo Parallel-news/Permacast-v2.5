@@ -242,6 +242,7 @@
 		"everpayError": "There was an issue with your Everpay Balance/Connection",
 		"coverUploadError": "There was an issue uploading your cover. Try Again.",
 		"mediaUploadError": "There was an issue uploading your media. Try Again.",
+		"mediaDownloadError": "Some media failed to download.",
 		"descUploadError": "There was an issue uploading description. Try Again.",
 		"noShowError": "Unable to fetch shows. Refresh and try again.",
 		"failedToEstimate": "Failed to estimate fee. Try again."
@@ -288,6 +289,8 @@
 	"general-error": "There was an error. Try Again.",
 	"rss": {
 		"importrss": "Import RSS",
+		"or": "or",
+		"episode-already-saved": "This episode has already been uploaded to this channel.",
 		"rssfeedurl": "RSS Feed Url",
 		"norssepisode": "Could not fetch episode data from RSS link.",
 		"norsspodcast": "Could not fetch podcast metadata from RSS link.",

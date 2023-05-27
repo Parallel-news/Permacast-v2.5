@@ -158,7 +158,6 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
         {domLoaded && (
           <Suspense fallback={<Loading />}>
             <CreatorPageComponentLazy {...{ creator }} />
-            <button onClick={() => queryPodcastData.refetch()}>Refetch</button>
           </Suspense>
         )}
       </>
