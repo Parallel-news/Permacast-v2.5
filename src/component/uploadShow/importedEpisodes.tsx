@@ -249,6 +249,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
       const parsedLinks = JSON.parse(savedEpisodeLinksValue);
       setUploadedEpisodes(parsedLinks);
       setUploadCount(parsedLinks.length);
+      setCurrentPage(Math.ceil(parsedLinks.length / MAX_EPISODES_TO_UPLOAD_AT_ONCE) + 1);
     } else {
       RSSFeedManager.addValueToObject(realPid + '/' + RSSLink, JSON.stringify([]));
       setUploadedEpisodes([]);
@@ -524,21 +525,14 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
         <div className="flex flex-col w-[95%] md:w-[75%] lg:w-[50%] space-y-3">
           {/* Preview */}
           <div className="flexCol gap-y-2">
-            {/* {FULL_TESTING === 1 && (<div className="text-red-600">TESTING MODE</div>)} */}
-            {currentEpisodes.map((rssEpisode: rssEpisode, number: number) => (
-              <React.Fragment key={number}>
-                <RssEpisode
-                  {...rssEpisode}
-                  gigabyteCost={gigabyteCost}
-                  number={number + uploadedCount + 1}
-                  uploaded={uploadedEpisodes.includes(rssEpisode.link)}
-                />
-              </React.Fragment>
-            ))}
-            {retryEpisodes?.length > 0 && (
+            {isCalculating ? (
+              <div className="text-zinc-700 flexFullCenter w-full h-60">
+                <Loading size="xl" color="currentColor" />
+              </div>
+            ) : (
               <>
-                <div className="text-center my-2">{t("rss.estimation-failed")}</div>
-                {retryEpisodes.map((rssEpisode: rssEpisode, number: number) => (
+                {/* {FULL_TESTING === 1 && (<div className="text-red-600">TESTING MODE</div>)} */}
+                {currentEpisodes.map((rssEpisode: rssEpisode, number: number) => (
                   <React.Fragment key={number}>
                     <RssEpisode
                       {...rssEpisode}
@@ -548,28 +542,44 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
                     />
                   </React.Fragment>
                 ))}
-                <Spacer y={1} />
-                <div className="flexCenter justify-between">
-                  <button className={buttonColorStyling + "py-3 px-4 "} onClick={() => startEstimating()}>
-                    {isCalculating && (
-                      <div style={{ color: DEFAULT_THEME_COLOR }}>
-                        <Loading size="sm" color="currentColor" />
-                      </div>
-                    )}
-                    <div className="">{t("rss.retry-estimation")}</div>
-                    <Tooltip rounded color="invert" content={<div>{t("rss.limited-size")}</div>}>
-                      <span className="ml-2 mt-[2.5px] tooltip-button">
-                        ?
-                      </span>
-                    </Tooltip>
-                  </button>
-                  <button className={buttonColorStyling + "py-3 px-4 "} onClick={() => {
-                    setRetryEpisodes([]);
-                    setCurrentPage(prev => prev + 1);
-                  }}>
-                    {t("rss.skip-failed")}
-                  </button>
-                </div>
+                {retryEpisodes?.length > 0 && (
+                  <>
+                    <div className="text-center my-2">{t("rss.estimation-failed")}</div>
+                    {retryEpisodes.map((rssEpisode: rssEpisode, number: number) => (
+                      <React.Fragment key={number}>
+                        <RssEpisode
+                          {...rssEpisode}
+                          gigabyteCost={gigabyteCost}
+                          number={number + uploadedCount + 1}
+                          uploaded={uploadedEpisodes.includes(rssEpisode.link)}
+                        />
+                      </React.Fragment>
+                    ))}
+                    <Spacer y={1} />
+                    <div className="flexCenter justify-between">
+                      <button className={buttonColorStyling + "py-3 px-4 "} onClick={() => startEstimating()}>
+                        {isCalculating && (
+                          <div style={{ color: DEFAULT_THEME_COLOR }}>
+                            <Loading size="sm" color="currentColor" />
+                          </div>
+                        )}
+                        <div className="">{t("rss.retry-estimation")}</div>
+                        <Tooltip rounded color="invert" content={<div>{t("rss.limited-size")}</div>}>
+                          <span className="ml-2 mt-[2.5px] tooltip-button">
+                            ?
+                          </span>
+                        </Tooltip>
+                      </button>
+                      <button className={buttonColorStyling + "py-3 px-4 "} onClick={() => {
+                        setRetryEpisodes([]);
+                        setCurrentPage(prev => prev + 1);
+                      }}>
+                        {t("rss.skip-failed")}
+                      </button>
+                    </div>
+                  </>
+                )}
+
               </>
             )}
             <div className="text-center my-4">
@@ -672,7 +682,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
             <p className="mt-2 text-neutral-400">{t("uploadshow.uploadCost") + ": " + (Number(totalUploadCost)).toFixed(6) + " AR " + ``}</p>
           </div>
         </div>
-        <div className="w-[25%]"></div>
+        <div className="w-[25%] pb-20"></div>
       </div>
     </div>
   );
