@@ -24,7 +24,6 @@ import { arweaveAddress, calculateEverPayBalance, loadingPage, podcastColorAtom 
 
 import { fetchARPriceInUSD } from "../../utils/redstone";
 import { RSSFeedManager } from "../../utils/localstorage";
-import { findPodcast } from "../../utils/filters";
 
 import { ImgCover } from "./reusables";
 import ProgressBar from "../reusables/progressBar";
@@ -35,13 +34,14 @@ import { DEFAULT_THEME_COLOR } from "../../constants/ui";
 const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.ConnectButton })));
 const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
 
-const RSS_TESTING_URL = "https://permacast-bloodstone-helper.herokuapp.com/feeds/rss/T7HWHKp-AjIj69TQRvV4EZRVTY1J8J9zSgE668aOmC4";
+//? IN THE FUTURE, USE AN OBJECT TO CHECK EACH PART OF THE FLOW
 const FULL_TESTING = 0;
 const MAX_EPISODES_TO_UPLOAD_AT_ONCE = 5;
 
 // 1. Interfaces
 interface ImportedEpisodesProps {
   pid: string;
+  RSSLink: string; 
   coverUrl: string;
   rssEpisodes: rssEpisode[];
   redirect?: boolean;
@@ -80,7 +80,7 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 
 // Rube Goldberg would be proud
-export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, coverUrl, index, redirect }) => {
+export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect }) => {
 
   // hooks
   const { t } = useTranslation();
@@ -105,7 +105,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
   const [currentEpisodes, setCurrentEpisodes] = useState<rssEpisode[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [navigatePage, setNavigatePage] = useState<number>(1);
-  const [uploadedPages, setUploadedPages] = useState<number[]>([]);
+  const [uploadedEpisodes, setUploadedEpisodes] = useState<string[]>([]);
   const [retryEpisodes, setRetryEpisodes] = useState<rssEpisodeRetry[]>([]);  
   const [uploadedCount, setUploadCount] = useState<number>(0);
   const [progress, setProgress] = useState(0);
@@ -114,7 +114,9 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
 
   const fetchPodcast = async () => {
     const data: EXMState = (await axios.get('/api/exm/read')).data;
-    const podcast = data.podcasts[index];
+    const podcastViaPID = data.podcasts.find(podcast => podcast.pid === pid);
+    const podcastViaIndex = index !== 0 ? data.podcasts[index]: undefined;
+    const podcast = podcastViaPID || podcastViaIndex;
     console.log(podcast);
     return podcast;
   };
@@ -180,7 +182,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     return { knownEpisodeSizes: sortedEpisodes, unknownEpisodeSizes: retryEpisodeDownloadList };
   };
 
-  const fetchCover = async () => {
+  const fetchCoverColor = async () => {
     if (!coverUrl) return;
     const dominantColor = await fetchDominantColor(coverUrl, false, false);
     if (dominantColor.error) return;
@@ -223,7 +225,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     if (!rssEpisodes) return;
     setIsCalculating(true);
     fetchARPriceInUSD().then(setArPrice);
-    await fetchCover();
+    await fetchCoverColor();
     await fetchGigabyteCosts().then(setGigabyteCost);
     const index = MAX_EPISODES_TO_UPLOAD_AT_ONCE * (currentPage - 1);
     console.log(index);
@@ -239,11 +241,19 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
   useEffect(() => {
     if (!realPid) {
       attemptIndexPodcastID();
-      return
+      return;
     };
-    const savedPIDpages = RSSFeedManager.getValueFromObject(realPid);
-    console.log(savedPIDpages);
-    if (savedPIDpages) setUploadedPages(JSON.parse(savedPIDpages));
+    const savedEpisodeLinksValue = RSSFeedManager.getValueFromObject(realPid + '/' + RSSLink);
+    console.log(savedEpisodeLinksValue);
+    if (savedEpisodeLinksValue) {
+      const parsedLinks = JSON.parse(savedEpisodeLinksValue);
+      setUploadedEpisodes(parsedLinks);
+      setUploadCount(parsedLinks.length);
+    } else {
+      RSSFeedManager.addValueToObject(realPid + '/' + RSSLink, JSON.stringify([]));
+      setUploadedEpisodes([]);
+      setUploadCount(0);
+    };
   }, [realPid]);
 
   useEffect(() => {
@@ -277,7 +287,6 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
   };
 
   const payStorageFee = async (length: string, count: number) => {
-    if (FULL_TESTING) return "0x8fac6c0c2c1c50e029a75ff0df2bcb8b643e279f1c218f9c2074f2c28f65b8ac";
     // Pay for content storage on API side
     const CONTENT_COST = calculateARCost(Number(gigabyteCost), Number(length));
     const FINAL_CONTENT_COST = CONTENT_COST + EPISODE_SLIPPAGE; // to avoid rounding errors and a slippage change
@@ -303,7 +312,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
   const saveEpisodeToEXM = async (rssEpisode: rssEpisode, uploadPaymentTX: string, count: number) => {
     console.log('Uploading to EXM, ', rssEpisode);
     const handleErr = handleError;
-    const { description, title, fileType } = rssEpisode;
+    const { link, description, title, fileType } = rssEpisode;
     const percentPerEpisode = (100 / currentEpisodes.length);
 
     const uploadEpisodePayload: UploadEpisodeProps = {
@@ -339,10 +348,22 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     // @ts-ignore
     uploadEpisodePayload["txid"] = feeTX;
 
-    const result = await axios.post('/api/exm/write', uploadEpisodePayload);
+    try {
+      const result = await axios.post('/api/exm/write', uploadEpisodePayload);
+      console.log(result.data);
+      // we need to save the episode link to the RSSFeedManager
+      // the key is podcast's PID + RSSLink
+      // the value is an array of all the already uploaded episode links
+      const prev = JSON.parse(RSSFeedManager.getValueFromObject(realPid + '/' + RSSLink));
+      const newList = [...prev, link];
+      RSSFeedManager.addValueToObject(realPid + '/' + RSSLink, JSON.stringify(newList));
+      setUploadedEpisodes(newList);
+    } catch (e) {
+      console.log('error: ', e);
+      return '';
+    };
     setProgress(prev => prev + percentPerEpisode);
-    console.log(result.data);
-    return 'success';
+    return link;
   };
 
   const startEpisodesUpload = async () => {
@@ -360,6 +381,8 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
 
     setIsUploadingEpisodes(true);
 
+    // EXM sometimes returns fake PID and that will cause issues
+    // This fix guarantees to get the real PID
     if (!realPid) {
       const attemptPid = await attemptIndexPodcastID();
       if (!attemptPid) {
@@ -397,18 +420,17 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
         toast.dismiss(toastSaving);
         console.log('Failed to upload episode: ', episode);
         continue;
-      }
+      };
       console.log({ currentEpisode: currentEpisodes[i], episode });
-      if (FULL_TESTING) break;
       const EXMUpload = await saveEpisodeToEXM(currentEpisodes[i], episode.tx, i);
       uploadedEpisodes.push(EXMUpload);
+      await sleep(100);
     };
     console.log(uploadedEpisodes);
 
     setIsUploadingEpisodes(false);
     setProgress(100);
     setTimeout(() => setProgress(0), 1000);
-    RSSFeedManager.addValueToObject(realPid, JSON.stringify([...uploadedPages, currentPage]));
 
     let totalUploadedCount = uploadedCount + uploadedEpisodes.length;
     setUploadCount(totalUploadedCount);
@@ -417,18 +439,18 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     toast.dismiss(savingBlockchainToast);
     console.log(currentPage);
     console.log(MAX_PAGES);
-    setUploadedPages(prev => [...prev, currentPage]);
+
     if (currentPage === MAX_PAGES) {
       setCurrentPage(MAX_PAGES - 1);
     } else setCurrentPage(prev => prev + 1);
 
     if (totalUploadedCount >= rssEpisodes.length) {
       setTimeout(async function () {
-        toast.success(t("success.showUploaded"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
-        const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
+        toast.success(t("success.showUploaded"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME));
+        const identifier = ANS?.currentLabel ? ANS?.currentLabel : address;
         const { locale } = router;
-        router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
-      }, 3500);  
+        router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true });
+      }, 3500);
     };
   };
 
@@ -474,22 +496,22 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
 
     return (
       <div className="bg-zinc-800 default-animation rounded-xl px-5 py-3 w-full text-white flex justify-between">
-        <div className="line-clamp-2">{t("home.episode")} {number}: {title}</div>
+        <div className="line-clamp-2">#{number}: {title}</div>
         <div className="ml-4 flex gap-x-2">
-          {uploaded ? <CheckIcon className="bg-green-500 rounded-full w-5 h-5 text-white shrink-0" /> : ""}
+          {uploaded && (
+            <Tooltip rounded color="invert" content={<div>{t("rss.episode-already-saved")}</div>}>
+              <CheckIcon className="bg-green-500 rounded-full w-5 h-5 text-white shrink-0 p-1" />
+            </Tooltip>
+          )}
           <div>{size || ""}</div>
-          <div>{cost || "?"} AR</div>
+          <div>{cost || "0"} AR</div>
         </div>
       </div>
     );
   };
 
   //TODO:
-  // 1. Cover needs 1:1 ratio
-  // 2. Fix page number on big rss feeds (done!)
-  // 3. Styles and text fixes
-  // 4. Download episodes if size unavailable (WIP)
-  // 5. Trigger balance update after upload
+  // Trigger balance update after upload
 
   return (
     <div className={showFormStyling}>
@@ -502,13 +524,14 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
         <div className="flex flex-col w-[95%] md:w-[75%] lg:w-[50%] space-y-3">
           {/* Preview */}
           <div className="flexCol gap-y-2">
+            {/* {FULL_TESTING === 1 && (<div className="text-red-600">TESTING MODE</div>)} */}
             {currentEpisodes.map((rssEpisode: rssEpisode, number: number) => (
               <React.Fragment key={number}>
                 <RssEpisode
                   {...rssEpisode}
                   gigabyteCost={gigabyteCost}
                   number={number + uploadedCount + 1}
-                  uploaded={uploadedPages.includes(currentPage)}
+                  uploaded={uploadedEpisodes.includes(rssEpisode.link)}
                 />
               </React.Fragment>
             ))}
@@ -521,7 +544,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
                       {...rssEpisode}
                       gigabyteCost={gigabyteCost}
                       number={number + uploadedCount + 1}
-                      uploaded={uploadedPages.includes(currentPage)}
+                      uploaded={uploadedEpisodes.includes(rssEpisode.link)}
                     />
                   </React.Fragment>
                 ))}
@@ -561,20 +584,9 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
                     <ChevronLeftIcon className="h-6 w-6 mr-1" />
                   </button>
                 )}
-                {MAX_PAGES >= 1 && Array.from(Array(MAX_PAGES).keys()).slice(0, 3).map((page: number) => (
-                  <button
-                    key={page}
-                    className={buttonStyling}
-                    onClick={() => setCurrentPage(page + 1)}
-                    disabled={page === (currentPage - 1) || isCalculating}
-                  >
-                    {page + 1}
-                  </button>
-                ))}
-                {/* Manual page input */}
-                {MAX_PAGES >= 4 && (
+                {MAX_PAGES >= 3 && (
                   <DebouncedInput 
-                    className={buttonStyling + 'text-center font-bold '}
+                    className={buttonStyling + 'text-center font-bold underline '}
                     input={navigatePage}
                     setInput={setNavigatePage}
                     timeout={800}
@@ -590,6 +602,17 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
                     placeholder={currentPage.toString()}
                   />
                 )}
+                {MAX_PAGES >= 1 && Array.from(Array(MAX_PAGES).keys()).slice(0, 3).map((page: number) => (
+                  <button
+                    key={page}
+                    className={buttonStyling}
+                    onClick={() => setCurrentPage(page + 1)}
+                    disabled={page === (currentPage - 1) || isCalculating}
+                  >
+                    {page + 1}
+                  </button>
+                ))}
+                {/* Manual page input */}
                 {MAX_PAGES >= 5 && (
                   <button
                     className={buttonStyling}
@@ -625,7 +648,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
             {address && address.length > 0 && !isUploadingEpisodes && (
               <>
                 <UploadButton
-                  disable={!userHasEnoughAR || isCalculating || !!retryEpisodes?.length || uploadedPages.includes(currentPage) }
+                  disable={!userHasEnoughAR || isCalculating || !!retryEpisodes?.length}
                   width="w-[50%]"
                   click={startEpisodesUpload}
                 />
