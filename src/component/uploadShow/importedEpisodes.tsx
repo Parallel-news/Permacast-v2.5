@@ -592,7 +592,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
                 currentPage={currentPage}
                 totalPages={MAX_PAGES}
                 setCurrentPage={setCurrentPage}
-                totalResults={3}
+                limitPagination={3}
                 extraJSX={(
                   <button className={buttonStyling} onClick={() => {
                     setIsReverseOrder(prev => {

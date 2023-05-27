@@ -6,8 +6,8 @@ const DebouncedInput = lazy(() => import("../reusables/debouncedInput").then(mod
 
 interface PaginationProps {
   totalPages: number;
-  // allowed pages to be displayed, best to be an odd number
-  totalResults: number;
+  // allowed pages to be displayed, best to be around 3-5
+  limitPagination: number;
   currentPage: number;
   setCurrentPage: Dispatch<SetStateAction<number>>;
   removeScrollButtons?: boolean;
@@ -20,7 +20,7 @@ const buttonStyling = `pagination-button h-8 w-8 `;
 
 const Pagination: FC<PaginationProps> = ({
   totalPages,
-  totalResults,
+  limitPagination,
   currentPage,
   setCurrentPage,
   removeScrollButtons,
@@ -45,7 +45,7 @@ const Pagination: FC<PaginationProps> = ({
           <ChevronLeftIcon className="h-6 w-6 mr-1" />
         </button>
       )}
-      {(totalPages >= totalResults - 1) && (
+      {(totalPages >= limitPagination - 1) && (
         <DebouncedInput
           className={styling + 'text-center font-bold underline '}
           input={navigatePage}
@@ -62,7 +62,7 @@ const Pagination: FC<PaginationProps> = ({
           placeholder={currentPage.toString()}
         />
       )}
-      {totalPages >= 1 && Array.from(Array(totalPages).keys()).slice(0, totalResults).map((page: number) => (
+      {totalPages >= 1 && Array.from(Array(totalPages).keys()).slice(0, limitPagination).map((page: number) => (
         <button
           key={page}
           className={styling}
@@ -72,7 +72,7 @@ const Pagination: FC<PaginationProps> = ({
           {page + 1}
         </button>
       ))}
-      {totalPages >= totalResults && (
+      {totalPages >= limitPagination && (
         <button
           className={styling}
           onClick={() => setCurrentPage(totalPages)}
