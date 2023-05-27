@@ -86,10 +86,9 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
   const { walletConnected, address } = useArconnect();
 
   const [, setUserBannerImage] = useRecoilState(userBannerImageAtom);
-  
+
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [userModalIsOpen, setUserModalIsOpen] = useState<boolean>(false);
 
   useEffect(() => {setUserBannerImage(banner)}, [banner]);
   useEffect(() => {
@@ -98,17 +97,7 @@ export const CreatorPageComponent: FC<{ creator: CreatorPageComponentProps }> = 
   }, [PASoMProfile, address]);
 
   const openModalCallback = () => setIsOpen(prev => !prev);
-  const openUserDetailsModal = () => setUserModalIsOpen(prev => !prev);
   const tipModalArgs = { ANSorAddress: ANSuserExists ? currentLabel : user, recipientAddress: user, isOpen, setIsOpen };
-
-  const Items = (): ExtendedDropdownButtonProps[] => {
-    const buttonsArray = [];
-    if (ANSuserExists) buttonsArray.push({key: "view-ans", jsx: <ViewANSButton {...{ currentLabel }} />});
-    if (address !== user) buttonsArray.push({key: "tip", jsx: <TipButton {...{ openModalCallback }} />});
-    if (address !== user) buttonsArray.push({key: "follow", jsx: <FollowButton {...{ user, walletConnected, isFollowing, setIsFollowing }} />});
-    if (address === user) buttonsArray.push({key: "profile", jsx: <EditButton {...{ PASoMProfile }} />});
-    return buttonsArray;
-  };
 
   return (
     <div className={CreatorPageStyling}>

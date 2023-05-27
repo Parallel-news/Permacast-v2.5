@@ -10,7 +10,7 @@ import { PASoMProfile } from '../../../interfaces/pasom';
 import React, { useState, useEffect, Suspense } from 'react';
 import { hexToRGB, RGBobjectToString } from '../../../utils/ui';
 import { Creator404, sortByDate } from '../../../component/creator';
-import { allPodcasts, loadingPage, podcastColorAtom } from '../../../atoms';
+import { loadingPage, podcastColorAtom } from '../../../atoms';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Ans, Episode, FullEpisodeInfo, Podcast } from '../../../interfaces';
 import { getPodcastData } from '../../../features/prefetching';
@@ -56,10 +56,8 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   const { user, nickname, currentLabel, address_color, bio, avatar  } = userInfo;
   const [PASoMProfile, setPASoMProfile] = useState<PASoMProfile | undefined>();
   const creatorName = nickname || currentLabel || shortenAddress(user);
-  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [episodes, setEpisodes] = useState<FullEpisodeInfo[]>([]);
   const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
-  const [allPodcasts_, setAllPodcasts_] = useRecoilState(allPodcasts);
   const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
   const [domLoaded, setDomLoaded] = useState(false)
 
@@ -86,25 +84,30 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
     if (!userInfo) return;
     if (queryPodcastData.isLoading) return;
     const fetchUserData = async () => {
-      const podcasts: Podcast[] = queryPodcastData.data.podcasts.filter((podcast: Podcast) => podcast.owner === user);
       const userEpisodes = podcasts.map((podcast: Podcast) => 
         podcast.episodes.map((episode: Episode) => ({episode, podcast}))
       ).flat(1).splice(-3, 3);
-      setPodcasts(podcasts.reverse());
       const sortedEpisodes = sortByDate(userEpisodes)
       setEpisodes(sortedEpisodes.slice().reverse());
     };
     fetchUserData();
-  }, [queryPodcastData.isLoading, userInfo]);
+  }, [userInfo]);
 
   useEffect(()=> {
     setDomLoaded(true)
+    queryPodcastData.refetch()
   }, [])
 
   useEffect(() => {
     const timer = setTimeout(() =>{_setLoadingPage(false);}, 1000);
     return () => clearTimeout(timer);
   }, [_loadingPage])
+
+  let podcasts: Podcast[] = [];
+  if(queryPodcastData.data) {
+    podcasts = queryPodcastData.data.podcasts.filter((podcast: Podcast) => podcast.owner === user)
+    podcasts = podcasts.reverse()
+  }
 
   const creator = {
     ...userInfo,
@@ -155,6 +158,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
         {domLoaded && (
           <Suspense fallback={<Loading />}>
             <CreatorPageComponentLazy {...{ creator }} />
+            <button onClick={() => queryPodcastData.refetch()}>Refetch</button>
           </Suspense>
         )}
       </>
