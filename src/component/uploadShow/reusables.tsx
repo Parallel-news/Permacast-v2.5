@@ -9,9 +9,9 @@ import { DEFAULT_LANGUAGE } from "../../utils/languages";
 const Cropper = React.lazy(() => import("react-easy-crop"));
 const PhotoIcon = React.lazy(() => import("@heroicons/react/24/outline").then(module => ({ default: module.PhotoIcon })));
 const Tooltip = React.lazy(() => import("@nextui-org/react").then(module => ({ default: module.Tooltip })));
-const ValMsg = React.lazy(() => import("../reusables/formTools").then(module => ({default: module.ValMsg})))
-const CategoryOptions = React.lazy(() => import("../../utils/languages").then(module => ({default: module.CategoryOptions})))
-const LanguageOptions = React.lazy(() => import("../../utils/languages").then(module => ({default: module.LanguageOptions})))
+const ValMsg = React.lazy(() => import("../reusables/formTools").then(module => ({ default: module.ValMsg })))
+const CategoryOptions = React.lazy(() => import("../../utils/languages").then(module => ({ default: module.CategoryOptions })))
+const LanguageOptions = React.lazy(() => import("../../utils/languages").then(module => ({ default: module.LanguageOptions })))
 
 interface CoverContainerInter {
     setCover: (v: any) => void;
@@ -76,7 +76,7 @@ export const cropScreenStyling = "absolute top-0 left-0 w-full h-full flex flex-
 export const cropSelectionDivStyling = "min-w-[50px] min-h-[10px] rounded-[4px] bg-black/10 hover:bg-black/20 border-[1px] border-solid border-white/10 m-2 p-1 px-2 cursor-pointer flex flex-col justify-center items-center"
 export const cropSelectionTextStyling = "flex flex-col justify-center items-center text-white/60"
 const emptyCoverIconStyling = "input input-secondary flex flex-col items-center justify-center cursor-pointer bg-zinc-800 h-48 w-48 rounded-[20px] outline-none focus:ring-2 focus:ring-inset focus:ring-white hover:bg-zinc-600"
-const selectDropdownStyling="select select-secondary w-[30%] py-2 px-5 text-base font-normal input-styling bg-zinc-800 default-animation "
+const selectDropdownStyling = "select select-secondary w-[30%] py-2 px-5 text-base font-normal input-styling bg-zinc-800 default-animation "
 const selectDropdownRowStyling = "flex flex-col sm:flex-row w-full justify-between space-y-2 sm:space-y-0"
 const coverContainerLabelStyling = "cursor-pointer transition duration-300 ease-in-out text-zinc-600 hover:text-white flex md:block h-fit w-48"
 const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
@@ -101,41 +101,41 @@ export const CoverContainer = (props: CoverContainerInter) => {
     //Check if in Edit Mode
     useEffect(() => {
         async function fetchImage() {
-          const response = await fetch(props.editCover);
-          const blob = await response.blob();
-          responseUrl = response?.url ? response.url : ""
-          const oldCoverFile = new File([blob], "image.png", { type: "image/png" });
-          const fileArray = [oldCoverFile];
-          const newFileList = new DataTransfer();
-          fileArray.forEach((file) => {
-            newFileList.items.add(file);
-          });
-          podcastCoverRef.current.files = newFileList.files;
-          setImg(props.editCover);
+            const response = await fetch(props.editCover);
+            const blob = await response.blob();
+            responseUrl = response?.url ? response.url : ""
+            const oldCoverFile = new File([blob], "image.png", { type: "image/png" });
+            const fileArray = [oldCoverFile];
+            const newFileList = new DataTransfer();
+            fileArray.forEach((file) => {
+                newFileList.items.add(file);
+            });
+            podcastCoverRef.current.files = newFileList.files;
+            setImg(props.editCover);
         }
 
-        if(props.isEdit) {
+        if (props.isEdit) {
             fetchImage();
         }
-      }, [props.editCover]);
+    }, [props.editCover]);
 
     const handleChangeImage = async (e: any) => {
         isPodcastCoverSquared(e);
     };
-    
+
     const isPodcastCoverSquared = (event) => {
         if (event.target.files.length !== 0) {
-          const podcastCoverImage = new Image();
-          podcastCoverImage.src = window.URL.createObjectURL(event.target.files[0]);
-          podcastCoverImage.onload = () => {
-            if (podcastCoverImage.width !== podcastCoverImage.height) {
-              setInputImg(URL.createObjectURL(event.target.files[0]));
-              setShowCrop(true);
-            } else {
-              setImg(URL.createObjectURL(event.target.files[0]));
-              props.setCover(URL.createObjectURL(event.target.files[0]))
-            }
-          };
+            const podcastCoverImage = new Image();
+            podcastCoverImage.src = window.URL.createObjectURL(event.target.files[0]);
+            podcastCoverImage.onload = () => {
+                if (podcastCoverImage.width !== podcastCoverImage.height) {
+                    setInputImg(URL.createObjectURL(event.target.files[0]));
+                    setShowCrop(true);
+                } else {
+                    setImg(URL.createObjectURL(event.target.files[0]));
+                    props.setCover(URL.createObjectURL(event.target.files[0]))
+                }
+            };
         }
     };
 
@@ -145,54 +145,54 @@ export const CoverContainer = (props: CoverContainerInter) => {
 
     const showCroppedImage = useCallback(async () => {
         try {
-          const croppedImage = await getCroppedImg(
-            inputImg,
-            croppedAreaPixels,
-            rotation
-          );
+            const croppedImage = await getCroppedImg(
+                inputImg,
+                croppedAreaPixels,
+                rotation
+            );
 
-          setImg(croppedImage);
-          props.setCover(croppedImage)
+            setImg(croppedImage);
+            props.setCover(croppedImage)
         } catch (e) {
-          console.error(e);
+            console.error(e);
         }
-      }, [croppedAreaPixels, rotation]);
+    }, [croppedAreaPixels, rotation]);
 
     const finalizeCropResp = () => {
         showCroppedImage();
         setShowCrop(false);
-        
+
     }
 
     return (
         <>
-        {showCrop && (
-            <CropScreen 
-                inputImg={inputImg}
-                onCropComplete={onCropComplete}
-                onClickResp={() => finalizeCropResp()}
-                rotation={rotation}
-                setRotation={setRotation}
+            {showCrop && (
+                <CropScreen
+                    inputImg={inputImg}
+                    onCropComplete={onCropComplete}
+                    onClickResp={() => finalizeCropResp()}
+                    rotation={rotation}
+                    setRotation={setRotation}
+                />
+            )}
+            <input
+                required
+                type="file"
+                accept="image/*"
+                className={coverContainerInputStyling}
+                ref={podcastCoverRef}
+                onChange={(e) => handleChangeImage(e)}
+                name="podcastCover"
+                id="podcastCover"
             />
-        )}
-        <input
-            required
-            type="file"
-            accept="image/*"
-            className={coverContainerInputStyling}
-            ref={podcastCoverRef}
-            onChange={(e) => handleChangeImage(e)}
-            name="podcastCover"
-            id="podcastCover"
-        />
-        <label
-            htmlFor="podcastCover"
-            className={coverContainerLabelStyling}
-        >
-            {/*Show Selected Image or Empty Cover*/}
-            {podcastCoverRef?.current?.files?.[0] && (img.length !== 0 || props.editCover.length > 0) ? <ImgCover img={img.length > 0 ? img : props.editCover} /> : <EmptyCover />}
-      </label>
-      </>
+            <label
+                htmlFor="podcastCover"
+                className={coverContainerLabelStyling}
+            >
+                {/*Show Selected Image or Empty Cover*/}
+                {podcastCoverRef?.current?.files?.[0] && (img.length !== 0 || props.editCover.length > 0) ? <ImgCover img={img.length > 0 ? img : props.editCover} /> : <EmptyCover />}
+            </label>
+        </>
     )
 }
 
@@ -200,11 +200,11 @@ export const EmptyCover = () => {
     const { t } = useTranslation();
     return (
         <div className={emptyCoverIconStyling}>
-          {/*Image Logo*/}
+            {/*Image Logo*/}
             <PhotoIcon className={photoIconStyling} />
-          {/*Cover Image Text*/}
+            {/*Cover Image Text*/}
             <div className={emptyCoverIconTextStyling}>
-              {t("uploadshow.image")}
+                {t("uploadshow.image")}
             </div>
         </div>
     )
@@ -229,9 +229,9 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                     name="category"
                     defaultValue="Arts"
                     onChange={(e) => props.setCategory(e.target.selectedIndex)}
-                    //props.categoryIndex
+                //props.categoryIndex
                 >
-                    <CategoryOptions 
+                    <CategoryOptions
                         categoryId={props.categoryIndex}
                     />
                 </select>
@@ -243,7 +243,7 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                     name="language"
                     onChange={(e) => props.setLanguage(e.target.value)}
                 >
-                    <LanguageOptions 
+                    <LanguageOptions
                         languageCode={props.languageCode}
                     />
                 </select>
@@ -255,7 +255,7 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 defaultValue="Arts"
                 onChange={(e) => props.setCategory(e.target.selectedIndex)}
             >
-                <CategoryOptions 
+                <CategoryOptions
                     categoryId={props.categoryIndex}
                 />
             </select>
@@ -267,12 +267,12 @@ export const SelectDropdownRow = (props: SelectDropdownRowInter) => {
                 name="language"
                 onChange={(e) => props.setLanguage(e.target.value)}
             >
-                <LanguageOptions 
+                <LanguageOptions
                     languageCode={props.languageCode}
                 />
             </select>
             {/*Label*/}
-            <LabelInput 
+            <LabelInput
                 setLabel={props.setLabel}
                 setLabelMsg={props.setLabelMsg}
                 labelMsg={props.labelMsg}
@@ -342,12 +342,12 @@ export const CropScreen = (props: CropScreenInter) => {
                 />
             </div>
             <div
-            className={cropSelectionDivStyling}
-            onClick={props.onClickResp}
+                className={cropSelectionDivStyling}
+                onClick={props.onClickResp}
             >
-            <p className={cropSelectionTextStyling}>
-                {t("cropImage.crop")}
-            </p>
+                <p className={cropSelectionTextStyling}>
+                    {t("cropImage.crop")}
+                </p>
             </div>
         </div>
     )
@@ -355,31 +355,31 @@ export const CropScreen = (props: CropScreenInter) => {
 
 export const LabelInput = (props: LabelInputInter) => {
     const { t } = useTranslation();
-//absolute right-2 top-3
+    //absolute right-2 top-3
     return (
         <>
-        <div className="flex-col">
-            <div className="flex flex-row items-center bg-zinc-800 rounded-xl pr-1">
-            <input className={epNameStyling} required title="Only letters and numbers are allowed" type="text" name="showLabel" placeholder={t("uploadshow.label")}
-            value={props.labelValue}
-            onChange={(e) => {
-            const pattern = /^[a-zA-Z0-9]*$/;
-            const isValid = pattern.test(e.target.value.trim());
-            console.log("isValid: ", isValid)
-  
-            if (isValid) {
-                props.setLabelMsg(handleValMsg(e.target.value.trim(), "podLabel", props.podcasts));
-                props.setLabel(e.target.value.trim());
-                console.log(e.target.value.trim())
-            }
-            }}/>
-            <Tooltip rounded color="invert" content={<div className="max-w-[240px]">{t("uploadshow.label-explanation")} <a href={`https://${props.labelValue}.pc.show`}>{props.labelValue}.pc.show</a></div>}>
-                <div className="helper-tooltip">?</div>
-            </Tooltip>
+            <div className="flex-col">
+                <div className="flex flex-row items-center bg-zinc-800 rounded-xl pr-1">
+                    <input className={epNameStyling} required title="Only letters and numbers are allowed" type="text" name="showLabel" placeholder={t("uploadshow.label")}
+                        value={props.labelValue}
+                        onChange={(e) => {
+                            const pattern = /^[a-zA-Z0-9]*$/;
+                            const isValid = pattern.test(e.target.value.trim());
+                            console.log("isValid: ", isValid)
+
+                            if (isValid) {
+                                props.setLabelMsg(handleValMsg(e.target.value.trim(), "podLabel", props.podcasts));
+                                props.setLabel(e.target.value.trim());
+                                console.log(e.target.value.trim())
+                            }
+                        }} />
+                    <Tooltip rounded color="invert" content={<div className="max-w-[240px]">{t("uploadshow.label-explanation")} <a href={`https://${props.labelValue}.pc.show`}>{props.labelValue}.pc.show</a></div>}>
+                        <div className="helper-tooltip">?</div>
+                    </Tooltip>
+                </div>
+                <ValMsg valMsg={props.labelMsg} className="pl-2" />
             </div>
-            <ValMsg valMsg={props.labelMsg} className="pl-2" />
-        </div>
-        </>       
+        </>
     )
 }
 
