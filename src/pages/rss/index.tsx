@@ -246,6 +246,7 @@ export default function rss({yourShows}) {
                     index={index}
                     coverUrl={coverUrl}
                     pid={pid}
+                    RSSLink={rssLink}
                     rssEpisodes={rssFeed}
                 />
             </Transition>
