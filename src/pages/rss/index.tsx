@@ -13,33 +13,25 @@ import { Loading } from "@nextui-org/react";
 import { loadingPage, allPodcasts } from "../../atoms";
 import { Podcast, rssEpisode } from "../../interfaces";
 import { getContractVariables } from "../../utils/contract";
-import RssSubmit from "../../component/reusables/RssSubmit";
 import { convertLinktoBase64, isValidUrl } from "../../utils/reusables";
 import { ARSEED_URL, ERROR_TOAST_TIME, EXM_READ_LINK, NO_SHOW, PERMA_TOAST_SETTINGS, RSS_IMPORT_LINK, RSS_META_LINK, TOAST_DARK } from "../../constants";
-import { ImportedEpisodes } from "../../component/uploadShow/importedEpisodes";
-import { MOCK_RSS_FEED_EPISODES } from "../../utils/mockdata/rssfeed";
 
-
-const ValMsg = React.lazy(() => import("../../component/reusables").then(module => ({default: module.ValMsg})))
+const RssSubmit = React.lazy(() => import("../../component/reusables/RssSubmit").then(module => ({ default: module.default })));
+const ImportedEpisodes = React.lazy(() => import("../../component/uploadShow/importedEpisodes").then(module => ({ default: module.ImportedEpisodes })));
+const ValMsg = React.lazy(() => import("../../component/reusables").then(module => ({ default: module.ValMsg })))
 const ShowForm = React.lazy(() => import("../../component/uploadShow/uploadShowTools").then(module => ({ default: module.ShowForm })));
 
 const iconStyling = "w-6 h-6 text-zinc-800"
 const rssContainer = "h-full w-full flex flex-col justify-start items-center space-y-3"
 const rssInputContainer = "w-[80%] md:w-[60%] flex flex-row space-x-2 flex items-center"
 const rssInputStyling = "w-full py-3 pl-5 pr-10 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white default-animation "
-
-const FULL_TESTING = 0;
-const TESTING_URL = "https://feeds.libsyn.com/247424/rss";
-
-interface RSSDownloadError {
-    error: string;
-};
+    
 
 export default function rss({yourShows}) {
 
     const [step, setStep] = useState(0)
     const [submittingLink, setSubmittingLink] = useState(false)
-    const [rssLink, setRssLink] = useState<string>(FULL_TESTING ? TESTING_URL : "")
+    const [rssLink, setRssLink] = useState<string>("")
     const [rssLinkError, setRssLinkError] = useState<string>("")
     const [fetchError, setFetchError] = useState<string>("")
     const [podcastFormSubmitted, setPodcastFormSubmitted] = useState<boolean>(false)
@@ -112,7 +104,7 @@ export default function rss({yourShows}) {
         let rssMetadata;
         // Fetch Episodes
         try {
-            const download = FULL_TESTING ? MOCK_RSS_FEED_EPISODES: (await axios.get(RSS_IMPORT_LINK+base64)).data;
+            const download = (await axios.get(RSS_IMPORT_LINK+base64)).data;
             if (download?.error) throw new Error("Incorrect url");
             rssFeed = download || [];
             setRssFeed(download);
