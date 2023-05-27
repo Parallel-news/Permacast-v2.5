@@ -6,7 +6,7 @@ import React, { FC, useEffect, useState } from "react"
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import toast from "react-hot-toast"
 import { useRecoilState } from "recoil";
-import { ArrowDownIcon, ArrowUpIcon, CheckIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
+import { ArrowDownIcon, ArrowUpIcon, CheckIcon } from "@heroicons/react/24/solid";
 import { Spacer, Loading, Tooltip } from "@nextui-org/react";
 
 import { AR_DECIMALS, CONNECT_WALLET, EPISODE_UPLOAD_FEE, EVERPAY_EOA, EVERPAY_EOA_UPLOADS, GIGABYTE, TOAST_DARK, USER_SIG_MESSAGES, EPISODE_SLIPPAGE, ERROR_TOAST_TIME, PERMA_TOAST_SETTINGS, EXTENDED_TOAST_TIME } from "../../constants";
@@ -24,24 +24,23 @@ import { arweaveAddress, calculateEverPayBalance, loadingPage, podcastColorAtom 
 
 import { fetchARPriceInUSD } from "../../utils/redstone";
 import { RSSFeedManager } from "../../utils/localstorage";
-import { findPodcast } from "../../utils/filters";
 
-import { ImgCover } from "./reusables";
-import ProgressBar from "../reusables/progressBar";
 import { RSSEpisodeEstimate } from "../../interfaces/api";
-import DebouncedInput from "../reusables/debouncedInput";
-import { convertToValidNumber } from "../../utils/validation/inputs";
 import { DEFAULT_THEME_COLOR } from "../../constants/ui";
+
+const ImgCover = React.lazy(() => import("./reusables").then(module => ({ default: module.ImgCover })));
+const ProgressBar = React.lazy(() => import("../reusables/progressBar").then(module => ({ default: module.default })));
 const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.ConnectButton })));
 const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
-
-const RSS_TESTING_URL = "https://permacast-bloodstone-helper.herokuapp.com/feeds/rss/T7HWHKp-AjIj69TQRvV4EZRVTY1J8J9zSgE668aOmC4";
+const Pagination = React.lazy(() => import("../reusables/Pagination").then(module => ({ default: module.default })));
+//? IN THE FUTURE, USE AN OBJECT TO CHECK EACH PART OF THE FLOW
 const FULL_TESTING = 0;
 const MAX_EPISODES_TO_UPLOAD_AT_ONCE = 5;
 
 // 1. Interfaces
 interface ImportedEpisodesProps {
   pid: string;
+  RSSLink: string; 
   coverUrl: string;
   rssEpisodes: rssEpisode[];
   redirect?: boolean;
@@ -80,7 +79,7 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 
 // Rube Goldberg would be proud
-export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, coverUrl, index, redirect }) => {
+export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect }) => {
 
   // hooks
   const { t } = useTranslation();
@@ -105,7 +104,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
   const [currentEpisodes, setCurrentEpisodes] = useState<rssEpisode[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [navigatePage, setNavigatePage] = useState<number>(1);
-  const [uploadedPages, setUploadedPages] = useState<number[]>([]);
+  const [uploadedEpisodes, setUploadedEpisodes] = useState<string[]>([]);
   const [retryEpisodes, setRetryEpisodes] = useState<rssEpisodeRetry[]>([]);  
   const [uploadedCount, setUploadCount] = useState<number>(0);
   const [progress, setProgress] = useState(0);
@@ -114,7 +113,9 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
 
   const fetchPodcast = async () => {
     const data: EXMState = (await axios.get('/api/exm/read')).data;
-    const podcast = data.podcasts[index];
+    const podcastViaPID = data.podcasts.find(podcast => podcast.pid === pid);
+    const podcastViaIndex = index !== 0 ? data.podcasts[index]: undefined;
+    const podcast = podcastViaPID || podcastViaIndex;
     console.log(podcast);
     return podcast;
   };
@@ -180,7 +181,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     return { knownEpisodeSizes: sortedEpisodes, unknownEpisodeSizes: retryEpisodeDownloadList };
   };
 
-  const fetchCover = async () => {
+  const fetchCoverColor = async () => {
     if (!coverUrl) return;
     const dominantColor = await fetchDominantColor(coverUrl, false, false);
     if (dominantColor.error) return;
@@ -223,7 +224,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     if (!rssEpisodes) return;
     setIsCalculating(true);
     fetchARPriceInUSD().then(setArPrice);
-    await fetchCover();
+    await fetchCoverColor();
     await fetchGigabyteCosts().then(setGigabyteCost);
     const index = MAX_EPISODES_TO_UPLOAD_AT_ONCE * (currentPage - 1);
     console.log(index);
@@ -239,11 +240,20 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
   useEffect(() => {
     if (!realPid) {
       attemptIndexPodcastID();
-      return
+      return;
     };
-    const savedPIDpages = RSSFeedManager.getValueFromObject(realPid);
-    console.log(savedPIDpages);
-    if (savedPIDpages) setUploadedPages(JSON.parse(savedPIDpages));
+    const savedEpisodeLinksValue = RSSFeedManager.getValueFromObject(realPid + '/' + RSSLink);
+    console.log(savedEpisodeLinksValue);
+    if (savedEpisodeLinksValue) {
+      const parsedLinks = JSON.parse(savedEpisodeLinksValue);
+      setUploadedEpisodes(parsedLinks);
+      setUploadCount(parsedLinks.length);
+      setCurrentPage(Math.ceil(parsedLinks.length / MAX_EPISODES_TO_UPLOAD_AT_ONCE) + 1);
+    } else {
+      RSSFeedManager.addValueToObject(realPid + '/' + RSSLink, JSON.stringify([]));
+      setUploadedEpisodes([]);
+      setUploadCount(0);
+    };
   }, [realPid]);
 
   useEffect(() => {
@@ -277,13 +287,17 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
   };
 
   const payStorageFee = async (length: string, count: number) => {
-    if (FULL_TESTING) return "0x8fac6c0c2c1c50e029a75ff0df2bcb8b643e279f1c218f9c2074f2c28f65b8ac";
     // Pay for content storage on API side
-    const CONTENT_COST = calculateARCost(Number(gigabyteCost), Number(length));
-    const FINAL_CONTENT_COST = CONTENT_COST + EPISODE_SLIPPAGE; // to avoid rounding errors and a slippage change
-    const uploadPaymentTX = await transferFunds("UPLOAD_CONTENT", FINAL_CONTENT_COST, EVERPAY_EOA_UPLOADS, address);
-    _setCalculateEverPayBalance(count);
-    return uploadPaymentTX;
+    try {
+      const CONTENT_COST = calculateARCost(Number(gigabyteCost), Number(length));
+      const FINAL_CONTENT_COST = CONTENT_COST + EPISODE_SLIPPAGE; // to avoid rounding errors and a slippage change
+      const uploadPaymentTX = await transferFunds("UPLOAD_CONTENT", FINAL_CONTENT_COST, EVERPAY_EOA_UPLOADS, address);
+      _setCalculateEverPayBalance(count);
+      return uploadPaymentTX;
+    } catch (e) {
+      console.log('Failed to pay: ', e);
+      return;
+    }
   };
 
   const uploadEpisode = async (link: string, number: number): Promise<uploadEpisodeInter> => {
@@ -303,7 +317,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
   const saveEpisodeToEXM = async (rssEpisode: rssEpisode, uploadPaymentTX: string, count: number) => {
     console.log('Uploading to EXM, ', rssEpisode);
     const handleErr = handleError;
-    const { description, title, fileType } = rssEpisode;
+    const { link, description, title, fileType } = rssEpisode;
     const percentPerEpisode = (100 / currentEpisodes.length);
 
     const uploadEpisodePayload: UploadEpisodeProps = {
@@ -339,10 +353,22 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     // @ts-ignore
     uploadEpisodePayload["txid"] = feeTX;
 
-    const result = await axios.post('/api/exm/write', uploadEpisodePayload);
+    try {
+      const result = await axios.post('/api/exm/write', uploadEpisodePayload);
+      console.log(result.data);
+      // we need to save the episode link to the RSSFeedManager
+      // the key is podcast's PID + RSSLink
+      // the value is an array of all the already uploaded episode links
+      const prev = JSON.parse(RSSFeedManager.getValueFromObject(realPid + '/' + RSSLink));
+      const newList = [...prev, link];
+      RSSFeedManager.addValueToObject(realPid + '/' + RSSLink, JSON.stringify(newList));
+      setUploadedEpisodes(newList);
+    } catch (e) {
+      console.log('error: ', e);
+      return '';
+    };
     setProgress(prev => prev + percentPerEpisode);
-    console.log(result.data);
-    return 'success';
+    return link;
   };
 
   const startEpisodesUpload = async () => {
@@ -360,6 +386,8 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
 
     setIsUploadingEpisodes(true);
 
+    // EXM sometimes returns fake PID and that will cause issues
+    // This fix guarantees to get the real PID
     if (!realPid) {
       const attemptPid = await attemptIndexPodcastID();
       if (!attemptPid) {
@@ -397,18 +425,17 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
         toast.dismiss(toastSaving);
         console.log('Failed to upload episode: ', episode);
         continue;
-      }
+      };
       console.log({ currentEpisode: currentEpisodes[i], episode });
-      if (FULL_TESTING) break;
       const EXMUpload = await saveEpisodeToEXM(currentEpisodes[i], episode.tx, i);
       uploadedEpisodes.push(EXMUpload);
+      await sleep(100);
     };
     console.log(uploadedEpisodes);
 
     setIsUploadingEpisodes(false);
     setProgress(100);
     setTimeout(() => setProgress(0), 1000);
-    RSSFeedManager.addValueToObject(realPid, JSON.stringify([...uploadedPages, currentPage]));
 
     let totalUploadedCount = uploadedCount + uploadedEpisodes.length;
     setUploadCount(totalUploadedCount);
@@ -417,18 +444,18 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
     toast.dismiss(savingBlockchainToast);
     console.log(currentPage);
     console.log(MAX_PAGES);
-    setUploadedPages(prev => [...prev, currentPage]);
+
     if (currentPage === MAX_PAGES) {
       setCurrentPage(MAX_PAGES - 1);
     } else setCurrentPage(prev => prev + 1);
 
     if (totalUploadedCount >= rssEpisodes.length) {
       setTimeout(async function () {
-        toast.success(t("success.showUploaded"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
-        const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
+        toast.success(t("success.showUploaded"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME));
+        const identifier = ANS?.currentLabel ? ANS?.currentLabel : address;
         const { locale } = router;
-        router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
-      }, 3500);  
+        router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true });
+      }, 3500);
     };
   };
 
@@ -474,22 +501,22 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
 
     return (
       <div className="bg-zinc-800 default-animation rounded-xl px-5 py-3 w-full text-white flex justify-between">
-        <div className="line-clamp-2">{t("home.episode")} {number}: {title}</div>
+        <div className="line-clamp-2">#{number}: {title}</div>
         <div className="ml-4 flex gap-x-2">
-          {uploaded ? <CheckIcon className="bg-green-500 rounded-full w-5 h-5 text-white shrink-0" /> : ""}
+          {uploaded && (
+            <Tooltip rounded color="invert" content={<div>{t("rss.episode-already-saved")}</div>}>
+              <CheckIcon className="bg-green-500 rounded-full w-5 h-5 text-white shrink-0 p-1" />
+            </Tooltip>
+          )}
           <div>{size || ""}</div>
-          <div>{cost || "?"} AR</div>
+          <div>{cost || "0"} AR</div>
         </div>
       </div>
     );
   };
 
   //TODO:
-  // 1. Cover needs 1:1 ratio
-  // 2. Fix page number on big rss feeds (done!)
-  // 3. Styles and text fixes
-  // 4. Download episodes if size unavailable (WIP)
-  // 5. Trigger balance update after upload
+  // Trigger balance update after upload
 
   return (
     <div className={showFormStyling}>
@@ -502,121 +529,81 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
         <div className="flex flex-col w-[95%] md:w-[75%] lg:w-[50%] space-y-3">
           {/* Preview */}
           <div className="flexCol gap-y-2">
-            {currentEpisodes.map((rssEpisode: rssEpisode, number: number) => (
-              <React.Fragment key={number}>
-                <RssEpisode
-                  {...rssEpisode}
-                  gigabyteCost={gigabyteCost}
-                  number={number + uploadedCount + 1}
-                  uploaded={uploadedPages.includes(currentPage)}
-                />
-              </React.Fragment>
-            ))}
-            {retryEpisodes?.length > 0 && (
+            {isCalculating ? (
+              <div className="text-zinc-700 flexFullCenter w-full h-60">
+                <Loading size="xl" color="currentColor" />
+              </div>
+            ) : (
               <>
-                <div className="text-center my-2">{t("rss.estimation-failed")}</div>
-                {retryEpisodes.map((rssEpisode: rssEpisode, number: number) => (
+                {/* {FULL_TESTING === 1 && (<div className="text-red-600">TESTING MODE</div>)} */}
+                {currentEpisodes.map((rssEpisode: rssEpisode, number: number) => (
                   <React.Fragment key={number}>
                     <RssEpisode
                       {...rssEpisode}
                       gigabyteCost={gigabyteCost}
                       number={number + uploadedCount + 1}
-                      uploaded={uploadedPages.includes(currentPage)}
+                      uploaded={uploadedEpisodes.includes(rssEpisode.link)}
                     />
                   </React.Fragment>
                 ))}
-                <Spacer y={1} />
-                <div className="flexCenter justify-between">
-                  <button className={buttonColorStyling + "py-3 px-4 "} onClick={() => startEstimating()}>
-                    {isCalculating && (
-                      <div style={{ color: DEFAULT_THEME_COLOR }}>
-                        <Loading size="sm" color="currentColor" />
-                      </div>
-                    )}
-                    <div className="">{t("rss.retry-estimation")}</div>
-                    <Tooltip rounded color="invert" content={<div>{t("rss.limited-size")}</div>}>
-                      <span className="ml-2 mt-[2.5px] tooltip-button">
-                        ?
-                      </span>
-                    </Tooltip>
-                  </button>
-                  <button className={buttonColorStyling + "py-3 px-4 "} onClick={() => {
-                    setRetryEpisodes([]);
-                    setCurrentPage(prev => prev + 1);
-                  }}>
-                    {t("rss.skip-failed")}
-                  </button>
-                </div>
+                {retryEpisodes?.length > 0 && (
+                  <>
+                    <div className="text-center my-2">{t("rss.estimation-failed")}</div>
+                    {retryEpisodes.map((rssEpisode: rssEpisode, number: number) => (
+                      <React.Fragment key={number}>
+                        <RssEpisode
+                          {...rssEpisode}
+                          gigabyteCost={gigabyteCost}
+                          number={number + uploadedCount + 1}
+                          uploaded={uploadedEpisodes.includes(rssEpisode.link)}
+                        />
+                      </React.Fragment>
+                    ))}
+                    <Spacer y={1} />
+                    <div className="flexCenter justify-between">
+                      <button className={buttonColorStyling + "py-3 px-4 "} onClick={() => startEstimating()}>
+                        {isCalculating && (
+                          <div style={{ color: DEFAULT_THEME_COLOR }}>
+                            <Loading size="sm" color="currentColor" />
+                          </div>
+                        )}
+                        <div className="">{t("rss.retry-estimation")}</div>
+                        <Tooltip rounded color="invert" content={<div>{t("rss.limited-size")}</div>}>
+                          <span className="ml-2 mt-[2.5px] tooltip-button">
+                            ?
+                          </span>
+                        </Tooltip>
+                      </button>
+                      <button className={buttonColorStyling + "py-3 px-4 "} onClick={() => {
+                        setRetryEpisodes([]);
+                        setCurrentPage(prev => prev + 1);
+                      }}>
+                        {t("rss.skip-failed")}
+                      </button>
+                    </div>
+                  </>
+                )}
+
               </>
             )}
             <div className="text-center my-4">
               <div className="mb-2 font-medium">{uploadedCount} / {rssEpisodes?.length || 0} {t("rss.downloaded")}</div>
-              <div className="flexFullCenterGap justify-center">
-                {MAX_PAGES >= 1 && (
-                  <button
-                    className={buttonStyling}
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                    disabled={currentPage === 1 || isCalculating}
-                  >
-                    <ChevronLeftIcon className="h-6 w-6 mr-1" />
+              <Pagination
+                currentPage={currentPage}
+                totalPages={MAX_PAGES}
+                setCurrentPage={setCurrentPage}
+                limitPagination={3}
+                extraJSX={(
+                  <button className={buttonStyling} onClick={() => {
+                    setIsReverseOrder(prev => {
+                      setCurrentEpisodes(prevEpisodes => prevEpisodes.reverse());
+                      return !prev
+                    });
+                  }}>
+                    {isReverseOrder ? <ArrowUpIcon className="h-6 w-6" /> : <ArrowDownIcon className="h-6 w-6" />}
                   </button>
                 )}
-                {MAX_PAGES >= 1 && Array.from(Array(MAX_PAGES).keys()).slice(0, 3).map((page: number) => (
-                  <button
-                    key={page}
-                    className={buttonStyling}
-                    onClick={() => setCurrentPage(page + 1)}
-                    disabled={page === (currentPage - 1) || isCalculating}
-                  >
-                    {page + 1}
-                  </button>
-                ))}
-                {/* Manual page input */}
-                {MAX_PAGES >= 4 && (
-                  <DebouncedInput 
-                    className={buttonStyling + 'text-center font-bold '}
-                    input={navigatePage}
-                    setInput={setNavigatePage}
-                    timeout={800}
-                    disabled={isCalculating}
-                    callback={(val) => {
-                      const value = convertToValidNumber(val, 1);
-                      if (value > 1 && value <= MAX_PAGES && value !== currentPage) {
-                        setCurrentPage(value);
-                      } else if (value === 1) {
-                        setCurrentPage(1);
-                      };
-                    }}
-                    placeholder={currentPage.toString()}
-                  />
-                )}
-                {MAX_PAGES >= 5 && (
-                  <button
-                    className={buttonStyling}
-                    onClick={() => setCurrentPage(MAX_PAGES)}
-                    disabled={MAX_PAGES === currentPage || isCalculating}
-                  >
-                    {MAX_PAGES}
-                  </button>                
-                )}
-                {MAX_PAGES >= 1 && (
-                  <button
-                    className={buttonStyling}
-                    disabled={currentPage === MAX_PAGES || isCalculating}
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                  >
-                    <ChevronRightIcon className="h-6 w-6 mr-1" />
-                  </button>
-                )}
-                <button className={buttonStyling} onClick={() => {
-                  setIsReverseOrder(prev => {
-                    setCurrentEpisodes(prevEpisodes => prevEpisodes.reverse());
-                    return !prev
-                  });
-                }}>
-                  {isReverseOrder ? <ArrowUpIcon className="h-6 w-6" /> : <ArrowDownIcon className="h-6 w-6" />}
-                </button>
-              </div>
+              />
             </div>
           </div>
           {/* Upload */}
@@ -625,7 +612,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
             {address && address.length > 0 && !isUploadingEpisodes && (
               <>
                 <UploadButton
-                  disable={!userHasEnoughAR || isCalculating || !!retryEpisodes?.length || uploadedPages.includes(currentPage) }
+                  disable={!userHasEnoughAR || isCalculating || !!retryEpisodes?.length}
                   width="w-[50%]"
                   click={startEpisodesUpload}
                 />
@@ -649,7 +636,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, rssEpisodes, 
             <p className="mt-2 text-neutral-400">{t("uploadshow.uploadCost") + ": " + (Number(totalUploadCost)).toFixed(6) + " AR " + ``}</p>
           </div>
         </div>
-        <div className="w-[25%]"></div>
+        <div className="w-[25%] pb-20"></div>
       </div>
     </div>
   );

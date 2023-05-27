@@ -41,16 +41,12 @@ html, body {
     @apply bg-zinc-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white placeholder:text-zinc-600 text-white;
   }
 
-  .input-default {
-    @apply input input-secondary input-styling;
-  }
-
   .btn-base-color {
     @apply text-zinc-300 hover:text-white cursor-pointer !rounded-full bg-zinc-900 hover:bg-zinc-600;
   }
 
-  .btn-default {
-    @apply btn btn-secondary btn-base-color;
+  .pagination-button {
+    @apply bg-zinc-800 hover:bg-zinc-600 default-animation disabled:hover:bg-black disabled:bg-black text-white disabled:text-gray-500 flexFullCenter rounded-lg;
   }
   
   .default-animation {
