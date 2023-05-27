@@ -287,18 +287,18 @@ export const ShowForm = (props: ShowFormInter) => {
             };
             props?.returnedPodcasts && props?.returnedPodcasts(podcasts);
             //EXM call, set timeout, then redirect.
-            toast.dismiss(toastSaving);
-            setProgress(100)
-            toast.success(t("success.showUploaded"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
             setTimeout(async function () {
+                toast.dismiss(toastSaving); 
+                setProgress(100)
+                toast.success(t("success.showUploaded"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
                 if (props.redirect) {
                     const { locale } = router;
                     router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
                 }
                 props?.submitted && props?.submitted(true);
-            }, 2500)
-        }, 5000)
+            }, 7000)
+        }, 2000)
     }
 
     // Inserts Editting Info

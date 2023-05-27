@@ -1,11 +1,10 @@
 import axios from 'axios';
-import { FC, useEffect } from "react";
-
-import { allANSUsersAtom, allPodcasts } from '../../atoms';
+import { useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { ANS_MAPPED_STATE_URL } from '../../constants';
+import { allANSUsersAtom } from '../../../atoms';
+import { ANS_MAPPED_STATE_URL } from '../../../constants';
 
-const QueryANS: FC = () => {
+export default function QueryAns() {
 
   const [allANSUsers, setAllANSUsers] = useRecoilState(allANSUsersAtom);
 
@@ -22,6 +21,4 @@ const QueryANS: FC = () => {
     <>
     </>
   );
-};
-
-export default QueryANS;
+}
