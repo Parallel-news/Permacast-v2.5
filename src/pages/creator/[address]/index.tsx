@@ -13,6 +13,7 @@ import { Creator404, sortByDate } from '../../../component/creator';
 import { allPodcasts, loadingPage, podcastColorAtom } from '../../../atoms';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Ans, Episode, FullEpisodeInfo, Podcast } from '../../../interfaces';
+import { getPodcastData } from '../../../features/prefetching';
 
 const CreatorPageComponentLazy = React.lazy(() => import('../../../component/creator').then(module => ({ default: module.CreatorPageComponent })));
 
@@ -62,6 +63,8 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
   const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
   const [domLoaded, setDomLoaded] = useState(false)
 
+  const queryPodcastData = getPodcastData()
+
   useEffect(() => {
     if (!userInfo) return;
     const color = RGBobjectToString(hexToRGB(address_color || "#000000"));
@@ -81,9 +84,9 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
 
   useEffect(() => {
     if (!userInfo) return;
-    if (!allPodcasts_) return;
+    if (queryPodcastData.isLoading) return;
     const fetchUserData = async () => {
-      const podcasts: Podcast[] = allPodcasts_.filter((podcast: Podcast) => podcast.owner === user);
+      const podcasts: Podcast[] = queryPodcastData.data.podcasts.filter((podcast: Podcast) => podcast.owner === user);
       const userEpisodes = podcasts.map((podcast: Podcast) => 
         podcast.episodes.map((episode: Episode) => ({episode, podcast}))
       ).flat(1).splice(-3, 3);
@@ -92,7 +95,7 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
       setEpisodes(sortedEpisodes.slice().reverse());
     };
     fetchUserData();
-  }, [allPodcasts_, userInfo]);
+  }, [queryPodcastData.isLoading, userInfo]);
 
   useEffect(()=> {
     setDomLoaded(true)

@@ -1,7 +1,8 @@
-import { InitialLoad } from "../../component/reusables/InitialLoad"
-
+import FeaturedPodcastCarousel from "../../component/reusables/FeaturedPodcastCarousel"
+//<FeaturedPodcastCarousel podcasts={podcasts} />
 export default function Test() {
     return (
-        <InitialLoad />
+        <></>
+        
     )
 }

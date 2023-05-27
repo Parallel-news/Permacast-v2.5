@@ -173,4 +173,5 @@ export const MINT_NFT = "submitRequest"
 
 // React Query Keys
 export const NFT_INFO = "nftInfo"
+export const ALL_PODCASTS = "allPodcasts"
 

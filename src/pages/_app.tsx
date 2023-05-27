@@ -15,8 +15,9 @@ import { appWithTranslation } from 'next-i18next';
 import { ArconnectProvider } from 'react-arconnect';
 import { PERMISSIONS } from '../constants/arconnect';
 
-const QueryPodcasts = React.lazy(() => import('../component/loaders/QueryPodcasts'));
-const QueryANS = React.lazy(() => import('../component/loaders/QueryANS'));
+import { QueryPodcasts } from '../features/prefetching';
+import { QueryAns } from '../features/prefetching';
+
 const Layout = React.lazy(() => import('../component/layout'));
 const ShikwasaProviderLazy = React.lazy(() => import('../hooks').then(module => ({ default: module.ShikwasaProvider })));
 
@@ -41,30 +42,31 @@ function App({ Component, pageProps }) {
         <meta property="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
       </Head>
         <ArconnectProvider permissions={PERMISSIONS}>
-          <QueryPodcasts />
-          <QueryANS />
+
           <QueryClientProvider client={queryClient}>
-          <ReactQueryDevtools initialIsOpen={true} />
-          <Script
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=G-4XDV8F7VJB"
-            strategy="afterInteractive" 
-          />
-          <Script id="gtag-function">
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-4XDV8F7VJB');
-            `}
-          </Script>
-          <ShikwasaProviderLazy>
-            <Layout>
-              <SSRProvider>
-                    <Component {...pageProps} className="scrollbar-container"/>
-              </SSRProvider>
-            </Layout>
-          </ShikwasaProviderLazy>
+            <QueryPodcasts />
+            <QueryAns />
+            <ReactQueryDevtools initialIsOpen={true} />
+            <Script
+              async
+              src="https://www.googletagmanager.com/gtag/js?id=G-4XDV8F7VJB"
+              strategy="afterInteractive" 
+            />
+            <Script id="gtag-function">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-4XDV8F7VJB');
+              `}
+            </Script>
+            <ShikwasaProviderLazy>
+              <Layout>
+                <SSRProvider>
+                      <Component {...pageProps} className="scrollbar-container"/>
+                </SSRProvider>
+              </Layout>
+            </ShikwasaProviderLazy>
           </QueryClientProvider>
         </ArconnectProvider>
     </RecoilRoot>
