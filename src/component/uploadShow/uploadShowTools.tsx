@@ -2,9 +2,9 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { episodeDescStyling, episodeNameStyling } from "../uploadEpisode/uploadEpisodeTools";
 import { categories_en } from "../../utils/languages";
 
-import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, ERROR_TOAST_TIME, EVERPAY_AR_TAG, EVERPAY_EOA, EXTENDED_TOAST_TIME, MIN_UPLOAD_PAYMENT, PERMA_TOAST_SETTINGS, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
+import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, ERROR_TOAST_TIME, EVERPAY_AR_TAG, EVERPAY_EOA, EXTENDED_TOAST_TIME, GIGABYTE, MIN_UPLOAD_PAYMENT, PERMA_TOAST_SETTINGS, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
 import { isValidEmail } from "../reusables/formTools";
-import { getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
+import { calculateARCost, getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
 import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob } from "../../utils/fileTools";
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
@@ -111,7 +111,8 @@ export const ShowForm = (props: ShowFormInter) => {
     const [arweaveAddress_,] = useRecoilState(arweaveAddress);
     const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
     const [submittingShow, setSubmittingShow] = useState<boolean>(false);
-    const [uploadCost, setUploadCost] = useState<Number>(0);
+    const [arseedCostPerGig, setArseedCostPerGig] = useState<number>(0);
+    const [uploadCost, setUploadCost] = useState<number>(0);
     const router = useRouter();
 
     // inputs
@@ -161,21 +162,23 @@ export const ShowForm = (props: ShowFormInter) => {
         fetchData();
     }, [podcastCover_]);
 
+    useEffect(() => {getBundleArFee(String(GIGABYTE)).then(setArseedCostPerGig)}, []);
+
     // Hook Calculating Upload Cost
     useEffect(() => {
-        setUploadCost(0)
+        setUploadCost(0);
 
         async function calculateTotal() {
             const descBytes = byteSize(podcastDescription_)
-            const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt")
+            const convertedCover = await createFileFromBlobUrl(podcastCover_, "cov.txt");
             const minCover = await minifyPodcastCover(podcastCover_);
             const fileMini = createFileFromBlob(minCover, "miniCov.jpeg");
 
-            const descFee = await getBundleArFee(String(descBytes))
-            const coverFee = await getBundleArFee(String(convertedCover.size))
-            const miniFee = await getBundleArFee(String(fileMini.size))
+            const descFee = calculateARCost(arseedCostPerGig, descBytes);
+            const coverFee =  calculateARCost(arseedCostPerGig, convertedCover.size);
+            const miniFee = calculateARCost(arseedCostPerGig, fileMini.size);
 
-            return Number(descFee) + Number(coverFee) + Number(miniFee)
+            return descFee + coverFee + miniFee;
         }
         if (podcastDescription_.length > 0 && podcastCover_ !== null) {
             calculateTotal().then(async total => {
@@ -185,7 +188,7 @@ export const ShowForm = (props: ShowFormInter) => {
         } else {
             setUploadCost(0)
         }
-    }, [podcastDescription_, podcastCover_])
+    }, [podcastDescription_, podcastCover_, coverUrl])
 
     //EXM 
     const createShowPayload: UploadPodcastProps | EditPodcastProps = {
@@ -210,8 +213,6 @@ export const ShowForm = (props: ShowFormInter) => {
 
     async function submitShow(payloadObj: any) {
         // Check Connection
-        // props.setUploadedPID("b4fa345dd57b6a006353fbb94f38b0b274eef55093fcd75079ebe804ccb66ac1f51c5afc41be124c3599f001c04e4a6fd60a7fa63cb83c9aaa02209e4deaa988");
-        // return;
         if (!checkConnection(arweaveAddress_)) {
             toast.error(CONNECT_WALLET, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
             return false
@@ -275,7 +276,7 @@ export const ShowForm = (props: ShowFormInter) => {
         const toastSaving = toast.loading(t("loadingToast.savingChain"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
         setProgress(props.edit ? 80 : 75)
         setTimeout(async function () {
-            console.log("createShowPayload: ", createShowPayload)
+            console.log("createShowPayload: ", createShowPayload);
             const uploadRes = (await axios.post('/api/exm/write', createShowPayload)).data;
             const podcasts = uploadRes.data.execution.state.podcasts;
             const podcast = podcasts[podcasts.length - 1];
@@ -315,11 +316,11 @@ export const ShowForm = (props: ShowFormInter) => {
                 setPodcastEmail_(p.email)
 
                 //Recreate Cover for Upload
-                setCoverUrl(p.cover)
                 fetch(ARSEED_URL + p.cover)
                     .then((rs) => rs.blob())
                     .then((blob) => {
                         const url = URL.createObjectURL(blob);
+                        setCoverUrl(p.cover)
                         setPodcastCover_(url);
                     });
                 setPodcastLanguage_(p.language)
@@ -347,13 +348,16 @@ export const ShowForm = (props: ShowFormInter) => {
                 setPodcastEmail_(p.email)
 
                 //Recreate Cover for Upload
-                setCoverUrl(p.cover)
                 fetch(p.cover)
                     .then((rs) => rs.blob())
                     .then((blob) => {
                         const url = URL.createObjectURL(blob);
                         setPodcastCover_(url);
-                    });
+                        setCoverUrl(p.cover);
+                    })
+                    .catch((err) => 
+                        toast.error(t("errors.mediaDownloadError"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
+                    );
                 setPodcastLanguage_(p.language)
                 setPodcastCategory_(categories_en.findIndex(cat => cat === p.categories[0]))
                 setPodcastExplicit_(p.explicit === "no" ? false : true)
@@ -364,6 +368,8 @@ export const ShowForm = (props: ShowFormInter) => {
             _setLoadingPage(false)
         };
     }, []);
+
+    const editCover = (props.edit && !props.rssData.length) ? ARSEED_URL + coverUrl : coverUrl;
 
     return (
         <div className={showFormStyling + (props?.allowSelect ? " pb-20" : "")}>
@@ -377,7 +383,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     <CoverContainer
                         setCover={setPodcastCover_}
                         isEdit={props.edit || props.rssData.length > 0}
-                        editCover={(props.edit && !props.rssData.length) ? ARSEED_URL + coverUrl : coverUrl}
+                        editCover={editCover}
                     />
                 </div>
                 <div className="flex flex-col w-[95%] md:w-[75%] lg:w-[50%] space-y-3">
@@ -456,22 +462,6 @@ export const ShowForm = (props: ShowFormInter) => {
                             />
                         )}
                     </div>
-
-                    {/* Allow Select */}
-                    {props?.allowSelect && (
-                        <div>
-                            <div className="my-1 border-t-[2px] border-white rounded-full"></div>
-                            <div className='text-center mb-2'>or</div>
-                            <SelectPodcast
-                                pid={props.selectedPid}
-                                setPid={(pid) => {
-                                    props?.setUploadedPID && props.setUploadedPID(pid);
-                                }}
-                                shows={props?.podcasts || []}
-                            />
-                        </div>
-                    )}
-
                     {/*
                         Upload
                     */}
@@ -502,6 +492,22 @@ export const ShowForm = (props: ShowFormInter) => {
                         {uploadCost !== 0 && podcastDescription_.length > 0 && podcastCover_ && (
                             <p className="mt-2 text-neutral-400">{t("uploadshow.uploadCost") + ": " + (Number(uploadCost)).toFixed(6) + " AR"}</p>
                         )}
+
+                        {/* Show Podcasts for selection */}
+                        {props?.allowSelect && (
+                            <div className="w-full mt-4">
+                                <div className="my-1 border-t-[2px] border-white rounded-full"></div>
+                                <div className='text-center mb-2'>{t("rss.or")}</div>
+                                <SelectPodcast
+                                    pid={props.selectedPid}
+                                    setPid={(pid) => {
+                                        props?.setUploadedPID && props.setUploadedPID(pid);
+                                    }}
+                                    shows={props?.podcasts || []}
+                                />
+                            </div>
+                        )}
+
                     </div>
                 </div>
                 <div className={`w-[25%]`}></div>
