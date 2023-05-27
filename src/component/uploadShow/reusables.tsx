@@ -101,6 +101,7 @@ export const CoverContainer = (props: CoverContainerInter) => {
     //Check if in Edit Mode
     useEffect(() => {
         async function fetchImage() {
+            if (!props.editCover) return;
             const response = await fetch(props.editCover);
             const blob = await response.blob();
             responseUrl = response?.url ? response.url : ""
