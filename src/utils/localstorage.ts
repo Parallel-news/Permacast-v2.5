@@ -80,6 +80,7 @@ export default class LocalStorageObjectManager {
   };
 
   // setter method for objects
+  //! warning: this will overwrite the entire object
   addValueToObject(newKey: string, newValue: string) {
     try {
       const storedObject = this.getObject();
