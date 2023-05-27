@@ -4,7 +4,7 @@ interface debouncedInputProps {
   input: string | number;
   className: string;
   timeout?: number;
-  disabled: boolean;
+  disabled?: boolean;
   placeholder: string;
   setInput: Dispatch<SetStateAction<any>>;
   callback: (arg: any) => void;
