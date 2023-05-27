@@ -44,7 +44,7 @@ export const getBundleArFee = async (size: string) => {
 
 
 export const calculateARCost = (gigabyteCost: number, bytes: number) => {
-    return Number(gigabyteCost) * bytes / GIGABYTE;
+    return gigabyteCost * bytes / GIGABYTE;
 }
 
 export const getReadableSize = (bytes: number) => {
