@@ -2,7 +2,8 @@ import React, { FC } from "react";
 
 import { dimColorString } from "../../utils/ui";
 
-import { PauseIcon, PlayIcon } from "@heroicons/react/24/solid";
+import PauseIcon from "@heroicons/react/24/solid/PauseIcon";
+import PlayIcon from "@heroicons/react/24/solid/PlayIcon";
 import { RGBorRGBAstring, RGBstring } from "../../interfaces/ui";
 
 

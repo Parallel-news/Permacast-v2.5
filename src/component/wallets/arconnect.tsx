@@ -5,8 +5,10 @@ import { useTranslation } from 'next-i18next';
 import { FC, useEffect, useState } from 'react';
 import { useArconnect, shortenAddress } from 'react-arconnect';
 import { useRecoilState } from 'recoil';
-import { ArrowLeftOnRectangleIcon, BanknotesIcon, NewspaperIcon, UserCircleIcon } from '@heroicons/react/24/outline';
-
+import ArrowLeftOnRectangleIcon from '@heroicons/react/24/outline/ArrowLeftOnRectangleIcon';
+import BanknotesIcon from '@heroicons/react/24/outline/BanknotesIcon'
+import NewspaperIcon from '@heroicons/react/24/outline/NewspaperIcon'
+import UserCircleIcon from '@heroicons/react/24/outline/UserCircleIcon'
 import { PASoMProfileAtom, arweaveAddress, loadingPage, walletNotDetectedModalVisibilityAtom } from '../../atoms';
 
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';

@@ -4,7 +4,7 @@ import Image from 'next/image'
 import {  tipModalStyling } from '../uploadEpisode/uploadEpisodeTools'
 import { containerPodcastModalStyling } from '../uploadEpisode/reusables'
 import { FADE_IN_STYLE, FADE_OUT_STYLE } from '../../constants'
-import { XMarkIcon } from '@heroicons/react/24/outline'
+import XMarkIcon from '@heroicons/react/24/outline/XMarkIcon'
 import { xMarkModalStyling } from '../tipModal'
 import { useTranslation } from 'next-i18next'
 

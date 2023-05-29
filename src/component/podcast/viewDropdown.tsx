@@ -1,7 +1,6 @@
 import { Dropdown, DropdownButtonProps } from "@nextui-org/react"
-import { 
-    Bars3BottomRightIcon, ClockIcon
-} from '@heroicons/react/24/outline';
+import Bars3BottomRightIcon from '@heroicons/react/24/outline/Bars3BottomRightIcon';
+import ClockIcon from '@heroicons/react/24/outline/ClockIcon';
 import { useRecoilState } from "recoil";
 import { chronStatusAtom } from "../../atoms";
 import { useTranslation } from "next-i18next";

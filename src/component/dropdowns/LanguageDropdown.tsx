@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { LanguageIcon } from "@heroicons/react/24/solid";
+import LanguageIcon from "@heroicons/react/24/solid/LanguageIcon";
 
 import LANGUAGES, { LanguageOptionInterface } from "../../utils/languages";
 import { LanguageButton } from "../reusables/LanguageButton";

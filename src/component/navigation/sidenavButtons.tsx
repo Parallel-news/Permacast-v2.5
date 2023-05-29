@@ -4,11 +4,9 @@ import { useRouter } from 'next/router';
 import { useTranslation } from "next-i18next";
 import { SIDENAV_BUTTON, SIDENAV_BUTTON_BASE } from '../../styles/constants';
 
-import {
-  LanguageIcon,
-  PlusIcon,
-  QuestionMarkCircleIcon
-} from "@heroicons/react/24/outline";
+import LanguageIcon from "@heroicons/react/24/outline/LanguageIcon";
+import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
+import QuestionMarkCircleIcon from "@heroicons/react/24/outline/QuestionMarkCircleIcon";
 import LANGUAGES from "../../utils/languages";
 import { useRecoilState } from "recoil";
 import { isFullscreenAtom, loadingPage } from "../../atoms";

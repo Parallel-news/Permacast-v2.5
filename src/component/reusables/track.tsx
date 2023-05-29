@@ -5,8 +5,8 @@ import React, { FC, useState, useMemo, useEffect } from "react";
 import { shortenAddress } from "react-arconnect";
 import { useRecoilState } from "recoil";
 import { Tooltip } from "@nextui-org/react";
-import { MicrophoneIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
-
+import MicrophoneIcon from "@heroicons/react/24/outline/MicrophoneIcon";
+import VideoCameraIcon from "@heroicons/react/24/outline/VideoCameraIcon";
 import PlayButton from "./playButton";
 import MarkdownRenderer from "../markdownRenderer";
 

@@ -1,7 +1,9 @@
 import { useTranslation } from "next-i18next";
 import { FC } from "react";
 import { useRecoilState } from "recoil";
-import { EyeSlashIcon, Bars3BottomRightIcon, ClockIcon } from '@heroicons/react/24/outline';
+import EyeSlashIcon from '@heroicons/react/24/outline/EyeSlashIcon';
+import Bars3BottomRightIcon from '@heroicons/react/24/outline/Bars3BottomRightIcon';
+import ClockIcon from '@heroicons/react/24/outline/ClockIcon';
 import { chronStatusAtom, hide0EpisodesAtom } from "../atoms";
 import { Dropdown, dropdownMenuClass as dropdownClassPrev, menuItemClass, ExtendedDropdownButtonProps } from "./reusables";
 

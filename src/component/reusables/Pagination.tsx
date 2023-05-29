@@ -1,5 +1,6 @@
 import { Dispatch, FC, SetStateAction, useState, lazy, useEffect } from 'react';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
+import ChevronLeftIcon from '@heroicons/react/24/solid/ChevronLeftIcon';
+import ChevronRightIcon from '@heroicons/react/24/solid/ChevronRightIcon';
 import { convertToValidNumber } from '../../utils/validation/inputs';
 
 const DebouncedInput = lazy(() => import("../reusables/debouncedInput").then(module => ({ default: module.default })));

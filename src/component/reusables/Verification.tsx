@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { useTranslation } from "next-i18next";
 import { Tooltip } from '@nextui-org/react';
-import { CheckIcon } from "@heroicons/react/24/solid";
-import { XCircleIcon } from "@heroicons/react/24/outline";
+import CheckIcon from "@heroicons/react/24/solid/CheckIcon";
+import XCircleIcon from "@heroicons/react/24/outline/XCircleIcon";
 import { flexCol } from "../creator";
 import { dimColorString, isTooDark, RGBstringToObject } from "../../utils/ui";
 

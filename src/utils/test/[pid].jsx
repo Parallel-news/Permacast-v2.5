@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 
 import Shikwasa from "../../shikwasa-src/main.js";
 
-import { PlayIcon } from "@heroicons/react/24/outline";
+import PlayIcon from "@heroicons/react/24/outline/PlayIcon";
 import { Cooyub } from "../../component/reusables/icons";
 
 // import Track from "../../component/track";

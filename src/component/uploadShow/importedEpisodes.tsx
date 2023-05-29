@@ -6,7 +6,9 @@ import React, { FC, useEffect, useState } from "react"
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import toast from "react-hot-toast"
 import { useRecoilState } from "recoil";
-import { ArrowDownIcon, ArrowUpIcon, CheckIcon } from "@heroicons/react/24/solid";
+import ArrowDownIcon from "@heroicons/react/24/solid/ArrowDownIcon";
+import ArrowUpIcon from "@heroicons/react/24/solid/ArrowUpIcon"
+import CheckIcon from "@heroicons/react/24/solid/CheckIcon"
 import { Spacer, Loading, Tooltip } from "@nextui-org/react";
 
 import { AR_DECIMALS, CONNECT_WALLET, EPISODE_UPLOAD_FEE, EVERPAY_EOA, EVERPAY_EOA_UPLOADS, GIGABYTE, TOAST_DARK, USER_SIG_MESSAGES, EPISODE_SLIPPAGE, ERROR_TOAST_TIME, PERMA_TOAST_SETTINGS, EXTENDED_TOAST_TIME } from "../../constants";

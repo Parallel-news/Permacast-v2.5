@@ -1,9 +1,8 @@
-import { 
-    CurrencyDollarIcon, 
-    ArrowDownTrayIcon, 
-    ArrowTopRightOnSquareIcon, 
-    PencilSquareIcon
-} from '@heroicons/react/24/solid';
+import  CurrencyDollarIcon from '@heroicons/react/24/solid/CurrencyDollarIcon';
+import ArrowDownTrayIcon from '@heroicons/react/24/solid/ArrowDownTrayIcon';
+import ArrowTopRightOnSquareIcon from '@heroicons/react/24/solid/ArrowTopRightOnSquareIcon';
+import PencilSquareIcon from '@heroicons/react/24/solid/PencilSquareIcon';
+
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";

@@ -2,12 +2,13 @@ import axios from "axios";
 import { GetServerSideProps } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useRecoilState } from "recoil";
 
 import { Transition } from "@headlessui/react";
-import { ArrowSmallRightIcon, ChevronLeftIcon } from "@heroicons/react/24/solid"
+import ArrowSmallRightIcon from "@heroicons/react/24/solid/ArrowSmallRightIcon"
+import ChevronLeftIcon from "@heroicons/react/24/solid/ChevronLeftIcon"
 import { Loading } from "@nextui-org/react";
 
 import { loadingPage, allPodcasts } from "../../atoms";

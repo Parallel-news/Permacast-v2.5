@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useTranslation } from "next-i18next";
 import { FC } from "react";
-import { Bars3Icon } from "@heroicons/react/24/solid";
+import Bars3Icon from "@heroicons/react/24/solid/Bars3Icon";
 
 import Dropdown, {
   ExtendedDropdownButtonProps,

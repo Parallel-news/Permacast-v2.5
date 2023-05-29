@@ -3,11 +3,8 @@ import { useRecoilState } from "recoil";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from "next-i18next";
 
-import {
-  ArrowDownTrayIcon,
-  ArrowUpOnSquareIcon,
-} from "@heroicons/react/24/outline";
-
+import ArrowDownTrayIcon from "@heroicons/react/24/outline/ArrowDownTrayIcon";
+import ArrowUpOnSquareIcon from "@heroicons/react/24/outline/ArrowUpOnSquareIcon";
 import { getButtonRGBs, isTooLight } from "../../utils/ui";
 
 

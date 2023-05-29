@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { HeartIcon } from '@heroicons/react/24/solid';
+import HeartIcon from '@heroicons/react/24/solid/HeartIcon';
 
 import { dimColorString } from '../../utils/ui';
 import { useTranslation } from 'next-i18next';

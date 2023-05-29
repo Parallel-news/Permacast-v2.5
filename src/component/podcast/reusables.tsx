@@ -6,17 +6,17 @@ import { useArconnect } from "react-arconnect";
 import { useRecoilState } from "recoil";
 import { Divider, Modal } from "@nextui-org/react";
 
-import {
-    CurrencyDollarIcon,
-    PlusIcon,
-    ArrowTopRightOnSquareIcon,
-    ArrowsPointingOutIcon,
-    RssIcon,
-    HashtagIcon,
-    LanguageIcon,
-    AtSymbolIcon,
-    PencilSquareIcon
-} from "@heroicons/react/24/solid";
+import CurrencyDollarIcon from "@heroicons/react/24/solid/CurrencyDollarIcon";
+import PlusIcon from "@heroicons/react/24/solid/PlusIcon"
+import ArrowTopRightOnSquareIcon from "@heroicons/react/24/solid/ArrowTopRightOnSquareIcon"
+import ArrowsPointingOutIcon from "@heroicons/react/24/solid/ArrowsPointingOutIcon"
+import RssIcon from "@heroicons/react/24/solid/RssIcon"
+
+import HashtagIcon from "@heroicons/react/24/solid/HashtagIcon"
+import LanguageIcon from "@heroicons/react/24/solid/LanguageIcon"
+import AtSymbolIcon from "@heroicons/react/24/solid/AtSymbolIcon"
+import PencilSquareIcon from "@heroicons/react/24/solid/PencilSquareIcon"
+
 
 import MarkdownRenderer from "../markdownRenderer";
 import { getCategoryInCurrentLanguage, useLanguageHook } from "../../utils/languages";

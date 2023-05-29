@@ -1,4 +1,4 @@
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import XMarkIcon from "@heroicons/react/24/outline/XMarkIcon";
 import axios from "axios";
 import Everpay, { ChainType } from "everpay";
 import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";

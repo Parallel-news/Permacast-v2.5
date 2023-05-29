@@ -4,7 +4,8 @@ import { FC } from "react";
 import { useRecoilState } from "recoil";
 import { SIDENAV_BUTTON } from '../../../styles/constants';
 
-import { HomeIcon, RectangleStackIcon } from "@heroicons/react/24/outline";
+import HomeIcon from "@heroicons/react/24/outline/HomeIcon";
+import RectangleStackIcon from "@heroicons/react/24/outline/RectangleStackIcon";
 import { HelpDropdown, LanguageDropdown, NavButton, UploadDropdown } from "../sidenavButtons";
 import { Cooyub } from "../../reusables/icons";
 import { currentThemeColorAtom, loadingPage } from "../../../atoms";

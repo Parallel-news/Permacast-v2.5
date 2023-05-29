@@ -1,5 +1,5 @@
 import React, { FC, ReactNode, Dispatch, SetStateAction, useEffect, useState } from "react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import XMarkIcon from "@heroicons/react/24/outline/XMarkIcon";
 
 
 export interface ModalProps {

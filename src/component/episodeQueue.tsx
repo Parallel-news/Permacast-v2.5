@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next';
 import React, { FC } from 'react';
 import { useRecoilState } from 'recoil';
-import { PlusIcon } from '@heroicons/react/24/solid';
+import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 
 import Track from './reusables/track';
 

@@ -9,8 +9,10 @@ import { arweaveAddress } from '../../atoms';
 import Image from 'next/image';
 
 import { FiFile } from 'react-icons/fi';
-import { ArrowUpTrayIcon, XMarkIcon, WalletIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
-
+import ArrowUpTrayIcon from '@heroicons/react/24/outline/ArrowUpTrayIcon';
+import XMarkIcon from '@heroicons/react/24/outline/XMarkIcon';
+import WalletIcon from '@heroicons/react/24/outline/WalletIcon';
+import CurrencyDollarIcon from '@heroicons/react/24/outline/CurrencyDollarIcon';
 interface EpisodeMediaInter {
     media: File | null;
     setMedia: (v: any) => void;

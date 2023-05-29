@@ -1,6 +1,6 @@
 import { useTranslation } from "next-i18next";
 import { FC, useState } from "react";
-import { WalletIcon } from "@heroicons/react/24/solid";
+import WalletIcon from "@heroicons/react/24/solid/WalletIcon";
 import { Modal, ModalProps, ThemedButton } from "../reusables";
 import { useRecoilState } from "recoil";
 import { selectedWalletAtom } from "../../atoms";

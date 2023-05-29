@@ -7,7 +7,7 @@ import { Podcast } from "../../interfaces";
 import { DEFAULT_LANGUAGE } from "../../utils/languages";
 
 const Cropper = React.lazy(() => import("react-easy-crop"));
-const PhotoIcon = React.lazy(() => import("@heroicons/react/24/outline").then(module => ({ default: module.PhotoIcon })));
+const PhotoIcon = React.lazy(() => import("@heroicons/react/24/outline/PhotoIcon"))
 const Tooltip = React.lazy(() => import("@nextui-org/react").then(module => ({ default: module.Tooltip })));
 const ValMsg = React.lazy(() => import("../reusables/formTools").then(module => ({ default: module.ValMsg })))
 const CategoryOptions = React.lazy(() => import("../../utils/languages").then(module => ({ default: module.CategoryOptions })))
