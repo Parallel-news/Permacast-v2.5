@@ -2,11 +2,8 @@ import axios from 'axios';
 import { useTranslation } from 'next-i18next';
 import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
-import CameraIcon from '@heroicons/react/24/outline/CameraIcon';
-import PencilIcon from '@heroicons/react/24/outline/PencilIcon';
 import { Tooltip } from '@nextui-org/react';
 import toast from 'react-hot-toast';
-
 import { flexCenterGap } from './featuredCreators';
 import { Modal } from '../reusables';
 import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, GIGABYTE, PASOM_SIG_MESSAGES, PERMA_TOAST_SETTINGS, } from '../../constants';
@@ -17,6 +14,7 @@ import { UploadImageContainer } from '../reusables/croppingTools';
 import { getBundleArFee, upload3DMedia } from "../../utils/arseeding";
 import { createFileFromBlobUrl, } from "../../utils/fileTools";
 import validatePASoMForm, { PASOM_BIO_MAX_LEN, PASOM_BIO_MIN_LEN, PASOM_NICKNAME_MAX_LEN, PASOM_NICKNAME_MIN_LEN } from '../../utils/validation/PASoM';
+import { Icon } from '../icon';
 
 // 1. Interfaces
 interface EditButtonProps {
@@ -119,7 +117,7 @@ const ProfileImages: FC<ProfileImageProps> = ({ banner, avatar, setBanner, setAv
       inputClassName={CreatorEditBannerInputStyling}
       labelClassName={CreatorEditBannerLabelStyling}
       previewImage={<img alt="banner" src={banner} className={CreatorEditAvatarPreviewBannerStyling} />}
-      placeholder={<CameraIcon className={CreatorUploadPhotoIconStyling} />}
+      placeholder={<Icon className={CreatorUploadPhotoIconStyling} icon="CAMERA"/>}
     />
     <UploadImageContainer
       initialImage={avatar}
@@ -129,7 +127,7 @@ const ProfileImages: FC<ProfileImageProps> = ({ banner, avatar, setBanner, setAv
       inputClassName={CreatorEditAvatarInputStyling}
       labelClassName={CreatorEditAvatarLabelStyling}
       previewImage={<img alt="avatar" src={avatar} className={CreatorEditAvatarPreviewImageStyling} />}
-      placeholder={<CameraIcon className={CreatorUploadPhotoIconStyling} />}
+      placeholder={<Icon className={CreatorUploadPhotoIconStyling} icon="CAMERA"/>}
     />
   </div>
 );
@@ -289,7 +287,7 @@ export const EditButton: FC<EditButtonProps> = ({ PASoMProfile }) => {
   const EditText: FC = () => (
     <div className={flexCenterGap}>
       {t('creator.edit')}
-      <PencilIcon className='text-inherit w-4 h-4' />
+      <Icon className='text-inherit w-5 h-5' icon="PENCIL" strokeWidth='1'/>
     </div>
   );
 

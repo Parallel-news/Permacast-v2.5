@@ -2,13 +2,12 @@ import axios from 'axios';
 import { useTranslation } from 'next-i18next';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
-import UserPlusIcon from '@heroicons/react/24/solid/UserPlusIcon';
-import UserMinusIcon from '@heroicons/react/24/solid/UserMinusIcon';
 import ThemedButton, { themedButtonIconStyling } from '../reusables/themedButton';
 import { flexCenterGap } from './featuredCreators';
 import { PASOM_SIG_MESSAGES, SPINNER_COLOR } from '../../constants';
 import { follow, unfollow } from '../../interfaces/pasom';
 import { PermaSpinner } from '../reusables/PermaSpinner';
+import { Icon } from '../icon';
 
 interface FollowButtonProps {
   user: string;
@@ -57,7 +56,7 @@ export const FollowButton: FC<FollowButtonProps> = ({ user, walletConnected, isF
         spinnerColor={SPINNER_COLOR}
         size={1}
         divClass={""}
-      />: <UserPlusIcon className={themedButtonIconStyling} />}
+      />: <Icon className={themedButtonIconStyling} icon="USERPLUS" fill="currentColor" strokeWidth='0'/>}
       {t('creator.follow')}
     </div>
   );
@@ -68,7 +67,7 @@ export const FollowButton: FC<FollowButtonProps> = ({ user, walletConnected, isF
         spinnerColor={SPINNER_COLOR}
         size={1}
         divClass={""}
-      />: <UserMinusIcon className={themedButtonIconStyling} />}
+      />: <Icon className={themedButtonIconStyling} icon="USERMINUS" fill="currentColor" />}
       {t('creator.unfollow')}
     </div>
   );

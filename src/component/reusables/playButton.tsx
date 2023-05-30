@@ -1,11 +1,7 @@
+import { Icon } from "../icon";
 import React, { FC } from "react";
-
 import { dimColorString } from "../../utils/ui";
-
-import PauseIcon from "@heroicons/react/24/solid/PauseIcon";
-import PlayIcon from "@heroicons/react/24/solid/PlayIcon";
 import { RGBorRGBAstring, RGBstring } from "../../interfaces/ui";
-
 
 interface PlayButtonProps {
   size: number;
@@ -26,12 +22,14 @@ const PlayButton: FC<PlayButtonProps> = ({ size, iconSize, buttonColor, accentCo
       onClick={onClick}
     >
       {isPlaying ? (
-        <PauseIcon className="stroke-[3]" style={{ width: iconSize, height: iconSize, color: accentColor }} />
+        <Icon className="h-7 w-7" style={{ width: iconSize, height: iconSize, color: accentColor }} icon="PAUSE" strokeWidth="3" fill={accentColor}/>
       ) : (
-        <PlayIcon className="stroke-[3]" style={{ width: iconSize, height: iconSize, color: accentColor }} />
+        <Icon style={{ width: iconSize, height: iconSize, color: accentColor }} icon="PLAY" strokeWidth="3" fill={accentColor}/>
       )}
     </button>
   );
 };
 
 export default PlayButton;
+
+  

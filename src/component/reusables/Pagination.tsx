@@ -1,7 +1,6 @@
 import { Dispatch, FC, SetStateAction, useState, lazy, useEffect } from 'react';
-import ChevronLeftIcon from '@heroicons/react/24/solid/ChevronLeftIcon';
-import ChevronRightIcon from '@heroicons/react/24/solid/ChevronRightIcon';
 import { convertToValidNumber } from '../../utils/validation/inputs';
+import { Icon } from '../icon';
 
 const DebouncedInput = lazy(() => import("../reusables/debouncedInput").then(module => ({ default: module.default })));
 
@@ -43,7 +42,7 @@ const Pagination: FC<PaginationProps> = ({
           onClick={() => setCurrentPage(currentPage - 1)}
           disabled={currentPage === 1}
         >
-          <ChevronLeftIcon className="h-6 w-6 mr-1" />
+          <Icon className="h-6 w-6 mr-1" icon="CHEVLEFT" />
         </button>
       )}
       {(totalPages >= limitPagination - 1) && (
@@ -88,7 +87,7 @@ const Pagination: FC<PaginationProps> = ({
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage(currentPage + 1)}
         >
-          <ChevronRightIcon className="h-6 w-6 mr-1" />
+          <Icon className="h-6 w-6 mr-1" icon="CHEVRIGHT"/>
         </button>
       )}
       {extraJSX ? extraJSX : ""}

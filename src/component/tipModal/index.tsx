@@ -1,4 +1,3 @@
-import XMarkIcon from "@heroicons/react/24/outline/XMarkIcon";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useArconnect } from "react-arconnect";
 import toast from "react-hot-toast";
@@ -13,6 +12,7 @@ import { PermaSpinner } from "../reusables/PermaSpinner";
 import { tipModalStyling } from "../uploadEpisode/uploadEpisodeTools";
 import { ConnectButton } from "../uploadEpisode/reusables";
 import { containerPodcastModalStyling, SubmitTipButton } from "../uploadEpisode/reusables";
+import { Icon } from "../icon";
 interface TipModalInter {
     to?: string;
     toAddress: string;
@@ -96,7 +96,7 @@ export const TipModal = (props: TipModalInter) => {
                     <p className={benefactorNameStyling}>{props.to}</p> 
                 </div>
                 {/*Header*/}
-                <XMarkIcon className={xMarkModalStyling} onClick={() => props.setVisible(false)} />   
+                <Icon className={xMarkModalStyling} onClick={() => props.setVisible(false)} icon="XMARK"/>   
 
                 {/*Tip Amount*/}
                 <div className={tipAmountAbsStyling}>

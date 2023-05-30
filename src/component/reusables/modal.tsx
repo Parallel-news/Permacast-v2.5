@@ -1,5 +1,5 @@
 import React, { FC, ReactNode, Dispatch, SetStateAction, useEffect, useState } from "react";
-import XMarkIcon from "@heroicons/react/24/outline/XMarkIcon";
+import { Icon } from "../icon";
 
 
 export interface ModalProps {
@@ -34,7 +34,7 @@ const Modal: FC<ModalProps> = ({ isVisible, setIsVisible, className, children })
     <div className={modalWrapperStyling}>
       <div className={modalInnerStyling + fadeStyling + className}>
         <button className={xMarkModalStyling} onClick={() => setIsVisible(false)}>
-          <XMarkIcon />
+          <Icon icon="XMARK" />
         </button>
         {children}
       </div>

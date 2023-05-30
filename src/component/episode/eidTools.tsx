@@ -1,10 +1,6 @@
-import  CurrencyDollarIcon from '@heroicons/react/24/solid/CurrencyDollarIcon';
-import ArrowDownTrayIcon from '@heroicons/react/24/solid/ArrowDownTrayIcon';
-import ArrowTopRightOnSquareIcon from '@heroicons/react/24/solid/ArrowTopRightOnSquareIcon';
-import PencilSquareIcon from '@heroicons/react/24/solid/PencilSquareIcon';
-
 import Link from "next/link";
 import Image from "next/image";
+import { Icon } from '../icon';
 import { useState } from "react";
 import Track from "../reusables/track";
 import { useRecoilState } from "recoil";
@@ -254,7 +250,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
             <>{props.playButton}</>
             {address !== podcastOwner && (
             <DescriptionButton
-                icon={<CurrencyDollarIcon className={episodeIconStyling} />} 
+                icon={<Icon className={episodeIconStyling} icon="DOLLAR" strokeWidth="0"/>} 
                 text={""}
                 color={color} 
                 onClick={props.setLoadTipModal}
@@ -263,7 +259,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
             {address === podcastOwner && (
             <Link href={`/edit-episode/${props.pid}/${props.eid}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
-                    icon={<PencilSquareIcon className={episodeIconStyling} />} 
+                    icon={<Icon className={episodeIconStyling} icon="PENCIL" />} 
                     text={""}
                     color={color} 
                 />
@@ -278,7 +274,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
             />
             :
             <DescriptionButton
-                icon={<ArrowDownTrayIcon className={episodeIconStyling} />} 
+                icon={<Icon className={episodeIconStyling} icon="ARROWDOWNTRAY"/>} 
                 text={""}
                 color={color}
                 onClick={() => downloadFile()}
@@ -286,7 +282,7 @@ export const EpisodeInfoButtons = (props: EpisodeInfoButtonsInter) => {
             }
 
             <DescriptionButton
-                icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
+                icon={<Icon className={episodeIconStyling} icon="ARROWTOPSQUARE"/>} 
                 text={""}
                 color={color}
                 onClick={props.setLoadShareModal}

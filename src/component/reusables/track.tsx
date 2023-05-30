@@ -5,8 +5,7 @@ import React, { FC, useState, useMemo, useEffect } from "react";
 import { shortenAddress } from "react-arconnect";
 import { useRecoilState } from "recoil";
 import { Tooltip } from "@nextui-org/react";
-import MicrophoneIcon from "@heroicons/react/24/outline/MicrophoneIcon";
-import VideoCameraIcon from "@heroicons/react/24/outline/VideoCameraIcon";
+
 import PlayButton from "./playButton";
 import MarkdownRenderer from "../markdownRenderer";
 
@@ -27,6 +26,7 @@ import {
 } from "../../utils/ui";
 import { trimChars } from "../../utils/filters";
 import { detectTimestampType, hasBeen10Min } from "../../utils/reusables";
+import { Icon } from "../icon";
 
 /**
  * Index
@@ -107,14 +107,6 @@ export const trackDescriptionStyling = `mx-1.5 w-full line-clamp-1 text-xs `;
 export const trackMainInfoStyling = `ml-4 flex flex-col text-wrap `;
 export const trackPodcastInfoContainer = `flex flex-row md:items-center w-full md:min-w-[25%] `;
 
-// 3. Custom Functions
-
-// const ShortenAuthor = (author: string, maxLength: number) => {
-//   return author.split(0, 20);
-// }
-
-// 4. Reusable Components
-
 export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, timestamp }) => {
   const [, _setLoadingPage] = useRecoilState(loadingPage)
   if (cover) return (
@@ -182,7 +174,7 @@ export const TrackContentTypeIcon: FC<TrackContentTypeIconProps> = ({ isVideo, c
 
   if (includeContentType) return (
     <Tooltip color="invert" content={t(isVideo ? "track.video" : "track.audio")}>
-      {isVideo ? <VideoCameraIcon {...{ className }} /> : <MicrophoneIcon {...{ className }} />}
+      {isVideo ? <Icon {...{ className }} icon="CAM" /> : <Icon {...{ className }} icon="MIC"/>}
     </Tooltip>
   );
 };

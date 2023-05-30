@@ -2,7 +2,6 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next';
 import { FC, useState } from 'react';
 import { useRecoilState } from 'recoil';
-//import { ReactComponent as MagnifyingGlassIcon } from '@heroicons/react/24/outline/MagnifyingGlassIcon';
 import { searchInputAtom } from '../atoms';
 import { Icon } from './icon';
 

@@ -1,16 +1,10 @@
 import axios from 'axios';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useTranslation } from 'next-i18next';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import { useArconnect, shortenAddress } from 'react-arconnect';
 import { useRecoilState } from 'recoil';
-import ArrowLeftOnRectangleIcon from '@heroicons/react/24/outline/ArrowLeftOnRectangleIcon';
-import BanknotesIcon from '@heroicons/react/24/outline/BanknotesIcon'
-import NewspaperIcon from '@heroicons/react/24/outline/NewspaperIcon'
-import UserCircleIcon from '@heroicons/react/24/outline/UserCircleIcon'
 import { PASoMProfileAtom, arweaveAddress, loadingPage, walletNotDetectedModalVisibilityAtom } from '../../atoms';
-
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
 import { ProfileImage } from '../creator/reusables';
 import { ANS_TEMPLATE } from '../../constants/ui';
@@ -24,6 +18,7 @@ import {
   dropdownMenuClass as prevMenuClass,
   menuItemClass
 } from '../reusables';
+import { Icon } from '../icon';
 
 
 
@@ -91,7 +86,7 @@ const ArConnect: FC = () => {
 
   const Everpay: FC = () => (
     <a {...{ target, rel }} href={"https://app.everpay.io"} className={`flexFullCenterGap `}>
-      <BanknotesIcon className={iconSize} />
+      <Icon className={iconSize} icon="BANKNOTES" strokeWidth='1.5'/>
       {t("wallet.arconnect.everpay")}
     </a>
   );
@@ -104,21 +99,21 @@ const ArConnect: FC = () => {
         className={`flexFullCenterGap `}
         onClick={() => _setLoadingPage(true)}
       >
-        <UserCircleIcon className={iconSize} />
+        <Icon className={iconSize} icon="USERCIRCLE" strokeWidth='1.5'/>
         {t("wallet.arconnect.profile")}
       </Link>
   )};
 
   const Arpage: FC = () => (
     <a {...{ target, rel }} href={`https://${ANS?.currentLabel}.ar.page`} className={`flexFullCenterGap `}>
-      <NewspaperIcon className={iconSize} />
+      <Icon className={iconSize} icon="NEWSPAPER" strokeWidth='1.5'/>
       {t("wallet.arconnect.arpage")}
     </a>
   );
 
   const DisconnectArconnect: FC = () => (
     <button className={`flexFullCenterGap `} onClick={() => arconnectDisconnect()}>
-      <ArrowLeftOnRectangleIcon className={iconSize} />
+      <Icon className={iconSize} icon="ARROWLEFTRECT" strokeWidth='1.5'/>
       {t("wallet.arconnect.disconnect")}
     </button>
   );

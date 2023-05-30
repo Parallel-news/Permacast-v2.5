@@ -1,25 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from "next-i18next";
 import { useRecoilState } from 'recoil';
-
 import Shikwasa from "../../shikwasa-src/main.js";
-
-import PlayIcon from "@heroicons/react/24/outline/PlayIcon";
 import { Cooyub } from "../../component/reusables/icons";
-
-// import Track from "../../component/track";
-import TipButton from "../../component/reusables/tip";
 import UploadEpisode from "../../component/uploadEpisode";
 import UploadVideo from "../../component/uploadVideo";
 import PodcastHeader from '../../component/podcastHeader';
-
 import { useArconnect } from "react-arconnect";
-
 
 import {
   switchFocus,
-  videoSelection,
   globalModalOpen,
   backgroundColor
 } from "../../atoms";
@@ -322,7 +313,7 @@ const Podcast = (props) => {
                           }
                         }}
                       >
-                        <PlayIcon className="w-4 h-4 fill-current" />
+                        <Icon className="w-4 h-4 fill-current" icon="PLAY"/>
                       </div>
                     </div>
                   </div>

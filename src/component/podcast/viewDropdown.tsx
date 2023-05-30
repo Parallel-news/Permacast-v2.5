@@ -1,16 +1,15 @@
 import { Dropdown, DropdownButtonProps } from "@nextui-org/react"
-import Bars3BottomRightIcon from '@heroicons/react/24/outline/Bars3BottomRightIcon';
-import ClockIcon from '@heroicons/react/24/outline/ClockIcon';
 import { useRecoilState } from "recoil";
 import { chronStatusAtom } from "../../atoms";
 import { useTranslation } from "next-i18next";
 import React from "react";
+import { Icon } from "../icon";
 
 export default function ViewDropDown() {
 
     const [chronStatus, setChronStatus] = useRecoilState<number>(chronStatusAtom)
     const filterStyling = "w-12 h-12 text-zinc-600 cursor-pointer hover:bg-zinc-700 rounded-full default-no-outline-ringed default-animation px-2"
-	const Clock = () => <ClockIcon {...{ className }} />;
+	const Clock = () => <Icon {...{ className }} icon="CLOCK" />;
     const className = 'text-white w-4 h-4 ';
 	const menuItems = [
 		{ icon: <Clock />, key: "showNewest", name: "Show Newest",  href: ""},
@@ -20,7 +19,7 @@ export default function ViewDropDown() {
     return (
     <Dropdown>
         <Dropdown.Trigger>
-            <Bars3BottomRightIcon className={filterStyling}/>
+            <Icon className={filterStyling} icon="BAR3BOTTOM"/>
         </Dropdown.Trigger>
         <Dropdown.Menu 
             aria-label="Dynamic Actions" 

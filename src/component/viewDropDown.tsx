@@ -1,11 +1,9 @@
 import { useTranslation } from "next-i18next";
 import { FC } from "react";
 import { useRecoilState } from "recoil";
-import EyeSlashIcon from '@heroicons/react/24/outline/EyeSlashIcon';
-import Bars3BottomRightIcon from '@heroicons/react/24/outline/Bars3BottomRightIcon';
-import ClockIcon from '@heroicons/react/24/outline/ClockIcon';
 import { chronStatusAtom, hide0EpisodesAtom } from "../atoms";
 import { Dropdown, dropdownMenuClass as dropdownClassPrev, menuItemClass, ExtendedDropdownButtonProps } from "./reusables";
+import { Icon } from "./icon";
 
 const ViewDropDown: FC = () => {
 
@@ -22,7 +20,7 @@ const ViewDropDown: FC = () => {
       // Timeout so text doesnt change mid-click
       setTimeout(() => setChronStatus(prev => prev + 1), 500)
     }}>
-      <ClockIcon className={iconClassName} />
+      <Icon className={iconClassName} icon="CLOCK" />
       {chronStatus % 2 ? t("feed-page.showOldest") : t("feed-page.showNewest")}
     </button>
   );
@@ -31,7 +29,7 @@ const ViewDropDown: FC = () => {
     <button className={flexGap2} onClick={() => (
       setTimeout(() => setHide0Episodes(prev => !prev), 500)
     )}>
-      <EyeSlashIcon className={iconClassName} />
+      <Icon className={iconClassName} icon="EYESLASH" />
       {hide0Episodes ? t("feed-page.show0EpisodePodcasts") : t("feed-page.hide0EpisodePodcasts")}
     </button>
   );
@@ -40,8 +38,8 @@ const ViewDropDown: FC = () => {
     { key: "showNewest", jsx: <SortByUploadDateButton /> },
     { key: "hide0Episodes", jsx: <Hide0EpisodePodcastsButton /> }
   ];
-
-  const openMenuButton = <Bars3BottomRightIcon className="h-5 w-5" aria-hidden="true" />;
+  //<Bars3BottomRightIcon className="h-5 w-5" aria-hidden="true" />
+  const openMenuButton = <Icon className={iconClassName} icon="BAR3BOTTOM" />;
   const openMenuButtonClass = `rounded-lg min-w-min bg-zinc-900 justify-start`;
   const dropdownMenuClass = dropdownClassPrev + ` text-sm`; 
   const position = "start"

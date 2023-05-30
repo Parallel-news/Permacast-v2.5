@@ -7,12 +7,8 @@ import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
 import { useRecoilState } from 'recoil';
 import { arweaveAddress } from '../../atoms';
 import Image from 'next/image';
-
 import { FiFile } from 'react-icons/fi';
-import ArrowUpTrayIcon from '@heroicons/react/24/outline/ArrowUpTrayIcon';
-import XMarkIcon from '@heroicons/react/24/outline/XMarkIcon';
-import WalletIcon from '@heroicons/react/24/outline/WalletIcon';
-import CurrencyDollarIcon from '@heroicons/react/24/outline/CurrencyDollarIcon';
+import { Icon } from '../icon';
 interface EpisodeMediaInter {
     media: File | null;
     setMedia: (v: any) => void;
@@ -95,7 +91,7 @@ export const UploadButton = (props: UploadButtonInter) => {
             disabled={props.disable}
             onClick={props.click}
         >
-            <ArrowUpTrayIcon className={trayIconStyling} />
+            <Icon className={trayIconStyling} icon={"ARROWUPTRAY"} strokeWidth='0' fill="currentColor"/>
             {t("uploadepisode.upload")}
       </button>
     )
@@ -110,7 +106,7 @@ export const ConnectButton = (props: UploadButtonInter) => {
             disabled={props.disable}
             onClick={props.click}
         >
-            <WalletIcon className={trayIconStyling} />
+            <Icon className={trayIconStyling} icon="WALLET" strokeWidth='1.5'/>
             {t("uploadshow.connect-wallet")}
       </button>
     )
@@ -124,7 +120,7 @@ export const SubmitTipButton = (props: UploadButtonInter) => {
             disabled={props.disable}
             onClick={props.click}
         >
-            <CurrencyDollarIcon className={dollarIconStyling} />
+            <Icon className={dollarIconStyling} icon="DOLLAR"/>
             {t("tipModal.submitTip")}
       </button>
     )
@@ -237,7 +233,7 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
                     <div></div>
                     {/*Show Title*/}
                     <p className="text-white text-xl">{t("uploadepisode.select-show")}</p>
-                    <XMarkIcon className={xMarkStyling} onClick={() => props.setVisible(false)} />
+                    <Icon className={xMarkStyling} onClick={() => props.setVisible(false)} icon="XMARK"/>
                 </div>
                 <hr className={hrPodcastStyling}/>
                 {/*Options*/}
