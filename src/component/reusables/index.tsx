@@ -16,5 +16,5 @@ export { default as PlayButton } from "./playButton";
 export { default as Verification } from './Verification';
 export { default as Modal } from "./modal";
 
-export type { ExtendedDropdownButtonProps } from "./dropdown";
+export type { DropdownProps, ExtendedDropdownButtonProps } from "./dropdown";
 export type { ModalProps } from "./modal";

@@ -24,15 +24,15 @@ import { arweaveAddress, calculateEverPayBalance, loadingPage, podcastColorAtom 
 
 import { fetchARPriceInUSD } from "../../utils/redstone";
 import { RSSFeedManager } from "../../utils/localstorage";
-
 import { RSSEpisodeEstimate } from "../../interfaces/api";
 import { DEFAULT_THEME_COLOR } from "../../constants/ui";
 
-const ImgCover = React.lazy(() => import("./reusables").then(module => ({ default: module.ImgCover })));
-const ProgressBar = React.lazy(() => import("../reusables/progressBar").then(module => ({ default: module.default })));
-const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.ConnectButton })));
-const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
-const Pagination = React.lazy(() => import("../reusables/Pagination").then(module => ({ default: module.default })));
+import { ImgCover } from './reusables';
+import ProgressBar from '../reusables/progressBar';
+import { ConnectButton } from '../uploadEpisode/reusables';
+import { UploadButton } from '../uploadEpisode/reusables';
+import Pagination from '../reusables/Pagination';
+
 //? IN THE FUTURE, USE AN OBJECT TO CHECK EACH PART OF THE FLOW
 const FULL_TESTING = 0;
 const MAX_EPISODES_TO_UPLOAD_AT_ONCE = 5;
@@ -363,6 +363,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
       const newList = [...prev, link];
       RSSFeedManager.addValueToObject(realPid + '/' + RSSLink, JSON.stringify(newList));
       setUploadedEpisodes(newList);
+      setUploadCount(prev => prev + 1);
     } catch (e) {
       console.log('error: ', e);
       return '';
@@ -438,7 +439,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
     setTimeout(() => setProgress(0), 1000);
 
     let totalUploadedCount = uploadedCount + uploadedEpisodes.length;
-    setUploadCount(totalUploadedCount);
+    // setUploadCount(totalUploadedCount);
     
     console.log(uploadedCount);
     toast.dismiss(savingBlockchainToast);
