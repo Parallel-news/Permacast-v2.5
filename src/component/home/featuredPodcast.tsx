@@ -122,7 +122,8 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
   const [textColor, setTextColor] = useState<string>('');
   const [markdownText, setMarkdownText] = useState<string>('');
   const [, _setLoadingPage] = useRecoilState(loadingPage)
-  
+  const [episodes, setEpisode] = useState([])
+  let episode;
   useEffect(() => {
     const fetchMarkdown = async (tx: arweaveTX) => {
       const text = await queryMarkdownByTX(tx);
@@ -144,10 +145,12 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
     } catch (error) {
       console.log(error);
     };
+
+    setEpisode(convertPodcastsToEpisodes([podcastInfo]));
+    episode = episodes.length ? episodes[0]: undefined
+
   }, [podcastInfo]);
 
-  const episodes = convertPodcastsToEpisodes([podcastInfo]);
-  const episode = episodes.length ? episodes[0]: undefined
   const playerInfo: showShikwasaPlayerArguments = {
     playerColorScheme: themeColor,
     openFullscreen: true,
@@ -162,10 +165,6 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
   const prevent = (event: any) => {
     event.preventDefault();
   };
-  // console.log("HEADS UP: ")
-  // console.log("playerInfo: ", playerInfo)
-  // console.log("podcastInfo ", podcastInfo)
-  // console.log("episodes: ", episodes)
 
   return (
     <Link 
@@ -198,5 +197,3 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
 };
 
 export default FeaturedPodcast;
-//<PodcastDescription podcastDescription={description} />
-//<MarkdownRenderer markdownText={markdownText} />

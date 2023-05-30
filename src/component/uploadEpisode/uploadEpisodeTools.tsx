@@ -18,6 +18,7 @@ import { getBundleArFee, upload2DMedia, upload3DMedia } from '../../utils/arseed
 import { allFieldsFilled, byteSize, checkConnection, determineMediaType, generateAuthentication, handleError } from '../../utils/reusables';
 import { EditEpisodeProps, UploadEpisodeProps } from '../../interfaces/exm';
 import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, ERROR_TOAST_TIME, EVERPAY_EOA, EXTENDED_TOAST_TIME, GIGABYTE, PERMA_TOAST_SETTINGS, SPINNER_COLOR, TOAST_DARK, TOAST_MARGIN, USER_SIG_MESSAGES } from '../../constants';
+import { getPodcastData } from '../../features/prefetching';
 
 
 const UploadButton = React.lazy(() => import('./reusables').then(module => ({ default: module.UploadButton })))
@@ -52,6 +53,7 @@ export const episodeDescStyling =  "input input-secondary resize-none w-full h-2
 // 4. Components
 export const EpisodeForm = (props: EpisodeFormInter) => {
 
+    const queryPodcastData = getPodcastData()
     const { t } = useTranslation();
     const [submittingEp, setSubmittingEp] = useState<boolean>(false)
     const { address, ANS, getPublicKey, createSignature, arconnectConnect } = useArconnect();
@@ -257,15 +259,16 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             const result = await axios.post('/api/exm/write', createEpPayload);
             console.log("EXM RES: ", result)
             //EXM call, set timeout, then redirect. 
-            toast.dismiss(toastSaving);
-            toast.success(t("success.episodeUploaded"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
-            setProgress(100)
             setTimeout(async function () {
+                toast.dismiss(toastSaving);
+                toast.success(t("success.episodeUploaded"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
+                setProgress(100)
+                queryPodcastData.refetch()
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
                 const { locale } = router;
                 router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
-            }, 3500)
-        }, 4000)
+            }, 6500)
+        }, 2000)
     }
     //Submit Episode Function
     return(

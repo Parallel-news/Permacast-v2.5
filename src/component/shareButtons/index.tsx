@@ -4,9 +4,9 @@ import Image from 'next/image'
 import {  tipModalStyling } from '../uploadEpisode/uploadEpisodeTools'
 import { containerPodcastModalStyling } from '../uploadEpisode/reusables'
 import { FADE_IN_STYLE, FADE_OUT_STYLE } from '../../constants'
-import { XMarkIcon } from '@heroicons/react/24/outline'
 import { xMarkModalStyling } from '../tipModal'
 import { useTranslation } from 'next-i18next'
+import { Icon } from '../icon'
 
 interface ShareButtonsInter {
     url: string;
@@ -39,7 +39,7 @@ export const ShareButtons = (props: ShareButtonsInter) => {
     return (
         <div className={tipModalStyling+" backdrop-blur-sm"}>
             <div className={`${containerPodcastModalStyling+ " justify-start relative overflow-hidden"} ${showModal ? FADE_IN_STYLE :FADE_OUT_STYLE}`}>
-                <XMarkIcon className={xMarkModalStyling} onClick={() => props.setVisible(false)} /> 
+                <Icon className={xMarkModalStyling} onClick={() => props.setVisible(false)} icon="XMARK"/> 
                 <div>
                     <p className={titleStyling}>{t("share.share")}</p>
                 </div>    

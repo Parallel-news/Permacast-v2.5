@@ -2,12 +2,10 @@ import axios from "axios";
 import { GetServerSideProps } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useRecoilState } from "recoil";
-
 import { Transition } from "@headlessui/react";
-import { ArrowSmallRightIcon, ChevronLeftIcon } from "@heroicons/react/24/solid"
 import { Loading } from "@nextui-org/react";
 
 import { loadingPage, allPodcasts } from "../../atoms";
@@ -15,6 +13,7 @@ import { Podcast, rssEpisode } from "../../interfaces";
 import { getContractVariables } from "../../utils/contract";
 import { convertLinktoBase64, isValidUrl } from "../../utils/reusables";
 import { ARSEED_URL, ERROR_TOAST_TIME, EXM_READ_LINK, NO_SHOW, PERMA_TOAST_SETTINGS, RSS_IMPORT_LINK, RSS_META_LINK, TOAST_DARK } from "../../constants";
+import { Icon } from "../../component/icon";
 
 const RssSubmit = React.lazy(() => import("../../component/reusables/RssSubmit").then(module => ({ default: module.default })));
 const ImportedEpisodes = React.lazy(() => import("../../component/uploadShow/importedEpisodes").then(module => ({ default: module.ImportedEpisodes })));
@@ -180,7 +179,7 @@ export default function rss({yourShows}) {
                             onChange={(e) => setRssLink(e.target.value)}
                         />
                         <RssSubmit 
-                            icon={submittingLink ? <Loading type="spinner" size="lg" color="currentColor" /> : <ArrowSmallRightIcon className={iconStyling} /> }
+                            icon={submittingLink ? <Loading type="spinner" size="lg" color="currentColor" /> : <Icon className={iconStyling} icon="ARROWSMALLRIGHT"/> }
                             color="bg-[rgb(255,255,0)]"
                             dimensions="h-10 w-11"
                             onClick={() => submitLink(  )}
@@ -206,7 +205,7 @@ export default function rss({yourShows}) {
                     className="bg-zinc-800 text-white rounded-full h-10 w-10 flex items-center justify-center"
                     onClick={() => setStep(0)}
                 >
-                    <ChevronLeftIcon className="h-6 w-6 mr-1" />
+                    <Icon className="h-6 w-6 mr-1" icon="CHEVLEFT"/>
                 </button>
                 <ShowForm 
                     podcasts={yourShows}
@@ -240,7 +239,7 @@ export default function rss({yourShows}) {
                         setStep(1)
                     }}
                 >
-                    <ChevronLeftIcon className="h-6 w-6 mr-1" />
+                    <Icon className="h-6 w-6 mr-1" icon="CHEVLEFT"/>
                 </button>
                 <ImportedEpisodes
                     index={index}

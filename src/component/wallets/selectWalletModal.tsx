@@ -1,10 +1,10 @@
 import { useTranslation } from "next-i18next";
 import { FC, useState } from "react";
-import { WalletIcon } from "@heroicons/react/24/solid";
 import { Modal, ModalProps, ThemedButton } from "../reusables";
 import { useRecoilState } from "recoil";
 import { selectedWalletAtom } from "../../atoms";
 import { ConnectArconnect } from "./arconnect";
+import { Icon } from "../icon";
 
 
 const SelectWalletModal: FC<ModalProps> = ({ isVisible, setIsVisible, className }) => {
@@ -36,7 +36,7 @@ export const SelectWalletButton: FC = ({  }) => {
 
   const SelectWalletText: FC = () => (
     <div>
-      <WalletIcon className='text-inherit w-4 h-4' />
+      <Icon className='text-inherit w-4 h-4' icon="WALLET"/>
     </div>
   );
 

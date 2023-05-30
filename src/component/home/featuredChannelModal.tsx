@@ -1,4 +1,3 @@
-import { XMarkIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 import Everpay, { ChainType } from "everpay";
 import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
@@ -17,6 +16,7 @@ import { tipModalStyling } from "../uploadEpisode/uploadEpisodeTools";
 import { ConnectButton, SelectPodcast, containerPodcastModalStyling } from "../uploadEpisode/reusables";
 import { GetFeaturedButtonStyling } from "./getFeatured";
 import { getFeaturedChannelsContract } from "../../utils/contract";
+import { Icon } from "../icon";
 
 interface TipModalInter {
   isVisible: boolean;
@@ -129,7 +129,9 @@ const FeaturedChannelModal: FC<TipModalInter> = ({isVisible, setIsVisible}) => {
       <div className={`${containerPodcastModalStyling + " relative overflow-hidden"} ${showModal ? FADE_IN_STYLE : FADE_OUT_STYLE}`}>
         {/*Header*/}
         <div className="text-2xl font-bold text-center mt-4">{t("home.get-featured")}</div>
-        <XMarkIcon className={xMarkModalStyling} onClick={() => setIsVisible(false)} />
+        <button onClick={() => setIsVisible(false)}>
+          <Icon className={xMarkModalStyling} icon="XMARK" />
+        </button>
         <div className="flex flex-col items-center justify-center mt-12">
           <div className="z-[100]">
             {address && (

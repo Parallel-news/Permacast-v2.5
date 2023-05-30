@@ -6,7 +6,7 @@ import React, { FC, useEffect, useState } from "react"
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import toast from "react-hot-toast"
 import { useRecoilState } from "recoil";
-import { ArrowDownIcon, ArrowUpIcon, CheckIcon } from "@heroicons/react/24/solid";
+
 import { Spacer, Loading, Tooltip } from "@nextui-org/react";
 
 import { AR_DECIMALS, CONNECT_WALLET, EPISODE_UPLOAD_FEE, EVERPAY_EOA, EVERPAY_EOA_UPLOADS, GIGABYTE, TOAST_DARK, USER_SIG_MESSAGES, EPISODE_SLIPPAGE, ERROR_TOAST_TIME, PERMA_TOAST_SETTINGS, EXTENDED_TOAST_TIME } from "../../constants";
@@ -20,12 +20,13 @@ import { transferFunds } from "../../utils/everpay";
 import { EXMState, rssEpisode, rssEpisodeRetry } from "../../interfaces";
 import { UploadEpisodeProps } from "../../interfaces/exm";
 
-import { arweaveAddress, calculateEverPayBalance, loadingPage, podcastColorAtom } from "../../atoms";
+import { arweaveAddress, loadingPage, podcastColorAtom } from "../../atoms";
 
 import { fetchARPriceInUSD } from "../../utils/redstone";
 import { RSSFeedManager } from "../../utils/localstorage";
 import { RSSEpisodeEstimate } from "../../interfaces/api";
 import { DEFAULT_THEME_COLOR } from "../../constants/ui";
+import { Icon } from "../icon";
 
 import { ImgCover } from './reusables';
 import ProgressBar from '../reusables/progressBar';
@@ -506,7 +507,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
         <div className="ml-4 flex gap-x-2">
           {uploaded && (
             <Tooltip rounded color="invert" content={<div>{t("rss.episode-already-saved")}</div>}>
-              <CheckIcon className="bg-green-500 rounded-full w-5 h-5 text-white shrink-0 p-1" />
+              <Icon className="bg-green-500 rounded-full w-5 h-5 text-white shrink-0 p-1" icon="CHECK"/>
             </Tooltip>
           )}
           <div>{size || ""}</div>
@@ -601,7 +602,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
                       return !prev
                     });
                   }}>
-                    {isReverseOrder ? <ArrowUpIcon className="h-6 w-6" /> : <ArrowDownIcon className="h-6 w-6" />}
+                    {isReverseOrder ? <Icon className="h-6 w-6" icon="ARROWUP" /> : <Icon className="h-6 w-6"  icon="ARROWDOWN" />}
                   </button>
                 )}
               />

@@ -3,17 +3,12 @@ import Link from "next/link";
 import { useRouter } from 'next/router';
 import { useTranslation } from "next-i18next";
 import { SIDENAV_BUTTON, SIDENAV_BUTTON_BASE } from '../../styles/constants';
-
-import {
-  LanguageIcon,
-  PlusIcon,
-  QuestionMarkCircleIcon
-} from "@heroicons/react/24/outline";
 import LANGUAGES from "../../utils/languages";
 import { useRecoilState } from "recoil";
 import { isFullscreenAtom, loadingPage } from "../../atoms";
 import { PermaSpinner } from "../reusables/PermaSpinner";
 import { HELP_LINKS, SPINNER_COLOR } from "../../constants";
+import { Icon } from "../icon";
 
 interface INavButton {
   url:       string;
@@ -78,7 +73,7 @@ export const LanguageDropdown: FC = () => {
         tabIndex={0}
         className={SIDENAV_BUTTON + " w-9 hover:text-zinc-200"}
       >
-        <LanguageIcon />
+        <Icon className="" icon="LANGUAGE" strokeWidth="0" fill="currentColor"/>
       </button>
       <ul
         tabIndex={0}
@@ -115,7 +110,7 @@ export const HelpDropdown: FC = () => {
   return (
     <div className={DropdownParentStyling}>
       <button tabIndex={0} className={SIDENAV_BUTTON}>
-        <QuestionMarkCircleIcon />
+        <Icon className="" icon="QUESTION" strokeWidth="1.5" />
       </button>
       <ul
         tabIndex={0}
@@ -214,7 +209,7 @@ export const UploadDropdown: FC<UploadDropdownProps> = ({ routeMatches }) => {
         tabIndex={0}
         className={routeIsMatchingClassName}
       >
-        <PlusIcon />
+        <Icon icon="PLUS" className="" fill="currentColor"/>
       </button>
       <ul
         tabIndex={0}

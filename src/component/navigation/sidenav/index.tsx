@@ -3,11 +3,10 @@ import { useRouter } from 'next/router';
 import { FC } from "react";
 import { useRecoilState } from "recoil";
 import { SIDENAV_BUTTON } from '../../../styles/constants';
-
-import { HomeIcon, RectangleStackIcon } from "@heroicons/react/24/outline";
 import { HelpDropdown, LanguageDropdown, NavButton, UploadDropdown } from "../sidenavButtons";
 import { Cooyub } from "../../reusables/icons";
 import { currentThemeColorAtom, loadingPage } from "../../../atoms";
+import { Icon } from "../../icon";
 
 
 export const IconSizeStyling = `w-9 h-9 `;
@@ -33,8 +32,8 @@ export const Sidenav: FC = () => {
       <Link href="/" className={SIDENAV_BUTTON} onClick={isHome ? ()=>"" : engageLoading}>
         <Cooyub svgStyle={IconSizeStyling} rectStyle={IconSizeStyling} fill={currentThemeColor} />
       </Link>
-      <NavButton url="/" condition={isHome} icon={<HomeIcon onClick={isHome ? ()=>"" : engageLoading} />}  />
-      <NavButton url="/feed" condition={isViewPodcasts} icon={<RectangleStackIcon className={IconSizeStyling} onClick={engageLoading} />} />
+      <NavButton url="/" condition={isHome} icon={<Icon icon="HOME" onClick={isHome ? ()=>"" : engageLoading} />}  />
+      <NavButton url="/feed" condition={isViewPodcasts} icon={<Icon icon="RECTANGLESTACK" className={IconSizeStyling} onClick={engageLoading} />} />
       {/* TODO: re-use the dropdown from mobile view */}
       <LanguageDropdown />
       <UploadDropdown routeMatches={isUpload} />

@@ -5,22 +5,8 @@ import React, { FC, useEffect, useState } from "react";
 import { useArconnect } from "react-arconnect";
 import { useRecoilState } from "recoil";
 import { Divider, Modal } from "@nextui-org/react";
-
-import {
-    CurrencyDollarIcon,
-    PlusIcon,
-    ArrowTopRightOnSquareIcon,
-    ArrowsPointingOutIcon,
-    RssIcon,
-    HashtagIcon,
-    LanguageIcon,
-    AtSymbolIcon,
-    PencilSquareIcon
-} from "@heroicons/react/24/solid";
-
 import MarkdownRenderer from "../markdownRenderer";
 import { getCategoryInCurrentLanguage, useLanguageHook } from "../../utils/languages";
-
 import { allANSUsersAtom, loadingPage } from "../../atoms";
 import { RSS_FEED_URL } from "../../constants";
 import { ButtonStyle } from "../reusables/track";
@@ -36,6 +22,7 @@ import {
 } from "../../utils/ui";
 import { getFormattedTimeStamp } from "../../utils/reusables";
 import { NftButton } from "../../features/nft-mint";
+import { Icon } from "../icon";
 
 const TrackCreatorLink = React.lazy(() => import("../reusables/track").then(module => ({ default: module.TrackCreatorLink })));
 const DescriptionButton = React.lazy(() => import("../reusables/buttons").then(module => ({ default: module.DescriptionButton })));
@@ -68,7 +55,9 @@ const podcastTitlePreviewStyling = podcastInfoTitleStyling + ` text-4xl line-cla
 const podcastTitleModalStyling = podcastInfoTitleStyling + ` text-xl mt-2 `;
 const podcastButtonsStyling = "flex flex-row items-center space-x-6 justify-start";
 const podcastInfoTitleDivStyling = "flex flex-col ml-0 m-0 pr-8";
-const episodeIconStyling = "w-[20px] h-[20px]";
+const episodeIconStyling = "h-7 w-7 ml-[4px] mt-[4px]";
+const episodeBottomMargin = "h-7 w-7 mb-[2px]"
+const episodeIconNoMargin = "h-7 w-7";
 const coloredButtonPaddingStying = `rounded-full px-2 py-0.5 `;
 
 export const PodcastInfo: FC<PodcastInfoInter> = ({
@@ -97,7 +86,7 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
     const language = languagesArray.find(item => item[0] === podcast.language)[1]
     const formattedDate = getFormattedTimeStamp(podcast.createdAt);
 
-    const ExpandIcon = () => <ArrowsPointingOutIcon className="w-4 h-4 " />;
+    const ExpandIcon = () => <Icon className="w-4 h-4 " icon="ARROWSOUT" strokeWidth="0.5" fill="currentColor"/>;
 
     useEffect(() => {
       const ANS = allANSUsers.find((user: ANSMapped) => user.address === owner);
@@ -146,18 +135,18 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
                 <Divider className="h-0.5 my-4 bg-white" />
                 <div className="flexColCenter">
                     <div className="flexCenter gap-x-0.5">
-                        <AtSymbolIcon className="w-4 h-4 mt-0.5" />
+                        <Icon className="w-4 h-4 mt-0.5" icon="ATSYMBOL" strokeWidth="0" fill="currentColor"/>
                         {podcast?.email || "N/A"}
                     </div>
                     <div>{podcast?.episodes?.length} {t("episodes")}</div>
                     {adjCategory && (
                     <div className="flexCenter gap-x-0.5">
-                        <HashtagIcon className="w-4 h-4 " />
+                        <Icon className="w-4 h-4 " icon="HASHTAG" strokeWidth="0" fill="currentColor"/>
                         {adjCategory}
                     </div>
                     )}
                     <div className="flexCenter gap-x-0.5">
-                        <LanguageIcon className="w-4 h-4 " />
+                        <Icon className="w-4 h-4 " icon="LANGUAGE" strokeWidth="0" fill="currentColor"/>
                         {language}
                     </div>
                 </div>
@@ -184,10 +173,6 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
                         <div className={coloredButtonPaddingStying} style={buttonStyles}>
                             {formattedDate}
                         </div>
-                        {/* <div className={coloredButtonPaddingStying} style={buttonStyles}>
-                            {t("episodes")}: {podcast?.episodes?.length}
-                        </div> */}
-                    
                         <button
                             onClick={() => setDescriptionModalOpen(true)}
                             className={`flexCenterGap brighten-animation ` + coloredButtonPaddingStying}
@@ -237,7 +222,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             {props.playButton}
             {address !== props.podcastOwner && (
             <DescriptionButton
-                icon={<CurrencyDollarIcon className={episodeIconStyling} />} 
+                icon={<Icon className={episodeIconStyling} icon="DOLLAR" strokeWidth="0.5" fill="currentColor" />} 
                 text={""}
                 color={color}
                 onClick={props.setLoadTipModal} 
@@ -247,7 +232,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             {address === props.podcastOwner && (
             <Link href={`/upload-episode?pid=${props.podcastId}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
-                    icon={<PlusIcon className={episodeIconStyling} />} 
+                    icon={<Icon className={episodeIconStyling} icon="PLUS" strokeWidth="0.5" fill="currentColor"/>} 
                     text={""}
                     color={color}
                 />
@@ -256,21 +241,21 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             {address === props.podcastOwner && (
             <Link href={`/edit-podcast/${props.podcastId}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
-                    icon={<PencilSquareIcon className={episodeIconStyling} />} 
+                    icon={<Icon className={episodeIconStyling} icon="PENCIL" strokeWidth="0" fill="currentColor" />} 
                     text={""}
                     color={color}
                 />
             </Link>
             )}
             <DescriptionButton
-                icon={<ArrowTopRightOnSquareIcon className={episodeIconStyling} />} 
+                icon={<Icon className={episodeIconStyling} icon="ARROWTOPSQUARE" strokeWidth="0" fill="currentColor"/>} 
                 text={""}
                 color={color}
                 onClick={props.setLoadShareModal}
             />
             <a target="_blank" rel="noreferrer" href={RSS_FEED_URL + podcastId}>
                 <DescriptionButton
-                    icon={<RssIcon className={episodeIconStyling} />}
+                    icon={<Icon className={episodeBottomMargin} icon="RSS" strokeWidth="0" fill="currentColor" />}
                     text={""}
                     color={color}
                 />
