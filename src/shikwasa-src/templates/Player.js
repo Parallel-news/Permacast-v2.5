@@ -48,8 +48,6 @@ const time = `
   </div>
 `
 
-
-// import { Play, Pause } from @heroicons/react/24/outline
 const PlayPause = `
   <button class="shk-btn shk-btn_toggle" aria-label="toggle play and pause">
     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="shk-btn_play w-8 h-8 p-1.5 rounded-full bg-yellow-300/20" aria-hidden="true">

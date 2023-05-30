@@ -11,7 +11,6 @@ import {
 } from '../reusables';
 
 const filterStyling = "w-12 h-12 text-zinc-600 cursor-pointer hover:bg-zinc-700 rounded-full default-no-outline-ringed default-animation px-2"
-
 const ViewDropDown: FC = () => {
 
     const { t } = useTranslation();

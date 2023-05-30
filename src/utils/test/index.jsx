@@ -2,18 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useRecoilState } from "recoil";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from "next-i18next";
-
-import {
-  ArrowDownTrayIcon,
-  ArrowUpOnSquareIcon,
-} from "@heroicons/react/24/outline";
-
-import { getButtonRGBs, isTooLight } from "../../utils/ui";
-
-
 import TipButton from "../../component/reusables/tip";
-// import PlayButton from "../../../../component/reusables/playButton";
-// import Track from "../../component/track";
 import { switchFocus } from "../../atoms";
 import { MESON_ENDPOINT } from "../../constants";
 
@@ -135,7 +124,7 @@ export default function Episode(props) {
                     }}
                     download
                   >
-                    <ArrowDownTrayIcon className="w-4 h-4 mr-2" />
+                    <Icon className="w-4 h-4 mr-2" icon="ARROWDOWNTRAY"/>
                     {t("episode.download")}
                   </a>
                   <button
@@ -152,7 +141,7 @@ export default function Episode(props) {
                       // navigator.clipboard.writeText(window.location.href);
                     }}
                   >
-                    <ArrowUpOnSquareIcon className="w-4 h-4 mr-2" />
+                    <Icon className="w-4 h-4 mr-2" icon="ARROWUPTRAY"/>
                     {copied ? t("episode.copied") : t("episode.share")}
                   </button>
                 </div>

@@ -5,9 +5,9 @@ import { handleValMsg } from "./uploadShowTools";
 import { useTranslation } from "next-i18next";
 import { Podcast } from "../../interfaces";
 import { DEFAULT_LANGUAGE } from "../../utils/languages";
+import { Icon } from "../icon";
 
 const Cropper = React.lazy(() => import("react-easy-crop"));
-const PhotoIcon = React.lazy(() => import("@heroicons/react/24/outline").then(module => ({ default: module.PhotoIcon })));
 const Tooltip = React.lazy(() => import("@nextui-org/react").then(module => ({ default: module.Tooltip })));
 const ValMsg = React.lazy(() => import("../reusables/formTools").then(module => ({ default: module.ValMsg })))
 const CategoryOptions = React.lazy(() => import("../../utils/languages").then(module => ({ default: module.CategoryOptions })))
@@ -202,7 +202,7 @@ export const EmptyCover = () => {
     return (
         <div className={emptyCoverIconStyling}>
             {/*Image Logo*/}
-            <PhotoIcon className={photoIconStyling} />
+            <Icon className={photoIconStyling} icon="PHOTO"/>
             {/*Cover Image Text*/}
             <div className={emptyCoverIconTextStyling}>
                 {t("uploadshow.image")}

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { useTranslation } from "next-i18next";
 import { FC } from "react";
-import { Bars3Icon } from "@heroicons/react/24/solid";
 
 import Dropdown, {
   ExtendedDropdownButtonProps,
@@ -14,6 +13,7 @@ import LanguageDropdown from "./LanguageDropdown";
 import { loadingPage } from "../../atoms";
 import { useRecoilState } from "recoil";
 import router from "next/router";
+import { Icon } from "../icon";
 
 const NavigationDropdown: FC = () => {
   const { t } = useTranslation();
@@ -35,7 +35,7 @@ const NavigationDropdown: FC = () => {
     { jsx: <LanguageDropdown />, key: `language-dropdown`, customClass: `px-0 bg-zinc-900 hover:bg-zinc-900 h-8 ` }
   ];
 
-  const openMenuButton = <Bars3Icon className="h-5 w-5" aria-hidden="true" />;
+  const openMenuButton = <Icon className="h-5 w-5" icon="BAR3BOTTOM" />;
 
   return <Dropdown {...{ openMenuButton, items, openMenuButtonClass, dropdownMenuClass, menuItemClass }} />;
 };

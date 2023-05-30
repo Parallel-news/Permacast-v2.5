@@ -5,16 +5,16 @@ import { Fragment, useRef, useState } from 'react'
 import { GenericNftButton } from './buttons'
 import { useArconnect } from 'react-arconnect'
 import { useTranslation } from 'react-i18next'
-import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, PERMACAST_TELEGRAM_URL, PERMA_TOAST_SETTINGS, TOAST_DARK, TOAST_MARGIN } from '../../../constants'
-import { XMarkIcon } from '@heroicons/react/24/solid'
+import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, PERMACAST_TELEGRAM_URL, PERMA_TOAST_SETTINGS } from '../../../constants'
 import { Dialog, Transition } from '@headlessui/react'
 import { determineMintStatus, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
 import { PermaSpinner } from '../../../component/reusables'
-import { CreateCollectionViewObject, EpisodeTitleObject, ErrorModalObject, GetPid, MintEpisodeViewObject, NftModalObject } from '../types'
+import { CreateCollectionViewObject, EpisodeTitleObject, ErrorModalObject, MintEpisodeViewObject, NftModalObject } from '../types'
 import { isERCAddress } from '../../../utils/reusables'
 import toast from 'react-hot-toast'
 import MintedNotification from './MintedNotification'
 import { grabEpisodeData } from '../utils'
+import { Icon } from '../../../component/icon'
 
 
 
@@ -132,7 +132,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                 >
                   {/*Modal Container*/}
                   <Dialog.Panel className={modalContainer}>
-                    <XMarkIcon className={xStyling} onClick={() => setIsOpen(false)}/>
+                    <Icon className={xStyling} onClick={() => setIsOpen(false)} icon="XMARK"/>
                     {/*Views*/}
                     {queryNftInfo.isLoading && (<PermaSpinner spinnerColor="#FFF" size={25}/>)}
 

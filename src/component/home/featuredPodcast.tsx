@@ -197,5 +197,3 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
 };
 
 export default FeaturedPodcast;
-//<PodcastDescription podcastDescription={description} />
-//<MarkdownRenderer markdownText={markdownText} />

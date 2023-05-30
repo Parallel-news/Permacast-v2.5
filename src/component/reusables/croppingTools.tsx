@@ -1,9 +1,9 @@
 import { FC, MouseEventHandler, ReactNode, useCallback, useRef, useState } from "react"
-import { PhotoIcon } from "@heroicons/react/24/outline";
 import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/croppedImage";
 import { useTranslation } from "next-i18next";
 import { cropScreenDivStyling, cropScreenStyling, cropSelectionDivStyling, cropSelectionTextStyling } from "../uploadShow/reusables";
+import { Icon } from "../icon";
 
 // 1. Interfaces
 interface PreviewImageInterface {
@@ -165,7 +165,7 @@ export const DefaultPlaceholderImage: FC = ({ }) => {
   return (
     <div className={emptyCoverIconStyling}>
       {/*Image Logo*/}
-      <PhotoIcon className={photoIconStyling} />
+      <Icon className={photoIconStyling} icon="PHOTO"/>
       {/*Cover Image Text*/}
       <div className={emptyCoverIconTextStyling}>
         {t("uploadshow.image")}
