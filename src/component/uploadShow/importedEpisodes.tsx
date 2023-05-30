@@ -29,7 +29,7 @@ import { DEFAULT_THEME_COLOR } from "../../constants/ui";
 import { Icon } from "../icon";
 
 import { ImgCover } from './reusables';
-import ProgressBar from '../reusables/progressBar';
+import { ProgressBar } from "../progressBar";
 import { ConnectButton } from '../uploadEpisode/reusables';
 import { UploadButton } from '../uploadEpisode/reusables';
 import Pagination from '../reusables/Pagination';
@@ -625,7 +625,8 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
             )}
             {address && address.length > 0 && isUploadingEpisodes && (
               <ProgressBar
-                value={progress}
+                progress={String(progress)}
+                colorHex="#FFFF00"
               />
             )}
             {!address && (

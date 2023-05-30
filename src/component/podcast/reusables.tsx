@@ -232,7 +232,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             {address === props.podcastOwner && (
             <Link href={`/upload-episode?pid=${props.podcastId}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
-                    icon={<Icon className={episodeIconStyling} icon="PLUS" strokeWidth="0.5" fill="currentColor"/>} 
+                    icon={<Icon className={"ml-[1px] mt-[2px] "+episodeIconStyling} icon="PLUS" strokeWidth="1.5" fill="currentColor"/>} 
                     text={""}
                     color={color}
                 />

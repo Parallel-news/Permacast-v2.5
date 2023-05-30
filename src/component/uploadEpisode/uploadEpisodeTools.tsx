@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 import { Podcast } from '../../interfaces';
 import { useTranslation } from 'next-i18next';
 import { ValMsg } from '../reusables/formTools';
-import ProgressBar from '../reusables/progressBar';
+import { ProgressBar } from '../progressBar';
 import { transferFunds } from '../../utils/everpay';
 import React, {  useEffect, useState } from 'react';
 import { VisibleInput } from '../uploadShow/reusables';
@@ -328,7 +328,8 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                 )}
                 {address && address.length > 0 && submittingEp && (
                     <ProgressBar
-                        value={progress}
+                        progress={String(progress)}
+                        colorHex="#FFFF00"
                     />
                 )}
                 {!address && (
