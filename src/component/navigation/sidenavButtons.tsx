@@ -209,7 +209,7 @@ export const UploadDropdown: FC<UploadDropdownProps> = ({ routeMatches }) => {
         tabIndex={0}
         className={routeIsMatchingClassName}
       >
-        <Icon icon="PLUS" className="" strokeWidth="0" fill="currentColor"/>
+        <Icon icon="PLUS" className="" fill="currentColor"/>
       </button>
       <ul
         tabIndex={0}
