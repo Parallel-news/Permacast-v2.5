@@ -22,6 +22,7 @@ const FeaturedChannelModal = React.lazy(() => import('../component/home/featured
 //const GreetingLazy = React.lazy(() => import("../component/featured").then(module => ({ default: module.Greeting })));
 import { Greeting } from '../component/featured';
 import Loading from '../component/reusables/loading';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 interface HomeProps {
   isProduction: boolean,
@@ -30,56 +31,38 @@ interface HomeProps {
   PASoMContractAddress?: string,
 };
 
+
+const getHomepageState = async () => {
+  // const queries = [{
+  //   key: 'episodes',
+  //   query: `(
+  //   )`
+  // }];
+  const data = (await axios.get('/api/exm/read', {
+    // queries,
+  })).data;
+  const { podcasts } = data;
+  const episodes: FullEpisodeInfo[] = podcasts
+    .map((podcast: Podcast) => podcast.episodes
+      .map((episode: Episode, index: number) =>
+        ({ podcast, episode: { ...episode, order: index } })))
+    .flat();
+  const sortedEpisodes = episodes.sort((episodeA, episodeB) => episodeB.episode.uploadedAt - episodeA.episode.uploadedAt).splice(0, 3);
+  const sortedPodcasts = podcasts.filter((podcast: Podcast) => podcast.episodes.length > 0 && !podcast.podcastName.includes("Dick"));
+
+  return { sortedEpisodes, sortedPodcasts };
+};
+
 const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredContractAddress, PASoMContractAddress }) => {
 
   const { t } = useTranslation();
-  const [podcasts_, setPodcasts_] = useRecoilState(podcastsAtom);
-  const [latestEpisodes, setLatestEpisodes] = useRecoilState(latestEpisodesAtom);
-  const [featuredChannels, setFeaturedChannels] = useState<FeaturedChannel[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [mounted, setMounted] = useState<boolean>(false)
   const [isVisible, setIsVisible] = useState(false);
-  const [, _setLoadingPage] = useRecoilState(loadingPage)
+  const [, _setLoadingPage] = useRecoilState(loadingPage);
 
-  useEffect(() => {
-    _setLoadingPage(false)
-  }, [])
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      // re-write to use internal state
-      const exmState: EXMState = (await axios.get('/api/exm/read')).data;
-
-      const { podcasts } = exmState;
-      const episodes: FullEpisodeInfo[] = podcasts
-        .map((podcast: Podcast) => podcast.episodes
-          .map((episode: Episode, index: number) =>
-            ({ podcast, episode: { ...episode, order: index } })))
-        .flat();
-      const sorted = episodes.sort((episodeA, episodeB) => episodeB.episode.uploadedAt - episodeA.episode.uploadedAt);
-      setLatestEpisodes(sorted.splice(0, 3));
-      const sortedPodcasts = podcasts.filter((podcast: Podcast) => podcast.episodes.length > 0 && !podcast.podcastName.includes("Dick"));
-      const foundFeaturedChannels = featuredChannels
-        .map(
-          (channel: FeaturedChannel) => findPodcast(channel.pid, podcasts))
-        .filter((channel: Podcast) => channel);
-      setPodcasts_([...(foundFeaturedChannels || []), ...sortedPodcasts].splice(0, 6));
-      setLoading(false);
-    };
-    const fetchFeatured = async () => {
-      const featuredPodcasts = (await axios.get('/api/exm/featured-channels/read')).data;
-      setFeaturedChannels(featuredPodcasts?.state?.featured_channels || []);
-    };
-    fetchFeatured()
-    fetchData()
-    setMounted(true)
-  }, []);
-
-  // Check for Mounted
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const stateQuery = useQuery({
+    queryKey: ['getHomepageState'],
+    queryFn: getHomepageState
+  })
 
   const HomeLoader = () => {
     return (
@@ -119,11 +102,11 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
             
           </div>
         }
-        {podcasts_.length > 0 ? (
+        {stateQuery.isSuccess && stateQuery?.data?.sortedPodcasts?.length > 0 ? (
           <>
             {isVisible && <FeaturedChannelModal {...{ isVisible, setIsVisible }} />}
             <FeaturedPodcastCarousel 
-              podcasts={podcasts_}
+              podcasts={stateQuery.data.sortedPodcasts}
             />
           </>
         ) 
@@ -132,11 +115,11 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
         }
         <div className="my-9 flex flex-col xl:flex-row md:justify-between space-y-10 xl:space-y-0">
           <div className="w-[100%] xl:w-[71%]">
-            {!loading ? (
+            {!stateQuery.isLoading ? (
               <>
                 <h2 className="text-zinc-400 text-lg mb-3">{t("home.recentlyadded")}</h2>
                 <div className="grid grid-rows-3 gap-y-4 text-zinc-100">
-                  {latestEpisodes.map((episode: FullEpisodeInfo, index: number) => (
+                  {stateQuery.data.sortedEpisodes.map((episode: FullEpisodeInfo, index: number) => (
                     <div key={index}>
                       <Track {...{ episode }} openFullscreen includeDescription includePlayButton includeContentType />
                     </div>
@@ -147,7 +130,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
               <Loading />
             )}
           </div>
-          {!loading ? (
+          {!stateQuery.isLoading ? (
             <div className="w-full xl:w-[27%]">
               <FeaturedCreators />
             </div>
