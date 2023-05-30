@@ -20,7 +20,6 @@
     "@tanstack/react-query": "^4.29.5",
     "@tanstack/react-query-devtools": "^4.29.6",
     "arseeding-js": "^0.0.23",
-    "arweave": "^1.13.4",
     "axios": "^1.2.4",
     "bignumber.js": "^9.1.1",
     "daisyui": "^2.51.5",
