@@ -2,8 +2,8 @@ import { useTranslation } from "next-i18next";
 import React, { FC } from "react";
 import { useRecoilState } from "recoil";
 
-import { Icon } from "../icon";
 import { chronStatusAtom } from "../../atoms";
+import { Icon } from "../icon";
 import {
     Dropdown,
     dropdownMenuClass,
@@ -13,7 +13,6 @@ import {
 const filterStyling = "w-12 h-12 text-zinc-600 cursor-pointer hover:bg-zinc-700 rounded-full default-no-outline-ringed default-animation px-2";
 
 const ViewDropDown: FC = () => {
-
     const { t } = useTranslation();
 
     const [chronStatus, setChronStatus] = useRecoilState<number>(chronStatusAtom);
@@ -38,3 +37,4 @@ const ViewDropDown: FC = () => {
 };
 
 export default ViewDropDown;
+
