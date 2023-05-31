@@ -1,28 +1,25 @@
 import axios from 'axios';
-import React, { Suspense } from 'react';
 import { NextPage } from "next";
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useEffect, useState } from "react";
+import React, { Suspense, useState, startTransition } from "react";
 import { useRecoilState } from "recoil";
-import { latestEpisodesAtom, loadingPage, podcastsAtom } from "../atoms/index";
-import { Episode, EXMState, FeaturedChannel, FullEpisodeInfo, Podcast } from '../interfaces';
+
+import { useQuery } from '@tanstack/react-query';
+
+import { loadingPage } from "../atoms/index";
+import { Episode, FullEpisodeInfo, Podcast } from '../interfaces';
 import { getContractVariables, getFeaturedChannelsContract, getPASOMContract } from '../utils/contract';
-import { findPodcast } from '../utils/filters';
-import FeaturedPodcastCarousel from '../component/reusables/FeaturedPodcastCarousel';
-import { startTransition } from 'react';
 
-
-const GetFeatured = React.lazy(() => import('../component/home/getFeatured'))
+const FeaturedPodcastCarousel = React.lazy(() => import('../component/reusables/FeaturedPodcastCarousel'));
+// const GetFeatured = React.lazy(() => import('../component/home/getFeatured'))
 const Track = React.lazy(() => import('../component/reusables/track'))
 //const Loading = React.lazy(() => import('../component/reusables/loading'))
 const FeaturedCreators = React.lazy(() => import('../component/creator/featuredCreators'))
 const FeaturedPodcast = React.lazy(() => import('../component/home/featuredPodcast'))
 const FeaturedChannelModal = React.lazy(() => import('../component/home/featuredChannelModal'))
-//const GreetingLazy = React.lazy(() => import("../component/featured").then(module => ({ default: module.Greeting })));
-import { Greeting } from '../component/featured';
-import Loading from '../component/reusables/loading';
-import { useMutation, useQuery } from '@tanstack/react-query';
+const Greeting = React.lazy(() => import("../component/featured").then(module => ({ default: module.Greeting })));;
+const Loading = React.lazy(() => import('../component/reusables/loading'));
 
 interface HomeProps {
   isProduction: boolean,
@@ -31,26 +28,42 @@ interface HomeProps {
   PASoMContractAddress?: string,
 };
 
-
 const getHomepageState = async () => {
-  // const queries = [{
-  //   key: 'episodes',
-  //   query: `(
-  //   )`
-  // }];
-  const data = (await axios.get('/api/exm/read', {
-    // queries,
+  const QUERY_PODCAST_KEY = 'podcastKey';
+  const QUERY_FEATURED_CREATORS = 'featuredCreators';
+
+  // https://docs.jsonata.org/simple
+  const queries = [{
+    key: QUERY_PODCAST_KEY,
+    query: `podcasts`
+  }, {
+    key: QUERY_FEATURED_CREATORS,
+    query: `(
+      $distinct(
+        $sort(podcasts, function($l, $r) {
+          $count($l.episodes) < $count($r.episodes)
+        }).owner
+      )[[0..2]]
+    )`
+  }];
+
+  const results = (await axios.post('/api/exm/read', {
+    queries,
   })).data;
-  const { podcasts } = data;
+
+  const podcasts = results[QUERY_PODCAST_KEY];
+  const featuredCreators = results[QUERY_FEATURED_CREATORS];
+
+  // too lazy to figure out a query for this
   const episodes: FullEpisodeInfo[] = podcasts
     .map((podcast: Podcast) => podcast.episodes
       .map((episode: Episode, index: number) =>
         ({ podcast, episode: { ...episode, order: index } })))
     .flat();
   const sortedEpisodes = episodes.sort((episodeA, episodeB) => episodeB.episode.uploadedAt - episodeA.episode.uploadedAt).splice(0, 3);
-  const sortedPodcasts = podcasts.filter((podcast: Podcast) => podcast.episodes.length > 0 && !podcast.podcastName.includes("Dick"));
+  const sortedPodcasts: Podcast[] = podcasts.filter((podcast: Podcast) => podcast.episodes.length > 0 && !podcast.podcastName.includes("Dick")).splice(0, 6);
 
-  return { sortedEpisodes, sortedPodcasts };
+  return { sortedEpisodes, sortedPodcasts, featuredCreators };
 };
 
 const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredContractAddress, PASoMContractAddress }) => {
@@ -62,7 +75,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
   const stateQuery = useQuery({
     queryKey: ['getHomepageState'],
     queryFn: getHomepageState
-  })
+  });
 
   const HomeLoader = () => {
     return (
@@ -132,7 +145,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
           </div>
           {!stateQuery.isLoading ? (
             <div className="w-full xl:w-[27%]">
-              <FeaturedCreators />
+              <FeaturedCreators addresses={stateQuery.data.featuredCreators} />
             </div>
           ) : (
             <div className="w-full xl:w-[27%]"><Loading /></div>
