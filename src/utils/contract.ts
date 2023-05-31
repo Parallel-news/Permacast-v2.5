@@ -3,6 +3,8 @@ interface ContractVariables {
   contractAddress: string;
   isProduction: boolean;
   collectionsContract: string;
+  featuredChannelsContract?: string;
+  PASOMContract?: string;
 };
 
 const collectionsContract = NFT_CONTRACT;
@@ -14,11 +16,12 @@ export const getContractVariables = (): ContractVariables => {
   
 
   const contractAddress = IS_PROD === 'true' ? PROD_CONTRACT : DEV_CONTRACT;
-  const isProduction = IS_PROD === 'true' ? true : false;
-  
+  const isProduction = IS_PROD === 'true' ? true : false;  
+  const { contractAddress: PASOMContract } = getPASOMContract();
+  const { contractAddress: featuredChannelsContract } = getFeaturedChannelsContract();
 
   //! DO NOT RETURN API TOKEN TO AVOID EXPOSING IT!
-  return { contractAddress, isProduction, collectionsContract };
+  return { contractAddress, isProduction, collectionsContract, featuredChannelsContract, PASOMContract };
 };
 
 export const getFeaturedChannelsContract = (): ContractVariables => {
