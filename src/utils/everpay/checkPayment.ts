@@ -10,7 +10,6 @@ const checkPayment = async (tx: string, amount: string) => {
 
   const res: EverpayTxAPIResponse = (await axios.get(url)).data;
   const { status, amount: paidAmount, from, to } = res;
-  debugger;
   if (status === "confirmed" && paidAmount >= amount) {
     return true;
   } else return false;
