@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Tooltip } from '@nextui-org/react';
+import { Tooltip } from 'react-tooltip'
 import { useTranslation } from "next-i18next";
 import { flexCol } from "../creator";
 import { dimColorString, isTooDark, RGBstringToObject } from "../../utils/ui";
@@ -55,19 +55,21 @@ const Verification: FC<VerificationInterface> = (props) => {
   const colorBlack = 'rgb(0, 0, 0)';
 
   return (
-    <Tooltip
-      rounded
-      color="invert"
-      className={`flex items-center ` + VerificationButtonStyling + "gap-x-1 "}
-      style={{
-        backgroundColor: dimColorString(color, 0.25),
-        color: isTooDark(RGBstringToObject(color), 0.2) ? colorBlack : colorWhite ,
-      }}
-      content={ANSuserExists ? <UserVerified /> : <UserNotVerified />
-    }>
-      <IconElem {...{ size, ANSuserExists }} />
-      {includeText && <p>{ANSuserExists ? t("creator.verification.verified.text"): t("creator.verification.unverified.text")}</p>}
-    </Tooltip>
+    <>
+      <div
+        className={`flex items-center ` + VerificationButtonStyling + "gap-x-1 "}
+        style={{
+          backgroundColor: dimColorString(color, 0.25),
+          color: isTooDark(RGBstringToObject(color), 0.2) ? colorBlack : colorWhite ,
+        }}
+        data-tooltip-content={ANSuserExists ? "Verified" : "Not Verified"}
+        data-tooltip-id="verifiedTip"
+      >
+        <IconElem {...{ size, ANSuserExists }} />
+        {includeText && <p>{ANSuserExists ? t("creator.verification.verified.text"): t("creator.verification.unverified.text")}</p>}
+      </div>
+      <Tooltip id="verifiedTip" />  
+    </>
   );
 };
 

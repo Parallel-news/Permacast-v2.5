@@ -1,4 +1,4 @@
-import axios, { AxiosProgressEvent, AxiosResponse } from "axios";
+import axios from "axios";
 import Everpay from "everpay";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
@@ -6,10 +6,10 @@ import React, { FC, useEffect, useState } from "react"
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import toast from "react-hot-toast"
 import { useRecoilState } from "recoil";
+import { Tooltip } from 'react-tooltip'
+import { PermaSpinner } from "../reusables";
 
-import { Spacer, Loading, Tooltip } from "@nextui-org/react";
-
-import { AR_DECIMALS, CONNECT_WALLET, EPISODE_UPLOAD_FEE, EVERPAY_EOA, EVERPAY_EOA_UPLOADS, GIGABYTE, TOAST_DARK, USER_SIG_MESSAGES, EPISODE_SLIPPAGE, ERROR_TOAST_TIME, PERMA_TOAST_SETTINGS, EXTENDED_TOAST_TIME } from "../../constants";
+import { AR_DECIMALS, CONNECT_WALLET, EPISODE_UPLOAD_FEE, EVERPAY_EOA, EVERPAY_EOA_UPLOADS, GIGABYTE, TOAST_DARK, USER_SIG_MESSAGES, EPISODE_SLIPPAGE, ERROR_TOAST_TIME, PERMA_TOAST_SETTINGS, EXTENDED_TOAST_TIME, SPINNER_COLOR } from "../../constants";
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 
 import { calculateARCost, getBundleArFee, getReadableSize, upload2DMedia } from "../../utils/arseeding";
@@ -506,9 +506,15 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
         <div className="line-clamp-2">#{number}: {title}</div>
         <div className="ml-4 flex gap-x-2">
           {uploaded && (
-            <Tooltip rounded color="invert" content={<div>{t("rss.episode-already-saved")}</div>}>
-              <Icon className="bg-green-500 rounded-full w-5 h-5 text-white shrink-0 p-1" icon="CHECK"/>
-            </Tooltip>
+            <>
+              <div         
+                data-tooltip-content={t("rss.episode-already-saved")}
+                data-tooltip-id="existsTip" 
+              >
+                <Icon className="bg-green-500 rounded-full w-5 h-5 text-white shrink-0 p-1" icon="CHECK"/>
+              </div>
+              <Tooltip id="existsTip" />
+            </>
           )}
           <div>{size || ""}</div>
           <div>{cost || "0"} AR</div>
@@ -533,7 +539,10 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
           <div className="flexCol gap-y-2">
             {isCalculating ? (
               <div className="text-zinc-700 flexFullCenter w-full h-60">
-                <Loading size="xl" color="currentColor" />
+                <PermaSpinner 
+                  spinnerColor={SPINNER_COLOR}
+                  size={1}
+                />
               </div>
             ) : (
               <>
@@ -561,20 +570,24 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
                         />
                       </React.Fragment>
                     ))}
-                    <Spacer y={1} />
+                    <div className="mb-2"></div>
                     <div className="flexCenter justify-between">
                       <button className={buttonColorStyling + "py-3 px-4 "} onClick={() => startEstimating()}>
                         {isCalculating && (
                           <div style={{ color: DEFAULT_THEME_COLOR }}>
-                            <Loading size="sm" color="currentColor" />
+                            <PermaSpinner 
+                              spinnerColor={SPINNER_COLOR}
+                              size={1}
+                            />
                           </div>
                         )}
                         <div className="">{t("rss.retry-estimation")}</div>
-                        <Tooltip rounded color="invert" content={<div>{t("rss.limited-size")}</div>}>
+                        <div data-tooltip-content={t("rss.limited-size")} data-tooltip-id="rssSizeTip">
                           <span className="ml-2 mt-[2.5px] tooltip-button">
                             ?
                           </span>
-                        </Tooltip>
+                        </div>
+                        <Tooltip id="rssSizeTip" />
                       </button>
                       <button className={buttonColorStyling + "py-3 px-4 "} onClick={() => {
                         setRetryEpisodes([]);

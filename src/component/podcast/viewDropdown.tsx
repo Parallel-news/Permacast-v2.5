@@ -1,13 +1,10 @@
-
-import { Dropdown, DropdownButtonProps } from "@nextui-org/react"
+import { Icon } from "../icon";
+import React, { FC } from "react";
+import { useRecoilState } from "recoil";
 import { chronStatusAtom } from "../../atoms";
 import { useTranslation } from "next-i18next";
-import React, { FC } from "react";
-import { Icon } from "../icon";
-import { useRecoilState } from "recoil";
+import { Dropdown, DropdownButtonProps } from "@nextui-org/react"
 
-
-const filterStyling = "w-12 h-12 text-zinc-600 cursor-pointer hover:bg-zinc-700 rounded-full default-no-outline-ringed default-animation px-2"
 const ViewDropDown: FC = () => {
     const [chronStatus, setChronStatus] = useRecoilState<number>(chronStatusAtom)
     const filterStyling = "w-12 h-12 text-zinc-600 cursor-pointer hover:bg-zinc-700 rounded-full default-no-outline-ringed default-animation px-2"
