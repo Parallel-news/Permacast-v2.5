@@ -55,7 +55,8 @@ const podcastTitlePreviewStyling = podcastInfoTitleStyling + ` text-4xl line-cla
 const podcastTitleModalStyling = podcastInfoTitleStyling + ` text-xl mt-2 `;
 const podcastButtonsStyling = "flex flex-row items-center space-x-6 justify-start";
 const podcastInfoTitleDivStyling = "flex flex-col ml-0 m-0 pr-8";
-const episodeIconStyling = "h-7 w-7 ml-[4px] mt-[4px]";
+const episodeIconSizeStyling = "h-7 w-7 ";
+const episodeIconStyling = episodeIconSizeStyling + "ml-[4px] mt-[4px]";
 const episodeBottomMargin = "h-7 w-7 mb-[2px]"
 const episodeIconNoMargin = "h-7 w-7";
 const coloredButtonPaddingStying = `rounded-full px-2 py-0.5 `;
@@ -232,7 +233,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             {address === props.podcastOwner && (
             <Link href={`/upload-episode?pid=${props.podcastId}`} onClick={() => _setLoadingPage(true)}>
                 <DescriptionButton
-                    icon={<Icon className={episodeIconStyling} icon="PLUS" strokeWidth="0.5" fill="currentColor"/>} 
+                    icon={<Icon className={episodeIconSizeStyling} icon="PLUS" strokeWidth="2" viewBox="0 0 24 24" fill="currentColor"/>} 
                     text={""}
                     color={color}
                 />
