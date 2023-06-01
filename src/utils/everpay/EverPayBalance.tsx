@@ -4,7 +4,7 @@ import { useRecoilState } from "recoil"
 import Everpay from "everpay";
 import { MoonLoader } from "react-spinners";
 import { useTranslation } from "next-i18next";
-import { Tooltip } from "@nextui-org/react";
+import { Tooltip } from "react-tooltip";
 
 interface everpayBalanceInterface {
     textClassname?: string;
@@ -56,7 +56,12 @@ export const EverPayBalance = (props: everpayBalanceInterface) => {
         <>
             {_arweaveAddress && _arweaveAddress.length > 0 && (
                 (balanceError ?
-                    <Tooltip color='invert' className="helper-tooltip px-1.5 ml-2" content={<div className="text-zinc-200">{t("arconnect.load-failed")}</div>}>?</Tooltip>
+                    <div 
+                        className="helper-tooltip px-1.5 ml-2" 
+                        data-tooltip-id="verifiedTip"
+                        data-tooltip-content={t("arconnect.load-failed")}>
+
+                    ? </div>
                     : balanceLoading ?
                         <div className={`${textClassname} flex justify-center items-center z-50 bg-zinc-900`}>
                             <MoonLoader 
@@ -65,6 +70,7 @@ export const EverPayBalance = (props: everpayBalanceInterface) => {
                             />
                         </div>
                         : <div className={`${textClassname}`}>{Number(_everPayBalance).toFixed(2) + ' AR'}</div>
+                    
                 )
             )}
         </>

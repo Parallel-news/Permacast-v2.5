@@ -6,14 +6,13 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useRecoilState } from "recoil";
 import { Transition } from "@headlessui/react";
-import { Loading } from "@nextui-org/react";
-
 import { loadingPage, allPodcasts } from "../../atoms";
 import { Podcast, rssEpisode } from "../../interfaces";
 import { getContractVariables } from "../../utils/contract";
 import { convertLinktoBase64, isValidUrl } from "../../utils/reusables";
-import { ARSEED_URL, ERROR_TOAST_TIME, EXM_READ_LINK, NO_SHOW, PERMA_TOAST_SETTINGS, RSS_IMPORT_LINK, RSS_META_LINK, TOAST_DARK } from "../../constants";
+import { ARSEED_URL, ERROR_TOAST_TIME, EXM_READ_LINK, NO_SHOW, PERMA_TOAST_SETTINGS, RSS_IMPORT_LINK, RSS_META_LINK, SPINNER_COLOR, TOAST_DARK } from "../../constants";
 import { Icon } from "../../component/icon";
+import { PermaSpinner } from "../../component/reusables";
 
 const RssSubmit = React.lazy(() => import("../../component/reusables/RssSubmit").then(module => ({ default: module.default })));
 const ImportedEpisodes = React.lazy(() => import("../../component/uploadShow/importedEpisodes").then(module => ({ default: module.ImportedEpisodes })));
@@ -179,7 +178,13 @@ export default function rss({yourShows}) {
                             onChange={(e) => setRssLink(e.target.value)}
                         />
                         <RssSubmit 
-                            icon={submittingLink ? <Loading type="spinner" size="lg" color="currentColor" /> : <Icon className={iconStyling} icon="ARROWSMALLRIGHT"/> }
+                            icon={submittingLink ?                 
+                                <PermaSpinner 
+                                spinnerColor={SPINNER_COLOR}
+                                size={1}
+                              /> 
+                            : 
+                                <Icon className={iconStyling} icon="ARROWSMALLRIGHT"/> }
                             color="bg-[rgb(255,255,0)]"
                             dimensions="h-10 w-11"
                             onClick={() => submitLink(  )}

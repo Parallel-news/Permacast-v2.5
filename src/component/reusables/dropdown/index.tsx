@@ -1,7 +1,7 @@
-import React, { FC, ReactNode } from "react";
-import { DropdownButtonProps, Dropdown as NextUIDropdown } from "@nextui-org/react";
+import React, { FC, Fragment, ReactNode } from "react";
+import { Menu, Transition } from "@headlessui/react";
 
-export interface ExtendedDropdownButtonProps extends DropdownButtonProps {
+export interface ExtendedDropdownButtonProps{
   key: string;
   jsx: ReactNode;
   customClass?: string;
@@ -9,16 +9,13 @@ export interface ExtendedDropdownButtonProps extends DropdownButtonProps {
 
 export interface DropdownProps {
   openMenuButton?: ReactNode;
-  items: ExtendedDropdownButtonProps[];
+  items: any[];
   openMenuButtonClass: string;
   dropdownMenuClass: string;
   menuItemClass: string;
 };
 
-export const openMenuButtonClass = `bg-zinc-900 h-12 `;
-export const dropdownMenuClass = `hover:bg-zinc-900 bg-zinc-900 w-[22px]`;
-export const menuItemClass = `bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white my-1`;
- 
+export const openMenuButtonClass = `bg-zinc-900 h-12 rounded-3xl w-12 flex justify-center items-center`;
 const Dropdown: FC<DropdownProps> = ({
   openMenuButton,
   items,
@@ -29,27 +26,39 @@ const Dropdown: FC<DropdownProps> = ({
 
   return (
     <div className="flex flex-row mr-4">
-    <NextUIDropdown closeOnSelect={false}>
+    <Menu as="div" className="relative inline-block text-left">
       {/*Server and Static are generating two separate IDs. Next UI not SSR friendly*/}
-      <NextUIDropdown.Button className={openMenuButtonClass} suppressHydrationWarning={true}>
+      <Menu.Button className={openMenuButtonClass}>
         {openMenuButton}
-      </NextUIDropdown.Button>
-      <NextUIDropdown.Menu
-        aria-label="Dropdown Items" 
-        items={items}
-        className={dropdownMenuClass}
+      </Menu.Button>
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
       >
-        {(item: ExtendedDropdownButtonProps) => (
-          <NextUIDropdown.Item
-            key={item.key}
-            textValue={item.key}
-            className={item.customClass ? item.customClass : menuItemClass}
-          >
-            {item.jsx}
-          </NextUIDropdown.Item>
-        )}
-      </NextUIDropdown.Menu>
-    </NextUIDropdown>
+        <Menu.Items
+          aria-label="Dropdown Items" 
+          className={dropdownMenuClass}
+        >
+          {items.map((item, index) => (
+            <Menu.Item as="div"
+              key={item.key}
+              className={
+                `${menuItemClass}
+                ${index === 0 && " hover:rounded-t-md "} 
+                ${index+1 === items.length && " hover:rounded-b-md "}` 
+              }
+            >
+              {item.jsx}
+            </Menu.Item>
+          ))}
+        </Menu.Items>
+      </Transition>
+    </Menu>
     <div className="h-[10px] w-[10px]"></div>
     </div>
   );

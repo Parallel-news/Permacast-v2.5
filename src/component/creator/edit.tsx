@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useTranslation } from 'next-i18next';
 import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
-import { Tooltip } from '@nextui-org/react';
+import { Tooltip } from 'react-tooltip'
 import toast from 'react-hot-toast';
 import { flexCenterGap } from './featuredCreators';
 import { Modal } from '../reusables';
@@ -87,9 +87,15 @@ export const ProfileInfo: FC<CreatorEditInfoProps> = ({ error, nickname, setNick
             onChange={(e) => setNickname(e.target.value)}
             placeholder={t('creator.edit-modal.nickname')}
           />
-          <Tooltip className={`absolute top-3 right-2 default-animation ` + (error === "nickname" ? "opacity-100": "opacity-0 pointer-events-none")} rounded color="invert" content={<NicknameError />}>
+          <div 
+            className={`absolute top-3 right-2 default-animation ` + (error === "nickname" ? "opacity-100": "opacity-0 pointer-events-none")} 
+            data-tooltip-content={t("creator.edit-modal.error.nickname", {minLength: PASOM_NICKNAME_MIN_LEN, maxLength: PASOM_NICKNAME_MAX_LEN})}
+            data-tooltip-place="top"
+            data-tooltip-id="my-tooltip1"
+          >
             <div className="error-tooltip">?</div>
-          </Tooltip>
+          </div>
+          <Tooltip id="my-tooltip1" />
         </div>
         <div className="relative">
           <textarea
@@ -98,9 +104,15 @@ export const ProfileInfo: FC<CreatorEditInfoProps> = ({ error, nickname, setNick
             className={`text-input-generic resize-none pl-4 pr-7 h-20 mt-4 pt-2 mr-0.5 `}
             placeholder={t('creator.edit-modal.bio')}
           ></textarea>
-          <Tooltip className={`absolute bottom-3 right-2 ` + (error === "bio" ? "opacity-100": "opacity-0 pointer-events-none")} rounded color="invert" content={<BioError />}>
+          <div 
+            className={`absolute bottom-3 right-2 ` + (error === "bio" ? "opacity-100": "opacity-0 pointer-events-none")} 
+            data-tooltip-content={t("creator.edit-modal.error.bio", {minLength: PASOM_BIO_MIN_LEN, maxLength: PASOM_BIO_MAX_LEN})}
+            data-tooltip-place="top"
+            data-tooltip-id="my-tooltip2"
+          >
             <div className="error-tooltip">?</div>
-          </Tooltip>
+          </div>
+          <Tooltip id="my-tooltip2" />
         </div>
       </div>
     </div>

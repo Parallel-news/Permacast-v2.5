@@ -5,7 +5,6 @@ import Script from 'next/script';
 import { RecoilRoot } from 'recoil';
 import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
-import { SSRProvider } from '@react-aria/ssr';
 
 import { queryClient } from '../lib/react-query';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -62,9 +61,7 @@ function App({ Component, pageProps }) {
             </Script>
             <ShikwasaProviderLazy>
               <Layout>
-                <SSRProvider>
-                      <Component {...pageProps} className="scrollbar-container"/>
-                </SSRProvider>
+                <Component {...pageProps} className="scrollbar-container"/>
               </Layout>
             </ShikwasaProviderLazy>
           </QueryClientProvider>

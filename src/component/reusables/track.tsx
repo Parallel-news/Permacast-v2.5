@@ -4,8 +4,7 @@ import { useTranslation } from "next-i18next";
 import React, { FC, useState, useMemo, useEffect } from "react";
 import { shortenAddress } from "react-arconnect";
 import { useRecoilState } from "recoil";
-import { Tooltip } from "@nextui-org/react";
-
+import { Tooltip } from 'react-tooltip'
 import PlayButton from "./playButton";
 import MarkdownRenderer from "../markdownRenderer";
 
@@ -173,9 +172,16 @@ export const TrackContentTypeIcon: FC<TrackContentTypeIconProps> = ({ isVideo, c
   const { t } = useTranslation();
 
   if (includeContentType) return (
-    <Tooltip color="invert" content={t(isVideo ? "track.video" : "track.audio")}>
-      {isVideo ? <Icon {...{ className }} icon="CAM" /> : <Icon {...{ className }} icon="MIC"/>}
-    </Tooltip>
+    <>
+      <div 
+        data-tooltip-id="my-tooltip"
+        data-tooltip-content={t(isVideo ? "track.video" : "track.audio")}
+        data-tooltip-place="top"
+      >
+        {isVideo ? <Icon {...{ className }} icon="CAM" /> : <Icon {...{ className }} icon="MIC"/>}
+      </div>
+      <Tooltip id="my-tooltip" />
+    </>
   );
 };
 

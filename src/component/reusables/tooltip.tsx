@@ -1,5 +1,5 @@
 import { FC, ReactNode } from "react";
-import { Tooltip } from '@nextui-org/react';
+import { Tooltip } from 'react-tooltip'
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
 
@@ -11,25 +11,26 @@ export const ComingSoonTooltip: FC<{ placement: tooltipPlacement, children: Reac
   const { t } = useTranslation();
 
   return (
-    <Tooltip
-      rounded
-      placement={placement}
-      color="invert"
-      content={t("tooltip.coming-soon")}
-    >
-      {children}
-    </Tooltip>  
+    <>
+      <div
+        data-tooltip-id="my-tooltip"
+        data-tooltip-content={t("tooltip.coming-soon")}
+        data-tooltip-place="top"
+      >
+        {children}
+      </div>
+      <Tooltip id="comingSoonTip" />  
+    </>
   );
 };
 
 export const MarkDownToolTip: FC<{placement: tooltipPlacement, size:number }> = ({placement, size}) => {
   const { t } = useTranslation();
   return (
-    <Tooltip
-      rounded
-      placement={placement}
-      color="invert"
-      content={t("tooltip.markdown-supported")}
+    <div
+      data-tooltip-id="mkdownTip"
+      data-tooltip-content={t("tooltip.markdown-supported")}
+      data-tooltip-place="top"
     >
         <Image 
             src="/markdownLogo.svg"
@@ -38,6 +39,7 @@ export const MarkDownToolTip: FC<{placement: tooltipPlacement, size:number }> = 
             width={size}
             className="mt-2"
         />
-    </Tooltip>
+        <Tooltip id="mkdownTip" />
+    </div>
   )
 }
