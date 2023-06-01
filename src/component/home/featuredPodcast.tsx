@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useTranslation } from "next-i18next";
 import React, { useState, useEffect, FC } from "react";
 
-import { arweaveTX, Podcast } from "../../interfaces/index";
+import { arweaveTX, FullEpisodeInfo, Podcast } from "../../interfaces/index";
 import { showShikwasaPlayerArguments } from "../../interfaces/playback";
 
 import MarkdownRenderer from "../markdownRenderer";
@@ -122,8 +122,9 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
   const [textColor, setTextColor] = useState<string>('');
   const [markdownText, setMarkdownText] = useState<string>('');
   const [, _setLoadingPage] = useRecoilState(loadingPage)
-  const [episodes, setEpisode] = useState([])
-  let episode;
+  const [episode, setEpisode] = useState<FullEpisodeInfo | undefined>(undefined);
+  let episodes = convertPodcastsToEpisodes([podcastInfo]);
+
   useEffect(() => {
     const fetchMarkdown = async (tx: arweaveTX) => {
       const text = await queryMarkdownByTX(tx);
@@ -146,9 +147,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
       console.log(error);
     };
 
-    setEpisode(convertPodcastsToEpisodes([podcastInfo]));
-    episode = episodes.length ? episodes[0]: undefined
-
+    setEpisode(episodes.length ? episodes[0]: undefined);
   }, [podcastInfo]);
 
   const playerInfo: showShikwasaPlayerArguments = {

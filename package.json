@@ -24,6 +24,7 @@
     "everpay": "^0.6.0",
     "fast-average-color": "^9.3.0",
     "i18next": "^22.4.9",
+    "jsonata": "^2.0.3",
     "next": "latest",
     "next-i18next": "^13.0.3",
     "react": "latest",
