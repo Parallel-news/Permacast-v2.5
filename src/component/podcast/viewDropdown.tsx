@@ -1,50 +1,41 @@
 import { Icon } from "../icon";
-import React, { FC } from "react";
+import React, { FC, Fragment } from "react";
 import { useRecoilState } from "recoil";
 import { chronStatusAtom } from "../../atoms";
 import { useTranslation } from "next-i18next";
-import { Dropdown, DropdownButtonProps } from "@nextui-org/react"
+import { Menu } from "@headlessui/react";
 
 const ViewDropDown: FC = () => {
     const [chronStatus, setChronStatus] = useRecoilState<number>(chronStatusAtom)
-    const filterStyling = "w-12 h-12 text-zinc-600 cursor-pointer hover:bg-zinc-700 rounded-full default-no-outline-ringed default-animation px-2"
+    const filterStyling = "w-12 h-12 text-zinc-600 cursor-pointer hover:bg-zinc-700 rounded-full default-no-outline-ringed default-animation p-4"
 	const Clock = () => <Icon {...{ className }} icon="CLOCK" />;
     const className = 'text-white w-4 h-4 ';
-	const menuItems = [
-		{ icon: <Clock />, key: "showNewest", name: "Show Newest",  href: ""},
-	];
     const { t } = useTranslation();
 
     return (
-    <Dropdown>
-        <Dropdown.Trigger>
+    <Menu>
+        <Menu.Button>
             <Icon className={filterStyling} icon="BAR3BOTTOM"/>
-        </Dropdown.Trigger>
-        <Dropdown.Menu 
+        </Menu.Button>
+        <Menu.Items 
             aria-label="Dynamic Actions" 
-            items={menuItems} 
-            css={{ backgroundColor: "#18181B", width: '48px' }}
+            className="bg-[#18181B] w-[48px]"
         >
-            {(item: DropdownButtonProps) => (
-            <Dropdown.Item
-                key={item.key}
-                color={item.key === "delete" ? "error" : "default"}
-                css={{ backgroundColor: "#18181B", color: "white" }}
-                className='hover:bg-zinc-700'
+            <Menu.Item
+                as={Fragment}
             >
                 <>
-                    <button className={`flex items-center w-full ` + 'gap-x-2'} onClick={() => {
+                    <button className={`flex items-center w-full hover:bg-zinc-700 text-white bg-[#18181B] ` + 'gap-x-2'} onClick={() => {
                         // Timeout so text doesnt change mid-click
                         setTimeout(() => setChronStatus(prev => prev + 1), 500)
                     }}>
-                        {item.icon}
+                        <Clock />
                         {chronStatus % 2 ? t("viewPodcasts.showOldest") : t("viewPodcasts.showNewest")}
                     </button>
                 </>
-            </Dropdown.Item>
-            )}
-        </Dropdown.Menu>
-    </Dropdown>
+            </Menu.Item>
+        </Menu.Items>
+    </Menu>
     )
 }
 
