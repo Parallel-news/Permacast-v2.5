@@ -4,7 +4,6 @@ import { useTranslation } from "next-i18next";
 import React, { FC, useEffect, useState } from "react";
 import { useArconnect } from "react-arconnect";
 import { useRecoilState } from "recoil";
-import { Divider, Modal } from "@nextui-org/react";
 import MarkdownRenderer from "../markdownRenderer";
 import { getCategoryInCurrentLanguage, useLanguageHook } from "../../utils/languages";
 import { allANSUsersAtom, loadingPage } from "../../atoms";
@@ -23,6 +22,7 @@ import {
 import { getFormattedTimeStamp } from "../../utils/reusables";
 import { NftButton } from "../../features/nft-mint";
 import { Icon } from "../icon";
+import ModalShell from "../modalShell";
 
 const TrackCreatorLink = React.lazy(() => import("../reusables/track").then(module => ({ default: module.TrackCreatorLink })));
 const DescriptionButton = React.lazy(() => import("../reusables/buttons").then(module => ({ default: module.DescriptionButton })));
@@ -70,7 +70,7 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
 }) => {
     const { t } = useTranslation();
     const [languagesArray, categoriesArray] = useLanguageHook();
-    const [allANSUsers, setAllANSUsers] = useRecoilState(allANSUsersAtom);
+    const [allANSUsers, ] = useRecoilState(allANSUsersAtom);
 
     const [coverModalOpen, setCoverModalOpen] = useState<boolean>(false);
     const [descriptionModalOpen, setDescriptionModalOpen] = useState<boolean>(false);
@@ -111,10 +111,14 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
       };
       fetchData();
     }, []);
-
+    
     return (
-        <div className={podcastInfoStyling}>
-            <Modal open={coverModalOpen} onClose={() => setCoverModalOpen(false)} className={`bg-transparent text-white cursor-auto rounded-none `}>
+        <>
+            <ModalShell
+                width="max-w-md"
+                isOpen={coverModalOpen} 
+                setIsOpen={setCoverModalOpen}
+            >
                 <Image
                     src={imgSrc}
                     alt="Podcast Cover"
@@ -124,68 +128,72 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
                     priority
                     className="object-cover width-[700px] height-[700px]"
                 />
-            </Modal>
-            <Modal 
-                open={descriptionModalOpen}
-                onClose={() => setDescriptionModalOpen(false)}
-                className={`bg-zinc-900 rounded-lg text-white cursor-auto flexColCenter p-4 `}
+            </ModalShell>
+            <ModalShell
+                width="max-w-md"
+                isOpen={descriptionModalOpen}
+                setIsOpen={setDescriptionModalOpen}
             >
-                <p className={podcastTitleModalStyling}>{title}</p>
-                <Divider className="h-0.5 my-4 bg-white" />
-                <MarkdownRenderer markdownText={markdownText} color={'text-white '} />
-                <Divider className="h-0.5 my-4 bg-white" />
-                <div className="flexColCenter">
-                    <div className="flexCenter gap-x-0.5">
-                        <Icon className="w-4 h-4 mt-0.5" icon="ATSYMBOL" strokeWidth="0" fill="currentColor"/>
-                        {podcast?.email || "N/A"}
+                <>
+                    <p className={podcastTitleModalStyling}>{title}</p>
+                    <div className="h-[1px] my-4 bg-white w-full rounded-full"></div>
+                    <MarkdownRenderer markdownText={markdownText} color={'text-white '} />
+                    <div className="h-[1px] my-4 bg-white w-full rounded-full"></div>
+                    <div className="flexColCenter">
+                        <div className="flexCenter gap-x-0.5">
+                            <Icon className="w-4 h-4 mt-0.5" icon="ATSYMBOL" strokeWidth="0" fill="currentColor"/>
+                            {podcast?.email || "N/A"}
+                        </div>
+                        <div>{podcast?.episodes?.length} {t("episodes")}</div>
+                        {adjCategory && (
+                        <div className="flexCenter gap-x-0.5">
+                            <Icon className="w-4 h-4 " icon="HASHTAG" strokeWidth="0" fill="currentColor"/>
+                            {adjCategory}
+                        </div>
+                        )}
+                        <div className="flexCenter gap-x-0.5">
+                            <Icon className="w-4 h-4 " icon="LANGUAGE" strokeWidth="0" fill="currentColor"/>
+                            {language}
+                        </div>
                     </div>
-                    <div>{podcast?.episodes?.length} {t("episodes")}</div>
-                    {adjCategory && (
-                    <div className="flexCenter gap-x-0.5">
-                        <Icon className="w-4 h-4 " icon="HASHTAG" strokeWidth="0" fill="currentColor"/>
-                        {adjCategory}
-                    </div>
+                </>
+            </ModalShell>
+            <div className={podcastInfoStyling}>
+                <button className="h-[200px] w-[200px] flex-shrink-0" onClick={() => setCoverModalOpen(true)}>
+                    <Image
+                        src={imgSrc}
+                        alt="Podcast Cover"
+                        height={200}
+                        width={200}
+                        className="object-cover rounded-md cursor-pointer w-full h-full"
+                    />
+                </button>
+                <div className={podcastInfoTitleDivStyling}>
+                    <h1 className={podcastTitlePreviewStyling}>
+                        {title}
+                    </h1>
+                    <MarkdownRenderer markdownText={markdownText} color={'line-clamp-3 text-white text-sm '} />
+                    {(buttonStyles.backgroundColor && buttonStyles.color) && (
+                        <div className="flexCenterGap mt-3 flex-wrap gap-2">
+                            <div className="max-w-max">
+                                <TrackCreatorLink {...{ uploader, buttonStyles, coverColor, fontSize: 16 }} />
+                            </div>
+                            <div className={coloredButtonPaddingStying} style={buttonStyles}>
+                                {formattedDate}
+                            </div>
+                            <button
+                                onClick={() => setDescriptionModalOpen(true)}
+                                className={`flexCenterGap brighten-animation ` + coloredButtonPaddingStying}
+                                style={buttonStyles}
+                            >
+                                {t("textTruncate.showMore")}
+                                <ExpandIcon />
+                            </button>
+                        </div>
                     )}
-                    <div className="flexCenter gap-x-0.5">
-                        <Icon className="w-4 h-4 " icon="LANGUAGE" strokeWidth="0" fill="currentColor"/>
-                        {language}
-                    </div>
                 </div>
-            </Modal>
-            <button className="h-[200px] w-[200px] flex-shrink-0" onClick={() => setCoverModalOpen(true)}>
-                <Image
-                    src={imgSrc}
-                    alt="Podcast Cover"
-                    height={200}
-                    width={200}
-                    className="object-cover rounded-md cursor-pointer w-full h-full"
-                />
-            </button>
-            <div className={podcastInfoTitleDivStyling}>
-                <h1 className={podcastTitlePreviewStyling}>
-                    {title}
-                </h1>
-                <MarkdownRenderer markdownText={markdownText} color={'line-clamp-3 text-white text-sm '} />
-                {(buttonStyles.backgroundColor && buttonStyles.color) && (
-                    <div className="flexCenterGap mt-3 flex-wrap gap-2">
-                        <div className="max-w-max">
-                            <TrackCreatorLink {...{ uploader, buttonStyles, coverColor, fontSize: 16 }} />
-                        </div>
-                        <div className={coloredButtonPaddingStying} style={buttonStyles}>
-                            {formattedDate}
-                        </div>
-                        <button
-                            onClick={() => setDescriptionModalOpen(true)}
-                            className={`flexCenterGap brighten-animation ` + coloredButtonPaddingStying}
-                            style={buttonStyles}
-                        >
-                            {t("textTruncate.showMore")}
-                            <ExpandIcon />
-                        </button>
-                    </div>
-                )}
             </div>
-        </div>
+        </>
     );
 };
 
@@ -264,4 +272,47 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
         </div>
     )
 }
+/*
+            <Dialog open={coverModalOpen} onClose={() => setCoverModalOpen(false)} className={`bg-transparent text-white cursor-auto rounded-none `}>
+                <Image
+                    src={imgSrc}
+                    alt="Podcast Cover"
+                    height={700}
+                    width={700}
+                    loading="eager"
+                    priority
+                    className="object-cover width-[700px] height-[700px]"
+                />
+            </Dialog>
 
+
+
+            <Dialog 
+                open={descriptionModalOpen}
+                onClose={() => setDescriptionModalOpen(false)}
+                className={`bg-zinc-900 rounded-lg text-white cursor-auto flexColCenter p-4 `}
+            >
+                <p className={podcastTitleModalStyling}>{title}</p>
+                <Divider className="h-0.5 my-4 bg-white" />
+                <MarkdownRenderer markdownText={markdownText} color={'text-white '} />
+                <Divider className="h-0.5 my-4 bg-white" />
+                <div className="flexColCenter">
+                    <div className="flexCenter gap-x-0.5">
+                        <Icon className="w-4 h-4 mt-0.5" icon="ATSYMBOL" strokeWidth="0" fill="currentColor"/>
+                        {podcast?.email || "N/A"}
+                    </div>
+                    <div>{podcast?.episodes?.length} {t("episodes")}</div>
+                    {adjCategory && (
+                    <div className="flexCenter gap-x-0.5">
+                        <Icon className="w-4 h-4 " icon="HASHTAG" strokeWidth="0" fill="currentColor"/>
+                        {adjCategory}
+                    </div>
+                    )}
+                    <div className="flexCenter gap-x-0.5">
+                        <Icon className="w-4 h-4 " icon="LANGUAGE" strokeWidth="0" fill="currentColor"/>
+                        {language}
+                    </div>
+                </div>
+            </Dialog>
+
+*/

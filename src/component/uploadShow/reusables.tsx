@@ -6,9 +6,9 @@ import { useTranslation } from "next-i18next";
 import { Podcast } from "../../interfaces";
 import { DEFAULT_LANGUAGE } from "../../utils/languages";
 import { Icon } from "../icon";
+import { Tooltip } from "react-tooltip";
 
 const Cropper = React.lazy(() => import("react-easy-crop"));
-const Tooltip = React.lazy(() => import("@nextui-org/react").then(module => ({ default: module.Tooltip })));
 const ValMsg = React.lazy(() => import("../reusables/formTools").then(module => ({ default: module.ValMsg })))
 const CategoryOptions = React.lazy(() => import("../../utils/languages").then(module => ({ default: module.CategoryOptions })))
 const LanguageOptions = React.lazy(() => import("../../utils/languages").then(module => ({ default: module.LanguageOptions })))
@@ -374,9 +374,14 @@ export const LabelInput = (props: LabelInputInter) => {
                                 console.log(e.target.value.trim())
                             }
                         }} />
-                    <Tooltip rounded color="invert" content={<div className="max-w-[240px]">{t("uploadshow.label-explanation")} <a href={`https://${props.labelValue}.pc.show`}>{props.labelValue}.pc.show</a></div>}>
+                    <div                 
+                        data-tooltip-content={t("uploadshow.label-explanation")}
+                        data-tooltip-id="labelExplainTip" 
+                    >
+                        <a href={`https://${props.labelValue}.pc.show`}>{props.labelValue}.pc.show</a>
                         <div className="helper-tooltip">?</div>
-                    </Tooltip>
+                    </div>
+                    <Tooltip id="labelExplainTip" />
                 </div>
                 <ValMsg valMsg={props.labelMsg} className="pl-2" />
             </div>

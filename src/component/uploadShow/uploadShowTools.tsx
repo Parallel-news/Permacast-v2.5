@@ -21,7 +21,7 @@ import toast from "react-hot-toast"
 import React from "react";
 import { VisibleInput } from "./reusables";
 import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
-import ProgressBar from "../reusables/progressBar";
+import { ProgressBar } from "../progressBar";
 import { EditPodcastProps, UploadPodcastProps } from "../../interfaces/exm";
 
 const MarkDownToolTip = React.lazy(() => import("../reusables/tooltip").then(module => ({ default: module.MarkDownToolTip })));
@@ -476,7 +476,8 @@ export const ShowForm = (props: ShowFormInter) => {
                         )}
                         {address && address.length > 0 && submittingShow && (
                             <ProgressBar
-                                value={progress}
+                                progress={String(progress)}
+                                colorHex="#FFFF00"
                             />
                         )}
                         {!address && (
