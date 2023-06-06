@@ -290,6 +290,7 @@
 		"norsspodcast": "无法从 RSS 链接获取播客元数据",
 		"emptyinput": "请输入网址",
 		"invalidurl": "输入有效网址",
+		"http-not-supported": "当前不支持不安全连接 (HTTP)。",
 		"estimation-failed": "这些剧集的估计失败。再试一次。",
 		"retry-estimation": "重试估计",
 		"skip-failed": "跳过失败的估计",
