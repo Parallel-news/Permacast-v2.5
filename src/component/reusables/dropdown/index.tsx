@@ -16,13 +16,13 @@ export interface DropdownProps {
 };
 
 export const openMenuButtonClass = `bg-zinc-900 default-animation h-12 rounded-3xl w-12 flex justify-center items-center`;
-const Dropdown: FC<DropdownProps> = ({
+const Dropdown = ({
   openMenuButton,
   items,
   openMenuButtonClass,
   dropdownMenuClass,
   menuItemClass
-}) => {
+}: DropdownProps) => {
 
   return (
     <div className="flex flex-row mr-4">
