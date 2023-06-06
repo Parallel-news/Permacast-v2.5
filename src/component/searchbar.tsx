@@ -8,7 +8,7 @@ import { Icon } from './icon';
 export const SearchIconWrapperStyling = `flex absolute inset-y-0 left-0 items-center pl-3 pr-10 pointer-events-none `;
 export const SearchInputStyling = `block pl-10 py-3 w-full placeholder-zinc-600 focus:placeholder-zinc-400/90 rounded-full bg-zinc-900 text-zinc-400/90 outline-none focus:ring-2 focus:ring-zinc-400/90 default-animation placeholder:default-animation `;
 
-const Searchbar: FC = () => {
+const Searchbar = () => {
   const { t } = useTranslation();
   
   const router = useRouter();
@@ -36,7 +36,7 @@ const Searchbar: FC = () => {
           { shallow: true }
         );
       }
-    }, 800);
+    }, 250);
 
     setDebounceTimeout(newTimeout);
   };
