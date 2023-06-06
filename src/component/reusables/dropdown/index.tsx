@@ -15,7 +15,7 @@ export interface DropdownProps {
   menuItemClass: string;
 };
 
-export const openMenuButtonClass = `bg-zinc-900 h-12 rounded-3xl w-12 flex justify-center items-center`;
+export const openMenuButtonClass = `bg-zinc-900 default-animation h-12 rounded-3xl w-12 flex justify-center items-center`;
 const Dropdown: FC<DropdownProps> = ({
   openMenuButton,
   items,
@@ -26,7 +26,7 @@ const Dropdown: FC<DropdownProps> = ({
 
   return (
     <div className="flex flex-row mr-4">
-    <Menu as="div" className="relative inline-block text-left">
+    <Menu as="div" className="relative inline-block text-left w-full px-3 default-animation ">
       {/*Server and Static are generating two separate IDs. Next UI not SSR friendly*/}
       <Menu.Button className={openMenuButtonClass}>
         {openMenuButton}
