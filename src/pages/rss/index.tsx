@@ -97,8 +97,14 @@ export default function rss({yourShows}) {
         }
 
         if(!isValidUrl(rssLink)) { 
-            setRssLinkError("rss.invalidurl"); 
+            setRssLinkError("rss.invalidurl");
             setSubmittingLink(false); 
+            return false;
+        }
+
+        if (!rssLink.startsWith("http")) {
+            setRssLinkError("rss.http-not-supported");
+            setSubmittingLink(false);
             return false;
         }
 
