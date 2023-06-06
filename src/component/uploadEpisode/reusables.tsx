@@ -251,7 +251,7 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
                         />
                     ))}
                     {props.shows.length === 0 && <p className="text-white text-lg text-center">{t("uploadepisode.no-shows")}</p>}
-                    {walletConnected ? <p className="text-blue-400 mt-2 text-lg text-center cursor-pointer" onClick={connect}>{t("uploadshow.connect-wallet")}</p>: ""}
+                    {!walletConnected ? <p className="text-blue-400 mt-2 text-lg text-center cursor-pointer" onClick={connect}>{t("uploadshow.connect-wallet")}</p>: ""}
                 </div>
             </div>
         </div>
