@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import { FC, useEffect } from 'react';
 import { useArconnect, shortenAddress } from 'react-arconnect';
 import { useRecoilState } from 'recoil';
-import { PASoMProfileAtom, arweaveAddress, loadingPage, walletNotDetectedModalVisibilityAtom } from '../../atoms';
+import { PASoMProfileAtom, loadingPage, walletNotDetectedModalVisibilityAtom } from '../../atoms';
 import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
 import { ProfileImage } from '../creator/reusables';
 import { ANS_TEMPLATE } from '../../constants/ui';
@@ -50,7 +50,6 @@ const ArConnect: FC = () => {
   const { t } = useTranslation();
 
   const [PASoMProfile, setPASoMProfile] = useRecoilState(PASoMProfileAtom);
-  const [_, setArweaveAddress_] = useRecoilState(arweaveAddress);
 
   const {
     walletConnected,
@@ -72,7 +71,6 @@ const ArConnect: FC = () => {
   useEffect(() => {
     if (address && address.length > 0) {
       fetchPASoM();
-      setArweaveAddress_(address);
     };
   }, [address, walletConnected]);
 
@@ -134,9 +132,9 @@ const ArConnect: FC = () => {
 
   const UserDropdown: FC = () => {
     const openMenuButton = <OpenDropdownButton />;
-    const openMenuButtonClass = prevButtonClass + `rounded-full w-full z-0 `;
-    const dropdownMenuClass = `absolute z-50 right-0 mt-2 w-40 md:w-56 origin-top-right rounded-md bg-zinc-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none border-[2px] border-zinc-400`
-    const menuItemClass = "border-0 p-[10px] hover:bg-zinc-800 hover:text-white"
+    const openMenuButtonClass = prevButtonClass + `rounded-full w-full z-0 default-animation `;
+    const dropdownMenuClass = `absolute z-50 right-0 mt-2 w-40 md:w-56 origin-top-right rounded-md bg-zinc-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none border-[2px] border-zinc-400 default-animation`
+    const menuItemClass = "border-0 p-[10px] hover:bg-zinc-800 hover:text-white default-animation"
     
     return <Dropdown {...{ openMenuButton, items, openMenuButtonClass, dropdownMenuClass, menuItemClass }} />;
   };

@@ -34,7 +34,10 @@ export default async function handler(
         "input": JSON.stringify(req.body)
       }],
     }, {});
-    if (req.body?.parsed) res.status(200).json(data.data);
+    if (req.body?.parsed) {
+      res.status(200).json(data.data);
+      return;
+    }
     const responseData = JSON.stringify(data.data, (key, value) => {
       if (typeof value === "object" && value !== null) {
         if (

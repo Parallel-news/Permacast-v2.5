@@ -296,6 +296,7 @@
 		"norsspodcast": "Could not fetch podcast metadata from RSS link.",
 		"emptyinput": "Please enter a URL.",
 		"invalidurl": "Enter a Valid Url",
+		"http-not-supported": "Unsafe connections (HTTP) are currently not supported.",
 		"estimation-failed": "Estimation Failed For These Episodes. Try again.",
 		"retry-estimation": "Retry Estimation",
 		"skip-failed": "Skip Failed Estimations",

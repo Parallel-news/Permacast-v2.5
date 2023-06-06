@@ -83,7 +83,7 @@ export const ProfileInfo: FC<CreatorEditInfoProps> = ({ error, nickname, setNick
         <div className="relative">
           <input
             value={nickname}
-            className={`text-input-generic px-4 `}
+            className={`text-input-generic px-4 default-animation `}
             onChange={(e) => setNickname(e.target.value)}
             placeholder={t('creator.edit-modal.nickname')}
           />
@@ -101,7 +101,7 @@ export const ProfileInfo: FC<CreatorEditInfoProps> = ({ error, nickname, setNick
           <textarea
             value={bio}
             onChange={(e) => setBio(e.target.value)}
-            className={`text-input-generic resize-none pl-4 pr-7 h-20 mt-4 pt-2 mr-0.5 `}
+            className={`text-input-generic default-animation resize-none pl-4 pr-7 h-20 mt-4 pt-2 mr-0.5 `}
             placeholder={t('creator.edit-modal.bio')}
           ></textarea>
           <div 

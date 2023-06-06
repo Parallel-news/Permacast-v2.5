@@ -1,25 +1,22 @@
-// TODO: add types for all functions
-// TODO: convert this into a folder
-// TODO: collect all type files in this folder
+import { arseedTX, arweaveAddress, everpayTX, signature } from ".";
 
-
-// !This file is for all base Permacast functions
-
-export type arseedTX = string;
-export type everpayFeeTX = string;
-
-// 128-character hex string
+// 128-character hex strings
 export type PID = string;
+export type EID = string;
 
+// jwk_n 
 export interface EXMauth {
+  // 683-character-long public key
   jwk_n: string;
-  sig: string;
+  sig: signature;
 };
 
 export interface EXMBase extends EXMauth {
-  parsed?: boolean; // for parsing received data into JSON
+  // for parsing received data into JSON
+  parsed?: boolean;
 };
 
+// podcast upload / edit payloads
 export interface EXMPodcastPayloadBase extends EXMBase {
   name: string;
   desc: arseedTX;
@@ -31,7 +28,7 @@ export interface EXMPodcastPayloadBase extends EXMBase {
   cover: arseedTX;
   minifiedCover: arseedTX;
   label: string;
-  txid: everpayFeeTX;
+  txid: everpayTX;
   isVisible: boolean;
 };
 
@@ -44,11 +41,14 @@ export interface EditPodcastProps extends EXMPodcastPayloadBase {
   function: "editPodcastMetadata";
 };
 
+
+// episode upload / edit payloads
+
 export interface EpisodePayloadBase extends EXMBase {
-  pid: string;
+  pid: PID;
   name: string;
   desc: arseedTX,
-  txid: everpayFeeTX,
+  txid: everpayTX,
   isVisible: boolean;
   thumbnail: arseedTX,
   content: arseedTX,
@@ -61,5 +61,17 @@ export interface UploadEpisodeProps extends EpisodePayloadBase {
 
 export interface EditEpisodeProps extends EpisodePayloadBase {
   function: "editEpisodeMetadata";
-  eid: string;
+  eid: EID;
 };
+
+
+// featured channel payload
+
+export interface FeaturedChannel {
+  pid: PID,
+  payment_txid: everpayTX,
+  paid_by: arweaveAddress,
+  start: number,
+  expiry: number
+};
+

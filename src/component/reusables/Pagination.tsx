@@ -1,8 +1,8 @@
-import { Dispatch, FC, SetStateAction, useState, lazy, useEffect } from 'react';
-import { convertToValidNumber } from '../../utils/validation/inputs';
-import { Icon } from '../icon';
+import { Dispatch, SetStateAction, useState, useEffect } from 'react';
+import { convertToValidNumber } from '@/utils/validation/inputs';
 
-const DebouncedInput = lazy(() => import("../reusables/debouncedInput").then(module => ({ default: module.default })));
+import { Icon } from '../icon';
+import DebouncedInput from './debouncedInput';
 
 interface PaginationProps {
   totalPages: number;
@@ -18,7 +18,7 @@ interface PaginationProps {
 const buttonStyling = `pagination-button h-8 w-8 `;
 
 
-const Pagination: FC<PaginationProps> = ({
+const Pagination = ({
   totalPages,
   limitPagination,
   currentPage,
@@ -26,7 +26,7 @@ const Pagination: FC<PaginationProps> = ({
   removeScrollButtons,
   buttonStyles,
   extraJSX
-}) => {
+}: PaginationProps) => {
   const [navigatePage, setNavigatePage] = useState<number>(currentPage);
   const styling = buttonStyles ? buttonStyles : buttonStyling;
 

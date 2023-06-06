@@ -1,18 +1,21 @@
+import { useTranslation } from "next-i18next";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useArconnect } from "react-arconnect";
 import toast from "react-hot-toast";
-import { useTranslation } from "next-i18next";
 import { useRecoilState } from "recoil";
-import { arweaveAddress, everPayBalance } from "../../atoms";
-import { ERROR_TOAST_TIME, FADE_IN_STYLE, FADE_OUT_STYLE, PERMA_TOAST_SETTINGS, SPINNER_COLOR } from "../../constants";
-import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
-import { transferFunds } from "../../utils/everpay";
-import { fetchARPriceInUSD } from "../../utils/redstone";
+
+import { everPayBalance } from "@/atoms/index";
+import { ERROR_TOAST_TIME, FADE_IN_STYLE, FADE_OUT_STYLE, PERMA_TOAST_SETTINGS, SPINNER_COLOR } from "@/constants/index";
+import { APP_LOGO, APP_NAME, PERMISSIONS } from "@/constants/arconnect";
+import { transferFunds } from "@/utils/everpay";
+import { fetchARPriceInUSD } from "@/utils/redstone";
+
 import { PermaSpinner } from "../reusables/PermaSpinner";
 import { tipModalStyling } from "../uploadEpisode/uploadEpisodeTools";
 import { ConnectButton } from "../uploadEpisode/reusables";
 import { containerPodcastModalStyling, SubmitTipButton } from "../uploadEpisode/reusables";
 import { Icon } from "../icon";
+
 interface TipModalInter {
     to?: string;
     toAddress: string;
@@ -35,7 +38,6 @@ export const TipModal = (props: TipModalInter) => {
     const { t } = useTranslation();
     
     const [showModal, setShowModal] = useState<boolean>(false)
-    const [_arweaveAddress, _setArweaveAddress] = useRecoilState(arweaveAddress)
     const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const [arPrice, setArPrice] = useState(0);
     const [tipAmount, setTipAmount] = useState<string>("0")

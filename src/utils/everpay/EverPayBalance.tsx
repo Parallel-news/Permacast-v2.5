@@ -1,10 +1,12 @@
-import { arweaveAddress, calculateEverPayBalance, everPayBalance } from "../../atoms";
-import { useEffect, useState } from "react"
-import { useRecoilState } from "recoil"
 import Everpay from "everpay";
-import { MoonLoader } from "react-spinners";
 import { useTranslation } from "next-i18next";
+import { useEffect, useState } from "react"
+import { useArconnect } from "react-arconnect";
 import { Tooltip } from "react-tooltip";
+import { MoonLoader } from "react-spinners";
+import { useRecoilState } from "recoil"
+
+import { calculateEverPayBalance, everPayBalance } from "@/atoms/index";
 
 interface everpayBalanceInterface {
     textClassname?: string;
@@ -13,9 +15,9 @@ interface everpayBalanceInterface {
 export const EverPayBalance = (props: everpayBalanceInterface) => {
     const { t } = useTranslation();
     const { textClassname } = props
+    const { walletConnected, address } = useArconnect();
     const [_everPayBalance, _setEverPayBalance] = useRecoilState(everPayBalance)
     const [_calculateEverPayBalance, _setCalculateEverPayBalance] = useRecoilState(calculateEverPayBalance)
-    const [_arweaveAddress, _setArweaveAddress] = useRecoilState<string>(arweaveAddress);
     const [balanceError, setBalanceError] = useState<boolean>(false)
     const [balanceLoading, setBalanceLoading] = useState<boolean>(true)
   
@@ -26,7 +28,7 @@ export const EverPayBalance = (props: everpayBalanceInterface) => {
 
         async function everBalance() {
             const everpay = new Everpay({
-                account: _arweaveAddress,
+                account: address,
                 //@ts-ignore
                 chainType: 'arweave',
                 arJWK: 'use_wallet',
@@ -36,7 +38,7 @@ export const EverPayBalance = (props: everpayBalanceInterface) => {
                 setBalanceLoading(true)
                 setBalanceError(false)
                 //@ts-ignore string vs String
-                const balance = await everpay.balances({ account: _arweaveAddress });
+                const balance = await everpay.balances({ account: address });
                 //@ts-ignore
                 _setEverPayBalance(balance.find((el: any) => el.chainType === "arweave,ethereum")?.balance);
                 setBalanceLoading(false)
@@ -46,15 +48,13 @@ export const EverPayBalance = (props: everpayBalanceInterface) => {
                 console.log(error)
             }
         }
-        if (_arweaveAddress.length > 0) {
-            everBalance()
-        }
+        if (walletConnected) everBalance();
 
-    }, [_calculateEverPayBalance, _arweaveAddress]);
+    }, [_calculateEverPayBalance, address]);
 
     return (
         <>
-            {_arweaveAddress && _arweaveAddress.length > 0 && (
+            {walletConnected && (
                 (balanceError ?
                     <div 
                         className="helper-tooltip px-1.5 ml-2" 

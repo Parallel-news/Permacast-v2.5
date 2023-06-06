@@ -1,8 +1,5 @@
-
-import Everpay from "everpay";
-import { arweaveAddress } from "../../atoms";
-import { ChainType } from "everpay";
-import { AR_DECIMALS, EVERPAY_AR_TAG, MIN_UPLOAD_PAYMENT } from "../../constants";
+import Everpay, { ChainType } from "everpay";
+import { EVERPAY_AR_TAG } from "../../constants";
 
 export const transferFunds = async (type: string, amount: number, to: string, from: string) => {
 

@@ -1,19 +1,21 @@
+import { ChainType } from "everpay";
+import { arweaveAddress, chainTicker, signature } from ".";
 
 export interface EverpayTx {
-  tokenSymbol: string;
+  tokenSymbol: chainTicker;
   action: string;
-  from: string;
-  to: string;
+  from: arweaveAddress;
+  to: arweaveAddress;
   amount: string;
   fee: string;
   feeRecipient: string;
-  nonce: string;
+  nonce: number;
   tokenID: string;
-  chainType: string;
+  chainType: ChainType;
   chainID: string;
   data: string;
   version: string;
-  sig: string;
+  sig: signature;
 };
 
 export interface EverpayTxAPIResponse extends EverpayTx {

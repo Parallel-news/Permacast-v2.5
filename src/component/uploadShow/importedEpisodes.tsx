@@ -7,28 +7,29 @@ import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import toast from "react-hot-toast"
 import { useRecoilState } from "recoil";
 import { Tooltip } from 'react-tooltip'
-import { PermaSpinner } from "../reusables";
 
-import { AR_DECIMALS, CONNECT_WALLET, EPISODE_UPLOAD_FEE, EVERPAY_EOA, EVERPAY_EOA_UPLOADS, GIGABYTE, TOAST_DARK, USER_SIG_MESSAGES, EPISODE_SLIPPAGE, ERROR_TOAST_TIME, PERMA_TOAST_SETTINGS, EXTENDED_TOAST_TIME, SPINNER_COLOR } from "../../constants";
-import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
+import { AR_DECIMALS, CONNECT_WALLET, EPISODE_UPLOAD_FEE, EVERPAY_EOA, EVERPAY_EOA_UPLOADS, GIGABYTE, TOAST_DARK, USER_SIG_MESSAGES, EPISODE_SLIPPAGE, ERROR_TOAST_TIME, PERMA_TOAST_SETTINGS, EXTENDED_TOAST_TIME, SPINNER_COLOR } from "@/constants/index";
+import { APP_LOGO, APP_NAME, PERMISSIONS } from "@/constants/arconnect";
 
-import { calculateARCost, getBundleArFee, getReadableSize, upload2DMedia } from "../../utils/arseeding";
-import { checkConnection, determineMediaType, handleError } from "../../utils/reusables";
-import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
-import { transferFunds } from "../../utils/everpay";
+import { calculateARCost, getBundleArFee, getReadableSize, upload2DMedia } from "@/utils/arseeding";
+import { checkConnection, determineMediaType, handleError } from "@/utils/reusables";
+import { fetchDominantColor, getCoverColorScheme } from "@/utils/ui";
+import { transferFunds } from "@/utils/everpay";
 
-import { EXMState, rssEpisode, rssEpisodeRetry } from "../../interfaces";
-import { UploadEpisodeProps } from "../../interfaces/exm";
+import { Podcast } from "@/interfaces/index";
+import { rssEpisode, rssEpisodeRetry, RSSEpisodeEstimate } from "@/interfaces/rss";
+import { UploadEpisodeProps } from "@/interfaces/exm";
 
-import { arweaveAddress, loadingPage, podcastColorAtom } from "../../atoms";
+import { loadingPage, podcastColorAtom } from "@/atoms/index";
+import { getPodcastData } from '@/features/prefetching';
 
-import { fetchARPriceInUSD } from "../../utils/redstone";
-import { RSSFeedManager } from "../../utils/localstorage";
-import { RSSEpisodeEstimate } from "../../interfaces/api";
-import { DEFAULT_THEME_COLOR } from "../../constants/ui";
-import { Icon } from "../icon";
+import { fetchARPriceInUSD } from "@/utils/redstone";
+import { RSSFeedManager } from "@/utils/localstorage";
+import { DEFAULT_THEME_COLOR } from "@/constants/ui";
 
 import { ImgCover } from './reusables';
+import { Icon } from "../icon";
+import { PermaSpinner } from "../reusables";
 import { ProgressBar } from "../progressBar";
 import { ConnectButton } from '../uploadEpisode/reusables';
 import { UploadButton } from '../uploadEpisode/reusables';
@@ -87,8 +88,8 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
   const { address, ANS, getPublicKey, createSignature, arconnectConnect } = useArconnect();
   const router = useRouter();
   const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
+  const queryPodcastData = getPodcastData();
 
-  const [arweaveAddress_,] = useRecoilState(arweaveAddress);
   const [_calculateEverPayBalance, _setCalculateEverPayBalance] = useState(0) //(calculateEverPayBalance);
   const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
   const [, _setLoadingPage] = useRecoilState(loadingPage)
@@ -113,21 +114,18 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
   const MAX_PAGES = Math.floor((rssEpisodes?.length || 0) / MAX_EPISODES_TO_UPLOAD_AT_ONCE);
 
   const fetchPodcast = async () => {
-    const data: EXMState = (await axios.get('/api/exm/read')).data;
-    const podcastViaPID = data.podcasts.find(podcast => podcast.pid === pid);
-    const podcastViaIndex = index !== 0 ? data.podcasts[index]: undefined;
+    const podcasts: Podcast[] = queryPodcastData.data.podcasts;
+    const podcastViaPID = podcasts.find(podcast => podcast.pid === pid);
+    const podcastViaIndex = index !== 0 ? podcasts[index]: undefined;
     const podcast = podcastViaPID || podcastViaIndex;
-    console.log(podcast);
     return podcast;
   };
 
   const attemptIndexPodcastID = async () => {
     let attempts = 3;
 
-    console.log(index);
     for (let i = 0; i < attempts; i++) {
       const foundPod = await fetchPodcast();
-      console.log(foundPod);
       if (foundPod) {
         setRealPid(foundPod.pid);
         console.log("Podcast found");
@@ -209,12 +207,12 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
 
     // check if user has enough AR
     const everpay = new Everpay({
-      account: arweaveAddress_,
+      account: address,
       //@ts-ignore
       chainType: 'arweave',
       arJWK: 'use_wallet',
     });
-    const balances = await everpay.balances({ account: arweaveAddress_ });
+    const balances = await everpay.balances({ account: address });
     //@ts-ignore
     const arBalance = balances.find((el: any) => el.chainType === "arweave,ethereum")?.balance;
     const isEnough = Number(arBalance) >= totalCost;
@@ -376,7 +374,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
   const startEpisodesUpload = async () => {
 
     // Check Wallet Connection
-    if (!checkConnection(arweaveAddress_)) {
+    if (!checkConnection(address)) {
       toast.error(CONNECT_WALLET, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
       return false;
     };
@@ -662,7 +660,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
 /*
 const startEpisodesRetryUpload = async () => {
   // Check Wallet Connection
-  if (!checkConnection(arweaveAddress_)) {
+  if (!checkConnection(address)) {
     toast.error(CONNECT_WALLET, { style: TOAST_DARK })
     return false;
   };
