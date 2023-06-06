@@ -61,8 +61,8 @@ export const titles = atom({
     default: [],
 });
 
-export const allPodcasts = atom<Podcast[]>({
-    key: "allPodcasts",
+export const allPodcastsAtom = atom<Podcast[]>({
+    key: "allPodcastsAtom",
     default: [],
 });
 
@@ -165,11 +165,6 @@ export const everPayBalance = atom({
     default: 0
   })
 
-// ARWEAVE
-export const arweaveAddress = atom({
-  key: 'arweaveAddress',
-  default: ""
-});
 
 export const PASoMProfileAtom = atom<PASoMProfile>({
     key: 'PASoMProfileAtom',
