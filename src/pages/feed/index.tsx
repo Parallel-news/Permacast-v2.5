@@ -10,11 +10,10 @@ import { detectTimestampType } from "../../utils/reusables";
 import { Podcast } from "../../interfaces";
 
 const ViewDropDown = React.lazy(() => import("../../component/viewDropDown"));
-const FeaturedPodcast = React.lazy(() => import("../../component/home/featuredPodcast"));
+const PodcastGrid = React.lazy(() => import("../../component/home/PodcastGrid"));
 
 const titleRow = `flex flex-row justify-between items-end mb-10 lg:mx-10`;
 const allPodcastHeader = `text-3xl text-neutral-300/90 font-semibold pt-10 text-center md:text-start `;
-const podcastContainer = `grid grid-cols-1 justify-items-center md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1 gap-y-10 pb-40 `;
 
 interface FeedPageProps {
   yourShows: Podcast[];
@@ -46,16 +45,6 @@ const FeedPage: FC<FeedPageProps> = ({ yourShows }) => {
     _setLoadingPage(false)
   }, [])
 
-  const Podcasts: FC<{ shows: Podcast[] }> = ({ shows }) => {
-    return (
-      <div className={podcastContainer} id="3x">
-        {shows.map((podcast: Podcast, index: number) =>
-          <FeaturedPodcast {...podcast} key={index} />
-        )}
-      </div>
-    )
-  }
-
   return (
     <>
       <Suspense fallback={<div></div>}>
@@ -64,7 +53,7 @@ const FeedPage: FC<FeedPageProps> = ({ yourShows }) => {
           <h2 className={allPodcastHeader}>{t("feed-page.allpodcasts")}</h2>
             <ViewDropDown />
         </div>
-        {shows.length !== 0 && <Podcasts shows={shows} />}
+        {shows.length !== 0 && <PodcastGrid podcasts={shows} />}
       </Suspense>
     </>
   );

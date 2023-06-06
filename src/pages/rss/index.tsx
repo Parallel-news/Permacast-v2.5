@@ -6,13 +6,17 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useRecoilState } from "recoil";
 import { Transition } from "@headlessui/react";
-import { loadingPage, allPodcasts } from "../../atoms";
-import { Podcast, rssEpisode } from "../../interfaces";
-import { getContractVariables } from "../../utils/contract";
-import { convertLinktoBase64, isValidUrl } from "../../utils/reusables";
-import { ARSEED_URL, ERROR_TOAST_TIME, EXM_READ_LINK, NO_SHOW, PERMA_TOAST_SETTINGS, RSS_IMPORT_LINK, RSS_META_LINK, SPINNER_COLOR, TOAST_DARK } from "../../constants";
-import { Icon } from "../../component/icon";
-import { PermaSpinner } from "../../component/reusables";
+
+import { loadingPage } from "@/atoms/index";
+import { Podcast } from "@/interfaces/index";
+import { rssEpisode } from "@/interfaces/rss";
+import { getContractVariables } from "@/utils/contract";
+import { convertLinktoBase64, isValidUrl } from "@/utils/reusables";
+import { ARSEED_URL, ERROR_TOAST_TIME, EXM_READ_LINK, NO_SHOW, PERMA_TOAST_SETTINGS, RSS_IMPORT_LINK, RSS_META_LINK, SPINNER_COLOR, TOAST_DARK } from "@/constants/index";
+
+import { Icon } from "@/component/icon";
+import { PermaSpinner } from "@/component/reusables";
+import { getPodcastData } from "@/features/prefetching";
 
 const RssSubmit = React.lazy(() => import("../../component/reusables/RssSubmit").then(module => ({ default: module.default })));
 const ImportedEpisodes = React.lazy(() => import("../../component/uploadShow/importedEpisodes").then(module => ({ default: module.ImportedEpisodes })));
@@ -35,12 +39,12 @@ export default function rss({yourShows}) {
     const [podcastFormSubmitted, setPodcastFormSubmitted] = useState<boolean>(false)
     const [rssFeed, setRssFeed] = useState<rssEpisode[]>([]);
     const [newPodcasts, setNewPodcasts] = useState<Podcast[]>([])
+    const queryPodcastData = getPodcastData();
     // temp
     const [index, setIndex] = useState<number>(0);
     const [pid, setPid] = useState<string>("")
     const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
 
-    const [allPodcastsState, setAllPodcastsState] = useRecoilState<Podcast[]>(allPodcasts);
 
     const [coverUrl, setCoverUrl] = useState<string>('');
 
@@ -52,7 +56,8 @@ export default function rss({yourShows}) {
 
     useEffect(() => {
         if (pid) {
-            const cover = allPodcastsState.find(show => show.pid === pid)?.cover;
+            const podcasts = queryPodcastData?.data?.podcasts || [];
+            const cover = podcasts.find((podcast: Podcast) => podcast.pid === pid)?.cover;
             if (cover) {
                 console.log("cover: ", cover)
                 setCoverUrl(ARSEED_URL + cover);

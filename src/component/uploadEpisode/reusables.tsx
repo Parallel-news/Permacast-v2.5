@@ -1,14 +1,16 @@
-import { useTranslation } from 'next-i18next';
-import { Podcast } from '../../interfaces';
-import { useArconnect } from 'react-arconnect';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { ARSEED_URL, FADE_IN_STYLE, FADE_OUT_STYLE } from '../../constants';
-import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
-import { useRecoilState } from 'recoil';
-import { arweaveAddress } from '../../atoms';
 import Image from 'next/image';
+import { useTranslation } from 'next-i18next';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useArconnect } from 'react-arconnect';
 import { FiFile } from 'react-icons/fi';
-import { Icon } from '../icon';
+
+import { Podcast } from '@/interfaces/index';
+
+import { ARSEED_URL, FADE_IN_STYLE, FADE_OUT_STYLE } from '@/constants/index';
+import { APP_LOGO, APP_NAME, PERMISSIONS } from '@/constants/arconnect';
+
+import { Icon } from '@/component/icon';
+
 interface EpisodeMediaInter {
     media: File | null;
     setMedia: (v: any) => void;
@@ -211,8 +213,8 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
     const { t } = useTranslation();
 
     const [showModal, setShowModal] = useState<boolean>(false)
-    const [_arweaveAddress, _setArweaveAddress] = useRecoilState(arweaveAddress)
-    const { arconnectConnect } = useArconnect();
+
+    const { walletConnected, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
 
     useEffect(() => {
@@ -249,7 +251,7 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
                         />
                     ))}
                     {props.shows.length === 0 && <p className="text-white text-lg text-center">{t("uploadepisode.no-shows")}</p>}
-                    {_arweaveAddress.length === 0 && <p className="text-blue-400 mt-2 text-lg text-center cursor-pointer" onClick={connect}>{t("uploadshow.connect-wallet")}</p>}
+                    {walletConnected ? <p className="text-blue-400 mt-2 text-lg text-center cursor-pointer" onClick={connect}>{t("uploadshow.connect-wallet")}</p>: ""}
                 </div>
             </div>
         </div>

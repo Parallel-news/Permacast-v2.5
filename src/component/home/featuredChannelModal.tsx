@@ -5,10 +5,10 @@ import { defaultSignatureParams, useArconnect } from "react-arconnect";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import { useRecoilState } from "recoil";
-import { allPodcasts, arweaveAddress, everPayBalance } from "../../atoms";
+import { everPayBalance } from "@/atoms/index";
 import { ERROR_TOAST_TIME, EVERPAY_AR_TAG, EVERPAY_FEATURE_TREASURY, FADE_IN_STYLE, FADE_OUT_STYLE, FEATURE_COST_BASE, FEATURE_COST_PER_DAY, PERMA_TOAST_SETTINGS, SPINNER_COLOR, USER_SIG_MESSAGES } from "../../constants";
 import { APP_NAME, PERMISSIONS } from "../../constants/arconnect";
-import { Podcast } from "../../interfaces";
+import { Podcast } from "@/interfaces/index";
 import { fetchARPriceInUSD } from "../../utils/redstone";
 import DateSelector from "../dateSelector";
 import { PermaSpinner } from "../reusables/PermaSpinner";
@@ -63,9 +63,8 @@ const FeaturedChannelModal: FC<TipModalInter> = ({isVisible, setIsVisible}) => {
 
   const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
   const [_everPayBalance, _setEverPayBalance] = useRecoilState(everPayBalance)
-  const [allPodcasts_, setAllPodcasts_] = useRecoilState(allPodcasts);
-  const [_arweaveAddress, _setArweaveAddress] = useRecoilState(arweaveAddress);
-  const yourShows: Podcast[] = allPodcasts_.filter((item: Podcast) => item.owner === address);
+
+  const yourShows: Podcast[] = []
 
   const [pid, setPid] = useState<string>("")
 
