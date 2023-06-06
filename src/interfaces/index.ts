@@ -1,62 +1,67 @@
 export type arweaveAddress = string;
+// view exm state to see the signature message
 export type signature = string;
 export type URL = string;
 export type chainName = string;
 export type chainTicker = string;
 export type tx = string;
 export type arweaveTX = string;
+export type arseedTX = string;
 export type everpayTX = string;
 export type availableWallets = "arconnect" | "metamask";
+export type contractType = "primaryEXMContract" | "featuredChannelsContract" | "collectionsContract" | "PASOMContract";
 
 export interface EXMState {
-  podcasts:              Podcast[];
-  admins:                string[];
-  isPaused:              boolean;
-  user_sig_messages:     signature[];
-  admin_sig_messages:    signature[];
-  stores:                string[];
+  podcasts: Podcast[];
+  admins: string[];
+  isPaused: boolean;
+  user_sig_messages: signature[];
+  admin_sig_messages: signature[];
+  stores: string[];
   fees_handler_endpoint: URL;
-  fees_networks:         chainName[];
-  supported_tokens:      chainTicker[];
-  ar_molecule_endpoint:  URL;
-  paid_fees:             tx[];
-  signatures:            signature[];
-}
+  fees_networks: chainName[];
+  supported_tokens: chainTicker[];
+  ar_molecule_endpoint: URL;
+  paid_fees: tx[];
+  signatures: signature[];
+};
 
 export interface Podcast {
-  pid:         string;
-  label:       string;
+  pid: string;
+  label: string;
   contentType: string;
-  createdAt:   number;
-  owner:       string;
+  createdAt: number;
+  owner: string;
   podcastName: string;
-  author:      string;
-  email:       string;
+  author: string;
+  email: string;
   description: arweaveTX; // markdown file tx on arseeding
-  language:    string;
-  explicit:    string;
-  categories:  string[];
+  language: string;
+  explicit: string;
+  categories: string[];
   maintainers: string[];
-  cover:       arweaveTX;
-  isVisible:   boolean;
-  episodes:    Episode[];
+  cover: arweaveTX;
+  isVisible: boolean;
+  episodes: Episode[];
   minifiedCover: arweaveTX;
-}
+};
+
+export type PodcastMinimal = Omit<Podcast, 'episodes'>;
 
 export interface Episode {
-  eid:         string;
+  eid: string;
   episodeName: string;
   description: arweaveTX; // markdown file tx on arseeding
-  contentTx:   arweaveTX;
-  size:        number;
-  type:        string;
-  uploader:    string;
-  uploadedAt:  number;
-  isVisible?:  boolean;
-  order?:      number; // UI only
-  thumbnail?:  string | null;
-  minted?:        boolean;
-}
+  contentTx: arweaveTX;
+  size: number;
+  type: string;
+  uploader: string;
+  uploadedAt: number;
+  isVisible?: boolean;
+  order?: number; // UI only
+  thumbnail?: string | null;
+  minted?: boolean;
+};
 
 export interface FullEpisodeInfo {
   episode: Episode,
@@ -66,58 +71,33 @@ export interface FullEpisodeInfo {
 export interface Ans {
   ANSuserExists?: boolean; // only on UI
   userIsAddress?: boolean; // only on UI
-  user:           string;
-  currentLabel:   string;
-  ownedLabels:    OwnedLabel[];
-  nickname:       string;
-  address_color:  string;
-  bio:            string;
-  avatar:         string;
-  links:          Links;
-  subdomains:     any;
+  user: string;
+  currentLabel: string;
+  ownedLabels: OwnedLabel[];
+  nickname: string;
+  address_color: string;
+  bio: string;
+  avatar: string;
+  links: Links;
+  subdomains: any;
   freeSubdomains: number;
-}
+};
 
 export interface Links {
-  github?:    string;
-  twitter?:   string;
+  github?: string;
+  twitter?: string;
   customUrl?: string;
   instagram?: string;
-}
+};
 
 export interface OwnedLabel {
-  label:            string;
-  scarcity:         string;
+  label: string;
+  scarcity: string;
   acquisationBlock: number;
-  mintedFor:        number;
-}
+  mintedFor: number;
+};
 
 export interface ANSMapped {
   address: string,
   primary: string
 };
-
-export interface FeaturedChannel {
-  pid: string,
-  payment_txid: everpayTX,
-  paid_by: arweaveAddress,
-  start: number,
-  expiry: number
-};
-
-export interface rssEpisode {
-  description: string;
-  duration: string;
-  length: string;
-  fileType: string;
-  isExplicit: "yes" | "no" | string;
-  link: string;
-  pubDate: string;
-  title: string;
-  // UI only
-  order?: number;
-};
-
-export interface rssEpisodeRetry extends rssEpisode {
-  file?: ArrayBuffer;
-}
