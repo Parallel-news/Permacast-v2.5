@@ -18,15 +18,27 @@ const Searchbar = () => {
   const [inputFocused, setInputFocused] = useState(false);
   const [debounceTimeout, setDebounceTimeout] = useState(null);
 
+  const isSearchPage = router.pathname === "/search";
+  const debounceTimer = isSearchPage ? 75 : 200;
+
   const handleInput = (newInput: string) => {
     setSearchInput(newInput);
     if (debounceTimeout) clearTimeout(debounceTimeout);
+
     const newTimeout = setTimeout(() => {
+      let updatedQuery = { };
+
       // Update the query object with the new search term
-      const updatedQuery = { ...router.query, query: newInput };
-  
+      // Check if the current pathname is "/search" and if the query object already exists
+      if (router.pathname === "/search" && router.query.query) {
+        updatedQuery = { ...router.query, query: newInput };
+      } else {
+        updatedQuery = { query: newInput };
+      };
+
       // Check if the current search query is different from the new search query
       if (router.query.query !== newInput) {
+
         router.push(
           {
             pathname: "/search",
@@ -36,7 +48,7 @@ const Searchbar = () => {
           { shallow: true }
         );
       }
-    }, 250);
+    }, debounceTimer);
 
     setDebounceTimeout(newTimeout);
   };
