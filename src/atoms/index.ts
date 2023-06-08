@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { CURRENT_EPISODE_TEMPLATE, CURRENT_PODCAST_TEMPLATE, DEFAULT_BACKGROUND_COLOR, DEFAULT_PODCAST_COLOR, DEFAULT_THEME_COLOR } from '../constants/ui';
+import { EPISODE_TEMPLATE, PODCAST_TEMPLATE, DEFAULT_BACKGROUND_COLOR, DEFAULT_PODCAST_COLOR, DEFAULT_THEME_COLOR } from '../constants/ui';
 import { ANSMapped, Ans, Episode, FullEpisodeInfo, Podcast, availableWallets } from '../interfaces';
 import { RGBorRGBAstring } from '../interfaces/ui';
 import { PASoMProfile } from '../interfaces/pasom';
@@ -106,12 +106,12 @@ export const queueAtom = atom<FullEpisodeInfo[]>({
 
 export const currentPodcastAtom = atom<Podcast>({
     key: 'currentPodcastAtom',
-    default: CURRENT_PODCAST_TEMPLATE
+    default: PODCAST_TEMPLATE
 });
 
 export const currentEpisodeAtom = atom<Episode>({
     key: "currentEpisodeAtom",
-    default: CURRENT_EPISODE_TEMPLATE,
+    default: EPISODE_TEMPLATE,
 });
 
 export const queueHistory = atom({

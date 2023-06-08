@@ -1,13 +1,23 @@
+import { useRouter } from 'next/router';
 import { createContext, useContext, useEffect, useRef } from 'react';
 import { useRecoilCallback, useRecoilState } from 'recoil';
-import { currentEpisodeAtom, currentPodcastAtom, isFullscreenAtom, isPlayingAtom, isQueueVisibleAtom, queueAtom } from '../atoms';
-import { getColorSchemeShorthand, showEmptyShikwasaPlayer, showShikwasaPlayer } from '../utils/ui';
-import { showShikwasaPlayerArguments } from '../interfaces/playback';
-import { Episode, FullEpisodeInfo, Podcast } from '../interfaces';
 
-import Player from '../shikwasa-src/player';
-import { useRouter } from 'next/router';
-import { CURRENT_EPISODE_TEMPLATE, CURRENT_PODCAST_TEMPLATE } from '../constants/ui';
+import {
+  currentEpisodeAtom,
+  currentPodcastAtom,
+  isFullscreenAtom,
+  isPlayingAtom,
+  isQueueVisibleAtom,
+  queueAtom
+} from '@/atoms/index';
+import { EPISODE_TEMPLATE, PODCAST_TEMPLATE } from '@/constants/ui';
+
+import { showShikwasaPlayerArguments } from '@/interfaces/playback';
+import { Episode, FullEpisodeInfo, Podcast } from '@/interfaces/index';
+
+import { getColorSchemeShorthand, showEmptyShikwasaPlayer, showShikwasaPlayer } from '@/utils/ui';
+
+import Player from '@/shikwasa-src/player';
 
 export type playerInterface = Player | null | any;
 
@@ -49,7 +59,7 @@ export function useShikwasa(): Partial<ShikwasaContextInterface> {
   if (useShikwasaContext === null) {
     throw new Error(
       'useShikwasa() can only be used inside of <ShikwasaProvider />, ' +
-        'please declare it at a higher level.'
+      'please declare it at a higher level.'
     );
   }
 
@@ -100,8 +110,8 @@ export const ShikwasaProvider = ({ children }) => {
       launchPlayer(args, podcast, newQueue);
     } else {
       set(queueAtom, () => []);
-      setCurrentEpisode(CURRENT_EPISODE_TEMPLATE);
-      setCurrentPodcast(CURRENT_PODCAST_TEMPLATE);
+      setCurrentEpisode(EPISODE_TEMPLATE);
+      setCurrentPodcast(PODCAST_TEMPLATE);
       setIsFullscreen(false);
       const emptyPlayer = showEmptyShikwasaPlayer();
       mountPlayerWithListeners(emptyPlayer);
@@ -146,9 +156,9 @@ export const ShikwasaProvider = ({ children }) => {
 
     // add event listeners
     shikwasaPlayerInstance?.audio?.addEventListener('ended', onPlaybackEndCallback);
-    queueBtn?.addEventListener('click', (event) => {event.stopPropagation(); setQueueVisible(visible => !visible)});
-    playingBtn?.addEventListener('click', (event) => {event.stopPropagation(); setIsPlaying(playing => !playing)});
-    fullscreenBtn?.addEventListener('click', (event) => {event.stopPropagation(); setIsFullscreen(isFullscreen => !isFullscreen)});
+    queueBtn?.addEventListener('click', (event) => { event.stopPropagation(); setQueueVisible(visible => !visible) });
+    playingBtn?.addEventListener('click', (event) => { event.stopPropagation(); setIsPlaying(playing => !playing) });
+    fullscreenBtn?.addEventListener('click', (event) => { event.stopPropagation(); setIsFullscreen(isFullscreen => !isFullscreen) });
     console.log('mounted successfully');
   };
 

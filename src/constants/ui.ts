@@ -1,4 +1,4 @@
-import { Ans, Episode, Podcast } from "../interfaces";
+import { Ans, Episode, Podcast } from "@/interfaces/index";
 
 export const DEFAULT_BACKGROUND_COLOR = `rgb(16, 16, 18)`;
 export const DEFAULT_PODCAST_COLOR = `rgb(0, 0, 0)`;
@@ -14,10 +14,11 @@ export const ANS_TEMPLATE: Ans = {
   ownedLabels: [],
   links: {},
   subdomains: [],
-  freeSubdomains: 0
+  freeSubdomains: 0,
+  PASOM: null
 };
 
-export const CURRENT_PODCAST_TEMPLATE: Podcast = {
+export const PODCAST_TEMPLATE: Podcast = {
   pid: '',
   label: '',
   contentType: '',
@@ -37,7 +38,7 @@ export const CURRENT_PODCAST_TEMPLATE: Podcast = {
   minifiedCover: '',
 };
 
-export const CURRENT_EPISODE_TEMPLATE: Episode = {
+export const EPISODE_TEMPLATE: Episode = {
   eid: '',
   episodeName: '',
   description: '',
