@@ -1,7 +1,7 @@
-import { Podcast } from "../../interfaces";
+import { Podcast } from "@/interfaces/index";
 import FeaturedPodcast from "./featuredPodcast";
 
-const podcastContainer = `grid grid-cols-1 justify-items-center md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1 gap-y-10 pb-40 `;
+const podcastContainer = `grid grid-cols-1 justify-items-center md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1 gap-y-8 `;
 
 interface PodcastsGridProps {
   podcasts: Podcast[];
