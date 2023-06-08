@@ -162,7 +162,7 @@ export const startId = "#start"
 // Initial Load
 export const TITLE_WAIT = 100
 export const LOGO_WAIT = 700
-export const FADE_WAIT = 2500
+export const FADE_WAIT = 1900
 
 // LIMITS
 export const MAX_DOWNLOAD_FILE_SIZE = GIGABYTE / 4; // 256MB

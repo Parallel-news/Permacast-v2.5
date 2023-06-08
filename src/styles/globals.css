@@ -9,12 +9,20 @@ html, body {
 
 @layer components {
 
+  .ArConnectButtonStyling {
+    @apply h-12 btn-base-color items-center flex justify-center text-sm md:text-base normal-case default-no-outline-ringed default-animation hover:text-white focus:text-white disabled:text-zinc-400 disabled:bg-zinc-700 disabled:cursor-auto;
+  }
+
   .flexCol {
     @apply flex flex-col;
   }
 
   .flexColCenter {
     @apply flexCol items-center;
+  }
+
+  .flexColFullCenter {
+    @apply flexCol justify-center items-center;
   }
 
   .flexCenter {
@@ -35,6 +43,10 @@ html, body {
 
   .flexFullCenterGap {
     @apply flex w-full items-center gap-x-2;
+  }
+
+  .whFull {
+    @apply w-full h-full;
   }
 
   .input-styling {

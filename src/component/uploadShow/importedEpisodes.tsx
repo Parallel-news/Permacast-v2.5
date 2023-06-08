@@ -81,7 +81,7 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 
 // Rube Goldberg would be proud
-export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect }) => {
+const ImportedEpisodes = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect }: ImportedEpisodesProps) => {
 
   // hooks
   const { t } = useTranslation();
@@ -656,7 +656,7 @@ export const ImportedEpisodes: FC<ImportedEpisodesProps> = ({ pid, RSSLink, rssE
   );
 };
 
-
+export default ImportedEpisodes;
 /*
 const startEpisodesRetryUpload = async () => {
   // Check Wallet Connection

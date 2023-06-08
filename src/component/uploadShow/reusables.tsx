@@ -68,20 +68,20 @@ type Area = {
     y: number;
 }
 
-const emptyCoverIconTextStyling = "text-lg tracking-wider pt-2 text-zinc-400"
+const emptyCoverIconTextStyling = "text-lg tracking-wider pt-2 text-zinc-inherit "
 export const cropScreenDivStyling = "relative w-[800px] h-[400px] rounded-[6px] overflow-hidden"
 const epNameStyling = "input input-secondary w-full py-3 pl-5 pr-10 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
 const coverContainerInputStyling = "opacity-0 z-index-[-1] absolute pointer-events-none"
 export const cropScreenStyling = "absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center backdrop-blur-md z-50"
 export const cropSelectionDivStyling = "min-w-[50px] min-h-[10px] rounded-[4px] bg-black/10 hover:bg-black/20 border-[1px] border-solid border-white/10 m-2 p-1 px-2 cursor-pointer flex flex-col justify-center items-center"
 export const cropSelectionTextStyling = "flex flex-col justify-center items-center text-white/60"
-const emptyCoverIconStyling = "input input-secondary flex flex-col items-center justify-center cursor-pointer bg-zinc-800 h-48 w-48 rounded-[20px] outline-none focus:ring-2 focus:ring-inset focus:ring-white hover:bg-zinc-600"
+const emptyCoverIconStyling = " flex flex-col items-center justify-center cursor-pointer h-48 w-48 outline-none focus:ring-2 focus:ring-inset focus:ring-white rounded-[20px] bg-zinc-800 hover:bg-zinc-700 default-animation hover:text-white text-zinc-400 "
 const selectDropdownStyling = "select select-secondary w-[30%] py-2 px-5 text-base font-normal input-styling bg-zinc-800 default-animation "
 const selectDropdownRowStyling = "flex flex-col sm:flex-row w-full justify-between space-y-2 sm:space-y-0"
-const coverContainerLabelStyling = "cursor-pointer transition duration-300 ease-in-out text-zinc-600 hover:text-white flex md:block h-fit w-48"
+const coverContainerLabelStyling = "cursor-pointer default-animation flex md:block h-fit w-48"
 const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
 const explicitTextStyling = "label-text cursor-pointer text-zinc-400 font-semibold"
-const photoIconStyling = "h-11 w-11 text-zinc-400"
+const photoIconStyling = "h-11 w-11 text-inherit "
 const explicitLabelStyling = "flex items-center"
 const imgStyling = "h-48 w-48 text-slate-400 rounded-[20px]"
 const explicitCheckBoxStyling = "checkbox checkbox-primary mr-2 border-2 border-zinc-600"
@@ -202,7 +202,7 @@ export const EmptyCover = () => {
     return (
         <div className={emptyCoverIconStyling}>
             {/*Image Logo*/}
-            <Icon className={photoIconStyling} icon="PHOTO"/>
+            <Icon className={photoIconStyling} icon="PHOTO" />
             {/*Cover Image Text*/}
             <div className={emptyCoverIconTextStyling}>
                 {t("uploadshow.image")}
@@ -374,9 +374,9 @@ export const LabelInput = (props: LabelInputInter) => {
                                 console.log(e.target.value.trim())
                             }
                         }} />
-                    <div                 
+                    <div
                         data-tooltip-content={t("uploadshow.label-explanation")}
-                        data-tooltip-id="labelExplainTip" 
+                        data-tooltip-id="labelExplainTip"
                     >
                         <a href={`https://${props.labelValue}.pc.show`}>{props.labelValue}.pc.show</a>
                         <div className="helper-tooltip">?</div>

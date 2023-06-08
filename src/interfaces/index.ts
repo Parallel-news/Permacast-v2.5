@@ -1,3 +1,5 @@
+import { PASoMProfile } from "./pasom";
+
 export type arweaveAddress = string;
 // view exm state to see the signature message
 export type signature = string;
@@ -81,6 +83,7 @@ export interface Ans {
   links: Links;
   subdomains: any;
   freeSubdomains: number;
+  PASOM?: PASoMProfile;
 };
 
 export interface Links {

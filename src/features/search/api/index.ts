@@ -62,6 +62,8 @@ export const searchQueryPodcasts = (query: string, start: number, limit: number,
   if (!podcasts) return { foundPodcasts: [], foundPodcastsEpisodes: [] };
 
   const podcastOptions = {
+    minMatchCharLength: 0.1,
+    threshold: 0.2,
     keys: ["podcastName"]
   };
   
@@ -75,7 +77,7 @@ export const searchQueryPodcasts = (query: string, start: number, limit: number,
   // );
 
   const totalPodcasts: number = podcastResult?.length || 0;
-  console.log(totalPodcasts)
+  // console.log(totalPodcasts)
   // const foundEpisodes = episodes.sort((episodeA, episodeB) => episodeB.episode.uploadedAt - episodeA.episode.uploadedAt).splice(0, 3);
   // const sortedPodcasts: Podcast[] = podcasts.filter((podcast: Podcast) => podcast.episodes.length > 0 && !podcast.podcastName.includes("Dick")).splice(0, 6);
 

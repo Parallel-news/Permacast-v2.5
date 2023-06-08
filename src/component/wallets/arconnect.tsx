@@ -4,21 +4,19 @@ import { useTranslation } from 'next-i18next';
 import { FC, useEffect } from 'react';
 import { useArconnect, shortenAddress } from 'react-arconnect';
 import { useRecoilState } from 'recoil';
-import { PASoMProfileAtom, loadingPage, walletNotDetectedModalVisibilityAtom } from '../../atoms';
-import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
+import { PASoMProfileAtom, loadingPage, walletNotDetectedModalVisibilityAtom } from '@/atoms/index';
+import { APP_LOGO, APP_NAME, PERMISSIONS } from '@/constants/arconnect';
 import { ProfileImage } from '../creator/reusables';
-import { ANS_TEMPLATE } from '../../constants/ui';
-import { EverPayBalance } from '../../utils/everpay/EverPayBalance';
-import { PASoMProfile } from '../../interfaces/pasom';
-import { ARSEED_URL } from '../../constants';
+import { ANS_TEMPLATE } from '@/constants/ui';
+import { EverPayBalance } from '@/utils/everpay/EverPayBalance';
+import { PASoMProfile } from '@/interfaces/pasom';
+import { ARSEED_URL } from '@/constants/index';
 import {
   Dropdown,
   ExtendedDropdownButtonProps,
   openMenuButtonClass as prevButtonClass
 } from '../reusables';
 import { Icon } from '../icon';
-
-export const ArConnectButtonStyling = `h-12 btn-base-color items-center flex px-3 justify-center text-sm md:text-base normal-case default-no-outline-ringed default-animation hover:text-white focus:text-white disabled:text-zinc-400 disabled:bg-zinc-700 disabled:cursor-auto `;
 
 export const ConnectArconnect: FC<{ className: string }> = ({ className }) => {
   const { t } = useTranslation();
@@ -142,7 +140,7 @@ const ArConnect: FC = () => {
   return (
     <>
       {walletConnected && <UserDropdown />}
-      {!walletConnected && <ConnectArconnect className={ArConnectButtonStyling + `w-full mx-auto `} />}
+      {!walletConnected && <ConnectArconnect className={`ArConnectButtonStyling w-full mx-auto `} />}
     </>
   );
 };

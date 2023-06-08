@@ -15,7 +15,7 @@ export default function MintedNotification({thumbnail, primaryMsg, secondaryMsg}
     }, []);
     // Leave
     useEffect(() => {
-        const timer = setTimeout(() => setShowNotif(false), FADE_WAIT+1500);
+        const timer = setTimeout(() => setShowNotif(false), FADE_WAIT+1250);
         return () => clearTimeout(timer);
     }, [])
 //max-w-[300px]

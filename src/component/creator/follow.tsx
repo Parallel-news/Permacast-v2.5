@@ -3,7 +3,6 @@ import { useTranslation } from 'next-i18next';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import ThemedButton, { themedButtonIconStyling } from '../reusables/themedButton';
-import { flexCenterGap } from './featuredCreators';
 import { PASOM_SIG_MESSAGES, SPINNER_COLOR } from '../../constants';
 import { follow, unfollow } from '../../interfaces/pasom';
 import { PermaSpinner } from '../reusables/PermaSpinner';
@@ -50,8 +49,8 @@ export const FollowButton: FC<FollowButtonProps> = ({ user, walletConnected, isF
     }
   };
 
-  const FollowText: FC = () => (
-    <div className={flexCenterGap}>
+  const FollowText = () => (
+    <div className={`flexCenterGap`}>
       {loading ? <PermaSpinner
         spinnerColor={SPINNER_COLOR}
         size={1}
@@ -61,8 +60,8 @@ export const FollowButton: FC<FollowButtonProps> = ({ user, walletConnected, isF
     </div>
   );
 
-  const UnfollowText: FC = () => (
-    <div className={flexCenterGap}>
+  const UnfollowText = () => (
+    <div className={`flexCenterGap`}>
       {loading ? <PermaSpinner
         spinnerColor={SPINNER_COLOR}
         size={1}

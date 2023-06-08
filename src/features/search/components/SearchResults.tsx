@@ -17,6 +17,7 @@ import Loading from '@/component/reusables/loading';
 
 import { getPodcastData } from '@/features/prefetching';
 import searchQuery from '../api';
+import ViewDropDown from '@/component/viewDropDown';
 
 const searchContainerStyling = "text-white h-full pb-80"
 const resultsStyling = "text-2xl text-white font-bold mb-6"
@@ -77,7 +78,7 @@ export default function SearchResults({ query }: SearchResultsProps) {
         state?.podcasts || []
       );
       const maxPodcastPages = Math.floor((result?.totalPodcasts || MAX_ITEMS_PER_PAGE * 2) / MAX_ITEMS_PER_PAGE) - 1;
-      setMaxPages(maxPodcastPages);
+      setMaxPages(maxPodcastPages > 0 ? maxPodcastPages : 1);
       return result;
     }
   });
@@ -87,21 +88,13 @@ export default function SearchResults({ query }: SearchResultsProps) {
   const PodcastsSearchResults = () => (
     <div>
       {searchQueryIsLoading && (
-        <Loading className="w-full h-[40px] " />
+        <></>
       )}
       {searchQueryIsError && (
         <div>{t("search.error")}</div>
       )}
       {finishedSearching && (
         <>
-          <div className={resultsStyling}>{t("search.podcasts")}</div>
-          <PodcastGrid podcasts={[...searchQueryData.foundPodcasts || []]} />
-          <Pagination
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            totalPages={maxPages}
-            limitPagination={4}
-          />
         </>
       )}
     </div>
@@ -125,7 +118,22 @@ export default function SearchResults({ query }: SearchResultsProps) {
       ): (
         <div>
           {!searchInput.length && <div className={startTypingStyling}>{t("search.starttyping")}</div>}
-          {searchInput.length > 0 && <PodcastsSearchResults />}
+          {searchInput.length > 0 && (
+            <>
+              <div className={resultsStyling}>{t("search.podcasts")}</div>
+              {/* <ViewDropDown /> */}
+              <PodcastsSearchResults />
+              <PodcastGrid podcasts={[...(searchQueryData?.foundPodcasts || [])]} />
+              {/* <PodcastGrid podcasts={[...searchQueryData.foundPodcasts || []]} /> */}
+              <div className="my-8"></div>
+              <Pagination
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                totalPages={maxPages}
+                limitPagination={3}
+              />
+            </>
+          )}
         </div>
       )}
     </div>

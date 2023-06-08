@@ -1,29 +1,30 @@
 import axios from 'axios';
-import Head from 'next/head';
 import { NextPage } from 'next';
-import { useRecoilState } from 'recoil';
-import { shortenAddress } from 'react-arconnect';
-import { ANS_TEMPLATE } from '../../../constants/ui';
-import { ARWEAVE_READ_LINK } from '../../../constants';
-import Loading from '../../../component/creator/loading';
-import { PASoMProfile } from '../../../interfaces/pasom';
-import React, { useState, useEffect, Suspense } from 'react';
-import { hexToRGB, RGBobjectToString } from '../../../utils/ui';
-import { Creator404, sortByDate } from '../../../component/creator';
-import { loadingPage, podcastColorAtom } from '../../../atoms';
+import Head from 'next/head';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { Ans, Episode, FullEpisodeInfo, Podcast } from '../../../interfaces';
-import { getPodcastData } from '../../../features/prefetching';
+import React, { Suspense } from 'react';
+import { shortenAddress } from 'react-arconnect';
 
-const CreatorPageComponentLazy = React.lazy(() => import('../../../component/creator').then(module => ({ default: module.CreatorPageComponent })));
+import { ANS_TEMPLATE } from '@/constants/ui';
+import { ARWEAVE_READ_LINK, EXM_READ_LINK } from '@/constants/index';
+
+import { Ans } from '@/interfaces/index';
+import { PASoMProfile } from '@/interfaces/pasom';
+
+import { getContractVariables } from '@/utils/contract';
+
+const Loading = React.lazy(() => import('@/component/reusables/loading'));
+const Creator404 = React.lazy(() => import('@/component/creator').then((module) => ({ default: module.Creator404 })));
+const CreatorPageComponentLazy = React.lazy(() => import('@/component/creator').then(module => ({ default: module.CreatorPageComponent })));
 
 export async function getServerSideProps(context) {
   const { locale, params } = context;
   const { address } = params;
   let userInfo: Ans = ANS_TEMPLATE;
   userInfo.address_color = "#000000";
-  userInfo.user = address.length > 0 ? address : ''; 
+  userInfo.user = address.length > 0 ? address : '';
   const isAddress = address.length === 43;
+  const { PASOMContract } = getContractVariables();
 
   try {
     const lookupAddress = !isAddress && address.includes('.ar') ? address.split('.')[0] : address
@@ -31,11 +32,21 @@ export async function getServerSideProps(context) {
     if (info?.user) {
       userInfo = info;
       userInfo.ANSuserExists = true;
+      try {
+        const PASOMState = (await axios.get(EXM_READ_LINK + PASOMContract)).data;
+        const profiles: PASoMProfile[] = PASOMState.profiles;
+        const profile = profiles.find((profile: PASoMProfile) => profile.address === info.user);
+        userInfo.PASOM = profile || null;
+      } catch (e) {
+        console.log('profile error ', e);
+        userInfo.PASOM = null;
+      }
     } else {
       userInfo.nickname = address;
       userInfo.currentLabel = address;
-      userInfo.userIsAddress = isAddress ? true: false;
+      userInfo.userIsAddress = isAddress ? true : false;
       userInfo.ANSuserExists = false;
+      userInfo.PASOM = null;
     }
   } catch (error) {
     console.log(error);
@@ -53,86 +64,28 @@ export async function getServerSideProps(context) {
 
 const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
 
-  const { user, nickname, currentLabel, address_color, bio, avatar  } = userInfo;
-  const [PASoMProfile, setPASoMProfile] = useState<PASoMProfile | undefined>();
-  const creatorName = nickname || currentLabel || shortenAddress(user);
-  const [episodes, setEpisodes] = useState<FullEpisodeInfo[]>([]);
-  const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
-  const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
-  const [domLoaded, setDomLoaded] = useState(false)
-
-  const queryPodcastData = getPodcastData()
-
-  useEffect(() => {
-    if (!userInfo) return;
-    const color = RGBobjectToString(hexToRGB(address_color || "#000000"));
-    setPodcastColor(color);
-  }, [userInfo]);
-
-  useEffect(() => {
-    if (!userInfo) return;
-    const fetchPASoM = async () => {
-      const state = (await axios.get('/api/exm/PASoM/read')).data;
-      const profiles: PASoMProfile[] = state.profiles;
-      const profile = profiles.find((profile: PASoMProfile) => (profile.address === user));
-      setPASoMProfile(profile);
-    };
-    fetchPASoM();
-  }, [userInfo]);
-
-  useEffect(() => {
-    if (!userInfo) return;
-    if (queryPodcastData.isLoading) return;
-    const fetchUserData = async () => {
-      const userEpisodes = podcasts.map((podcast: Podcast) => 
-        podcast.episodes.map((episode: Episode) => ({episode, podcast}))
-      ).flat(1).splice(-3, 3);
-      const sortedEpisodes = sortByDate(userEpisodes)
-      setEpisodes(sortedEpisodes.slice().reverse());
-    };
-    fetchUserData();
-  }, [userInfo]);
-
-  useEffect(()=> {
-    setDomLoaded(true)
-    queryPodcastData.refetch()
-  }, [])
-
-  useEffect(() => {
-    const timer = setTimeout(() =>{_setLoadingPage(false);}, 1000);
-    return () => clearTimeout(timer);
-  }, [_loadingPage])
-
-  let podcasts: Podcast[] = [];
-  if(queryPodcastData.data) {
-    podcasts = queryPodcastData.data.podcasts.filter((podcast: Podcast) => podcast.owner === user)
-    podcasts = podcasts.reverse()
-  }
-
-  const creator = {
-    ...userInfo,
-    PASoMProfile,
-    podcasts,
-    episodes,
-  };
+  const { user, nickname, currentLabel, address_color, PASOM } = userInfo;
+  const avatar = PASOM?.avatar || userInfo.avatar || '';
+  const bio = PASOM?.bio || userInfo.bio || '';
+  const creatorName = (PASOM?.nickname || nickname) || currentLabel || shortenAddress(user);
 
   if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) {
     return (
       <>
         <Head>
-          <title>{`Creator Not Found`}</title> 
+          <title>{`Creator Not Found`}</title>
           <meta name="description" content={`Creator Not Found`} />
           <meta name="twitter:card" content="summary"></meta>
           <meta name="twitter:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
           <meta name="twitter:title" content={`Permacast Creator`} />
           <meta name="twitter:url" content={`https://permacast.app/`} />
           <meta name="twitter:description" content={`None`} />
-          
+
           <meta property="og:card" content="summary" />
           <meta property="og:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
           <meta property="og:title" content={`Permacast Creator`} />
           <meta property="og:url" content={`https://permacast.app/`} />
-          <meta property="og:description" content={`Creator Not Found`} /> 
+          <meta property="og:description" content={`Creator Not Found`} />
         </Head>
         <Creator404 address={userInfo?.user} />
       </>
@@ -141,29 +94,26 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
     return (
       <>
         <Head>
-          <title>{`${creatorName} | Creator`}</title> 
+          <title>{`${creatorName} | Creator`}</title>
           <meta name="description" content={`${bio}`} />
           <meta name="twitter:card" content="summary"></meta>
           <meta name="twitter:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
           <meta name="twitter:title" content={`${creatorName} | Permacast Creator`} />
           <meta name="twitter:url" content={`https://permacast.app/`} />
           <meta name="twitter:description" content={`${bio}`} />
-          
+
           <meta property="og:card" content="summary" />
-          <meta property="og:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
+          <meta property="og:image" content={(avatar !== "" || PASOM?.avatar) ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
           <meta property="og:title" content={`${creatorName} | Permacast Creator`} />
           <meta property="og:url" content={`https://permacast.app/`} />
-          <meta property="og:description" content={`${bio}`} /> 
+          <meta property="og:description" content={`${PASOM?.bio || bio}`} />
         </Head>
-        {domLoaded && (
-          <Suspense fallback={<Loading />}>
-            <CreatorPageComponentLazy {...{ creator }} />
-          </Suspense>
-        )}
+        <Suspense fallback={<Loading />}>
+          <CreatorPageComponentLazy {...{ creator: userInfo }} />
+        </Suspense>
       </>
     )
   }
 };
 
 export default Creator;
-     

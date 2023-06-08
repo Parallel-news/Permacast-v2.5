@@ -2,7 +2,7 @@ import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React from 'react';
 
-import SearchResults from '@/features/search';
+const SearchResults = React.lazy(() => import('@/features/search'));
 
 const Search: NextPage<{ query: string }> = ({ query }) => {
   return <SearchResults {...{ query }} />;
