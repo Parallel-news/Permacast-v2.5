@@ -8,19 +8,19 @@ import { ANS_TEMPLATE } from '@/constants/ui';
 import { Ans, Episode, FullEpisodeInfo, Podcast } from '@/interfaces/index';
 
 import { getPodcastData } from '@/features/prefetching';
-import { RGBobjectToString, stringToHexColor } from '@/utils/ui';
 import { hexToRGB } from '@/utils/reusables';
+import { RGBobjectToString, stringToHexColor } from '@/utils/ui';
 
+import { CreatorTipModal } from './reusables';
+import { FollowButton } from './follow';
 import FeaturedPodcastCarousel from '@/component/reusables/FeaturedPodcastCarousel';
+import TipButton from '@/component/reusables/tip';
+
 const CreatorNames = React.lazy(() => import('./reusables').then(module => ({ default: module.CreatorNames })))
-const CreatorTipModal = React.lazy(() => import('./reusables').then(module => ({ default: module.CreatorTipModal })))
 const EditButton = React.lazy(() => import('./edit').then(module => ({ default: module.EditButton })))
-// const FeaturedPodcastCarousel = React.lazy(() => import('@/component/reusables/FeaturedPodcastCarousel'))
-const FollowButton = React.lazy(() => import('./follow').then(module => ({ default: module.FollowButton })))
 const Followers = React.lazy(() => import('./reusables').then(module => ({ default: module.Followers })))
 const LatestEpisodes = React.lazy(() => import('./reusables').then(module => ({ default: module.LatestEpisodes })))
 const ProfileImage = React.lazy(() => import('./reusables').then(module => ({ default: module.ProfileImage })))
-const TipButton = React.lazy(() => import('@/component/reusables/tip'));
 const ViewANSButton = React.lazy(() => import('./reusables').then(module => ({ default: module.ViewANSButton })))
 
 /**
