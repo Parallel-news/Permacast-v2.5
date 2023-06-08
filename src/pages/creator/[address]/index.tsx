@@ -64,8 +64,10 @@ export async function getServerSideProps(context) {
 
 const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
 
-  const { user, nickname, currentLabel, address_color, bio, avatar } = userInfo;
-  const creatorName = nickname || currentLabel || shortenAddress(user);
+  const { user, nickname, currentLabel, address_color, PASOM } = userInfo;
+  const avatar = PASOM?.avatar || userInfo.avatar || '';
+  const bio = PASOM?.bio || userInfo.bio || '';
+  const creatorName = (PASOM?.nickname || nickname) || currentLabel || shortenAddress(user);
 
   if (!userInfo?.ANSuserExists && !userInfo?.userIsAddress) {
     return (
@@ -101,10 +103,10 @@ const Creator: NextPage<{ userInfo: Ans }> = ({ userInfo }) => {
           <meta name="twitter:description" content={`${bio}`} />
 
           <meta property="og:card" content="summary" />
-          <meta property="og:image" content={(avatar !== "") ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
+          <meta property="og:image" content={(avatar !== "" || PASOM?.avatar) ? ARWEAVE_READ_LINK + avatar : "https://permacast.app/favicon.png"} />
           <meta property="og:title" content={`${creatorName} | Permacast Creator`} />
           <meta property="og:url" content={`https://permacast.app/`} />
-          <meta property="og:description" content={`${bio}`} />
+          <meta property="og:description" content={`${PASOM?.bio || bio}`} />
         </Head>
         <Suspense fallback={<Loading />}>
           <CreatorPageComponentLazy {...{ creator: userInfo }} />
