@@ -4,16 +4,17 @@ import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { Tooltip } from 'react-tooltip'
 import toast from 'react-hot-toast';
-import { flexCenterGap } from './featuredCreators';
-import { Modal } from '../reusables';
-import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, GIGABYTE, PASOM_SIG_MESSAGES, PERMA_TOAST_SETTINGS, } from '../../constants';
-import { PASoMProfile, updateWalletMetadata } from '../../interfaces/pasom';
-import { ArConnectButtonStyling } from '../wallets/arconnect';
+
+import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, GIGABYTE, PASOM_SIG_MESSAGES, PERMA_TOAST_SETTINGS } from '@/constants/index';
+import { PASoMProfile, updateWalletMetadata } from '@/interfaces/pasom';
+
+import { UploadImageContainer } from '@/component/reusables/croppingTools';
+import { getBundleArFee, upload3DMedia } from "@/utils/arseeding";
+import { createFileFromBlobUrl, } from "@/utils/fileTools";
+import validatePASoMForm, { PASOM_BIO_MAX_LEN, PASOM_BIO_MIN_LEN, PASOM_NICKNAME_MAX_LEN, PASOM_NICKNAME_MIN_LEN } from '@/utils/validation/PASoM';
+
 import ThemedButton from '../reusables/themedButton';
-import { UploadImageContainer } from '../reusables/croppingTools';
-import { getBundleArFee, upload3DMedia } from "../../utils/arseeding";
-import { createFileFromBlobUrl, } from "../../utils/fileTools";
-import validatePASoMForm, { PASOM_BIO_MAX_LEN, PASOM_BIO_MIN_LEN, PASOM_NICKNAME_MAX_LEN, PASOM_NICKNAME_MIN_LEN } from '../../utils/validation/PASoM';
+import { Modal } from '../reusables';
 import { Icon } from '../icon';
 
 // 1. Interfaces
@@ -44,19 +45,18 @@ interface CreatorEditInfoProps {
 }
 
 // 2. Stylings
-const flexCol = `flex flex-col `;
-export const whFull = `w-full h-full `;
+
 export const CreatorUploadPhotoIconStyling = `h-8 w-8 text-inherit `;
 export const TransparentHidden = `absolute opacity-0 pointer-events-none `;
 export const InputFocusStyling = `focus:opacity-0 focus:z-20 `;
-export const CreatorModalHeaderStyling = flexCol + `gap-y-6 px-6 pt-4 `;
-export const CreatorModalFooterStyling = `flex items-center ` + `w-full justify-between `;
+export const CreatorModalHeaderStyling = `flexCol gap-y-6 px-6 pt-4 `;
+export const CreatorModalFooterStyling = `flexFullCenter w-full `;
 export const CreatorEditBannerInputStyling = TransparentHidden + InputFocusStyling + `top-12 left-40`;
 export const CreatorEditAvatarInputStyling = TransparentHidden + InputFocusStyling + `top-28 left-5 w-24 `;
-export const CreatorEditBannerLabelStyling = flexCol + `w-full h-32 bg-zinc-800 inset-0 border-dotted border-zinc-600 hover:border-white text-zinc-400 hover:text-white rounded-xl border-2 items-center justify-center default-no-outline-ringed inset default-animation focus:ring-white cursor-pointer `;
-export const CreatorEditAvatarLabelStyling = flexCol + ` rounded-full `  + `-mt-16 items-center justify-center mx-3 shrink-0 w-28 h-28 bg-zinc-900 text-zinc-400 focus:text-white hover:text-white default-animation absolute border-2 border-zinc-800 hover:border-white focus:border-white default-no-outline-ringed cursor-pointer `;
-export const CreatorEditAvatarPreviewImageStyling = whFull + `rounded-full ` + `max-h-[100px] max-w-[100px] `;
-export const CreatorEditAvatarPreviewBannerStyling = whFull + `rounded-xl `;
+export const CreatorEditBannerLabelStyling = `flexCol w-full h-32 bg-zinc-800 inset-0 border-dotted border-zinc-600 hover:border-white text-zinc-400 hover:text-white rounded-xl border-2 items-center justify-center default-no-outline-ringed inset default-animation focus:ring-white cursor-pointer `;
+export const CreatorEditAvatarLabelStyling = `flexCol rounded-full -mt-16 items-center justify-center mx-3 shrink-0 w-28 h-28 bg-zinc-900 text-zinc-400 focus:text-white hover:text-white default-animation absolute border-2 border-zinc-800 hover:border-white focus:border-white default-no-outline-ringed cursor-pointer `;
+export const CreatorEditAvatarPreviewImageStyling = `whFull rounded-full max-h-[100px] max-w-[100px] `;
+export const CreatorEditAvatarPreviewBannerStyling = `whFull rounded-xl `;
 
 // 3. Functions
 
@@ -67,19 +67,19 @@ export const ProfileInfo: FC<CreatorEditInfoProps> = ({ error, nickname, setNick
 
   const NicknameError = () => (
     <>
-      {t("creator.edit-modal.error.nickname", {minLength: PASOM_NICKNAME_MIN_LEN, maxLength: PASOM_NICKNAME_MAX_LEN})}
+      {t("creator.edit-modal.error.nickname", { minLength: PASOM_NICKNAME_MIN_LEN, maxLength: PASOM_NICKNAME_MAX_LEN })}
     </>
   );
 
   const BioError = () => (
     <>
-      {t("creator.edit-modal.error.bio", {minLength: PASOM_BIO_MIN_LEN, maxLength: PASOM_BIO_MAX_LEN})}
+      {t("creator.edit-modal.error.bio", { minLength: PASOM_BIO_MIN_LEN, maxLength: PASOM_BIO_MAX_LEN })}
     </>
   );
 
   return (
-    <div className={flexCenterGap}>
-      <div className={flexCol + `grow mt-2 `}>
+    <div className={`flexCenterGap`}>
+      <div className={`flexCol grow mt-2 `}>
         <div className="relative">
           <input
             value={nickname}
@@ -87,9 +87,9 @@ export const ProfileInfo: FC<CreatorEditInfoProps> = ({ error, nickname, setNick
             onChange={(e) => setNickname(e.target.value)}
             placeholder={t('creator.edit-modal.nickname')}
           />
-          <div 
-            className={`absolute top-3 right-2 default-animation ` + (error === "nickname" ? "opacity-100": "opacity-0 pointer-events-none")} 
-            data-tooltip-content={t("creator.edit-modal.error.nickname", {minLength: PASOM_NICKNAME_MIN_LEN, maxLength: PASOM_NICKNAME_MAX_LEN})}
+          <div
+            className={`absolute top-3 right-2 default-animation ` + (error === "nickname" ? "opacity-100" : "opacity-0 pointer-events-none")}
+            data-tooltip-content={t("creator.edit-modal.error.nickname", { minLength: PASOM_NICKNAME_MIN_LEN, maxLength: PASOM_NICKNAME_MAX_LEN })}
             data-tooltip-place="top"
             data-tooltip-id="my-tooltip1"
           >
@@ -104,9 +104,9 @@ export const ProfileInfo: FC<CreatorEditInfoProps> = ({ error, nickname, setNick
             className={`text-input-generic default-animation resize-none pl-4 pr-7 h-20 mt-4 pt-2 mr-0.5 `}
             placeholder={t('creator.edit-modal.bio')}
           ></textarea>
-          <div 
-            className={`absolute bottom-3 right-2 ` + (error === "bio" ? "opacity-100": "opacity-0 pointer-events-none")} 
-            data-tooltip-content={t("creator.edit-modal.error.bio", {minLength: PASOM_BIO_MIN_LEN, maxLength: PASOM_BIO_MAX_LEN})}
+          <div
+            className={`absolute bottom-3 right-2 ` + (error === "bio" ? "opacity-100" : "opacity-0 pointer-events-none")}
+            data-tooltip-content={t("creator.edit-modal.error.bio", { minLength: PASOM_BIO_MIN_LEN, maxLength: PASOM_BIO_MAX_LEN })}
             data-tooltip-place="top"
             data-tooltip-id="my-tooltip2"
           >
@@ -124,12 +124,12 @@ const ProfileImages: FC<ProfileImageProps> = ({ banner, avatar, setBanner, setAv
     <UploadImageContainer
       initialImage={banner}
       fileName="banner"
-      cropAspect={3/1}
+      cropAspect={3 / 1}
       setImage={setBanner}
       inputClassName={CreatorEditBannerInputStyling}
       labelClassName={CreatorEditBannerLabelStyling}
       previewImage={<img alt="banner" src={banner} className={CreatorEditAvatarPreviewBannerStyling} />}
-      placeholder={<Icon className={CreatorUploadPhotoIconStyling} icon="CAMERA"/>}
+      placeholder={<Icon className={CreatorUploadPhotoIconStyling} icon="CAMERA" />}
     />
     <UploadImageContainer
       initialImage={avatar}
@@ -139,7 +139,7 @@ const ProfileImages: FC<ProfileImageProps> = ({ banner, avatar, setBanner, setAv
       inputClassName={CreatorEditAvatarInputStyling}
       labelClassName={CreatorEditAvatarLabelStyling}
       previewImage={<img alt="avatar" src={avatar} className={CreatorEditAvatarPreviewImageStyling} />}
-      placeholder={<Icon className={CreatorUploadPhotoIconStyling} icon="CAMERA"/>}
+      placeholder={<Icon className={CreatorUploadPhotoIconStyling} icon="CAMERA" />}
     />
   </div>
 );
@@ -171,19 +171,19 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
   const [bannerSize, setBannerSize] = useState<number>(0);
   const [totalImageCost, setTotalImageCost] = useState<number>(0);
 
-  useEffect(() => {getBundleArFee(String(GIGABYTE)).then(setArseedGigabyteCost)}, []);
-  useEffect(() => {calculateImagesUploadCost().then(setTotalImageCost)}, [avatarSize, bannerSize]);
+  useEffect(() => { getBundleArFee(String(GIGABYTE)).then(setArseedGigabyteCost) }, []);
+  useEffect(() => { calculateImagesUploadCost().then(setTotalImageCost) }, [avatarSize, bannerSize]);
   useEffect(() => {
     if (PASoMProfile) {
       setNickname(PASoMProfile?.nickname || "");
       setBio(PASoMProfile?.bio || "");
-      setBanner(PASoMProfile.banner ? ARSEED_URL + PASoMProfile.banner: "");
-      setAvatar(PASoMProfile.avatar ? ARSEED_URL + PASoMProfile.avatar: "");
+      setBanner(PASoMProfile.banner ? ARSEED_URL + PASoMProfile.banner : "");
+      setAvatar(PASoMProfile.avatar ? ARSEED_URL + PASoMProfile.avatar : "");
     }
   }, [PASoMProfile]);
 
   useEffect(() => {
-    const error = validatePASoMForm({nickname, bio});
+    const error = validatePASoMForm({ nickname, bio });
     setError(error);
     if (PASoMProfile?.nickname === nickname && PASoMProfile?.bio === bio && PASoMProfile?.banner === banner && PASoMProfile?.avatar === avatar) {
       setSameInfo(true);
@@ -198,7 +198,7 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
 
   // TODO: add validation
   const validate = () => {
-    const error = validatePASoMForm({address, nickname, bio, banner, avatar});
+    const error = validatePASoMForm({ address, nickname, bio, banner, avatar });
     if (error) {
       toast.error(error, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME));
       return false;
@@ -218,7 +218,7 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
       finalTX = null;
       toast.dismiss(toastUploadImage);
     };
-    return finalTX 
+    return finalTX
   };
 
   const uploadBanner = async () => await uploadImage(banner, "banner", setBannerSize);
@@ -269,7 +269,7 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
   };
 
   return (
-    <Modal {...{isVisible, setIsVisible, className}}>
+    <Modal {...{ isVisible, setIsVisible, className }}>
       <div className={CreatorModalHeaderStyling}>
         <EditModalHeader />
         <ProfileImages {...{ banner, avatar, setBanner, setAvatar }} />
@@ -280,7 +280,7 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
               {t("home.featured-modal.cost")} {totalImageCost} AR
             </div>
           )}
-          <button disabled={!!error || sameInfo} onClick={uploadEdits} className={ArConnectButtonStyling + `w-36 `}>
+          <button disabled={!!error || sameInfo} onClick={uploadEdits} className={`ArConnectButtonStyling w-36 `}>
             {t("creator.edit-modal.save-changes")}
           </button>
         </div>
@@ -294,12 +294,12 @@ export const EditButton: FC<EditButtonProps> = ({ PASoMProfile }) => {
   const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
-  const className = flexCol + `bg-zinc-800 rounded-3xl z-10 mb-0 w-[300px] sm:w-[500px] lg:w-[500px] h-[518px] `;
+  const className = `flexCol bg-zinc-800 rounded-3xl z-10 mb-0 w-[300px] sm:w-[500px] lg:w-[500px] h-[518px] `;
 
   const EditText: FC = () => (
-    <div className={flexCenterGap}>
+    <div className={`flexCenterGap`}>
       {t('creator.edit')}
-      <Icon className='text-inherit w-5 h-5' icon="PENCIL" strokeWidth='1'/>
+      <Icon className='text-inherit w-5 h-5' icon="PENCIL" strokeWidth='1.5' />
     </div>
   );
 
