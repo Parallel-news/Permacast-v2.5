@@ -603,7 +603,7 @@ export const LanguageOptions: FC<LanguageOptionsProps> = ({ languageCode }) => {
   return (
     <>
       {langsArray.map((lang: string[]) => 
-        <option value={lang[0]} key={lang[1]} selected={languageCode === lang[0]}>
+        <option value={lang[0]} key={lang[1]} defaultValue={languageCode === lang[0] ? lang[0]: ""}>
           {lang[1]}
         </option>
       )}
