@@ -1,4 +1,4 @@
-import React, { FC, Fragment, ReactNode } from "react";
+import React, { Fragment, ReactNode } from "react";
 import { Menu, Transition } from "@headlessui/react";
 
 export interface ExtendedDropdownButtonProps {
@@ -10,22 +10,21 @@ export interface ExtendedDropdownButtonProps {
 export interface DropdownProps {
   openMenuButton?: ReactNode;
   items: any[];
-  openMenuButtonClass: string;
+  openMenuButtonClass?: string;
   dropdownMenuClass: string;
   menuItemClass: string;
 };
 
-export const openMenuButtonClass = `bg-zinc-900 default-animation h-12 rounded-3xl w-12 flex justify-center items-center`;
 const Dropdown = ({
   openMenuButton,
   items,
-  openMenuButtonClass,
+  openMenuButtonClass="flexFullCenter bg-zinc-900 h-12 w-12 rounded-3xl default-animation ",
   dropdownMenuClass,
   menuItemClass
 }: DropdownProps) => {
 
   return (
-    <div className="flex flex-row">
+    <div className="flex">
       <Menu as="div" className="relative inline-block text-left w-full default-animation ">
         {/*Server and Static are generating two separate IDs. Next UI not SSR friendly*/}
         <Menu.Button className={openMenuButtonClass}>
@@ -59,7 +58,7 @@ const Dropdown = ({
           </Menu.Items>
         </Transition>
       </Menu>
-      <div className="h-[10px] w-[10px]"></div>
+      {/* <div className="h-[10px] w-[10px]"></div> */}
     </div>
   );
 };
