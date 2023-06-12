@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 import { loadingPage, searchInputAtom } from '@/atoms/index';
-import { Icon } from './icon';
+
+import { Icon } from '@/component/icon';
 
 export const SearchIconWrapperStyling = `flexCenter absolute inset-y-0 left-0 pl-3 pr-10 pointer-events-none `;
 export const SearchInputStyling = `block pl-10 py-3 w-full placeholder-zinc-600 focus:placeholder-zinc-400/90 rounded-full bg-zinc-900 text-zinc-400/90 outline-none focus:ring-2 focus:ring-zinc-400/90 default-animation placeholder:default-animation `;
@@ -25,7 +26,7 @@ const Searchbar = () => {
   const [debounceTimeout, setDebounceTimeout] = useState(null);
 
   const isSearchPage = router.pathname === "/search";
-  const debounceTimer = isSearchPage ? 75 : 200;
+  const debounceTimer = isSearchPage ? 600 : 0;
 
   const handleInput = (newInput: string) => {
     setSearchInput(newInput);
