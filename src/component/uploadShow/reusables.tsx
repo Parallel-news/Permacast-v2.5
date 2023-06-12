@@ -1,6 +1,7 @@
 import { useTranslation } from "next-i18next";
 import React, { useEffect, MouseEventHandler, useCallback, useRef, useState } from "react";
 import { Tooltip } from "react-tooltip";
+import Cropper from "react-easy-crop";
 
 import getCroppedImg from "@/utils/croppedImage";
 import { handleValMsg } from "./uploadShowTools";
@@ -9,7 +10,6 @@ import { DEFAULT_LANGUAGE } from "@/utils/languages";
 
 import { Icon } from "@/component/icon";
 
-const Cropper = React.lazy(() => import("react-easy-crop"));
 const ValMsg = React.lazy(() => import("@/component/reusables/formTools").then(module => ({ default: module.ValMsg })))
 const CategoryOptions = React.lazy(() => import("@/utils/languages").then(module => ({ default: module.CategoryOptions })))
 const LanguageOptions = React.lazy(() => import("@/utils/languages").then(module => ({ default: module.LanguageOptions })))
