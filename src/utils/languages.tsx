@@ -621,7 +621,7 @@ export const CategoryOptions: FC<CategoryOptionsProps> = ({ categoryId }) => {
   return (
     <>
       {categoriesArray.map((lang: string[], index: number) => 
-        <option value={lang[1]} key={lang[0]} selected={index === categoryId}>
+        <option value={lang[1]} key={lang[0]} defaultValue={index === categoryId ? lang[1]: ""}>
           {lang[1]}
         </option>
       )}

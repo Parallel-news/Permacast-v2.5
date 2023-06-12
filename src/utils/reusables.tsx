@@ -104,11 +104,8 @@ export function handleError(errorMessage: string, loadingSetter: (v: boolean) =>
 export const determineMediaType = (mime: string) => mime.match(/^(audio\/|video\/)/)[0];
 export const audioOrVideoAllowed = (mime: string) => determineMediaType(mime) !== null;
 
-export function validateLabel(label, podcasts: Podcast[]) {
+export function validateLabel(label: string, podcasts: Podcast[]) {
 
-  if (!label) {
-    return { res: false, msg: "uploadshow.validation.label.limit" }
-  };
   if (label.length < PODCAST_LABEL_MIN_LEN || label.length > PODCAST_LABEL_MAX_LEN) {
     return { res: false, msg: "uploadshow.validation.label.limit" }
   }
@@ -116,7 +113,7 @@ export function validateLabel(label, podcasts: Podcast[]) {
   if (existingLabels.includes(label)) {
     return { res: false, msg: "uploadshow.validation.label.in-use" }
   }
-  if (/^(?!-)[a-zA-Z0-9-]{1,35}(?<!-)$/.test(label)) {
+  if (/^(?!-)[a-zA-Z0-9-]{0,35}(?<!-)$/.test(label)) {
     return { res: true, msg: label };
   }
 }
