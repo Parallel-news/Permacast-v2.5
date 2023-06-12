@@ -21,12 +21,28 @@ html, body {
     @apply flexCol items-center;
   }
 
+  .flexColYCenter {
+    @apply flexCol items-center;
+  }
+
+  .flexColXCenter {
+    @apply flexCol justify-center;
+  }
+
   .flexColFullCenter {
     @apply flexCol justify-center items-center;
   }
 
   .flexCenter {
     @apply flex items-center;
+  }
+
+  .flexYCenter {
+    @apply flex items-center;
+  }
+
+  .flexXCenter {
+    @apply flex justify-center;
   }
 
   .flexFill {

@@ -16,14 +16,14 @@ import { getPodcastData } from "@/features/prefetching";
 import { convertLinktoBase64, isValidUrl } from "@/utils/reusables";
 
 const Icon = React.lazy(() => import("@/component/icon").then(module => ({ default: module.Icon })));
-const ImportedEpisodes = React.lazy(() => import("@/component/uploadShow/importedEpisodes"));
+const ImportedEpisodes = React.lazy(() => import("@/component/uploadShow/importEpisodes"));
 const RssSubmit = React.lazy(() => import("@/component/reusables/RssSubmit").then(module => ({ default: module.default })));
 const ShowForm = React.lazy(() => import("@/component/uploadShow/uploadShowTools").then(module => ({ default: module.ShowForm })));
 const Transition = React.lazy(() => import("@headlessui/react").then(module => ({ default: module.Transition })));
 const ValMsg = React.lazy(() => import("@/component/reusables").then(module => ({ default: module.ValMsg })))
 
-const rssContainer = "h-full w-full flex flex-col justify-start items-center space-y-3"
-const rssInputContainer = "w-[80%] md:w-[60%] flex flex-row space-x-2 flex items-center"
+const rssContainer = "whFull flexColYCenter justify-start space-y-3"
+const rssInputContainer = "w-[80%] md:w-[60%] space-x-2 flexYCenter"
 const rssInputStyling = "w-full py-3 pl-5 pr-10 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white default-animation "
 
 

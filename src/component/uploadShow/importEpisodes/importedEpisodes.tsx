@@ -27,22 +27,21 @@ import { fetchARPriceInUSD } from "@/utils/redstone";
 import { RSSFeedManager } from "@/utils/localstorage";
 import { DEFAULT_THEME_COLOR } from "@/constants/ui";
 
-import { ImgCover } from './reusables';
-import { Icon } from "../icon";
-import { PermaSpinner } from "../reusables";
-import { ProgressBar } from "../progressBar";
-import { ConnectButton } from '../uploadEpisode/reusables';
-import { UploadButton } from '../uploadEpisode/reusables';
-import Pagination from '../reusables/Pagination';
+import { ImgCover } from '@/component/uploadShow/reusables';
+import { Icon } from '@/component/icon';
+import { PermaSpinner } from '@/component/reusables';
+import { ProgressBar } from '@/component/progressBar';
+import { ConnectButton } from '@/component/uploadEpisode/reusables';
+import { UploadButton } from '@/component/uploadEpisode/reusables';
+import Pagination from '@/component/reusables/Pagination';
 
 //? IN THE FUTURE, USE AN OBJECT TO CHECK EACH PART OF THE FLOW
 const FULL_TESTING = 0;
-const MAX_EPISODES_TO_UPLOAD_AT_ONCE = 5;
 
 // 1. Interfaces
 interface ImportedEpisodesProps {
   pid: string;
-  RSSLink: string; 
+  RSSLink: string;
   coverUrl: string;
   rssEpisodes: rssEpisode[];
   redirect?: boolean;
@@ -69,11 +68,11 @@ interface RssEpisodeContentLength {
 
 // 2. Stylings
 export const spinnerClass = "w-full flex justify-center mt-4"
-export const showFormStyling = "w-full flex flex-col justify-center items-center space-y-2"
+export const showFormStyling = "w-full flexColFullCenter space-y-2"
 export const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex flex-row justify-start items-start focus-within:ring-white focus-within:ring-2"
 export const buttonColorStyling = `bg-zinc-800 hover:bg-zinc-600 default-animation disabled:hover:bg-black disabled:bg-black text-white disabled:text-gray-500 flexFullCenter rounded-lg `;
 
-export const buttonStyling = buttonColorStyling + `h-8 w-8 `;
+export const buttonStyling = buttonColorStyling + `h-10 w-10 `;
 // 3. Custom Functions
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -107,16 +106,17 @@ const ImportedEpisodes = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [navigatePage, setNavigatePage] = useState<number>(1);
   const [uploadedEpisodes, setUploadedEpisodes] = useState<string[]>([]);
-  const [retryEpisodes, setRetryEpisodes] = useState<rssEpisodeRetry[]>([]);  
+  const [retryEpisodes, setRetryEpisodes] = useState<rssEpisodeRetry[]>([]);
   const [uploadedCount, setUploadCount] = useState<number>(0);
   const [progress, setProgress] = useState(0);
 
+  const MAX_EPISODES_TO_UPLOAD_AT_ONCE = 5;
   const MAX_PAGES = Math.floor((rssEpisodes?.length || 0) / MAX_EPISODES_TO_UPLOAD_AT_ONCE);
 
   const fetchPodcast = async () => {
     const podcasts: Podcast[] = queryPodcastData.data.podcasts;
     const podcastViaPID = podcasts.find(podcast => podcast.pid === pid);
-    const podcastViaIndex = index !== 0 ? podcasts[index]: undefined;
+    const podcastViaIndex = index !== 0 ? podcasts[index] : undefined;
     const podcast = podcastViaPID || podcastViaIndex;
     return podcast;
   };
@@ -154,7 +154,7 @@ const ImportedEpisodes = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
     console.log('episodes without length', episodesWithoutLength);
     // if all episodes have length, return
     if (!episodesWithoutLength.length) return { knownEpisodeSizes: rssEpisodes, unkwownEpisodeSizes: [] };
-    
+
     const episodesWithLength = rssEpisodes.filter((rssEpisode: rssEpisode) => (
       rssEpisode?.['length'] && Number(rssEpisode?.['length']) > 0)
     );
@@ -347,7 +347,7 @@ const ImportedEpisodes = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
 
     // Pay Permacast's Episode Upload Fee
     const feeTX = await tryFeePayment(handleErr);
-     _setCalculateEverPayBalance(count);
+    _setCalculateEverPayBalance(count);
     console.log(feeTX);
     // @ts-ignore
     uploadEpisodePayload["txid"] = feeTX;
@@ -397,7 +397,7 @@ const ImportedEpisodes = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
         return false;
       };
     };
-    
+
     const toastSaving = toast.loading("Downloading Episodes...", PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
 
     const paymentTXes = [];
@@ -439,7 +439,7 @@ const ImportedEpisodes = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
 
     let totalUploadedCount = uploadedCount + uploadedEpisodes.length;
     // setUploadCount(totalUploadedCount);
-    
+
     console.log(uploadedCount);
     toast.dismiss(savingBlockchainToast);
     console.log(currentPage);
@@ -486,7 +486,7 @@ const ImportedEpisodes = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
       });
       setCurrentEpisodes(prev => [...prev, ...newEpisodes]);
       setIsCalculating(false);
-      toast.dismiss(toastEstimating);  
+      toast.dismiss(toastEstimating);
     } catch (error) {
       setIsCalculating(false);
       toast.dismiss(toastEstimating);
@@ -502,14 +502,14 @@ const ImportedEpisodes = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
     return (
       <div className="bg-zinc-800 default-animation rounded-xl px-5 py-3 w-full text-white flex justify-between">
         <div className="line-clamp-2">#{number}: {title}</div>
-        <div className="ml-4 flex gap-x-2">
+        <div className="ml-4 flex shrink-0 gap-x-2">
           {uploaded && (
             <>
-              <div         
+              <div
                 data-tooltip-content={t("rss.episode-already-saved")}
-                data-tooltip-id="existsTip" 
+                data-tooltip-id="existsTip"
               >
-                <Icon className="bg-green-500 rounded-full w-5 h-5 text-white shrink-0 p-1" icon="CHECK"/>
+                <Icon className="bg-green-500 rounded-full w-5 h-5 text-white shrink-0 p-1" icon="CHECK" />
               </div>
               <Tooltip id="existsTip" />
             </>
@@ -537,7 +537,7 @@ const ImportedEpisodes = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
           <div className="flexCol gap-y-2">
             {isCalculating ? (
               <div className="text-zinc-700 flexFullCenter w-full h-60">
-                <PermaSpinner 
+                <PermaSpinner
                   spinnerColor={SPINNER_COLOR}
                   size={1}
                 />
@@ -573,7 +573,7 @@ const ImportedEpisodes = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
                       <button className={buttonColorStyling + "py-3 px-4 "} onClick={() => startEstimating()}>
                         {isCalculating && (
                           <div style={{ color: DEFAULT_THEME_COLOR }}>
-                            <PermaSpinner 
+                            <PermaSpinner
                               spinnerColor={SPINNER_COLOR}
                               size={1}
                             />
@@ -613,7 +613,7 @@ const ImportedEpisodes = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
                       return !prev
                     });
                   }}>
-                    {isReverseOrder ? <Icon className="h-6 w-6" icon="ARROWUP" /> : <Icon className="h-6 w-6"  icon="ARROWDOWN" />}
+                    {isReverseOrder ? <Icon className="h-6 w-6" icon="ARROWUP" /> : <Icon className="h-6 w-6" icon="ARROWDOWN" />}
                   </button>
                 )}
               />
