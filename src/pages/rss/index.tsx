@@ -81,7 +81,7 @@ export default function rss() {
       return false;
     }
 
-    if (!rssLink.startsWith("http")) {
+    if (rssLink.startsWith("http://")) {
       setRssLinkError("rss.http-not-supported");
       setSubmittingLink(false);
       return false;

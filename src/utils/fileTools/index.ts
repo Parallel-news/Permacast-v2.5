@@ -1,5 +1,58 @@
+import axios from "axios";
 import Resizer from "react-image-file-resizer";
-import { PODCAST_MINIFIED_COVER_MAX_SIZE } from "../../constants";
+
+import { PODCAST_MINIFIED_COVER_MAX_SIZE } from "@/constants/index";
+
+import { rssEpisode, rssEpisodeRetry, RssEpisodeContentLength, RSSEpisodeEstimate } from "@/interfaces/rss";
+
+
+// check if all episodes have length
+// if not all episodes have length, fetch sizes
+// if no sizes, attempt size fetch via headers
+// if still no sizes, add to custom download list
+
+export const fetchEpisodeSizes = async (rssEpisodes: rssEpisode[]) => {
+  const retryEpisodeDownloadList: rssEpisodeRetry[] = [];
+  // attempt to fetch sizes via known property length
+  const episodesWithoutLength = rssEpisodes.filter((rssEpisode: rssEpisode) => (
+    !rssEpisode?.['length'] || Number(rssEpisode?.['length']) === 0)
+  );
+  console.log('episodes without length', episodesWithoutLength);
+  // if all episodes have length, return
+  if (!episodesWithoutLength.length) return { knownEpisodeSizes: rssEpisodes, unkwownEpisodeSizes: [] };
+
+  const episodesWithLength = rssEpisodes.filter((rssEpisode: rssEpisode) => (
+    rssEpisode?.['length'] && Number(rssEpisode?.['length']) > 0)
+  );
+
+  // else, simplify list to links, and fetch sizes via header request
+  const rssLinks = episodesWithoutLength.map((rssEpisode: rssEpisode) => rssEpisode.link);
+  const sizes = (await axios.post('/api/rss/get-headers', { rssLinks })).data.links;
+
+  // if no sizes, add to custom download list
+  // splice rss episodes with length property
+  const rssEpisodesFinal = episodesWithoutLength.map((rssEpisode: rssEpisode) => {
+    console.log(sizes)
+    const attemptedLink = sizes.find((ep: RssEpisodeContentLength) => ep.link === rssEpisode.link);
+    if (!attemptedLink?.['length']) {
+      retryEpisodeDownloadList.push(rssEpisode);
+      return null;
+    };
+    return {
+      ...rssEpisode,
+      length: attemptedLink?.['length'] || '0'
+    };
+  }).filter((item: rssEpisode) => item !== null);
+  const sortedEpisodes = [...episodesWithLength, ...rssEpisodesFinal].sort((a: rssEpisode, b: rssEpisode) => a.order - b.order);
+  return { knownEpisodeSizes: sortedEpisodes, unknownEpisodeSizes: retryEpisodeDownloadList };
+};
+
+export const estimateUploadCost = async (episodes: rssEpisodeRetry[]): Promise<RSSEpisodeEstimate[]> => {
+  const fileLinks = episodes.map(episode => episode.link);
+  const sizes = (await axios.post('/api/rss/estimate-size', { fileLinks })).data;
+  return sizes;
+};
+
 
 export const readFileAsArrayBuffer = (file: File): Promise<ArrayBuffer> => {
     return new Promise((resolve, reject) => {

@@ -58,29 +58,33 @@ export default function SearchResults({ query }: SearchResultsProps) {
   const [maxPages, setMaxPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
 
+  const MAX_ITEMS_PER_PAGE = 4;
+  const index = MAX_ITEMS_PER_PAGE * (currentPage - 1);
+
   useEffect(() => {
     setSearchInput(query);
   }, [query]);
 
   const queryPodcastData = getPodcastData();
-  const { data: state } = queryPodcastData;
+  const { data } = queryPodcastData;
+  const podcasts = data?.podcasts || undefined;
 
-  const MAX_ITEMS_PER_PAGE = 4;
-  const index = MAX_ITEMS_PER_PAGE * (currentPage - 1);
+  const querySearch = async () => {
+    const result = await searchQuery(
+      searchInput,
+      index,
+      index + MAX_ITEMS_PER_PAGE,
+      podcasts
+    );
+    const maxPodcastPages = Math.floor((result?.totalPodcasts || MAX_ITEMS_PER_PAGE * 2) / MAX_ITEMS_PER_PAGE) - 1;
+    setMaxPages(maxPodcastPages > 0 ? maxPodcastPages : 1);
+    return result;
+  }
 
   const { data: searchQueryData, isLoading: searchQueryIsLoading, isError: searchQueryIsError } = useQuery({
-    queryKey: ['searchQuery', state?.podcasts, index, searchInput],
-    queryFn: async () => {
-      const result = await searchQuery(
-        searchInput,
-        index,
-        index + MAX_ITEMS_PER_PAGE,
-        state?.podcasts || []
-      );
-      const maxPodcastPages = Math.floor((result?.totalPodcasts || MAX_ITEMS_PER_PAGE * 2) / MAX_ITEMS_PER_PAGE) - 1;
-      setMaxPages(maxPodcastPages > 0 ? maxPodcastPages : 1);
-      return result;
-    }
+    queryKey: ['searchQuery', podcasts, index, searchInput],
+    enabled: !!podcasts,
+    queryFn: querySearch
   });
 
   const finishedSearching = (searchQueryData && !searchQueryIsLoading);

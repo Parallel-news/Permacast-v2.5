@@ -10,7 +10,7 @@ export type tx = string;
 export type arweaveTX = string;
 export type arseedTX = string;
 export type everpayTX = string;
-export type availableWallets = "arconnect" | "metamask";
+export type availableProviders = "arconnect" | "rainbowkit";
 export type contractType = "primaryEXMContract" | "featuredChannelsContract" | "collectionsContract" | "PASOMContract";
 
 export interface EXMState {

@@ -1,8 +1,10 @@
 import { atom } from 'recoil';
-import { EPISODE_TEMPLATE, PODCAST_TEMPLATE, DEFAULT_BACKGROUND_COLOR, DEFAULT_PODCAST_COLOR, DEFAULT_THEME_COLOR } from '../constants/ui';
-import { ANSMapped, Ans, Episode, FullEpisodeInfo, Podcast, availableWallets } from '../interfaces';
-import { RGBorRGBAstring } from '../interfaces/ui';
-import { PASoMProfile } from '../interfaces/pasom';
+
+import { EPISODE_TEMPLATE, PODCAST_TEMPLATE, DEFAULT_BACKGROUND_COLOR, DEFAULT_PODCAST_COLOR, DEFAULT_THEME_COLOR } from '@/constants/ui';
+
+import { ANSMapped, Ans, Episode, FullEpisodeInfo, Podcast, availableProviders } from '@/interfaces/index';
+import { RGBorRGBAstring } from '@/interfaces/ui';
+import { PASoMProfile } from '@/interfaces/pasom';
 
 export const uploadPercent = atom({
     key: 'uploadPercent',
@@ -197,8 +199,8 @@ export const hide0EpisodesAtom = atom<boolean>({
 });
 // *** ------- ***
 
-export const selectedWalletAtom = atom<availableWallets>({
-    key: 'selectedWalletAtom',
+export const selectedProviderAtom = atom<availableProviders>({
+    key: 'selectedProviderAtom',
     default: 'arconnect'
 });
 

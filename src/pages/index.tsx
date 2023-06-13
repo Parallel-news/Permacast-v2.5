@@ -1,25 +1,25 @@
-import axios from 'axios';
+import axios from "axios";
 import { NextPage } from "next";
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { Suspense, useState, startTransition } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-
 import { useQuery } from '@tanstack/react-query';
 
-import { loadingPage } from "../atoms/index";
-import { Episode, FullEpisodeInfo, Podcast } from '../interfaces';
-import { getContractVariables, getFeaturedChannelsContract, getPASOMContract } from '../utils/contract';
+import { loadingPage } from "@/atoms/index";
 
-const FeaturedPodcastCarousel = React.lazy(() => import('../component/reusables/FeaturedPodcastCarousel'));
+import { Episode, FullEpisodeInfo, Podcast } from '@/interfaces/index';
+import { getContractVariables, getFeaturedChannelsContract, getPASOMContract } from '@/utils/contract';
+
+const FeaturedPodcastCarousel = React.lazy(() => import('@/component/reusables/FeaturedPodcastCarousel'));
 // const GetFeatured = React.lazy(() => import('../component/home/getFeatured'))
-const Track = React.lazy(() => import('../component/reusables/track'))
+const Track = React.lazy(() => import('@/component/reusables/track'))
 //const Loading = React.lazy(() => import('../component/reusables/loading'))
-const FeaturedCreators = React.lazy(() => import('../component/creator/featuredCreators'))
-const FeaturedPodcast = React.lazy(() => import('../component/home/featuredPodcast'))
-const FeaturedChannelModal = React.lazy(() => import('../component/home/featuredChannelModal'))
-const Greeting = React.lazy(() => import("../component/featured").then(module => ({ default: module.Greeting })));;
-const Loading = React.lazy(() => import('../component/reusables/loading'));
+const FeaturedCreators = React.lazy(() => import('@/component/creator/featuredCreators'))
+const FeaturedPodcast = React.lazy(() => import('@/component/home/featuredPodcast'))
+const FeaturedChannelModal = React.lazy(() => import('@/component/home/featuredChannelModal'))
+const Greeting = React.lazy(() => import("@/component/featured").then(module => ({ default: module.Greeting })));;
+const Loading = React.lazy(() => import('@/component/reusables/loading'));
 
 interface HomeProps {
   isProduction: boolean,
@@ -72,6 +72,10 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
   const [isVisible, setIsVisible] = useState(false);
   const [, _setLoadingPage] = useRecoilState(loadingPage);
 
+  useEffect(() => {
+    _setLoadingPage(false)
+  }, [])
+
   const stateQuery = useQuery({
     queryKey: ['getHomepageState'],
     queryFn: getHomepageState
@@ -104,7 +108,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
 
   return (
     <Suspense fallback={<HomeLoader />}>
-      <div className="w-full pb-10 mb-10"> 
+      <div className="w-full pb-10 mb-10">
         <Greeting />
         {isProduction !== true &&
           <div className="select-text">
@@ -112,19 +116,19 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
             <div className="text-teal-300 flex gap-x-1">EXM Main Address: <p className="underline font-medium">{contractAddress}</p></div>
             <div className="text-indigo-300 flex gap-x-1">EXM Feature Channel Address: <p className="underline font-medium">{featuredContractAddress}</p></div>
             <div>(PRODUCTION) PASoM Contract Address: {PASoMContractAddress}</div>
-            
+
           </div>
         }
         {stateQuery.isSuccess && stateQuery?.data?.sortedPodcasts?.length > 0 ? (
           <>
             {isVisible && <FeaturedChannelModal {...{ isVisible, setIsVisible }} />}
-            <FeaturedPodcastCarousel 
+            <FeaturedPodcastCarousel
               podcasts={stateQuery.data.sortedPodcasts}
             />
           </>
-        ) 
-        : 
-        <Loading />
+        )
+          :
+          <Loading />
         }
         <div className="my-9 flex flex-col xl:flex-row md:justify-between space-y-10 xl:space-y-0">
           <div className="w-[100%] xl:w-[71%]">

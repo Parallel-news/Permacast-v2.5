@@ -5,45 +5,6 @@ import { Podcast, Episode, FullEpisodeInfo } from '@/interfaces/index';
 import { removeDuplicates } from '@/utils/filters';
 import { getPodcastData } from '@/features/prefetching';
 
-// const searchQueryFn = async (query: string, start: number, limit: number) => {
-//   const QUERY_PODCASTS_KEY = 'podcastsKey';
-//   const QUERY_PODCASTS_TOTAL_KEY = 'podcastCountKey';
-//   const QUERY_EPISODES_KEY = 'episodesKey';
-//   const QUERY_EPISODES_TOTAL_KEY = 'episodesTotalKey';
-//   const QUERY_CREATORS_KEY = 'creatorsKey';
-
-//   const lq = query.toLowerCase();
-
-//   const queries = [{
-//     key: QUERY_PODCASTS_KEY,
-//     query: `podcasts[[$contains($lowercase(podcastName), "${lq}")]][[${start}..${limit}]]`
-//     //[$sort(createdAt)].[$sort(createdAt)]
-//   }, {
-//     key: QUERY_PODCASTS_TOTAL_KEY,
-//     query: `$count(podcasts[[$contains($lowercase(podcastName), "${lq}")]])`
-//     //.episodes[$contains($lowercase(episodeName), "${lq}")][$sort(uploadedAt)][[${start}..${limit}]] 
-//   },
-//   {
-//     key: QUERY_EPISODES_KEY,
-//     query: `podcasts.episodes[[$contains($lowercase(episodeName), "${lq}")]][[${start}..${limit}]]`
-//   },
-//   {
-//     key: QUERY_EPISODES_TOTAL_KEY,
-//     query: `$count(podcasts.episodes[[$contains($lowercase(episodeName), "${lq}")]])`
-//   }];
-
-//   const results = (await axios.post('/api/exm/read', {
-//     queries,
-//   })).data;
-
-//   const podcasts: Podcast[] = results[QUERY_PODCASTS_KEY] || [];
-//   const podcastsCount: number = results[QUERY_PODCASTS_TOTAL_KEY];
-//   const episodes: Episode[] = results[QUERY_EPISODES_KEY] || [];
-//   const episodesCount: number = results[QUERY_EPISODES_TOTAL_KEY];
-//   const creators = results[QUERY_CREATORS_KEY];
-//   return { podcasts, podcastsCount, episodes, episodesCount };
-// };
-
 // isCaseSensitive: false,
 // includeScore: false,
 // shouldSort: true,

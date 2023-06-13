@@ -449,7 +449,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Explicit & Is Visible
                     */}
-                    <div className="flex flex-row justify-between items-center">
+                    <div className="flexYCenter justify-between">
                         <ExplicitInput
                             setExplicit={setPodcastExplicit_}
                             explicit={podcastExplicit_}
@@ -464,7 +464,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Upload
                     */}
-                    <div className="w-full flex justify-center items-center flex-col">
+                    <div className="w-full flexColFullCenter">
                         {/*Show Upload Btn, Spinner, or Connect Btn*/}
                         {address && address.length > 0 && !submittingShow && (
                             <UploadButton

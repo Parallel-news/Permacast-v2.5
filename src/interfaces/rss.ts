@@ -9,7 +9,15 @@ export interface rssEpisode {
   title: string;
   // UI only
   order?: number;
+  isUploaded?: boolean;
 };
+
+export interface RssEpisodeContentLength {
+  link: string;
+  length: string;
+  error?: string;
+};
+
 
 export interface rssEpisodeRetry extends rssEpisode {
   file?: ArrayBuffer;
