@@ -1,6 +1,7 @@
 import axios, { AxiosProgressEvent } from "axios"
 import { NextApiRequest, NextApiResponse } from "next";
-import { MAX_DOWNLOAD_FILE_SIZE } from "../../../constants";
+
+import { MAX_DOWNLOAD_FILE_SIZE, MAX_EPISODES_TO_UPLOAD_AT_ONCE } from "@/constants/index";
 
 interface ResponseData {
   links: Record<string, string>[];
@@ -31,7 +32,7 @@ export default async function handler(
     if (!fileLinks) {
       throw new Error('No file links provided');
     };
-    if (fileLinks.length > 5) {
+    if (fileLinks.length > MAX_EPISODES_TO_UPLOAD_AT_ONCE) {
       throw new Error('Too many file links provided');
     };
     const links = await Promise.all(fileLinks.map(async (link: string) => {

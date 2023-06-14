@@ -1,88 +1,88 @@
 import axios from "axios";
+import { NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { FC, Suspense, startTransition, useEffect, useState } from "react";
+import React, { Suspense, startTransition, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { chronStatusAtom, hide0EpisodesAtom, loadingPage } from "../../atoms";
-import { EXM_READ_LINK, NO_SHOW } from "../../constants";
-import { getContractVariables } from "../../utils/contract";
-import { detectTimestampType } from "../../utils/reusables";
-import { Podcast } from "../../interfaces";
+
+import { chronStatusAtom, hide0EpisodesAtom, loadingPage } from "@/atoms/index";
+import { EXM_READ_LINK, NO_SHOW } from "@/constants/index";
+
+import { getContractVariables } from "@/utils/contract";
+import { detectTimestampType } from "@/utils/reusables";
+import { Podcast } from "@/interfaces/index";
+
+import { getPodcastData } from "@/features/prefetching";
 
 const ViewDropDown = React.lazy(() => import("../../component/viewDropDown"));
 const PodcastGrid = React.lazy(() => import("../../component/home/PodcastGrid"));
 
-const titleRow = `flex flex-row justify-between items-end mb-10 lg:mx-10`;
+const titleRow = `flex flex-row justify-between items-end mb-10 `;
 const allPodcastHeader = `text-3xl text-neutral-300/90 font-semibold pt-10 text-center md:text-start `;
 
-interface FeedPageProps {
-  yourShows: Podcast[];
-};
+const FeedPage: NextPage = () => {
 
-const FeedPage: FC<FeedPageProps> = ({ yourShows }) => {
   const { t } = useTranslation();
 
   const [chronStatus,] = useRecoilState<number>(chronStatusAtom);
   const [hide0Episodes, setHide0Episodes] = useRecoilState<boolean>(hide0EpisodesAtom);
-  const [shows, setShows] = useState<Podcast[]>([]);
-  const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage)
+  const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage);
+
+  const queryPodcastData = getPodcastData();
+
+  const [sortedPodcasts, setSortedPodcasts] = useState<Podcast[]>([]);
 
   useEffect(() => {
-    let showsCopy = [...yourShows];
-    let shows = showsCopy
+    if (queryPodcastData.isLoading || queryPodcastData.isError) return;
+    if (!!queryPodcastData?.data?.podcasts?.length) return;
+    const unifiedTimestamps = queryPodcastData.data.podcasts.map((podcast: Podcast) => {
+      if (detectTimestampType(podcast.createdAt) === "seconds") {
+        podcast.createdAt = podcast.createdAt * 1000
+        return podcast;
+      };
+    });
+    console.log(unifiedTimestamps)
+    setSortedPodcasts(unifiedTimestamps);
+  }, [queryPodcastData.data]);
+
+  useEffect(() => {
+    let resortedPodcasts = sortedPodcasts
       .sort((a, b) => a.createdAt - b.createdAt)
       .filter((podcast: Podcast) => hide0Episodes ? podcast.episodes.length > 0: podcast);
     startTransition(() => {
       if (chronStatus % 2) {
-        setShows(shows.reverse());
+        setSortedPodcasts(resortedPodcasts.reverse());
       } else {
-        setShows(shows);
+        setSortedPodcasts(resortedPodcasts);
       };
     })
-  }, [chronStatus, hide0Episodes, yourShows]);
+  }, [chronStatus, hide0Episodes]);
 
   useEffect(() => {
     _setLoadingPage(false)
   }, [])
 
   return (
-    <>
-      <Suspense fallback={<div></div>}>
-        <div className={titleRow}>
-          <div className="flex md:hidden"></div>
-          <h2 className={allPodcastHeader}>{t("feed-page.allpodcasts")}</h2>
-            <ViewDropDown />
-        </div>
-        {shows.length !== 0 && <PodcastGrid podcasts={shows} />}
-      </Suspense>
-    </>
+    <div>
+      <div className={titleRow}>
+        <div className="flex md:hidden"></div>
+        <h2 className={allPodcastHeader}>{t("feed-page.allpodcasts")}</h2>
+        <ViewDropDown />
+      </div>
+      <>
+        {sortedPodcasts.length !== 0 && <PodcastGrid podcasts={sortedPodcasts} />}
+      </>
+      <div className="mt-20"></div>
+    </div>
   );
 };
 
 export async function getStaticProps({ locale }) {
-  const { contractAddress } = getContractVariables()
-  let yourShows = null
-  let error = "";
-  try {
-    const res = await axios.get(EXM_READ_LINK + contractAddress)
-    yourShows = res.data?.podcasts;
-    yourShows.map((podcast: Podcast) => {
-      if (detectTimestampType(podcast.createdAt) === "seconds") {
-        podcast.createdAt = podcast.createdAt * 1000
-        return podcast;
-      }
-    })
-  } catch (e) {
-    error = NO_SHOW
-  }
-
   return {
     props: {
       ...(await serverSideTranslations(locale, [
         'common',
-      ])),
-      yourShows,
-      error
+      ]))
     },
   }
 }

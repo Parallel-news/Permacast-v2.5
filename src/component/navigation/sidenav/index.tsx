@@ -1,39 +1,58 @@
 import Link from "next/link";
 import { useRouter } from 'next/router';
-import { FC } from "react";
 import { useRecoilState } from "recoil";
-import { SIDENAV_BUTTON } from '../../../styles/constants';
+
+import { currentThemeColorAtom, loadingPage } from "@/atoms/index";
+import { Cooyub } from "@/component/reusables/icons";
+import { Icon } from "@/component/icon";
 import { HelpDropdown, LanguageDropdown, NavButton, UploadDropdown } from "../sidenavButtons";
-import { Cooyub } from "../../reusables/icons";
-import { currentThemeColorAtom, loadingPage } from "../../../atoms";
-import { Icon } from "../../icon";
 
 
-export const IconSizeStyling = `w-9 h-9 `;
-export const SideNavStyling = `hidden md:flex items-center flex-col gap-y-9 h-full pt-10 w-[100px] text-zinc-400 z-50 `;
 
-export const Sidenav: FC = () => {
+const cubeSize = `w-9 h-9`;
+const IconSizeStyling = `w-12 h-12 `;
+const SideNavStyling = `hidden md:flex flex-col items-center gap-y-9 h-full pt-10 w-[100px] text-zinc-400 z-50 `;
 
-  const [currentThemeColor, ] = useRecoilState(currentThemeColorAtom);
-  const [,_setLoadingPage] = useRecoilState(loadingPage)
+export const Sidenav = () => {
 
   const router = useRouter();
 
+  const [currentThemeColor,] = useRecoilState(currentThemeColorAtom);
+  const [, _setLoadingPage] = useRecoilState(loadingPage);
+
+
   const isHome = router.pathname === "/";
-  const isViewPodcasts = router.pathname === "/feed"
+  const isFeed = router.pathname === "/feed"
   const isUploadPodcast = router.pathname === "/upload-podcast";
   const isUploadEpisode = router.pathname === "/upload-episode";
-  const isUpload = isUploadPodcast || isUploadEpisode;
-  const engageLoading = () => _setLoadingPage(true)
-  // const isFeed = router.pathname === "feed";
+  const isRSSImport = router.pathname === "/rss";
+  const isUpload = isUploadPodcast || isUploadEpisode || isRSSImport;
+  
+  const engageLoading = () => _setLoadingPage(true);
+  
+
+  const d = `border-0 hover:text-zinc-100 text-zinc-400/90`;
 
   return (
     <div className={SideNavStyling}>
-      <Link href="/" className={SIDENAV_BUTTON} onClick={isHome ? ()=>"" : engageLoading}>
-        <Cooyub svgStyle={IconSizeStyling} rectStyle={IconSizeStyling} fill={currentThemeColor} />
+      <Link href="/" className={d} onClick={engageLoading}>
+        <Cooyub svgStyle={cubeSize} rectStyle={cubeSize} fill={currentThemeColor} />
       </Link>
-      <NavButton url="/" condition={isHome} icon={<Icon icon="HOME" onClick={isHome ? ()=>"" : engageLoading} />}  />
-      <NavButton url="/feed" condition={isViewPodcasts} icon={<Icon icon="RECTANGLESTACK" className={IconSizeStyling} onClick={engageLoading} />} />
+      <NavButton
+        url="/"
+        condition={isHome}
+        icon={<Icon icon="HOME" className="w-9 h-9" onClick={engageLoading} />}
+      />
+      <NavButton
+        url="/feed"
+        condition={isFeed}
+        icon={
+          <Icon icon="RECTANGLESTACK"
+            className={IconSizeStyling}
+            onClick={engageLoading}
+          />
+        }
+      />
       {/* TODO: re-use the dropdown from mobile view */}
       <LanguageDropdown />
       <UploadDropdown routeMatches={isUpload} />

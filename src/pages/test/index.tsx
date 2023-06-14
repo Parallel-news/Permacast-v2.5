@@ -44,6 +44,7 @@ function Tooltip({ children, tooltipText }) {
 
 import { useRef } from 'react'
 import propTypes from 'prop-types'
+import axios from "axios";
 
 const Secondary = ({ children, tooltipText, orientation = 'right' }) => {
     const tipRef = useRef(null)
@@ -136,11 +137,15 @@ Secondary.propTypes = {
 }
 
 export default function Test() {
-
+    const onClick = async () => {
+        const payload = {};
+        const result = await axios.post('/api/exm/write', payload);
+        console.log(result.data)
+    }
     return (
         <div className="p-12">
             <Secondary orientation="top" tooltipText="Shop Insights">
-                <button>
+                <button onClick={onClick}>
                     Demo1
                 </button>  
             </Secondary>

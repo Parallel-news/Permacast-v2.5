@@ -336,13 +336,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                         colorHex="#FFFF00"
                     />
                 )}
-                {!address && (
-                    <ConnectButton 
-                        width="w-[75%] md:w-[50%]"
-                        disable={false}
-                        click={() => connect()}
-                    />
-                )}
+                <ConnectButton className="w-[75%] md:w-[50%]" />
                 {/*Is Visible Input*/}
                 {props.edit && !submittingEp && (
                     <div className="absolute right-0"> 
@@ -353,7 +347,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                     </div>
                 )}
             </div>
-            <div className="flex justify-center items-center">
+            <div className="flexFullCenter">
                 {uploadCost !== 0 && epDesc.length > 0 && epMedia && (
                     <p className="mt-2 text-neutral-400">{t("uploadepisode.feetext")} {(Number(uploadCost)).toFixed(6) +" AR"}</p>
                 )}

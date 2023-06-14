@@ -1,25 +1,28 @@
 import { useTranslation } from "next-i18next";
 import { FC, useState } from "react";
-import { Modal, ModalProps, ThemedButton } from "../reusables";
 import { useRecoilState } from "recoil";
-import { selectedWalletAtom } from "../../atoms";
+
+import { selectedProviderAtom } from "@/atoms/index";
+
+import { Modal, ModalProps, ThemedButton } from "@/component/reusables";
+import { Icon } from "@/component/icon";
+
 import { ConnectArconnect } from "./arconnect";
-import { Icon } from "../icon";
 
 
 const SelectWalletModal: FC<ModalProps> = ({ isVisible, setIsVisible, className }) => {
-  const [selectedWallet, setSelectedWallet] = useRecoilState(selectedWalletAtom);
+  const [selectedProvider, setSelectedProvider] = useRecoilState(selectedProviderAtom);
 
   return (
     <Modal {...{ isVisible, setIsVisible, className }}>
-      <div className="mt-6 flexColCenter gap-y-8 justify-center h-full">
+      <div className="mt-6 flexColFullCenter gap-y-8 h-full">
         <div className="text-center">
           <ConnectArconnect className="text-xl" />
         </div>
         <div className="text-center">
-          <button onClick={() => setSelectedWallet("metamask")}>
-            <div className="text-4xl">🦊</div>
-            <p>MetaMask</p>
+          <button onClick={() => setSelectedProvider("rainbowkit")}>
+            <div className="text-4xl">🌈</div>
+            <p>Metamask and More...</p>
           </button>
         </div>
       </div>
@@ -27,7 +30,7 @@ const SelectWalletModal: FC<ModalProps> = ({ isVisible, setIsVisible, className 
   );
 };
 
-export const SelectWalletButton: FC = ({  }) => {
+export const SelectWalletButton = () => {
 
   const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState<boolean>(false);

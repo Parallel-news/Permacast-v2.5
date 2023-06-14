@@ -13,7 +13,7 @@ const WalletNotDetectedModal: FC<ModalProps> = ({ isVisible, setIsVisible, class
       </h1>
       <div className="mt-20 text-5xl">🦔</div>
       <div className="mt-10">
-        {t("wallet.modal.download-wallet")} <a href={`https://beta.arconnect.io`}>{selectedWallet}</a>
+        {t("wallet.modal.download-wallet")} <a href={`https://arconnect.io`}>{selectedWallet}</a>
       </div>
     </Modal>
   );

@@ -1,17 +1,18 @@
-import React, { useEffect } from "react";
-import { MouseEventHandler, useCallback, useRef, useState } from "react";
-import getCroppedImg from "../../utils/croppedImage";
-import { handleValMsg } from "./uploadShowTools";
 import { useTranslation } from "next-i18next";
-import { Podcast } from "../../interfaces";
-import { DEFAULT_LANGUAGE } from "../../utils/languages";
-import { Icon } from "../icon";
+import React, { useEffect, MouseEventHandler, useCallback, useRef, useState } from "react";
 import { Tooltip } from "react-tooltip";
+import Cropper from "react-easy-crop";
 
-const Cropper = React.lazy(() => import("react-easy-crop"));
-const ValMsg = React.lazy(() => import("../reusables/formTools").then(module => ({ default: module.ValMsg })))
-const CategoryOptions = React.lazy(() => import("../../utils/languages").then(module => ({ default: module.CategoryOptions })))
-const LanguageOptions = React.lazy(() => import("../../utils/languages").then(module => ({ default: module.LanguageOptions })))
+import getCroppedImg from "@/utils/croppedImage";
+import { handleValMsg } from "./uploadShowTools";
+import { Podcast } from "@/interfaces/index";
+import { DEFAULT_LANGUAGE } from "@/utils/languages";
+
+import { Icon } from "@/component/icon";
+
+const ValMsg = React.lazy(() => import("@/component/reusables/formTools").then(module => ({ default: module.ValMsg })))
+const CategoryOptions = React.lazy(() => import("@/utils/languages").then(module => ({ default: module.CategoryOptions })))
+const LanguageOptions = React.lazy(() => import("@/utils/languages").then(module => ({ default: module.LanguageOptions })))
 
 interface CoverContainerInter {
     setCover: (v: any) => void;
@@ -70,19 +71,19 @@ type Area = {
 
 const emptyCoverIconTextStyling = "text-lg tracking-wider pt-2 text-zinc-inherit "
 export const cropScreenDivStyling = "relative w-[800px] h-[400px] rounded-[6px] overflow-hidden"
-const epNameStyling = "input input-secondary w-full py-3 pl-5 pr-10 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+const epNameStyling = "w-full py-3 pl-5 pr-10 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white default-animation "
 const coverContainerInputStyling = "opacity-0 z-index-[-1] absolute pointer-events-none"
-export const cropScreenStyling = "absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center backdrop-blur-md z-50"
-export const cropSelectionDivStyling = "min-w-[50px] min-h-[10px] rounded-[4px] bg-black/10 hover:bg-black/20 border-[1px] border-solid border-white/10 m-2 p-1 px-2 cursor-pointer flex flex-col justify-center items-center"
-export const cropSelectionTextStyling = "flex flex-col justify-center items-center text-white/60"
-const emptyCoverIconStyling = " flex flex-col items-center justify-center cursor-pointer h-48 w-48 outline-none focus:ring-2 focus:ring-inset focus:ring-white rounded-[20px] bg-zinc-800 hover:bg-zinc-700 default-animation hover:text-white text-zinc-400 "
+export const cropScreenStyling = "absolute top-0 left-0 flexColFullCenter whFull backdrop-blur-md z-50"
+export const cropSelectionDivStyling = "flexColFullCenter min-w-[50px] min-h-[10px] rounded-[4px] bg-black/10 hover:bg-black/20 border-[1px] border-solid border-white/10 m-2 p-1 px-2 cursor-pointer "
+export const cropSelectionTextStyling = "flexColFullCenter text-white/60"
+const emptyCoverIconStyling = "flexColFullCenter cursor-pointer h-48 w-48 outline-none focus:ring-2 focus:ring-inset focus:ring-white rounded-[20px] bg-zinc-800 hover:bg-zinc-700 default-animation hover:text-white text-zinc-400 "
 const selectDropdownStyling = "select select-secondary w-[30%] py-2 px-5 text-base font-normal input-styling bg-zinc-800 default-animation "
-const selectDropdownRowStyling = "flex flex-col sm:flex-row w-full justify-between space-y-2 sm:space-y-0"
+const selectDropdownRowStyling = "flexCol sm:flex-row w-full justify-between space-y-2 sm:space-y-0"
 const coverContainerLabelStyling = "cursor-pointer default-animation flex md:block h-fit w-48"
-const imgCoverStyling = "flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px]"
+const imgCoverStyling = "flexFullCenter bg-slate-400 h-48 w-48 rounded-[20px]"
 const explicitTextStyling = "label-text cursor-pointer text-zinc-400 font-semibold"
 const photoIconStyling = "h-11 w-11 text-inherit "
-const explicitLabelStyling = "flex items-center"
+const explicitLabelStyling = "flexYCenter"
 const imgStyling = "h-48 w-48 text-slate-400 rounded-[20px]"
 const explicitCheckBoxStyling = "checkbox checkbox-primary mr-2 border-2 border-zinc-600"
 const visibleCheckBoxStyling = "checkbox checkbox-primary mr-2 border-2 border-zinc-600 ml-2 mr-0"
@@ -356,32 +357,45 @@ export const CropScreen = (props: CropScreenInter) => {
 
 export const LabelInput = (props: LabelInputInter) => {
     const { t } = useTranslation();
-    //absolute right-2 top-3
+
+    const onChange = (e) => {
+        const pattern = /^[a-zA-Z0-9]*$/;
+        const isValid = pattern.test(e.target.value.trim()) || e.target.value.trim() === "";
+        console.log("isValid: ", isValid)
+
+        if (isValid) {
+            props.setLabelMsg(handleValMsg(e.target.value.trim(), "podLabel", props.podcasts));
+            props.setLabel(e.target.value.trim());
+            console.log(e.target.value.trim())
+        }
+    };
+
     return (
         <>
-            <div className="flex-col">
-                <div className="flex flex-row items-center bg-zinc-800 rounded-xl pr-1">
-                    <input className={epNameStyling} required title="Only letters and numbers are allowed" type="text" name="showLabel" placeholder={t("uploadshow.label")}
+            <div className="flexCol">
+                <div className="flexYCenter relative bg-zinc-800 rounded-xl pr-1">
+                    <input
+                        className={epNameStyling}
+                        required
+                        title="Only letters and numbers are allowed"
+                        type="text"
+                        name="showLabel"
+                        placeholder={t("uploadshow.label")}
                         value={props.labelValue}
-                        onChange={(e) => {
-                            const pattern = /^[a-zA-Z0-9]*$/;
-                            const isValid = pattern.test(e.target.value.trim());
-                            console.log("isValid: ", isValid)
+                        onChange={(e) => onChange(e)}
+                    />
+                    <div className="helper-tooltip shrink-0 absolute right-4" data-tooltip-id="labelExplainTip">?</div>
+                    <Tooltip id="labelExplainTip" className="max-w-[250px] break-all overflow-hidden" clickable>
+                        {t("uploadshow.label-explanation")}
+                        {' '}
+                        <a
+                            className="hover:text-yellow-100 text-yellow-300"
+                            href={`https://${props.labelValue}.pc.show`}
+                        >
+                            {props.labelValue || "<label>"}.pc.show
+                        </a>
+                    </Tooltip>
 
-                            if (isValid) {
-                                props.setLabelMsg(handleValMsg(e.target.value.trim(), "podLabel", props.podcasts));
-                                props.setLabel(e.target.value.trim());
-                                console.log(e.target.value.trim())
-                            }
-                        }} />
-                    <div
-                        data-tooltip-content={t("uploadshow.label-explanation")}
-                        data-tooltip-id="labelExplainTip"
-                    >
-                        <a href={`https://${props.labelValue}.pc.show`}>{props.labelValue}.pc.show</a>
-                        <div className="helper-tooltip">?</div>
-                    </div>
-                    <Tooltip id="labelExplainTip" />
                 </div>
                 <ValMsg valMsg={props.labelMsg} className="pl-2" />
             </div>

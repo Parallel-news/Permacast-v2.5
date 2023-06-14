@@ -10,7 +10,7 @@ export type tx = string;
 export type arweaveTX = string;
 export type arseedTX = string;
 export type everpayTX = string;
-export type availableWallets = "arconnect" | "metamask";
+export type availableProviders = "arconnect" | "rainbowkit";
 export type contractType = "primaryEXMContract" | "featuredChannelsContract" | "collectionsContract" | "PASOMContract";
 
 export interface EXMState {
@@ -48,7 +48,7 @@ export interface Podcast {
   minifiedCover: arweaveTX;
 };
 
-export type PodcastMinimal = Omit<Podcast, 'episodes'>;
+export type PodcastMinified = Omit<Podcast, 'episodes'>;
 
 export interface Episode {
   eid: string;
@@ -66,8 +66,9 @@ export interface Episode {
 };
 
 export interface FullEpisodeInfo {
-  episode: Episode,
-  podcast: Podcast,
+  episode: Episode;
+  //!TODO: USE PodcastMinified
+  podcast: Podcast;//PodcastMinified,
 };
 
 export interface Ans {

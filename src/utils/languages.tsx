@@ -603,7 +603,7 @@ export const LanguageOptions: FC<LanguageOptionsProps> = ({ languageCode }) => {
   return (
     <>
       {langsArray.map((lang: string[]) => 
-        <option value={lang[0]} key={lang[1]} selected={languageCode === lang[0]}>
+        <option value={lang[0]} key={lang[1]} defaultValue={languageCode === lang[0] ? lang[0]: ""}>
           {lang[1]}
         </option>
       )}
@@ -621,7 +621,7 @@ export const CategoryOptions: FC<CategoryOptionsProps> = ({ categoryId }) => {
   return (
     <>
       {categoriesArray.map((lang: string[], index: number) => 
-        <option value={lang[1]} key={lang[0]} selected={index === categoryId}>
+        <option value={lang[1]} key={lang[0]} defaultValue={index === categoryId ? lang[1]: ""}>
           {lang[1]}
         </option>
       )}
