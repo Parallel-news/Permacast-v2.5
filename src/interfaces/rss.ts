@@ -7,12 +7,15 @@ export interface rssEpisode {
   link: string;
   pubDate: string;
   title: string;
+  // API
+  error?: string;
   // UI only
   order?: number;
   isUploaded?: boolean;
+  file?: ArrayBuffer;
 };
 
-export interface RssEpisodeContentLength {
+export interface RssEpisodeContentLengthAPI {
   link: string;
   length: string;
   error?: string;
@@ -20,7 +23,6 @@ export interface RssEpisodeContentLength {
 
 
 export interface rssEpisodeRetry extends rssEpisode {
-  file?: ArrayBuffer;
 };
 
 export interface RSSEpisodeEstimate {

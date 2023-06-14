@@ -70,7 +70,7 @@ const Pagination = ({
           placeholder={currentPage.toString()}
         />
       )}
-      {totalPages >= limitPagination && (
+      {totalPages > limitPagination && (
         <button
           className={buttonStyles}
           onClick={() => setCurrentPage(totalPages)}

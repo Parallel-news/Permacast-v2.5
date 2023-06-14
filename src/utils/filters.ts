@@ -1,5 +1,5 @@
 import { Episode, FullEpisodeInfo, Podcast } from "../interfaces";
-import { sleep } from "./ui";
+import { sleep, sortDuplicateStrings } from "./ui";
 
 export const removeDuplicates = (list: FullEpisodeInfo[]) => {
   const uniquePodcasts: FullEpisodeInfo[] = [];
@@ -63,4 +63,27 @@ export const attemptIndexPodcastID = async (podcasts: Podcast[], index: number, 
       };
     };
   };
+};
+
+export const sortHomepageInfo = async (podcasts: Podcast[]) => {
+  const episodes: FullEpisodeInfo[] = podcasts
+    .map((podcast: Podcast) => podcast.episodes
+      .map((episode: Episode, index: number) =>
+        ({ podcast, episode: { ...episode, order: index } })))
+    .flat();
+  const sortedEpisodes = episodes.sort(
+    (episodeA, episodeB) => episodeB.episode.uploadedAt - episodeA.episode.uploadedAt
+  ).splice(0, 3);
+
+  const sortedPodcasts: Podcast[] = podcasts.filter(
+    (podcast: Podcast) => podcast.episodes.length > 0 && !podcast.podcastName.includes("Dick")
+  ).splice(0, 6);
+
+  const allCreators = podcasts.sort(
+    (podcastA: Podcast, podcastB: Podcast) => podcastB.episodes.length - podcastA.episodes.length
+  ).map((podcast: Podcast) => podcast.owner);
+  
+  const featuredCreators = sortDuplicateStrings(allCreators).splice(0, 3);
+
+  return { sortedEpisodes, sortedPodcasts, featuredCreators };
 };

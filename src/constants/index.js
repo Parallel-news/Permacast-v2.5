@@ -63,15 +63,16 @@ export const RSS_FEED_URL = PERMACAST_HELPER_URL + "feeds/rss/"; // requires PID
 export const EXM_ANS_CONTRACT_ADDRESS = "VGWeJLDLJ9ify3ezl9tW-9fhB0G-GIUd60FE-5Q-_VI";
 export const MESON_ENDPOINT = "https://pz-znmpfs.meson.network/"
 export const NFT_CONTRACT = "Pagb13mULiD4GJpPW0kwiSlh7eL58dL1bzdoJzeyczw"
-export const NFT_ENDPOINT = EXM_READ_LINK+NFT_CONTRACT
+export const NFT_ENDPOINT = EXM_READ_LINK + NFT_CONTRACT
 export const RSS_IMPORT_LINK = PERMACAST_HELPER_URL + "import-rss/"
-export const RSS_META_LINK = PERMACAST_HELPER_URL+"rss-podcast-metadata/"
+export const RSS_META_LINK = PERMACAST_HELPER_URL + "rss-podcast-metadata/"
 
 // SOCIALS
 export const PERMACAST_DISCORD_URL = "https://discord.gg/cQanQVCs7G"
 export const PERMACAST_TWITTER_URL = "https://twitter.com/permacastapp"
 export const PERMACAST_TELEGRAM_URL = "https://t.me/permacast"
 export const DECENTLAND_TELEGRAM_URL = "https://t.me/decentland"
+export const A_URL_ATTRS = { target: "_blank", rel: "noreferrer" }
 
 const iconStyling = "w-4 h-4 text-zinc-300"
 
@@ -93,7 +94,7 @@ export const telegramObject = {
     "icon": <FaTelegram className={iconStyling} />
 }
 
-export const HELP_LINKS = [ discordObject, twitterObject, telegramObject ]
+export const HELP_LINKS = [discordObject, twitterObject, telegramObject]
 
 
 // ERRORS
@@ -110,7 +111,7 @@ export const PAYLOAD_RECEIVED = "Received"
 export const ARSEED_CURRENCY = "ar"
 export const ARSEED_URL = "https://arseed.web3infra.dev/"
 export const TEXTMARKDOWN = {
-    tags: [{name: "Content-Type", value:'text/markdown'}]
+    tags: [{ name: "Content-Type", value: 'text/markdown' }]
 }
 
 // PK
@@ -148,11 +149,11 @@ export const EXTENDED_TOAST_TIME = 10000000
 export const ERROR_TOAST_TIME = 4000
 export const PERMA_TOAST_SETTINGS = (time) => {
     return {
-        style: TOAST_DARK, 
-        className:TOAST_MARGIN, 
+        style: TOAST_DARK,
+        className: TOAST_MARGIN,
         duration: time
     }
-} 
+}
 
 // API ERRORS
 export const NO_SHOW = "Unable to fetch shows. Refresh and try again."

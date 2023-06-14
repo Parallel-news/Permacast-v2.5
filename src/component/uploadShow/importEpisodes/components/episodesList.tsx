@@ -1,11 +1,11 @@
 import React from "react";
 
-import { rssEpisode, rssEpisodeRetry } from "@/interfaces/rss";
+import { rssEpisode } from "@/interfaces/rss";
 
 import RssEpisodeItem from "./rssEpisodeItem";
 
 interface EpisodesListProps {
-  episodes: rssEpisode[] | rssEpisodeRetry[];
+  episodes: rssEpisode[];
   uploadedEpisodesLinks: string[];
   uploadedCount: number;
 };
@@ -17,7 +17,7 @@ const EpisodesList = ({ episodes, uploadedCount, uploadedEpisodesLinks }: Episod
         <RssEpisodeItem
           {...rssEpisode}
           isUploaded={uploadedEpisodesLinks.includes(rssEpisode.link)}
-          number={index + uploadedCount + 1}
+          order={index + uploadedCount + 1}
         />
       </React.Fragment>
     ))}

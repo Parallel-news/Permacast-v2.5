@@ -7,13 +7,14 @@ type tooltipPlacement = "top" | "topStart" | "topEnd" | "left" | "leftStart" | "
 
 interface TooltipProps {
   id: string;
+  tooltipClass?: string;
   triggerJSX?: ReactNode;
   tooltipJSX: ReactNode;
-}
+};
 
-export const TooltipTrigger = ({ id }: { id: string }) => (
+export const TooltipTrigger = ({ id, tooltipClass = "helper-tooltip" }: { id: string, tooltipClass?: string }) => (
   <div data-tooltip-id={id}>
-    <span className="ml-2 mt-[2.5px] tooltip-button">
+    <span className={tooltipClass}>
       ?
     </span>
   </div>
@@ -21,7 +22,8 @@ export const TooltipTrigger = ({ id }: { id: string }) => (
 
 const CommonTooltip = ({
   id,
-  triggerJSX = <TooltipTrigger {...{ id }} />,
+  tooltipClass = "helper-tooltip",
+  triggerJSX = <TooltipTrigger {...{ id, tooltipClass }} />,
   tooltipJSX
 }: TooltipProps) => (
   <>

@@ -48,7 +48,7 @@ export interface Podcast {
   minifiedCover: arweaveTX;
 };
 
-export type PodcastMinimal = Omit<Podcast, 'episodes'>;
+export type PodcastMinified = Omit<Podcast, 'episodes'>;
 
 export interface Episode {
   eid: string;
@@ -66,8 +66,9 @@ export interface Episode {
 };
 
 export interface FullEpisodeInfo {
-  episode: Episode,
-  podcast: Podcast,
+  episode: Episode;
+  //!TODO: USE PodcastMinified
+  podcast: Podcast;//PodcastMinified,
 };
 
 export interface Ans {

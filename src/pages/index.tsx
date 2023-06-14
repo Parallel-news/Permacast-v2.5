@@ -1,15 +1,18 @@
-import axios from "axios";
-import { NextPage } from "next";
+import { NextPage } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { Suspense, useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import React, { Suspense, useEffect } from 'react';
+import { useRecoilState } from 'recoil';
 import { useQuery } from '@tanstack/react-query';
 
-import { loadingPage } from "@/atoms/index";
+import { loadingPage } from '@/atoms/index';
 
-import { Episode, FullEpisodeInfo, Podcast } from '@/interfaces/index';
-import { getContractVariables, getFeaturedChannelsContract, getPASOMContract } from '@/utils/contract';
+import { FullEpisodeInfo } from '@/interfaces/index';
+import { getContractVariables, getPASOMContract } from '@/utils/contract';
+import { getPodcastData } from '@/features/prefetching';
+import { sortHomepageInfo } from '@/utils/filters';
+import { HOMAPAGE_STATS_KEY } from '@/constants/query-keys';
+import { EXM_READ_LINK } from '../constants';
 
 const FeaturedPodcastCarousel = React.lazy(() => import('@/component/reusables/FeaturedPodcastCarousel'));
 // const GetFeatured = React.lazy(() => import('../component/home/getFeatured'))
@@ -28,58 +31,26 @@ interface HomeProps {
   PASoMContractAddress?: string,
 };
 
-const getHomepageState = async () => {
-  const QUERY_PODCAST_KEY = 'podcastKey';
-  const QUERY_FEATURED_CREATORS = 'featuredCreators';
-
-  // https://docs.jsonata.org/simple
-  const queries = [{
-    key: QUERY_PODCAST_KEY,
-    query: `podcasts`
-  }, {
-    key: QUERY_FEATURED_CREATORS,
-    query: `(
-      $distinct(
-        $sort(podcasts, function($l, $r) {
-          $count($l.episodes) < $count($r.episodes)
-        }).owner
-      )[[0..2]]
-    )`
-  }];
-
-  const results = (await axios.post('/api/exm/read', {
-    queries,
-  })).data;
-
-  const podcasts = results[QUERY_PODCAST_KEY];
-  const featuredCreators = results[QUERY_FEATURED_CREATORS];
-
-  // too lazy to figure out a query for this
-  const episodes: FullEpisodeInfo[] = podcasts
-    .map((podcast: Podcast) => podcast.episodes
-      .map((episode: Episode, index: number) =>
-        ({ podcast, episode: { ...episode, order: index } })))
-    .flat();
-  const sortedEpisodes = episodes.sort((episodeA, episodeB) => episodeB.episode.uploadedAt - episodeA.episode.uploadedAt).splice(0, 3);
-  const sortedPodcasts: Podcast[] = podcasts.filter((podcast: Podcast) => podcast.episodes.length > 0 && !podcast.podcastName.includes("Dick")).splice(0, 6);
-
-  return { sortedEpisodes, sortedPodcasts, featuredCreators };
-};
-
 const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredContractAddress, PASoMContractAddress }) => {
 
   const { t } = useTranslation();
-  const [isVisible, setIsVisible] = useState(false);
   const [, _setLoadingPage] = useRecoilState(loadingPage);
 
   useEffect(() => {
     _setLoadingPage(false)
-  }, [])
+  }, []);
+
+  const { isFetched: podcastsFetched, data: EXMstate } = getPodcastData();
 
   const stateQuery = useQuery({
-    queryKey: ['getHomepageState'],
-    queryFn: getHomepageState
+    queryKey: [HOMAPAGE_STATS_KEY],
+    queryFn: () => sortHomepageInfo(EXMstate.podcasts),
+    enabled: podcastsFetched
   });
+
+  const { data: homeData, isLoading: isHomepageLoading, isSuccess } = stateQuery;
+
+  {/* {isVisible && <FeaturedChannelModal {...{ isVisible, setIsVisible }} />} */}
 
   const HomeLoader = () => {
     return (
@@ -96,11 +67,9 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
         }
 
         <Loading />
-        <div className="my-9 flex flex-col xl:flex-row md:justify-between space-y-10 xl:space-y-0">
-          <div className="w-[100%] xl:w-[71%]">
-            <Loading />
-          </div>
-          <div className="w-full xl:w-[27%]"><Loading /></div>
+        <div className="my-9 flexCol xl:flex-row md:justify-between space-y-10 xl:space-y-0">
+          <Loading className="w-[100%] xl:w-[71%]" />
+          <Loading className="w-full xl:w-[27%]" />
         </div>
       </div>
     )
@@ -110,49 +79,35 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
     <Suspense fallback={<HomeLoader />}>
       <div className="w-full pb-10 mb-10">
         <Greeting />
-        {isProduction !== true &&
+        {(isProduction !== true && contractAddress && PASoMContractAddress) &&
           <div className="select-text">
-            <p className='text-yellow-500 font-bold'>Heads up: isProduction !== "true"</p>
-            <div className="text-teal-300 flex gap-x-1">EXM Main Address: <p className="underline font-medium">{contractAddress}</p></div>
-            <div className="text-indigo-300 flex gap-x-1">EXM Feature Channel Address: <p className="underline font-medium">{featuredContractAddress}</p></div>
-            <div>(PRODUCTION) PASoM Contract Address: {PASoMContractAddress}</div>
-
+            <div className='text-yellow-500 font-bold'>Heads up: isProduction !== "true"</div>
+            <div className="text-teal-300 flex gap-x-1">EXM Main Address: <a href={EXM_READ_LINK + (contractAddress)} target="_blank" ref="noreferrer noopener" className="underline font-medium">{contractAddress}</a></div>
+            <div className="text-pink-300 flex gap-x-1">(PRODUCTION) PASoM Contract Address: <a href={EXM_READ_LINK + PASoMContractAddress} target="_blank" ref="noreferrer noopener">{PASoMContractAddress}</a></div>
           </div>
         }
-        {stateQuery.isSuccess && stateQuery?.data?.sortedPodcasts?.length > 0 ? (
-          <>
-            {isVisible && <FeaturedChannelModal {...{ isVisible, setIsVisible }} />}
-            <FeaturedPodcastCarousel
-              podcasts={stateQuery.data.sortedPodcasts}
-            />
-          </>
-        )
-          :
-          <Loading />
-        }
-        <div className="my-9 flex flex-col xl:flex-row md:justify-between space-y-10 xl:space-y-0">
+        {isHomepageLoading ? <Loading /> : (isSuccess && <FeaturedPodcastCarousel podcasts={homeData.sortedPodcasts} />)}
+        <div className="my-9 flexCol xl:flex-row md:justify-between space-y-10 xl:space-y-0">
           <div className="w-[100%] xl:w-[71%]">
-            {!stateQuery.isLoading ? (
+            {isHomepageLoading ? (
+              <Loading />
+            ) : (
               <>
                 <h2 className="text-zinc-400 text-lg mb-3">{t("home.recentlyadded")}</h2>
                 <div className="grid grid-rows-3 gap-y-4 text-zinc-100">
-                  {stateQuery.data.sortedEpisodes.map((episode: FullEpisodeInfo, index: number) => (
-                    <div key={index}>
-                      <Track {...{ episode }} openFullscreen includeDescription includePlayButton includeContentType />
-                    </div>
+                  {homeData.sortedEpisodes.map((episode: FullEpisodeInfo, index: number) => (
+                    <Track {...{ episode }} openFullscreen includeDescription includePlayButton includeContentType key={index} />
                   ))}
                 </div>
               </>
-            ) : (
-              <Loading />
             )}
           </div>
-          {!stateQuery.isLoading ? (
-            <div className="w-full xl:w-[27%]">
-              <FeaturedCreators addresses={stateQuery.data.featuredCreators} />
-            </div>
+          {isHomepageLoading ? (
+            <Loading className="w-full xl:w-[27%]" />
           ) : (
-            <div className="w-full xl:w-[27%]"><Loading /></div>
+            <div className="w-full xl:w-[27%]">
+              <FeaturedCreators addresses={homeData.featuredCreators} />
+            </div>
           )}
         </div>
       </div>
@@ -162,22 +117,24 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
 
 export async function getStaticProps({ locale }) {
   const { isProduction, contractAddress } = getContractVariables();
-  let { contractAddress: featuredContractAddress } = getFeaturedChannelsContract();
-  const { contractAddress: PASoMContractAddress } = getPASOMContract();
-  if (!featuredContractAddress) {
-    featuredContractAddress = null
-  }
+  let featuredContractAddress = "we'll integrate it later";
+  let PASoMContractAddress = '';
+
+  if (!isProduction) {
+    // ({ contractAddress: featuredContractAddress } = getFeaturedChannelsContract());
+    ({ contractAddress: PASoMContractAddress } = getPASOMContract());
+  };
+
   return {
     props: {
       ...(await serverSideTranslations(locale, [
         'common',
       ])),
-      isProduction,
-      contractAddress,
-      featuredContractAddress,
-      PASoMContractAddress
+      // contractAddress: !isProduction ? contractAddress : '',
+      // featuredContractAddress,
+      // PASoMContractAddress: PASoMContractAddress,
     },
-  }
-}
+  };
+};
 
 export default Home

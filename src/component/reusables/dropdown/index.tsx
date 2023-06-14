@@ -9,7 +9,7 @@ export interface ExtendedDropdownButtonProps {
 
 export interface DropdownProps {
   openMenuButton?: ReactNode;
-  items: any[];
+  items: ExtendedDropdownButtonProps[];
   openMenuButtonClass?: string;
   dropdownMenuClass: string;
   menuItemClass: string;

@@ -17,6 +17,11 @@ const Loading = React.lazy(() => import('@/component/reusables/loading'));
 const Creator404 = React.lazy(() => import('@/component/creator').then((module) => ({ default: module.Creator404 })));
 const CreatorPageComponentLazy = React.lazy(() => import('@/component/creator').then(module => ({ default: module.CreatorPageComponent })));
 
+//! REWRITE TO USE https://permacast-bloodstone-helper.herokuapp.com/protocol/users/{ADDRESS}
+// note: only returns production info
+// todo: fix reloading page on initial load
+// todo: build a lean mock of userpage
+
 export async function getServerSideProps(context) {
   const { locale, params } = context;
   const { address } = params;

@@ -58,16 +58,16 @@ interface uploadEpisodeInter {
 
 
 // 2. Stylings
-export const spinnerClass = "w-full flexXCcenter mt-4"
-export const showFormStyling = "w-full flexColFullCenter space-y-2"
-export const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex justify-start items-start focus-within:ring-white focus-within:ring-2"
-export const buttonBaseColorStyling = `bg-zinc-800 hover:bg-zinc-600 default-animation disabled:hover:bg-black disabled:bg-black text-white disabled:text-gray-500 flexFullCenter rounded-lg `;
-export const buttonStyling = buttonBaseColorStyling + `h-10 w-10 `;
+const spinnerClass = "w-full flexXCcenter mt-4"
+const showFormStyling = "w-full flexColFullCenter space-y-2"
+const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex justify-start items-start focus-within:ring-white focus-within:ring-2"
+const buttonBaseColorStyling = `bg-zinc-800 hover:bg-zinc-600 default-animation disabled:hover:bg-black disabled:bg-black text-white disabled:text-gray-500 flexFullCenter gap-x-1 rounded-lg `;
+const buttonStyling = buttonBaseColorStyling + `h-10 w-10 `;
 
 // 3. Custom Functions
 
 // Rube Goldberg would be proud
-const ImportedEpisodes = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect }: ImportedEpisodesProps) => {
+function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect }: ImportedEpisodesProps) {
 
   // hooks
   const { t } = useTranslation();
@@ -108,11 +108,9 @@ const ImportedEpisodes = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
   };
 
   const calculateTotalAndSetEpisodes = async (episodes: rssEpisode[]) => {
-
     const { knownEpisodeSizes, unknownEpisodeSizes } = await fetchEpisodeSizes(episodes);
     setCurrentEpisodes(knownEpisodeSizes);
     setRetryEpisodes(unknownEpisodeSizes);
-
     const total = knownEpisodeSizes.map((rssEpisode: rssEpisode) =>
       calculateSizeCost(GIGABYTE_COST, Number(rssEpisode.length)) + EPISODE_SLIPPAGE
     );
@@ -380,9 +378,10 @@ const ImportedEpisodes = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
           />
         </div>
       )}
-      <div className="text-red-400 text-bold">{t("rss.retry-estimation")}</div>
+      <div className="text-bold">{t("rss.retry-estimation")}</div>
       <CommonTooltip
         id="rssSizeTip"
+        tooltipClass="helper-tooltip-inherit-color w-5 h-5"
         tooltipJSX={t("rss.limited-size")}
       />
     </button>
@@ -394,6 +393,7 @@ const ImportedEpisodes = ({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
       setCurrentPage(prev => prev + 1);
     }}>
       {t("rss.skip-failed")}
+      <Icon strokeWidth="1.5" icon="CHEVRON_DOUBLE_RIGHT" />
     </button>
   );
 

@@ -134,7 +134,7 @@ const ArConnect = () => {
   const UserDropdown = () => {
     const openMenuButton = <OpenDropdownButton />;
     const openMenuButtonClass = `flexFullCenter bg-zinc-900 h-12 w-12 rounded-3xl default-animation rounded-full w-full z-0 `;
-    const dropdownMenuClass = `absolute z-50 right-0 mt-2 w-40 md:w-56 origin-top-right rounded-md bg-zinc-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none border-[2px] border-zinc-400 default-animation`
+    const dropdownMenuClass = `absolute z-50 right-[3%] lg:right-[8%] mt-2 w-64 origin-top-right rounded-md bg-zinc-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none border-[2px] border-zinc-400 default-animation`
     const menuItemClass = `border-0 p-[10px] hover:bg-zinc-800 hover:text-white default-animation `
     
     return <Dropdown {...{ openMenuButton, items, openMenuButtonClass, dropdownMenuClass, menuItemClass }} />;

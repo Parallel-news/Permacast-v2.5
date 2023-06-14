@@ -49,10 +49,23 @@ html, body {
     @apply flex w-full h-full;
   }
 
-  .flexCenterGap {
-    @apply flex items-center gap-x-2;
+  .flexYCenterGapX {
+    @apply flexYCenter gap-x-2;
+  }
+
+  .flexYCenterGapY {
+    @apply flexYCenter gap-y-2;
   }
   
+  .flexXCenterGapX {
+    @apply flexXCenter gap-x-2;
+  }
+  
+  .flexXCenterGapX {
+    @apply flexXCenter gap-y-2;
+  }
+  
+
   .flexFullCenter {
     @apply flex justify-center items-center;
   }
@@ -102,10 +115,13 @@ html, body {
   }
 
   .tooltip-base {
-    @apply w-6 h-6 rounded-full border-2 flex justify-center cursor-pointer items-center default-animation font-bold;
+    @apply rounded-full border-2 flexFullCenter cursor-pointer default-animation font-bold;
   }
   .helper-tooltip {
-    @apply tooltip-base hover:text-white text-zinc-400 hover:border-zinc-200 border-zinc-400;
+    @apply tooltip-base w-6 h-6 hover:text-white text-zinc-400 hover:border-zinc-200 border-zinc-400;
+  }
+  .helper-tooltip-inherit-color {
+    @apply tooltip-base w-6 h-6 text-inherit border-inherit;
   }
 
   .error-tooltip {
