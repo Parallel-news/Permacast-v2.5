@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import { CONNECT_WALLET, ERROR_TOAST_TIME, PERMA_TOAST_SETTINGS, PODCAST_LABEL_MAX_LEN, PODCAST_LABEL_MIN_LEN, TOAST_DARK, USER_SIG_MESSAGES } from "../constants";
 import { Podcast } from "../interfaces";
-import { defaultSignatureParams } from "react-arconnect";
+import { createSignatureInterface, defaultSignatureParams } from "react-arconnect";
 import { AuthenticationActions } from "../types";
 
 interface hexToRgbInter {

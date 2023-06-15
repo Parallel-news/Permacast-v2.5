@@ -5,8 +5,7 @@ import { Fragment, useRef, useState } from 'react'
 import { GenericNftButton } from './buttons'
 import { useArconnect } from 'react-arconnect'
 import { useTranslation } from 'react-i18next'
-import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, PERMACAST_TELEGRAM_URL, PERMA_TOAST_SETTINGS } from '../../../constants'
-import { Dialog, Transition } from '@headlessui/react'
+import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, PERMACAST_TELEGRAM_URL, PERMA_TOAST_SETTINGS, POLYSCAN_LINK } from '../../../constants'
 import { determineMintStatus, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
 import { PermaSpinner } from '../../../component/reusables'
 import { CreateCollectionViewObject, EpisodeTitleObject, ErrorModalObject, MintEpisodeViewObject, NftModalObject } from '../types'
@@ -16,6 +15,7 @@ import MintedNotification from './MintedNotification'
 import { grabEpisodeData } from '../utils'
 import { Icon } from '../../../component/icon'
 import ModalShell from '../../../component/modalShell'
+import Link from 'next/link'
 
 
 
@@ -30,6 +30,8 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
     const targetInputRef = useRef(null)
     const queryNftInfo = determineMintStatus({enabled: true, pid: pid})
     const payload = queryNftInfo?.data
+
+    console.log("p: ", payload)
 
     const [checkedEid, setCheckedEid] = useState([""])
 
@@ -124,7 +126,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
               )}
               {/*
 
-                Create Collection
+                Create Collection - Step 1
 
               */}
               {!queryNftInfo.isLoading && !payload.collectionAddr && payload.claimableFactories && (
@@ -138,7 +140,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
               )}
               {/*
 
-                Mint Episode NFT
+                Mint Episode NFT - Step 2
 
               */}
               {!queryNftInfo.isLoading && payload.collectionAddr && payload.episodes.length > 0 && (
@@ -149,6 +151,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                     cover={payload.cover}
                     setCheckedEid={setCheckedEid}
                     checkedEid={checkedEid}
+                    collectionAddr={payload.collectionAddr}
                   />
                   {/*Input for Address*/}
                   {!payload.allMinted && (
@@ -222,13 +225,13 @@ export const CreateCollectionView = ({showPic, showTitle} : CreateCollectionView
     )
 }
 
-export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, checkedEid }: MintEpisodeViewObject) => {
+export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, checkedEid, collectionAddr }: MintEpisodeViewObject) => {
 
   const { t } = useTranslation();
 
   const episodeRow = "w-full flex justify-between items-center"
   const episodeContainer = "bg-zinc-700 rounded-md w-full p-4 space-y-2"
-  const titleStyling = "flex justify-start w-full text-white text-2xl mb-6"
+  const titleStyling = "flex justify-between items-center w-full text-white text-2xl mb-6"
   const checkBoxStyling = "form-checkbox accent-[#FFFF00] bg-zinc-800 rounded-xl inline w-5 h-5"
 
   const handleCheckboxChange = (itemId) => {
@@ -243,6 +246,15 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
     <div className="flex flex-col w-full">
       <div className={titleStyling}>
         <p>{t('nft-collection.mint-for')} <span className="font-bold">{showName}</span></p>
+        <Link href={`${POLYSCAN_LINK}${collectionAddr}`}>
+          <Image 
+            src="/polygon_logo.svg"
+            alt="Polygon Icon"
+            width={40}
+            height={40}
+            className="cursor-pointer"
+          />
+        </Link>
       </div>
       <div className={episodeContainer}>
         {episodes.map((episode, index) => (
@@ -299,41 +311,3 @@ export const EpisodeName = ({episodeName, thumbnail}: EpisodeTitleObject) => {
     </div>
   )
 }
-
-/*
-        <Transition appear show={isOpen} as={Fragment}>
-          <Dialog as="div" className="relative z-10" onClose={() => !isOpen}>
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div className="fixed inset-0 bg-black bg-opacity-25" />
-            </Transition.Child>
-            <div className="fixed inset-0 overflow-y-auto">
-              <div className="flex min-h-full items-center justify-center p-4 text-center">
-                <Transition.Child
-                  as={Fragment}
-                  enter="ease-out duration-300"
-                  enterFrom="opacity-0 scale-95"
-                  enterTo="opacity-100 scale-100"
-                  leave="ease-in duration-200"
-                  leaveFrom="opacity-100 scale-100"
-                  leaveTo="opacity-0 scale-95"
-                >
-
-                  <Dialog.Panel className={modalContainer}></Dialog.Panel>
-
-
-
-                                    </Dialog.Panel>
-                </Transition.Child>
-              </div>
-            </div>
-          </Dialog>
-        </Transition>
-*/

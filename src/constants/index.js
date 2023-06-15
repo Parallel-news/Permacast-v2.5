@@ -66,6 +66,7 @@ export const NFT_CONTRACT = "Pagb13mULiD4GJpPW0kwiSlh7eL58dL1bzdoJzeyczw"
 export const NFT_ENDPOINT = EXM_READ_LINK+NFT_CONTRACT
 export const RSS_IMPORT_LINK = PERMACAST_HELPER_URL + "import-rss/"
 export const RSS_META_LINK = PERMACAST_HELPER_URL+"rss-podcast-metadata/"
+export const POLYSCAN_LINK = process.env.ISPROD ? "https://mumbai.polygonscan.com/address/" : "https://mumbai.polygonscan.com/address/"
 
 // SOCIALS
 export const PERMACAST_DISCORD_URL = "https://discord.gg/cQanQVCs7G"
