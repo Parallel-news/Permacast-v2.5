@@ -1,24 +1,24 @@
-import React from 'react';
-import Head from 'next/head';
-import '../styles/globals.css';
-import Script from 'next/script';
-import { RecoilRoot } from 'recoil';
 import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
+import '../styles/globals.css';
 
-import { queryClient } from '../lib/react-query';
+import { appWithTranslation } from 'next-i18next';
+import Head from 'next/head';
+import Script from 'next/script';
+import React from 'react';
+
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import { appWithTranslation } from 'next-i18next';
-import { ArconnectProvider } from 'react-arconnect';
-import { PERMISSIONS } from '../constants/arconnect';
+import { PERMISSIONS } from '@/constants/arconnect';
+import { queryClient } from '@/lib/react-query';
 
-import { QueryPodcasts } from '../features/prefetching';
-import { QueryAns } from '../features/prefetching';
-
-const Layout = React.lazy(() => import('../component/layout'));
-const ShikwasaProviderLazy = React.lazy(() => import('../hooks').then(module => ({ default: module.ShikwasaProvider })));
+const ArconnectProvider = React.lazy(() => import('react-arconnect').then(module => ({ default: module.ArconnectProvider })));
+const Layout = React.lazy(() => import('@/component/layout'));
+const QueryAns = React.lazy(() => import('@/features/prefetching').then(module => ({ default: module.QueryAns })));
+const QueryPodcasts = React.lazy(() => import('@/features/prefetching').then(module => ({ default: module.QueryPodcasts })));
+const RecoilRoot = React.lazy(() => import('recoil').then(module => ({ default: module.RecoilRoot })));
+const ShikwasaProviderLazy = React.lazy(() => import('@/hooks/index').then(module => ({ default: module.ShikwasaProvider })));
 
 
 function App({ Component, pageProps }) {

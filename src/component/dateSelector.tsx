@@ -1,21 +1,21 @@
-import { Dispatch, FC, SetStateAction, useState } from "react";
 import { useTranslation } from "next-i18next";
+import { Dispatch, SetStateAction } from "react";
 import { useRecoilState } from "recoil";
-import { currentThemeColorAtom } from "../atoms";
-import { flexCol, flexItemsCenter } from "./creator";
+
+import { currentThemeColorAtom } from "@/atoms/index";
 
 interface DateSelectorInterface {
   duration: number,
   setDuration: Dispatch<SetStateAction<number>>;
 }
 
-const DateSelector: FC<DateSelectorInterface> = ({ duration, setDuration }) => {
+const DateSelector = ({ duration, setDuration }: DateSelectorInterface) => {
 
   const { t } = useTranslation();
   const [currentThemeColor, setcurrentThemeColor] = useRecoilState(currentThemeColorAtom);
 
   return (
-    <div className={flexItemsCenter + "w-96 justify-center"}>
+    <div className={`flexCenter w-96 justify-center `}>
       <input
         id="default-range"
         type="range"

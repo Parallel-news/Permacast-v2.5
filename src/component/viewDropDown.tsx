@@ -1,11 +1,12 @@
 import { useTranslation } from "next-i18next";
 import { FC } from "react";
 import { useRecoilState } from "recoil";
-import { chronStatusAtom, hide0EpisodesAtom } from "../atoms";
+
+import { chronStatusAtom, hide0EpisodesAtom } from "@/atoms/index";
 import { Dropdown, ExtendedDropdownButtonProps } from "./reusables";
 import { Icon } from "./icon";
 
-const ViewDropDown: FC = () => {
+const ViewDropDown = () => {
 
   const { t } = useTranslation();
 
@@ -41,14 +42,14 @@ const ViewDropDown: FC = () => {
   ];
   //<Bars3BottomRightIcon className="h-5 w-5" aria-hidden="true" />
   const openMenuButton = <Icon className={iconClassName} icon="BAR3BOTTOM" />;
-  const openMenuButtonClass = `rounded-lg min-w-min bg-zinc-900 justify-start p-2`;
+  const openMenuButtonClass = `rounded-lg min-w-min bg-zinc-900 hover:bg-zinc-700 justify-start p-2 default-animation `;
   const position = "start"
   const menuItemClass = "border-0 p-[10px] hover:bg-zinc-800 hover:text-white"
   const dropdownMenuClass = `absolute z-50 right-0 mt-2 w-56 origin-top-right rounded-md bg-zinc-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none border-[2px] border-zinc-400 text-sm`
 
   return (
     <div id="sharp">
-      <Dropdown {...{ openMenuButton, items, openMenuButtonClass, dropdownMenuClass, menuItemClass, position } } />
+      <Dropdown {...{ openMenuButton, items, openMenuButtonClass, dropdownMenuClass, menuItemClass, position }} />
     </div>
   )
 };

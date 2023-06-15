@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { Tooltip } from 'react-tooltip'
 import { useTranslation } from "next-i18next";
-import { flexCol } from "../creator";
-import { dimColorString, isTooDark, RGBstringToObject } from "../../utils/ui";
+
+import { dimColorString, isTooDark, RGBstringToObject } from "@/utils/ui";
 import { Icon } from "../icon";
 
 
@@ -27,7 +27,7 @@ const Verification: FC<VerificationInterface> = (props) => {
   const UserVerified = () => {
     const { t } = useTranslation();
     return (
-      <div className={flexCol}>
+      <div className={`flexCol`}>
         <div className={LargeBoldFontStyling}>{t("creator.verification.verified.text")}</div>
         <div className={ExplanationTextStyling}>{t("creator.verification.verified.explanation")}</div>
       </div>
@@ -37,7 +37,7 @@ const Verification: FC<VerificationInterface> = (props) => {
   const UserNotVerified = () => {
     const { t } = useTranslation();
     return (
-      <div className={flexCol}>
+      <div className={`flexCol`}>
         <div className={LargeBoldFontStyling}>{t("creator.verification.unverified.text")}</div>
         <div className={ExplanationTextStyling + "max-w-[200px] "}>{t("creator.verification.unverified.explanation")}</div>
       </div>

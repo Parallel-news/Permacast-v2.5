@@ -1,8 +1,8 @@
-import { Dispatch, FC, SetStateAction, useState, lazy, useEffect } from 'react';
-import { convertToValidNumber } from '../../utils/validation/inputs';
-import { Icon } from '../icon';
+import { Dispatch, SetStateAction, useState, useEffect, ReactNode } from 'react';
 
-const DebouncedInput = lazy(() => import("../reusables/debouncedInput").then(module => ({ default: module.default })));
+import { convertToValidNumber } from '@/utils/validation/inputs';
+import { Icon } from '../icon';
+import DebouncedInput from './debouncedInput';
 
 interface PaginationProps {
   totalPages: number;
@@ -12,69 +12,67 @@ interface PaginationProps {
   setCurrentPage: Dispatch<SetStateAction<number>>;
   removeScrollButtons?: boolean;
   buttonStyles?: string;
-  extraJSX?: any;
+  extraJSX?: ReactNode;
 };
 
-const buttonStyling = `pagination-button h-8 w-8 `;
+const defaultButtonStyling = `pagination-button h-10 w-10 `;
 
-
-const Pagination: FC<PaginationProps> = ({
+const Pagination = ({
   totalPages,
   limitPagination,
   currentPage,
   setCurrentPage,
   removeScrollButtons,
-  buttonStyles,
+  buttonStyles = defaultButtonStyling,
   extraJSX
-}) => {
-  const [navigatePage, setNavigatePage] = useState<number>(currentPage);
-  const styling = buttonStyles ? buttonStyles : buttonStyling;
+}: PaginationProps) => {
+
+  const handleNavigate = (value: number) => {
+    if (value > 1 && value <= totalPages && value !== currentPage) {
+      setCurrentPage(value);
+    } else if (value === 1) {
+      setCurrentPage(1);
+    }
+  }
 
   useEffect(() => {
-    setNavigatePage(currentPage);
-  }, [currentPage]);
+    if (totalPages < currentPage || totalPages === 0) setCurrentPage(totalPages);
+  }, [currentPage])
 
   return (
     <div className="flexFullCenterGap justify-center">
       {(totalPages >= 1 && !removeScrollButtons) && (
         <button
-          className={styling}
+          className={buttonStyles}
           onClick={() => setCurrentPage(currentPage - 1)}
           disabled={currentPage === 1}
         >
           <Icon className="h-6 w-6 mr-1" icon="CHEVLEFT" />
         </button>
       )}
-      {(totalPages >= limitPagination - 1) && (
-        <DebouncedInput
-          className={styling + 'text-center font-bold underline '}
-          input={navigatePage}
-          setInput={setNavigatePage}
-          timeout={800}
-          callback={(val) => {
-            const value = convertToValidNumber(val, 1);
-            if (value > 1 && value <= totalPages && value !== currentPage) {
-              setCurrentPage(value);
-            } else if (value === 1) {
-              setCurrentPage(1);
-            };
-          }}
-          placeholder={currentPage.toString()}
-        />
-      )}
       {totalPages >= 1 && Array.from(Array(totalPages).keys()).slice(0, limitPagination).map((page: number) => (
         <button
           key={page}
-          className={styling}
+          className={buttonStyles}
           onClick={() => setCurrentPage(page + 1)}
           disabled={page === (currentPage - 1)}
         >
           {page + 1}
         </button>
       ))}
-      {totalPages >= limitPagination && (
+      {(totalPages > limitPagination + 1) && (
+        <DebouncedInput
+          className={buttonStyles + 'text-center font-bold '}
+          input={currentPage}
+          setInput={setCurrentPage}
+          timeout={100}
+          callback={(val) => handleNavigate(convertToValidNumber(val, 1))}
+          placeholder={currentPage.toString()}
+        />
+      )}
+      {totalPages > limitPagination && (
         <button
-          className={styling}
+          className={buttonStyles}
           onClick={() => setCurrentPage(totalPages)}
           disabled={totalPages === currentPage}
         >
@@ -83,11 +81,11 @@ const Pagination: FC<PaginationProps> = ({
       )}
       {(totalPages >= 1 && !removeScrollButtons) && (
         <button
-          className={styling}
+          className={buttonStyles}
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage(currentPage + 1)}
         >
-          <Icon className="h-6 w-6 mr-1" icon="CHEVRIGHT"/>
+          <Icon className="h-6 w-6 mr-1" icon="CHEVRIGHT" />
         </button>
       )}
       {extraJSX ? extraJSX : ""}

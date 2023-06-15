@@ -1,17 +1,17 @@
 import { useTranslation } from "next-i18next";
-import { FC } from "react";
 import { useRecoilState } from "recoil";
-import { selectWalletModalVisibilityAtom, selectedWalletAtom, walletNotDetectedModalVisibilityAtom } from "../../atoms";
+
+import { selectWalletModalVisibilityAtom, selectedProviderAtom, walletNotDetectedModalVisibilityAtom } from "@/atoms/index";
 import ArConnect from "./arconnect";
 import Metamask from "./metamask";
 import WalletNotDetectedModal from "./walletNotDetectedModal";
 import SelectWalletModal from "./selectWalletModal";
 
-const connectButtonStyling = `w-full h-12 hover:bg-zinc-700 bg-zinc-900 rounded-full items-center flex px-4 justify-center mx-auto default-no-outline-ringed default-animation z-0 `;
+const connectButtonStyling = `w-full h-12 hover:bg-zinc-700 bg-zinc-900 rounded-full flexFullCenter px-4 mx-auto default-no-outline-ringed default-animation z-0 `;
 
-const WalletSelectorButton: FC = () => {
+const WalletSelectorButton = () => {
   const { t } = useTranslation();
-  const [selectedWallet, setSelectedWallet] = useRecoilState(selectedWalletAtom);
+  const [selectedProvider, setSelectedProvider] = useRecoilState(selectedProviderAtom);
 
   const [selectWalletModalVisibility, setSelectWalletModalVisibility] = useRecoilState<boolean>(selectWalletModalVisibilityAtom);
   const [walletNotDetectedModalVisibility, setWalletNotDetectedModalVisibility] = useRecoilState<boolean>(walletNotDetectedModalVisibilityAtom);
@@ -44,7 +44,7 @@ const WalletSelectorButton: FC = () => {
           {t("wallet.connect")}
         </button>
       )}
-      {Object.keys(availableWallets).length === 1 && availableWallets[selectedWallet]}
+      {Object.keys(availableWallets).length === 1 && availableWallets[selectedProvider]}
     </>
   );
 };

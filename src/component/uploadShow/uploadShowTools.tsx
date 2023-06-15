@@ -11,7 +11,7 @@ import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { allFieldsFilled, byteSize, checkConnection, handleError, validateLabel } from "../../utils/reusables";
 import Everpay, { ChainType } from "everpay";
 import { useRecoilState } from "recoil";
-import { arweaveAddress, loadingPage, podcastColorAtom } from "../../atoms";
+import { loadingPage, podcastColorAtom } from "../../atoms";
 
 import axios from "axios";
 import { useTranslation } from "next-i18next";
@@ -108,7 +108,6 @@ export const ShowForm = (props: ShowFormInter) => {
     const { t } = useTranslation();
     const { address, ANS, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
-    const [arweaveAddress_,] = useRecoilState(arweaveAddress);
     const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
     const [submittingShow, setSubmittingShow] = useState<boolean>(false);
     const [arseedCostPerGig, setArseedCostPerGig] = useState<number>(0);
@@ -213,7 +212,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
     async function submitShow(payloadObj: any) {
         // Check Connection
-        if (!checkConnection(arweaveAddress_)) {
+        if (!checkConnection(address)) {
             toast.error(CONNECT_WALLET, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
             return false
         }
@@ -450,7 +449,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Explicit & Is Visible
                     */}
-                    <div className="flex flex-row justify-between items-center">
+                    <div className="flexYCenter justify-between">
                         <ExplicitInput
                             setExplicit={setPodcastExplicit_}
                             explicit={podcastExplicit_}
@@ -465,7 +464,7 @@ export const ShowForm = (props: ShowFormInter) => {
                     {/*
                         Upload
                     */}
-                    <div className="w-full flex justify-center items-center flex-col">
+                    <div className="w-full flexColFullCenter">
                         {/*Show Upload Btn, Spinner, or Connect Btn*/}
                         {address && address.length > 0 && !submittingShow && (
                             <UploadButton

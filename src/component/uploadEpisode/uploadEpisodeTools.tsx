@@ -1,24 +1,29 @@
 import axios from 'axios';
 import router from 'next/router';
+import { useTranslation } from 'next-i18next';
+import React, {  useEffect, useState } from 'react';
+import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import toast from 'react-hot-toast';
 import { useRecoilState } from 'recoil';
-import { Podcast } from '../../interfaces';
-import { useTranslation } from 'next-i18next';
-import { ValMsg } from '../reusables/formTools';
-import { ProgressBar } from '../progressBar';
-import { transferFunds } from '../../utils/everpay';
-import React, {  useEffect, useState } from 'react';
-import { VisibleInput } from '../uploadShow/reusables';
-import { arweaveAddress, loadingPage } from '../../atoms';
-import { createFileFromBlobUrl } from '../../utils/fileTools';
-import { defaultSignatureParams, useArconnect } from 'react-arconnect';
-import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
-import { descContainerStyling, spinnerClass } from '../uploadShow/uploadShowTools';
-import { getBundleArFee, upload2DMedia, upload3DMedia } from '../../utils/arseeding';
-import { allFieldsFilled, byteSize, checkConnection, determineMediaType, generateAuthentication, handleError } from '../../utils/reusables';
-import { EditEpisodeProps, UploadEpisodeProps } from '../../interfaces/exm';
-import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, ERROR_TOAST_TIME, EVERPAY_EOA, EXTENDED_TOAST_TIME, GIGABYTE, PERMA_TOAST_SETTINGS, SPINNER_COLOR, TOAST_DARK, TOAST_MARGIN, USER_SIG_MESSAGES } from '../../constants';
-import { getPodcastData } from '../../features/prefetching';
+
+import { loadingPage } from '@/atoms/index';
+
+import { APP_LOGO, APP_NAME, PERMISSIONS } from '@/constants/arconnect';
+import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, ERROR_TOAST_TIME, EVERPAY_EOA, EXTENDED_TOAST_TIME, GIGABYTE, PERMA_TOAST_SETTINGS, SPINNER_COLOR, TOAST_DARK, TOAST_MARGIN, USER_SIG_MESSAGES } from '@/constants/index';
+
+import { Podcast } from '@/interfaces/index';
+import { EditEpisodeProps, UploadEpisodeProps } from '@/interfaces/exm';
+
+import { transferFunds } from '@/utils/everpay';
+import { createFileFromBlobUrl } from '@/utils/fileTools';
+import { getBundleArFee, upload2DMedia, upload3DMedia } from '@/utils/arseeding';
+import { allFieldsFilled, byteSize, checkConnection, determineMediaType, generateAuthentication, handleError } from '@/utils/reusables';
+
+import { getPodcastData } from '@/features/prefetching';
+import { descContainerStyling, spinnerClass } from '@/component/uploadShow/uploadShowTools';
+import { ValMsg } from '@/component/reusables/formTools';
+import { ProgressBar } from '@/component/progressBar';
+import { VisibleInput } from '@/component/uploadShow/reusables';
 
 
 const UploadButton = React.lazy(() => import('./reusables').then(module => ({ default: module.UploadButton })))
@@ -58,9 +63,8 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     const [submittingEp, setSubmittingEp] = useState<boolean>(false)
     const { address, ANS, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
-    const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
-    const [arseedCost, setArseedCost] = useState<Number>(0);
-    const [uploadCost, setUploadCost] = useState<Number>(0);
+    const [arseedCost, setArseedCost] = useState<number>(0);
+    const [uploadCost, setUploadCost] = useState<number>(0);
 
     //Inputs
     const [pid, setPid] = useState<string>("")
@@ -187,7 +191,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
 
     const submitEpisode = async (epPayload: any) => {
         // Check Connection
-        if (!checkConnection(arweaveAddress_)) {
+        if (!checkConnection(address)) {
             toast.error(CONNECT_WALLET, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
             return false
         }
@@ -332,13 +336,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                         colorHex="#FFFF00"
                     />
                 )}
-                {!address && (
-                    <ConnectButton 
-                        width="w-[75%] md:w-[50%]"
-                        disable={false}
-                        click={() => connect()}
-                    />
-                )}
+                <ConnectButton className="w-[75%] md:w-[50%]" />
                 {/*Is Visible Input*/}
                 {props.edit && !submittingEp && (
                     <div className="absolute right-0"> 
@@ -349,7 +347,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                     </div>
                 )}
             </div>
-            <div className="flex justify-center items-center">
+            <div className="flexFullCenter">
                 {uploadCost !== 0 && epDesc.length > 0 && epMedia && (
                     <p className="mt-2 text-neutral-400">{t("uploadepisode.feetext")} {(Number(uploadCost)).toFixed(6) +" AR"}</p>
                 )}

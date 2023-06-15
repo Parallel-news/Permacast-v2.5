@@ -1,11 +1,11 @@
 import dynamic from "next/dynamic";
-import { FC } from "react";
-import Searchbar from "../../searchbar";
-import WalletSelectorButton from "../../wallets";
 
-const NavigationDropdown = dynamic(() => import("../../dropdowns/NavigationDropdown"), { ssr: false });
+import Searchbar from "@/component/searchbar";
+import WalletSelectorButton from "@/component/wallets";
 
-export const NavBar: FC = () => {
+const NavigationDropdown = dynamic(() => import("@/component/dropdowns/NavigationDropdown"), { ssr: false });
+
+export const NavBar = () => {
   return (
     <div className="mb-10 ">
       <div className="md:hidden">
@@ -25,9 +25,9 @@ export const NavBar: FC = () => {
   );
 };
 
-export const NavBarMobile: FC = () => {
+export const NavBarMobile = () => {
   return (
-    <div className="flex items-center gap-x-2 mt-5">
+    <div className="flexYCenter gap-x-2 mt-5">
       <Searchbar />
       <NavigationDropdown />
     </div>

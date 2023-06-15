@@ -1,18 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
-import { ALL_PODCASTS } from "../../../constants";
-import { apiClient } from "../../../lib/api-client";
+
+import { apiClient } from "@/lib/api-client";
+import { ALL_PODCASTS } from "@/constants/index";
+import { Podcast } from "@/interfaces/index";
 
 
-export const getPodcastPayload = (): Promise<any> => apiClient.get('/api/exm/read')
+export const getPodcastPayload = (): Promise<any> => apiClient.get('/api/exm/read');
 
 export function getPodcastData () {
   return useQuery({
     queryKey: [ALL_PODCASTS],
     queryFn: async () => {
-      const payload = await getPodcastPayload()
-      return {
-        podcasts: payload.podcasts
-      }
+      const payload = await getPodcastPayload();
+      const podcasts = payload.podcasts as Podcast[];
+      return { podcasts };
     },
     enabled: true
   })

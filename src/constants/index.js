@@ -22,7 +22,7 @@ export const EPISODE_NAME_MAX_LEN = 500;
 export const EPISODE_DESC_MIN_LEN = 1;
 export const EPISODE_DESC_MAX_LEN = 5000;
 
-export const PODCAST_LABEL_MIN_LEN = 1;
+export const PODCAST_LABEL_MIN_LEN = 0;
 export const PODCAST_LABEL_MAX_LEN = 35;
 
 export const PODCAST_COVER_MIN_LEN = 43;
@@ -63,16 +63,19 @@ export const RSS_FEED_URL = PERMACAST_HELPER_URL + "feeds/rss/"; // requires PID
 export const EXM_ANS_CONTRACT_ADDRESS = "VGWeJLDLJ9ify3ezl9tW-9fhB0G-GIUd60FE-5Q-_VI";
 export const MESON_ENDPOINT = "https://pz-znmpfs.meson.network/"
 export const NFT_CONTRACT = "Pagb13mULiD4GJpPW0kwiSlh7eL58dL1bzdoJzeyczw"
-export const NFT_ENDPOINT = EXM_READ_LINK+NFT_CONTRACT
+export const NFT_ENDPOINT = EXM_READ_LINK + NFT_CONTRACT
 export const RSS_IMPORT_LINK = PERMACAST_HELPER_URL + "import-rss/"
-export const RSS_META_LINK = PERMACAST_HELPER_URL+"rss-podcast-metadata/"
+
 export const POLYSCAN_LINK = process.env.ISPROD ? "https://mumbai.polygonscan.com/address/" : "https://mumbai.polygonscan.com/address/"
+export const RSS_META_LINK = PERMACAST_HELPER_URL + "rss-podcast-metadata/"
+
 
 // SOCIALS
 export const PERMACAST_DISCORD_URL = "https://discord.gg/cQanQVCs7G"
 export const PERMACAST_TWITTER_URL = "https://twitter.com/permacastapp"
 export const PERMACAST_TELEGRAM_URL = "https://t.me/permacast"
 export const DECENTLAND_TELEGRAM_URL = "https://t.me/decentland"
+export const A_URL_ATTRS = { target: "_blank", rel: "noreferrer" }
 
 const iconStyling = "w-4 h-4 text-zinc-300"
 
@@ -94,7 +97,7 @@ export const telegramObject = {
     "icon": <FaTelegram className={iconStyling} />
 }
 
-export const HELP_LINKS = [ discordObject, twitterObject, telegramObject ]
+export const HELP_LINKS = [discordObject, twitterObject, telegramObject]
 
 
 // ERRORS
@@ -111,7 +114,7 @@ export const PAYLOAD_RECEIVED = "Received"
 export const ARSEED_CURRENCY = "ar"
 export const ARSEED_URL = "https://arseed.web3infra.dev/"
 export const TEXTMARKDOWN = {
-    tags: [{name: "Content-Type", value:'text/markdown'}]
+    tags: [{ name: "Content-Type", value: 'text/markdown' }]
 }
 
 // PK
@@ -126,6 +129,7 @@ export const EVERPAY_EOA = '0x6c05FdF443A5c9520af46976A24546191068afbe';
 export const EVERPAY_EOA_UPLOADS = `0x026b7A1Fb83e8c3439a65142D54fD4E0d2b36A30`;
 export const EVERPAY_FEATURE_TREASURY = "0x6c05FdF443A5c9520af46976A24546191068afbe";
 export const EVERPAY_AR_TAG = 'arweave,ethereum-ar-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,0x4fadc7a98f2dc96510e42dd1a74141eeae0c1543';
+export const MAX_EPISODES_TO_UPLOAD_AT_ONCE = 5;
 export const MIN_UPLOAD_PAYMENT = .25 // 250000000000 winston
 export const EPISODE_UPLOAD_FEE = .01 // 10000000000 winston
 export const EPISODE_SLIPPAGE = 0.001 // 1000000000 winston
@@ -148,11 +152,11 @@ export const EXTENDED_TOAST_TIME = 10000000
 export const ERROR_TOAST_TIME = 4000
 export const PERMA_TOAST_SETTINGS = (time) => {
     return {
-        style: TOAST_DARK, 
-        className:TOAST_MARGIN, 
+        style: TOAST_DARK,
+        className: TOAST_MARGIN,
         duration: time
     }
-} 
+}
 
 // API ERRORS
 export const NO_SHOW = "Unable to fetch shows. Refresh and try again."
@@ -163,7 +167,7 @@ export const startId = "#start"
 // Initial Load
 export const TITLE_WAIT = 100
 export const LOGO_WAIT = 700
-export const FADE_WAIT = 2500
+export const FADE_WAIT = 1900
 
 // LIMITS
 export const MAX_DOWNLOAD_FILE_SIZE = GIGABYTE / 4; // 256MB
