@@ -4,11 +4,13 @@ import Image from 'next/image'
 import { useRef, useState } from 'react'
 import { useArconnect } from 'react-arconnect'
 import { useTranslation } from 'react-i18next'
-import toast from 'react-hot-toast'
 
+import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, PERMACAST_TELEGRAM_URL, PERMA_TOAST_SETTINGS, POLYSCAN_LINK } from '../../../constants'
+import { determineMintStatus, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
+import { PermaSpinner } from '../../../component/reusables'
+import toast from 'react-hot-toast'
 import { Dialog, Transition } from '@headlessui/react'
 
-import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, PERMACAST_TELEGRAM_URL, PERMA_TOAST_SETTINGS } from '@/constants/index'
 import { CreateCollectionViewObject, EpisodeTitleObject, ErrorModalObject, MintEpisodeViewObject, NftModalObject } from '../types'
 import { isERCAddress } from '@/utils/reusables'
 
@@ -17,49 +19,51 @@ import ModalShell from '@/component/modalShell'
 import { PermaSpinner } from '@/component/reusables'
 
 import { grabEpisodeData } from '../utils'
+
+import { Icon } from '../../../component/icon'
+import ModalShell from '../../../component/modalShell'
+import Link from 'next/link'
 import MintedNotification from './MintedNotification'
 import { GenericNftButton } from './buttons'
-
 import { determineMintStatus, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
-
-
 
 export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
 
-  const { t } = useTranslation();
-  const { getPublicKey, createSignature } = useArconnect()
+    const { t } = useTranslation();
+    const { getPublicKey, createSignature } = useArconnect()
 
-  const mintEpisodeMutation = useMintEpisode()
-  const collectionMutation = useCreateCollection()
+    const mintEpisodeMutation = useMintEpisode()
+    const collectionMutation = useCreateCollection()
 
-  const targetInputRef = useRef(null)
-  const queryNftInfo = determineMintStatus({ enabled: true, pid: pid })
-  const payload = queryNftInfo?.data
+    const targetInputRef = useRef(null)
+    const queryNftInfo = determineMintStatus({enabled: true, pid: pid})
+    const payload = queryNftInfo?.data
 
-  const [checkedEid, setCheckedEid] = useState([""])
+    const [checkedEid, setCheckedEid] = useState([""])
 
-  const collectionStyling = "flexColCenter space-y-4"
-  const xStyling = "text-white cursor-pointer h-6 absolute right-4 top-2"
-  const modalContainer = "w-full max-w-2xl overflow-hidden rounded-2xl bg-zinc-800 p-10 text-left align-middle shadow-xl default-animation relative min-h-[200px] flexColFullCenter "
-  const targetInputStyle = "input input-secondary w-full py-3 pl-5 pr-10 bg-zinc-700 border-0 rounded-md outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+    const collectionStyling = "flex flex-col items-center space-y-4"
+    const xStyling = "text-white cursor-pointer h-6 absolute right-4 top-2"
+    const modalContainer = "w-full max-w-2xl transform overflow-hidden rounded-2xl bg-zinc-800 p-10 text-left align-middle shadow-xl transition-all relative min-h-[200px] flex flex-col justify-center items-center"
+    const targetInputStyle = "input input-secondary w-full py-3 pl-5 pr-10 bg-zinc-700 border-0 rounded-md outline-none focus:ring-2 focus:ring-inset focus:ring-white"
 
-  // Handlers 
-  async function handleEpisodeMint() {
-    const targetAddr = targetInputRef.current.value;
-    // Real Target Address?
-    if (!isERCAddress(targetAddr)) {
-      toast.error(t("invalid-address"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
-      targetInputRef.current.className = "border-2 border-red-300 focus:ring-0 " + targetInputStyle;
-      return false
-    }
-    const toastLoading = toast.loading(t("nft-collection.minting-episode"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
-    // Post Mint Data
-    mintEpisodeMutation.mutate({
-      eid: checkedEid[0],
-      target: targetAddr,
-      getPublicKey: getPublicKey,
-      createSignature: createSignature
-    },
+    // Handlers 
+    async function handleEpisodeMint() {
+      const targetAddr = targetInputRef.current.value;
+      // Real Target Address?
+      if(!isERCAddress(targetAddr)) {
+        toast.error(t("invalid-address"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
+        targetInputRef.current.className = "border-2 border-red-300 focus:ring-0 "+targetInputStyle;
+        return false
+      }
+      const toastLoading = toast.loading(t("nft-collection.minting-episode"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
+      // Post Mint Data
+      mintEpisodeMutation.mutate({
+        eid: checkedEid[0],
+        target: targetAddr,
+        getPublicKey: getPublicKey,
+        createSignature: createSignature
+      },
+
       {
         onSuccess: async () => {
           setTimeout(async () => {
@@ -129,7 +133,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
           )}
           {/*
 
-                Create Collection
+                Create Collection - Step 1
 
               */}
           {!queryNftInfo.isLoading && !payload.collectionAddr && payload.claimableFactories && (
@@ -143,9 +147,10 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
           )}
           {/*
 
-                Mint Episode NFT
+          Mint Episode NFT - Step 2
 
-              */}
+          */}
+
           {!queryNftInfo.isLoading && payload.collectionAddr && payload.episodes.length > 0 && (
             <div className="flex flex-col w-full space-y-8">
               <MintEpisodeView
@@ -154,6 +159,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                 cover={payload.cover}
                 setCheckedEid={setCheckedEid}
                 checkedEid={checkedEid}
+                collectionAddr={payload.collectionAddr}
               />
               {/*Input for Address*/}
               {!payload.allMinted && (
@@ -227,13 +233,13 @@ export const CreateCollectionView = ({ showPic, showTitle }: CreateCollectionVie
   )
 }
 
-export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, checkedEid }: MintEpisodeViewObject) => {
+export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, checkedEid, collectionAddr }: MintEpisodeViewObject) => {
 
   const { t } = useTranslation();
 
   const episodeRow = "w-full flex justify-between items-center"
   const episodeContainer = "bg-zinc-700 rounded-md w-full p-4 space-y-2"
-  const titleStyling = "flex justify-start w-full text-white text-2xl mb-6"
+  const titleStyling = "flex justify-between items-center w-full text-white text-2xl mb-6"
   const checkBoxStyling = "form-checkbox accent-[#FFFF00] bg-zinc-800 rounded-xl inline w-5 h-5"
 
   const handleCheckboxChange = (itemId) => {
@@ -248,6 +254,15 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
     <div className="flex flex-col w-full">
       <div className={titleStyling}>
         <p>{t('nft-collection.mint-for')} <span className="font-bold">{showName}</span></p>
+        <Link href={`${POLYSCAN_LINK}${collectionAddr}`}>
+          <Image 
+            src="/polygon_logo.svg"
+            alt="Polygon Icon"
+            width={40}
+            height={40}
+            className="cursor-pointer"
+          />
+        </Link>
       </div>
       <div className={episodeContainer}>
         {episodes.map((episode, index) => (
@@ -304,41 +319,3 @@ export const EpisodeName = ({ episodeName, thumbnail }: EpisodeTitleObject) => {
     </div>
   )
 }
-
-/*
-        <Transition appear show={isOpen} as={Fragment}>
-          <Dialog as="div" className="relative z-10" onClose={() => !isOpen}>
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div className="fixed inset-0 bg-black bg-opacity-25" />
-            </Transition.Child>
-            <div className="fixed inset-0 overflow-y-auto">
-              <div className="flex min-h-full items-center justify-center p-4 text-center">
-                <Transition.Child
-                  as={Fragment}
-                  enter="ease-out duration-300"
-                  enterFrom="opacity-0 scale-95"
-                  enterTo="opacity-100 scale-100"
-                  leave="ease-in duration-200"
-                  leaveFrom="opacity-100 scale-100"
-                  leaveTo="opacity-0 scale-95"
-                >
-
-                  <Dialog.Panel className={modalContainer}></Dialog.Panel>
-
-
-
-                                    </Dialog.Panel>
-                </Transition.Child>
-              </div>
-            </div>
-          </Dialog>
-        </Transition>
-*/

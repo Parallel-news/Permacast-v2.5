@@ -89,6 +89,7 @@ export type MintEpisodeViewObject = {
     cover: string;
     setCheckedEid: Dispatch<SetStateAction<string[]>>;
     checkedEid: string[];
+    collectionAddr: string;
 }
 
 export type EpisodeTitleObject = {
