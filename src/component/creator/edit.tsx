@@ -1,19 +1,21 @@
 import axios from 'axios';
 import { useTranslation } from 'next-i18next';
 import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
-import { defaultSignatureParams, useArconnect } from 'react-arconnect';
 import { Tooltip } from 'react-tooltip'
 import toast from 'react-hot-toast';
 
-import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, GIGABYTE, PASOM_SIG_MESSAGES, PERMA_TOAST_SETTINGS } from '@/constants/index';
-import { PASoMProfile, updateWalletMetadata } from '@/interfaces/pasom';
+import useCrossChainAuth from '@/hooks/useCrossChainAuth';
 
-import { UploadImageContainer } from '@/component/reusables/croppingTools';
+import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, GIGABYTE, PASOM_SIG_MESSAGES, PERMA_TOAST_SETTINGS } from '@/constants/index';
+
+import { PASoMProfile, updateWalletMetadata } from '@/interfaces/pasom';
 import { getBundleArFee, upload3DMedia } from "@/utils/arseeding";
 import { createFileFromBlobUrl, } from "@/utils/fileTools";
 import validatePASoMForm, { PASOM_BIO_MAX_LEN, PASOM_BIO_MIN_LEN, PASOM_NICKNAME_MAX_LEN, PASOM_NICKNAME_MIN_LEN } from '@/utils/validation/PASoM';
 
-import ThemedButton from '../reusables/themedButton';
+import { UploadImageContainer } from '@/component/reusables/croppingTools';
+
+import ThemedButton from '@/component/reusables/themedButton';
 import { Modal } from '../reusables';
 import { Icon } from '../icon';
 
@@ -158,7 +160,8 @@ export const EditModalHeader: FC = () => {
 export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, className, PASoMProfile }) => {
 
   const { t } = useTranslation();
-  const { address, getPublicKey, createSignature } = useArconnect();
+  const { address, packageEXM } = useCrossChainAuth();
+
   const [nickname, setNickname] = useState<string>("");
   const [bio, setBio] = useState<string>("");
   const [banner, setBanner] = useState<string>("");
@@ -166,6 +169,8 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
   const [error, setError] = useState<string | false>("");
   const [sameInfo, setSameInfo] = useState<boolean>(false);
 
+
+  // Todo: rewrite to use react-query, example in upload-show
   const [arseedGigabyteCost, setArseedGigabyteCost] = useState<number>(0);
   const [avatarSize, setAvatarSize] = useState<number>(0);
   const [bannerSize, setBannerSize] = useState<number>(0);
@@ -246,22 +251,21 @@ export const EditModal: FC<EditModalProps> = ({ isVisible, setIsVisible, classNa
     console.log(nickname, bio, bannerTX, avatarTX);
 
     // Package EXM Call
-    const data = new TextEncoder().encode(PASOM_SIG_MESSAGES[0]);
-    const sig = String(await createSignature(data, defaultSignatureParams, "base64"));
-    const jwk_n = await getPublicKey();
-
-    console.log('uploading')
     const payloadObj: updateWalletMetadata = {
       function: "updateWalletMetadata",
       nickname,
       bio,
       banner: bannerTX,
       avatar: avatarTX,
-      sig,
-      jwk_n,
+      jwk_n: '',
+      sig: '',
     };
-    console.log(payloadObj);
-    const res = await axios.post('/api/exm/PASoM/write', payloadObj);
+
+    const payload: updateWalletMetadata = await packageEXM(payloadObj, PASOM_SIG_MESSAGES[0])
+
+    console.log('uploading')
+    console.log(payload);
+    const res = await axios.post('/api/exm/PASoM/write', payload);
     console.log(res.data);
     // TODO pass updated profile to parent component
     setIsVisible(false);
@@ -296,10 +300,10 @@ export const EditButton: FC<EditButtonProps> = ({ PASoMProfile }) => {
 
   const className = `flexCol bg-zinc-800 rounded-3xl z-10 mb-0 w-[300px] sm:w-[500px] lg:w-[500px] h-[518px] `;
 
-  const EditText: FC = () => (
-    <div className={`flexCenterGap`}>
+  const EditText = () => (
+    <div className={`flexYCenterGapX`}>
       {t('creator.edit')}
-      <Icon className='text-inherit w-5 h-5' icon="PENCIL" strokeWidth='1.5' />
+      <Icon className='w-5 h-5' icon="PENCIL" />
     </div>
   );
 

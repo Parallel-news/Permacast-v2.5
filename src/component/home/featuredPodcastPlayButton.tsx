@@ -5,7 +5,7 @@ import PlayButton from "../reusables/playButton";
 
 import { FeaturedPodcastPlayButtonInterface } from "../../interfaces/playback"; 
 
-import { useShikwasa } from "../../hooks";
+import useShikwasa from "@/hooks/useShikwasa";
 
 
 

@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { useRecoilState } from "recoil";
 
+import useCrossChainAuth from '@/hooks/useCrossChainAuth';
 
 import { loadingPage, podcastColorAtom } from "@/atoms/index";
 import { CONNECT_WALLET, EPISODE_UPLOAD_FEE, EVERPAY_EOA, TOAST_DARK, USER_SIG_MESSAGES, EPISODE_SLIPPAGE, ERROR_TOAST_TIME, PERMA_TOAST_SETTINGS, EXTENDED_TOAST_TIME, SPINNER_COLOR, MAX_EPISODES_TO_UPLOAD_AT_ONCE } from "@/constants/index";
@@ -18,7 +19,7 @@ import { fetchDominantColor, getCoverColorScheme, sleep } from "@/utils/ui";
 import { transferFunds, refetchEverpayARBalance, getEverpayARBalance, payStorageFee } from "@/utils/everpay";
 
 
-import { rssEpisode, rssEpisodeRetry, RSSEpisodeEstimate } from "@/interfaces/rss";
+import { rssEpisode, RSSEpisodeEstimate } from "@/interfaces/rss";
 import { UploadEpisodeProps } from "@/interfaces/exm";
 
 import { getPodcastData } from '@/features/prefetching';
@@ -37,7 +38,7 @@ import { UploadButton } from '@/component/uploadEpisode/reusables';
 import Pagination from '@/component/reusables/Pagination';
 import CommonTooltip from '@/component/reusables/tooltip';
 import EpisodesList from './components/episodesList';
-import useCrossChainAuth from '@/hooks/auth';
+import Spinner from "@/component/reusables/spinner";
 
 
 // 1. Interfaces
@@ -59,7 +60,7 @@ interface uploadEpisodeInter {
 
 // 2. Stylings
 const spinnerClass = "w-full flexXCcenter mt-4"
-const showFormStyling = "w-full flexColFullCenter space-y-2"
+const showFormStyling = "w-full flexColFullCenter space-y-2 pb-20"
 const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex justify-start items-start focus-within:ring-white focus-within:ring-2"
 const buttonBaseColorStyling = `bg-zinc-800 hover:bg-zinc-600 default-animation disabled:hover:bg-black disabled:bg-black text-white disabled:text-gray-500 flexFullCenter gap-x-1 rounded-lg `;
 const buttonStyling = buttonBaseColorStyling + `h-10 w-10 `;
@@ -93,7 +94,7 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [navigatePage, setNavigatePage] = useState<number>(1);
   const [uploadedEpisodesLinks, setUploadedEpisodesLinks] = useState<string[]>([]);
-  const [retryEpisodes, setRetryEpisodes] = useState<rssEpisodeRetry[]>([]);
+  const [retryEpisodes, setRetryEpisodes] = useState<rssEpisode[]>([]);
   const [uploadedCount, setUploadCount] = useState<number>(0);
   const [progress, setProgress] = useState(0);
 
@@ -161,14 +162,13 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
     asyncs();
   }, [currentPage]);
 
-  const tryDescriptionUpload = async (description: string, handleErr: any) => {
+  const tryDescriptionUpload = async (description: string) => {
     try {
       const descriptionTX = await upload2DMedia(description);
       const tx = descriptionTX?.order?.itemId || '';
       return tx;
     } catch (e) {
       console.log(e);
-      handleErr(t("errors.descUploadError"), setIsUploadingEpisodes);
       return '';
     };
   };
@@ -199,7 +199,6 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
 
   const saveEpisodeToEXM = async (rssEpisode: rssEpisode, uploadPaymentTX: string, count: number) => {
     console.log('Uploading to EXM, ', rssEpisode);
-    const handleErr = handleError;
     const { link, description, title, fileType } = rssEpisode;
     const percentPerEpisode = (100 / currentEpisodes.length);
 
@@ -208,7 +207,7 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
       "jwk_n": "",
       "pid": realPid,
       "name": title,
-      "desc": await tryDescriptionUpload(description, handleErr),
+      "desc": await tryDescriptionUpload(description),
       "sig": "",
       "txid": await tryFeePayment(),
       "isVisible": true,
@@ -349,7 +348,7 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
         setIsCalculating(false);
         return false;
       };
-      const newEpisodes = retryEpisodes.map((episode: rssEpisodeRetry, index: number) => {
+      const newEpisodes = retryEpisodes.map((episode: rssEpisode, index: number) => {
         const length = nonZeroResults.find((result) => result.link === episode.link);
         return {
           ...episode,
@@ -387,11 +386,15 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
     </button>
   );
 
-  const RetryEpisodesDownloadButton = () => (
-    <button className={buttonBaseColorStyling + "py-3 px-4 "} onClick={() => {
-      setRetryEpisodes([]);
-      setCurrentPage(prev => prev + 1);
-    }}>
+  const SkipEpisodesDownloadButton = () => (
+    <button
+      className={buttonBaseColorStyling + "py-3 px-4 "}
+      disabled={currentPage === MAX_PAGES}
+      onClick={() => {
+        setRetryEpisodes([]);
+        setCurrentPage(prev => prev + 1);
+      }
+    }>
       {t("rss.skip-failed")}
       <Icon strokeWidth="1.5" icon="CHEVRON_DOUBLE_RIGHT" />
     </button>
@@ -401,13 +404,12 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
     if (!retryEpisodes?.length) return <></>;
     return (
       <>
-        <div className="text-center my-2">{t("rss.estimation-failed")}</div>
         <EpisodesList
           {...{ uploadedCount, episodes: retryEpisodes, uploadedEpisodesLinks }}
         />
         <div className="flexCenter justify-between mt-2">
           <EstimateUploadButton />
-          <RetryEpisodesDownloadButton />
+          <SkipEpisodesDownloadButton />
         </div>
       </>
     );
@@ -463,18 +465,13 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
 
   const LoadingSpinner = () => (
     <div className="text-zinc-700 flexFullCenter w-full h-60">
-      <PermaSpinner
-        spinnerColor={SPINNER_COLOR}
-        size={5}
-      />
+      <Spinner />
     </div>
   );
 
   const TotalCost = () => (
     <p className="mt-2 text-zinc-300">{t("uploadshow.uploadCost") + ": " + (Number(totalUploadCost)).toFixed(6) + " AR"}</p>
   );
-
-  //
 
   return (
     <div className={showFormStyling}>
@@ -509,7 +506,7 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
             <TotalCost />
           </div>
         </div>
-        <div className="w-[25%] pb-20"></div>
+        <div className="w-[25%] "></div>
       </div>
     </div>
   );

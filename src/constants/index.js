@@ -47,7 +47,7 @@ export const AR_DECIMALS = 1000000000000
  * 5. Works for Modals and Components w Set Areas regardless of load status e.g. Account Balance
  */
 export const FADE_OUT_STYLE = "opacity-0 transition-opacity duration-500 ease-in-out"
-export const FADE_IN_STYLE = "opacity-100 transition-opacity duration-5git00 ease-in-out"
+export const FADE_IN_STYLE = "opacity-100 transition-opacity duration-500 ease-in-out"
 
 // TEXT TRUNCATE
 export const STR_LEN_EPISODE_BOX = 100
@@ -81,19 +81,19 @@ const iconStyling = "w-4 h-4 text-zinc-300"
 
 export const discordObject = {
     "name": "Discord",
-    "url": PERMACAST_DISCORD_URL,
+    "href": PERMACAST_DISCORD_URL,
     "icon": <FaDiscord className={iconStyling} />
 }
 
 export const twitterObject = {
     "name": "Twitter",
-    "url": PERMACAST_TWITTER_URL,
+    "href": PERMACAST_TWITTER_URL,
     "icon": <FaTwitter className={iconStyling} />
 }
 
 export const telegramObject = {
     "name": "Telegram",
-    "url": PERMACAST_TELEGRAM_URL,
+    "href": PERMACAST_TELEGRAM_URL,
     "icon": <FaTelegram className={iconStyling} />
 }
 

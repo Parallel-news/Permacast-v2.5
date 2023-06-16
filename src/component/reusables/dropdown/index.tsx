@@ -11,23 +11,24 @@ export interface DropdownProps {
   openMenuButton?: ReactNode;
   items: ExtendedDropdownButtonProps[];
   openMenuButtonClass?: string;
-  dropdownMenuClass: string;
-  menuItemClass: string;
+  dropdownMenuClass?: string;
+  menuItemClass?: string;
 };
 
+// TODO: rewrite
 const Dropdown = ({
-  openMenuButton,
+  openMenuButton=<div>Open Menu</div>,
   items,
   openMenuButtonClass="flexFullCenter bg-zinc-900 h-12 w-12 rounded-3xl default-animation ",
-  dropdownMenuClass,
-  menuItemClass
+  dropdownMenuClass="",
+  menuItemClass="flexXCenter border-0 hover:bg-zinc-800 hover:text-white default-animation"
 }: DropdownProps) => {
 
   return (
     <div className="flex">
       <Menu as="div" className="relative inline-block text-left w-full default-animation ">
         {/*Server and Static are generating two separate IDs. Next UI not SSR friendly*/}
-        <Menu.Button className={openMenuButtonClass}>
+        <Menu.Button className={openMenuButtonClass + " flex"}>
           {openMenuButton}
         </Menu.Button>
         <Transition

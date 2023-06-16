@@ -4,9 +4,10 @@ import { Tooltip } from "react-tooltip";
 import Cropper from "react-easy-crop";
 
 import getCroppedImg from "@/utils/croppedImage";
-import { handleValMsg } from "./uploadShowTools";
-import { Podcast } from "@/interfaces/index";
+import { handleValMsg } from "@/utils/validation/podcast";
 import { DEFAULT_LANGUAGE } from "@/utils/languages";
+
+import { Podcast } from "@/interfaces/index";
 
 import { Icon } from "@/component/icon";
 

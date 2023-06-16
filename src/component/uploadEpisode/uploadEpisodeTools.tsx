@@ -20,7 +20,6 @@ import { getBundleArFee, upload2DMedia, upload3DMedia } from '@/utils/arseeding'
 import { allFieldsFilled, byteSize, checkConnection, determineMediaType, generateAuthentication, handleError } from '@/utils/reusables';
 
 import { getPodcastData } from '@/features/prefetching';
-import { descContainerStyling, spinnerClass } from '@/component/uploadShow/uploadShowTools';
 import { ValMsg } from '@/component/reusables/formTools';
 import { ProgressBar } from '@/component/progressBar';
 import { VisibleInput } from '@/component/uploadShow/reusables';
@@ -52,6 +51,7 @@ export const tipModalStyling = "absolute inset-0 bottom-0 flex justify-center it
 export const episodeFormStyling = "w-[90%] md:w-[75%] lg:w-[50%] flex flex-col justify-center items-center space-y-4"
 export const episodeNameStyling = "input input-secondary w-full py-3 pl-5 pr-10 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white default-animation "
 export const episodeDescStyling =  "input input-secondary resize-none w-full h-28 pb-12 py-3 px-5 bg-zinc-800 border-0 rounded-xl outline-none default-animation "
+const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex justify-start items-start focus-within:ring-white focus-within:ring-2 default-animation "
 
 // 3. Custom Functions
 

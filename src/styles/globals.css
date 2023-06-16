@@ -7,6 +7,8 @@ html, body {
   background-color: #000;
 }
 
+/* Todo: split utility and component classes */
+
 @layer components {
 
   .ArConnectButtonStyling {
@@ -15,6 +17,10 @@ html, body {
 
   .flexCol {
     @apply flex flex-col;
+  }
+
+  .flexBetween {
+    @apply flex justify-between;
   }
 
   .flexColCenter {
@@ -61,10 +67,9 @@ html, body {
     @apply flexXCenter gap-x-2;
   }
   
-  .flexXCenterGapX {
+  .flexXCenterGapY {
     @apply flexXCenter gap-y-2;
   }
-  
 
   .flexFullCenter {
     @apply flex justify-center items-center;
@@ -72,6 +77,14 @@ html, body {
 
   .flexFullCenterGap {
     @apply flex w-full items-center gap-x-2;
+  }
+
+  .flexFullCenterGapY {
+    @apply flexFullCenter gap-y-2;
+  }
+
+  .flexFullCenterGapX {
+    @apply flexFullCenterGap;
   }
 
   .whFull {
@@ -86,10 +99,18 @@ html, body {
     @apply text-zinc-300 hover:text-white cursor-pointer !rounded-full bg-zinc-900 hover:bg-zinc-600;
   }
 
+  .sidenav-button {
+    @apply disabled:text-white hover:text-zinc-200 text-zinc-400 w-9 h-9 default-animation;
+  }
+
   .pagination-button {
     @apply bg-zinc-800 hover:bg-zinc-600 default-animation disabled:hover:bg-black disabled:bg-black text-white disabled:text-gray-500 flexFullCenter rounded-lg;
   }
   
+  .dropdown-item {
+    @apply flexXCenter border-0 hover:bg-zinc-800 hover:text-white default-animation;
+  }
+
   .default-animation {
     @apply ease-in-out duration-300 transition-all;
   }
@@ -114,6 +135,14 @@ html, body {
     @apply input input-secondary w-full bg-zinc-900 border-0 rounded-xl default-no-outline-ringed focus:ring-inset;
   }
 
+  .spinner {
+    @apply animate-spin text-gray-200;
+  }
+
+  .spinner-yellow {
+    @apply text-gray-200 animate-spin fill-max-yellow;
+  }
+
   .tooltip-base {
     @apply rounded-full border-2 flexFullCenter cursor-pointer default-animation font-bold;
   }
@@ -123,11 +152,9 @@ html, body {
   .helper-tooltip-inherit-color {
     @apply tooltip-base w-6 h-6 text-inherit border-inherit;
   }
-
   .error-tooltip {
     @apply tooltip-base hover:text-red-300 text-red-500 hover:border-red-300 border-red-500;
   }
-
   .tooltip-button {
     @apply text-sm text-gray-400 border-2 border-gray-400 rounded-full w-4 h-4 leading-[0] flex items-center justify-center cursor-pointer;
   }
