@@ -1,31 +1,26 @@
 
-
+import Link from 'next/link'
 import Image from 'next/image'
+import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 import { useArconnect } from 'react-arconnect'
-import { useTranslation } from 'react-i18next'
-
-import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, PERMACAST_TELEGRAM_URL, PERMA_TOAST_SETTINGS, POLYSCAN_LINK } from '../../../constants'
-import { determineMintStatus, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
-import { PermaSpinner } from '../../../component/reusables'
 import toast from 'react-hot-toast'
-import { Dialog, Transition } from '@headlessui/react'
 
-import { CreateCollectionViewObject, EpisodeTitleObject, ErrorModalObject, MintEpisodeViewObject, NftModalObject } from '../types'
+import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, PERMACAST_TELEGRAM_URL, PERMA_TOAST_SETTINGS, POLYSCAN_LINK } from '@/constants/index'
+
 import { isERCAddress } from '@/utils/reusables'
 
-import { Icon } from '@/component/icon'
-import ModalShell from '@/component/modalShell'
-import { PermaSpinner } from '@/component/reusables'
-
+import { CreateCollectionViewObject, EpisodeTitleObject, ErrorModalObject, MintEpisodeViewObject, NftModalObject } from '../types'
+import { determineMintStatus, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
 import { grabEpisodeData } from '../utils'
 
-import { Icon } from '../../../component/icon'
-import ModalShell from '../../../component/modalShell'
-import Link from 'next/link'
+import { PermaSpinner } from '@/component/reusables'
+import { Icon } from '@/component/icon'
+import ModalShell from '@/component/modalShell'
+
 import MintedNotification from './MintedNotification'
 import { GenericNftButton } from './buttons'
-import { determineMintStatus, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
+
 
 export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
 
