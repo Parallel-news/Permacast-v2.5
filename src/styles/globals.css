@@ -135,6 +135,14 @@ html, body {
     @apply input input-secondary w-full bg-zinc-900 border-0 rounded-xl default-no-outline-ringed focus:ring-inset;
   }
 
+  .spinner {
+    @apply animate-spin text-gray-200;
+  }
+
+  .spinner-yellow {
+    @apply text-gray-200 animate-spin fill-max-yellow;
+  }
+
   .tooltip-base {
     @apply rounded-full border-2 flexFullCenter cursor-pointer default-animation font-bold;
   }

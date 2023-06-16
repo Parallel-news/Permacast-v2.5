@@ -2,8 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTranslation } from "next-i18next";
 import React, { FC, useEffect, useState } from "react";
-import { useArconnect } from "react-arconnect";
 import { useRecoilState } from "recoil";
+
+import useCrossChainAuth from "@/hooks/useCrossChainAuth";
+import useLanguageHook from "@/hooks/useLanguageHook";
 
 import { allANSUsersAtom, loadingPage } from "@/atoms/index";
 import { RSS_FEED_URL } from "@/constants/index";
@@ -11,7 +13,7 @@ import { RSS_FEED_URL } from "@/constants/index";
 import { ANSMapped, Podcast } from "@/interfaces/index";
 import { ButtonStyle } from "@/component/reusables/track";
 
-import { getCategoryInCurrentLanguage, useLanguageHook } from "@/utils/languages";
+import { getCategoryInCurrentLanguage } from "@/utils/languages";
 import { queryMarkdownByTX } from "@/utils/markdown";
 import {
   RGBAstringToObject,
@@ -94,7 +96,7 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
   const language = languagesArray.find(item => item[0] === podcast.language)[1]
   const formattedDate = getFormattedTimeStamp(podcast.createdAt);
 
-  const ExpandIcon = () => <Icon className="w-4 h-4 " icon="ARROWSOUT" strokeWidth="0.5" fill="currentColor" />;
+  const ExpandIcon = () => <Icon className="w-6 h-6 " icon="ARROWSOUT" strokeWidth="0.5" fill="currentColor" />;
 
   useEffect(() => {
     const ANS = allANSUsers.find((user: ANSMapped) => user.address === owner);
@@ -191,7 +193,6 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
                 className={`flexYCenterGapX brighten-animation ` + coloredButtonPaddingStying}
                 style={buttonStyles}
               >
-                {t("textTruncate.showMore")}
                 <ExpandIcon />
               </button>
             </div>
@@ -228,7 +229,7 @@ export const PodcastInfoMobile = (props: PodcastInfoInter) => {
 export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
   const { t } = useTranslation();
   const { color, podcastId } = props
-  const { address } = useArconnect()
+  const { address } = useCrossChainAuth()
   const [, _setLoadingPage] = useRecoilState(loadingPage)
 
   return (

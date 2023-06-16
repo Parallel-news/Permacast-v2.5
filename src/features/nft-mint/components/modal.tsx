@@ -3,10 +3,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
-import { useArconnect } from 'react-arconnect'
 import toast from 'react-hot-toast'
 
 import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, PERMACAST_TELEGRAM_URL, PERMA_TOAST_SETTINGS, POLYSCAN_LINK } from '@/constants/index'
+
+import useCrossChainAuth from '@/hooks/useCrossChainAuth'
 
 import { isERCAddress } from '@/utils/reusables'
 
@@ -16,48 +17,49 @@ import { grabEpisodeData } from '../utils'
 
 import { PermaSpinner } from '@/component/reusables'
 import { Icon } from '@/component/icon'
-import ModalShell from '@/component/modalShell'
+import { Modal } from "@/component/reusables";
 
 import MintedNotification from './MintedNotification'
 import { GenericNftButton } from './buttons'
+import ModalShell from '@/component/modalShell'
 
 
 export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
 
-    const { t } = useTranslation();
-    const { getPublicKey, createSignature } = useArconnect()
+  const { t } = useTranslation();
+  const { getPublicKey, createSignature } = useCrossChainAuth();
 
-    const mintEpisodeMutation = useMintEpisode()
-    const collectionMutation = useCreateCollection()
+  const mintEpisodeMutation = useMintEpisode()
+  const collectionMutation = useCreateCollection()
 
-    const targetInputRef = useRef(null)
-    const queryNftInfo = determineMintStatus({enabled: true, pid: pid})
-    const payload = queryNftInfo?.data
+  const targetInputRef = useRef(null)
+  const queryNftInfo = determineMintStatus({ enabled: true, pid: pid })
+  const payload = queryNftInfo?.data
 
-    const [checkedEid, setCheckedEid] = useState([""])
+  const [checkedEid, setCheckedEid] = useState([""])
 
-    const collectionStyling = "flex flex-col items-center space-y-4"
-    const xStyling = "text-white cursor-pointer h-6 absolute right-4 top-2"
-    const modalContainer = "w-full max-w-2xl transform overflow-hidden rounded-2xl bg-zinc-800 p-10 text-left align-middle shadow-xl transition-all relative min-h-[200px] flex flex-col justify-center items-center"
-    const targetInputStyle = "input input-secondary w-full py-3 pl-5 pr-10 bg-zinc-700 border-0 rounded-md outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+  const collectionStyling = "flexColYCenter space-y-4"
+  const xStyling = "text-white cursor-pointer h-6 absolute right-2 top-2"
+  const modalContainer = "w-full max-w-2xl overflow-hidden rounded-2xl bg-zinc-800 p-10 text-left align-middle shadow-xl relative min-h-[200px] flexColFullCenter default-animation "
+  const targetInputStyle = "w-full py-3 pl-5 pr-10 bg-zinc-700 border-0 rounded-md outline-none focus:ring-2 focus:ring-inset focus:ring-white default-animation"
 
-    // Handlers 
-    async function handleEpisodeMint() {
-      const targetAddr = targetInputRef.current.value;
-      // Real Target Address?
-      if(!isERCAddress(targetAddr)) {
-        toast.error(t("invalid-address"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
-        targetInputRef.current.className = "border-2 border-red-300 focus:ring-0 "+targetInputStyle;
-        return false
-      }
-      const toastLoading = toast.loading(t("nft-collection.minting-episode"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
-      // Post Mint Data
-      mintEpisodeMutation.mutate({
-        eid: checkedEid[0],
-        target: targetAddr,
-        getPublicKey: getPublicKey,
-        createSignature: createSignature
-      },
+  // Handlers 
+  async function handleEpisodeMint() {
+    const targetAddr = targetInputRef.current.value;
+    // Real Target Address?
+    if (!isERCAddress(targetAddr)) {
+      toast.error(t("invalid-address"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
+      targetInputRef.current.className = "border-2 border-red-300 focus:ring-0 " + targetInputStyle;
+      return false
+    }
+    const toastLoading = toast.loading(t("nft-collection.minting-episode"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
+    // Post Mint Data
+    mintEpisodeMutation.mutate({
+      eid: checkedEid[0],
+      target: targetAddr,
+      getPublicKey: getPublicKey,
+      createSignature: createSignature
+    },
 
       {
         onSuccess: async () => {
@@ -100,6 +102,14 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
         }
       })
   }
+
+
+  // todo: if possible, rewrite the component to use our custom modal (it does a nice blur effect)
+  // <Modal
+  //   isVisible={isOpen}
+  //   setIsVisible={setIsOpen}
+  //   className="md:max-h-[600px] md:w-[600px] overflow-y-scroll bg-zinc-800 px-10 py-8 rounded-xl "
+  // >
 
   return (
     <>
@@ -232,9 +242,9 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
 
   const { t } = useTranslation();
 
-  const episodeRow = "w-full flex justify-between items-center"
+  const episodeRow = "w-full flexBetween items-center"
   const episodeContainer = "bg-zinc-700 rounded-md w-full p-4 space-y-2"
-  const titleStyling = "flex justify-between items-center w-full text-white text-2xl mb-6"
+  const titleStyling = "flexBetween items-center w-full text-white text-2xl mb-6"
   const checkBoxStyling = "form-checkbox accent-[#FFFF00] bg-zinc-800 rounded-xl inline w-5 h-5"
 
   const handleCheckboxChange = (itemId) => {
@@ -250,7 +260,7 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
       <div className={titleStyling}>
         <p>{t('nft-collection.mint-for')} <span className="font-bold">{showName}</span></p>
         <Link href={`${POLYSCAN_LINK}${collectionAddr}`}>
-          <Image 
+          <Image
             src="/polygon_logo.svg"
             alt="Polygon Icon"
             width={40}
@@ -285,8 +295,8 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
 
 export const ErrorModalMessage = ({ helpSrc, primaryMsg, secondaryMsg }: ErrorModalObject) => {
 
-  const linkStyling = "text-white hover:text-[#FFFF00] transform transition-all duration-500 text-xl"
-  const containerStyling = "flex flex-col space-y-6 justify-center items-center font-semibold text-2xl"
+  const linkStyling = "text-white hover:text-[#FFFF00] default-animation text-xl"
+  const containerStyling = "flexColFullCenter space-y-6 font-semibold text-2xl"
 
   return (
     <div className={containerStyling}>
@@ -299,7 +309,7 @@ export const ErrorModalMessage = ({ helpSrc, primaryMsg, secondaryMsg }: ErrorMo
 export const EpisodeName = ({ episodeName, thumbnail }: EpisodeTitleObject) => {
 
   const textStyling = "text-white text-lg line-clamp-1"
-  const containerStyling = "flex items-center space-x-4 w-fit inline"
+  const containerStyling = "flexYCenterGapX gap-x-4 "
 
   return (
     <div className={containerStyling}>

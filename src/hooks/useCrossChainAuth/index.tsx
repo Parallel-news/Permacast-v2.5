@@ -3,18 +3,6 @@ import { useRecoilState } from "recoil";
 
 import { selectedProviderAtom } from "@/atoms/index";
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "@/constants/arconnect";
-  
-// payload is the data that needs to be wrapped and returned with the needed auth info
-const packageEXMArconnect = async (payload: any, sigMessage: string) => {
-  const { createSignature, getPublicKey } = useArconnect();
-
-  const msgToEncode = new TextEncoder().encode(sigMessage);
-  const newPayload = { ...payload };
-  newPayload.sig = String(await createSignature(msgToEncode, defaultSignatureParams, "base64"));
-  newPayload.jwk_n = await getPublicKey();
-
-  return newPayload;
-};
 
 const useCrossChainAuth = () => {
   const [selectedProvider] = useRecoilState(selectedProviderAtom);
@@ -27,8 +15,18 @@ const useCrossChainAuth = () => {
     createSignature: ArconnectCreateSignature,
     getPublicKey: ArconnectGetPublicKey,
   } = useArconnect();
-  // const { address, walletConnected, createSignature, getPublickKey } = useEth();  
+
+  // rainbowkit comes here
+
   const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
+
+  const packageEXMArconnect = async (payload: any, sigMessage: string) => {
+    const msgToEncode = new TextEncoder().encode(sigMessage);
+    const newPayload = { ...payload };
+    newPayload.sig = String(await ArconnectCreateSignature(msgToEncode, defaultSignatureParams, "base64"));
+    newPayload.jwk_n = await ArconnectGetPublicKey();
+    return newPayload;
+  };
 
   const providers = {
     arconnect: {
@@ -44,14 +42,16 @@ const useCrossChainAuth = () => {
       address: '0xComeBackLater!',
       nameService: ArconnectANS,
       walletConnected: false,
-      connect: async () => {},
-      packageEXM: async () => {},
-      createSignature: async () => {},
-      getPublicKey: async () => {},  
+      connect,
+      packageEXM: packageEXMArconnect,
+      createSignature: ArconnectCreateSignature,
+      getPublicKey: ArconnectGetPublicKey,
     },
   };
 
-  return providers[selectedProvider];
+  const selectedProviderData = providers[selectedProvider];
+
+  return selectedProviderData;
 };
 
 export default useCrossChainAuth;

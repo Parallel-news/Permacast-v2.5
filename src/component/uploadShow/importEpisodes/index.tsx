@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { useRecoilState } from "recoil";
 
+import useCrossChainAuth from '@/hooks/useCrossChainAuth';
 
 import { loadingPage, podcastColorAtom } from "@/atoms/index";
 import { CONNECT_WALLET, EPISODE_UPLOAD_FEE, EVERPAY_EOA, TOAST_DARK, USER_SIG_MESSAGES, EPISODE_SLIPPAGE, ERROR_TOAST_TIME, PERMA_TOAST_SETTINGS, EXTENDED_TOAST_TIME, SPINNER_COLOR, MAX_EPISODES_TO_UPLOAD_AT_ONCE } from "@/constants/index";
@@ -37,7 +38,7 @@ import { UploadButton } from '@/component/uploadEpisode/reusables';
 import Pagination from '@/component/reusables/Pagination';
 import CommonTooltip from '@/component/reusables/tooltip';
 import EpisodesList from './components/episodesList';
-import useCrossChainAuth from '@/hooks/useCrossChainAuth';
+import Spinner from "@/component/reusables/spinner";
 
 
 // 1. Interfaces
@@ -464,10 +465,7 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
 
   const LoadingSpinner = () => (
     <div className="text-zinc-700 flexFullCenter w-full h-60">
-      <PermaSpinner
-        spinnerColor={SPINNER_COLOR}
-        size={5}
-      />
+      <Spinner />
     </div>
   );
 

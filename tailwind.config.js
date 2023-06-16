@@ -8,6 +8,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        'max-yellow': '#FFFF00',
         'bg-zinc-950': '#0c0c0e',
       },
       transitionDuration: {

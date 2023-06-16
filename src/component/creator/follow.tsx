@@ -2,11 +2,12 @@ import axios from 'axios';
 import { useTranslation } from 'next-i18next';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
-import ThemedButton, { themedButtonIconStyling } from '../reusables/themedButton';
-import { PASOM_SIG_MESSAGES, SPINNER_COLOR } from '../../constants';
-import { follow, unfollow } from '../../interfaces/pasom';
-import { PermaSpinner } from '../reusables/PermaSpinner';
-import { Icon } from '../icon';
+
+import ThemedButton, { themedButtonIconStyling } from '@/component/reusables/themedButton';
+import { PASOM_SIG_MESSAGES, SPINNER_COLOR } from '@/constants/index';
+import { follow, unfollow } from '@/interfaces/pasom';
+import { PermaSpinner } from '@/component/reusables/PermaSpinner';
+import { Icon } from '@/component/icon';
 
 interface FollowButtonProps {
   user: string;
@@ -50,23 +51,23 @@ export const FollowButton: FC<FollowButtonProps> = ({ user, walletConnected, isF
   };
 
   const FollowText = () => (
-    <div className={`flexCenterGap`}>
+    <div className={`flexYCenterGapX`}>
       {loading ? <PermaSpinner
         spinnerColor={SPINNER_COLOR}
         size={1}
         divClass={""}
-      />: <Icon className={themedButtonIconStyling} icon="USERPLUS" fill="currentColor" strokeWidth='0'/>}
+      />: <Icon className={themedButtonIconStyling} icon="USERPLUS" fill="currentColor" viewBox='0 0 20 20' strokeWidth='0'/>}
       {t('creator.follow')}
     </div>
   );
 
   const UnfollowText = () => (
-    <div className={`flexCenterGap`}>
+    <div className={`flexYCenterGapX`}>
       {loading ? <PermaSpinner
         spinnerColor={SPINNER_COLOR}
         size={1}
         divClass={""}
-      />: <Icon className={themedButtonIconStyling} icon="USERMINUS" fill="currentColor" />}
+      />: <Icon className={themedButtonIconStyling} icon="USERMINUS" fill="currentColor" viewBox='0 0 20 20' strokeWidth='0' />}
       {t('creator.unfollow')}
     </div>
   );

@@ -1,7 +1,7 @@
 
 import { SPINNER_COLOR } from "@/constants/index";
-import { PermaSpinner } from "./PermaSpinner";
 import { Icon } from "../icon";
+import Spinner from "./spinner";
 
 interface RssSubmitButtonInter {
   isSubmitting: boolean;
@@ -18,10 +18,7 @@ export default function RssSubmit(props: RssSubmitButtonInter) {
       onClick={props.onClick}
     >
       {props.isSubmitting ?
-        <PermaSpinner
-          spinnerColor={SPINNER_COLOR}
-          size={1}
-        />
+        <Spinner className="spinner-yellow w-6 h-6 text-black" />
         :
         <Icon className={"w-6 h-6 text-zinc-800"} icon="ARROWSMALLRIGHT" />
       }
