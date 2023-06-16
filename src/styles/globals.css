@@ -19,6 +19,10 @@ html, body {
     @apply flex flex-col;
   }
 
+  .flexBetween {
+    @apply flex justify-between;
+  }
+
   .flexColCenter {
     @apply flexCol items-center;
   }

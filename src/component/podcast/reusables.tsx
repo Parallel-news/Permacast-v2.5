@@ -9,7 +9,7 @@ import { allANSUsersAtom, loadingPage } from "@/atoms/index";
 import { RSS_FEED_URL } from "@/constants/index";
 
 import { ANSMapped, Podcast } from "@/interfaces/index";
-import { ButtonStyle } from "../reusables/track";
+import { ButtonStyle } from "@/component/reusables/track";
 
 import { getCategoryInCurrentLanguage, useLanguageHook } from "@/utils/languages";
 import { queryMarkdownByTX } from "@/utils/markdown";
@@ -27,7 +27,7 @@ import { getFormattedTimeStamp } from "@/utils/reusables";
 // import MarkdownRenderer from "../markdownRenderer";
 // import ModalShell from "../modalShell";
 // import { NftButton } from "@/features/nft-mint";
-import { Icon } from "../icon";
+import { Icon } from "@/component/icon";
 const NftButton = React.lazy(() => import("@/features/nft-mint").then(module => ({ default: module.NftButton })));
 const ModalShell = React.lazy(() => import("../modalShell"));
 const MarkdownRenderer = React.lazy(() => import("../markdownRenderer"));
@@ -66,7 +66,7 @@ const episodeIconSizeStyling = "h-7 w-7 ";
 const episodeIconStyling = episodeIconSizeStyling + "ml-[4px] mt-[4px]";
 const episodeBottomMargin = "h-7 w-7 mb-[2px]"
 const episodeIconNoMargin = "h-7 w-7";
-const coloredButtonPaddingStying = `rounded-full px-2 py-0.5 `;
+const coloredButtonPaddingStying = `rounded-full py-0.5 px-2 `;
 
 export const PodcastInfo: FC<PodcastInfoInter> = ({
   podcast,
@@ -181,16 +181,14 @@ export const PodcastInfo: FC<PodcastInfoInter> = ({
           </h1>
           <MarkdownRenderer markdownText={markdownText} color={'line-clamp-3 text-white text-sm '} />
           {(buttonStyles.backgroundColor && buttonStyles.color) && (
-            <div className="flexCenterGap mt-3 flex-wrap gap-2">
-              <div className="max-w-max">
-                <TrackCreatorLink {...{ uploader, buttonStyles, coverColor, fontSize: 16 }} />
-              </div>
+            <div className="flex items-start gap-x-2 mt-3 ">
+              <TrackCreatorLink {...{ uploader, buttonStyles, coverColor, fontSize: 16 }} />
               <div className={coloredButtonPaddingStying} style={buttonStyles}>
                 {formattedDate}
               </div>
               <button
                 onClick={() => setDescriptionModalOpen(true)}
-                className={`flexCenterGap brighten-animation ` + coloredButtonPaddingStying}
+                className={`flexYCenterGapX brighten-animation ` + coloredButtonPaddingStying}
                 style={buttonStyles}
               >
                 {t("textTruncate.showMore")}

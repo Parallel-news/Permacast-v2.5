@@ -1,6 +1,7 @@
 import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import '../styles/globals.css';
+import 'react-tooltip/dist/react-tooltip.css'
 
 import { appWithTranslation } from 'next-i18next';
 import Head from 'next/head';

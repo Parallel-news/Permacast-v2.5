@@ -59,7 +59,7 @@ interface uploadEpisodeInter {
 
 // 2. Stylings
 const spinnerClass = "w-full flexXCcenter mt-4"
-const showFormStyling = "w-full flexColFullCenter space-y-2"
+const showFormStyling = "w-full flexColFullCenter space-y-2 pb-20"
 const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex justify-start items-start focus-within:ring-white focus-within:ring-2"
 const buttonBaseColorStyling = `bg-zinc-800 hover:bg-zinc-600 default-animation disabled:hover:bg-black disabled:bg-black text-white disabled:text-gray-500 flexFullCenter gap-x-1 rounded-lg `;
 const buttonStyling = buttonBaseColorStyling + `h-10 w-10 `;
@@ -385,11 +385,15 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
     </button>
   );
 
-  const RetryEpisodesDownloadButton = () => (
-    <button className={buttonBaseColorStyling + "py-3 px-4 "} onClick={() => {
-      setRetryEpisodes([]);
-      setCurrentPage(prev => prev + 1);
-    }}>
+  const SkipEpisodesDownloadButton = () => (
+    <button
+      className={buttonBaseColorStyling + "py-3 px-4 "}
+      disabled={currentPage === MAX_PAGES}
+      onClick={() => {
+        setRetryEpisodes([]);
+        setCurrentPage(prev => prev + 1);
+      }
+    }>
       {t("rss.skip-failed")}
       <Icon strokeWidth="1.5" icon="CHEVRON_DOUBLE_RIGHT" />
     </button>
@@ -399,13 +403,12 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
     if (!retryEpisodes?.length) return <></>;
     return (
       <>
-        <div className="text-center my-2">{t("rss.estimation-failed")}</div>
         <EpisodesList
           {...{ uploadedCount, episodes: retryEpisodes, uploadedEpisodesLinks }}
         />
         <div className="flexCenter justify-between mt-2">
           <EstimateUploadButton />
-          <RetryEpisodesDownloadButton />
+          <SkipEpisodesDownloadButton />
         </div>
       </>
     );
@@ -505,7 +508,7 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
             <TotalCost />
           </div>
         </div>
-        <div className="w-[25%] pb-20"></div>
+        <div className="w-[25%] "></div>
       </div>
     </div>
   );

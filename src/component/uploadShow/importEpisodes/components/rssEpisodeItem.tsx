@@ -12,7 +12,7 @@ import CommonTooltip from "@/component/reusables/tooltip";
 
 const base = `rounded-full w-5 h-5 text-white shrink-0 p-1`;
 const tooltipCheckIcon = `bg-green-500 ` + base;
-const tooltipCrossIcon = `bg-red-400 ` + base;
+const tooltipCrossIcon = `bg-red-600 ` + base;
 
 // https://podcasternews.com/feed/
 
@@ -25,9 +25,9 @@ const RssEpisodeItem = ({ title, length, order, isUploaded, error }: rssEpisode)
   const cost = (calculateSizeCost(gigabyteCost, Number(length)) + EPISODE_SLIPPAGE).toFixed(2);
 
   return (
-    <div className="bg-zinc-800 default-animation rounded-xl px-5 py-3 w-full text-white flex justify-between">
+    <div className="bg-zinc-800 default-animation rounded-xl px-5 py-3 w-full text-white flexBetween">
       <div className="line-clamp-2">#{order}: {title}</div>
-      <div className="ml-4 flex shrink-0 gap-x-2">
+      <div className="ml-4 flexYCenterGapX shrink-0 cursor-pointer">
         {isUploaded && (
           <CommonTooltip
             id={`episodeExists-${order}`}
