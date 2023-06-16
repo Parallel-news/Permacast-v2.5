@@ -18,7 +18,7 @@ import { fetchDominantColor, getCoverColorScheme, sleep } from "@/utils/ui";
 import { transferFunds, refetchEverpayARBalance, getEverpayARBalance, payStorageFee } from "@/utils/everpay";
 
 
-import { rssEpisode, rssEpisodeRetry, RSSEpisodeEstimate } from "@/interfaces/rss";
+import { rssEpisode, RSSEpisodeEstimate } from "@/interfaces/rss";
 import { UploadEpisodeProps } from "@/interfaces/exm";
 
 import { getPodcastData } from '@/features/prefetching';
@@ -37,7 +37,7 @@ import { UploadButton } from '@/component/uploadEpisode/reusables';
 import Pagination from '@/component/reusables/Pagination';
 import CommonTooltip from '@/component/reusables/tooltip';
 import EpisodesList from './components/episodesList';
-import useCrossChainAuth from '@/hooks/auth';
+import useCrossChainAuth from '@/hooks/useCrossChainAuth';
 
 
 // 1. Interfaces
@@ -93,7 +93,7 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [navigatePage, setNavigatePage] = useState<number>(1);
   const [uploadedEpisodesLinks, setUploadedEpisodesLinks] = useState<string[]>([]);
-  const [retryEpisodes, setRetryEpisodes] = useState<rssEpisodeRetry[]>([]);
+  const [retryEpisodes, setRetryEpisodes] = useState<rssEpisode[]>([]);
   const [uploadedCount, setUploadCount] = useState<number>(0);
   const [progress, setProgress] = useState(0);
 
@@ -161,14 +161,13 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
     asyncs();
   }, [currentPage]);
 
-  const tryDescriptionUpload = async (description: string, handleErr: any) => {
+  const tryDescriptionUpload = async (description: string) => {
     try {
       const descriptionTX = await upload2DMedia(description);
       const tx = descriptionTX?.order?.itemId || '';
       return tx;
     } catch (e) {
       console.log(e);
-      handleErr(t("errors.descUploadError"), setIsUploadingEpisodes);
       return '';
     };
   };
@@ -199,7 +198,6 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
 
   const saveEpisodeToEXM = async (rssEpisode: rssEpisode, uploadPaymentTX: string, count: number) => {
     console.log('Uploading to EXM, ', rssEpisode);
-    const handleErr = handleError;
     const { link, description, title, fileType } = rssEpisode;
     const percentPerEpisode = (100 / currentEpisodes.length);
 
@@ -208,7 +206,7 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
       "jwk_n": "",
       "pid": realPid,
       "name": title,
-      "desc": await tryDescriptionUpload(description, handleErr),
+      "desc": await tryDescriptionUpload(description),
       "sig": "",
       "txid": await tryFeePayment(),
       "isVisible": true,
@@ -349,7 +347,7 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
         setIsCalculating(false);
         return false;
       };
-      const newEpisodes = retryEpisodes.map((episode: rssEpisodeRetry, index: number) => {
+      const newEpisodes = retryEpisodes.map((episode: rssEpisode, index: number) => {
         const length = nonZeroResults.find((result) => result.link === episode.link);
         return {
           ...episode,
@@ -473,8 +471,6 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
   const TotalCost = () => (
     <p className="mt-2 text-zinc-300">{t("uploadshow.uploadCost") + ": " + (Number(totalUploadCost)).toFixed(6) + " AR"}</p>
   );
-
-  //
 
   return (
     <div className={showFormStyling}>

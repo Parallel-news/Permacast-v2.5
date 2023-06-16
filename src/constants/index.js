@@ -81,19 +81,19 @@ const iconStyling = "w-4 h-4 text-zinc-300"
 
 export const discordObject = {
     "name": "Discord",
-    "url": PERMACAST_DISCORD_URL,
+    "href": PERMACAST_DISCORD_URL,
     "icon": <FaDiscord className={iconStyling} />
 }
 
 export const twitterObject = {
     "name": "Twitter",
-    "url": PERMACAST_TWITTER_URL,
+    "href": PERMACAST_TWITTER_URL,
     "icon": <FaTwitter className={iconStyling} />
 }
 
 export const telegramObject = {
     "name": "Telegram",
-    "url": PERMACAST_TELEGRAM_URL,
+    "href": PERMACAST_TELEGRAM_URL,
     "icon": <FaTelegram className={iconStyling} />
 }
 

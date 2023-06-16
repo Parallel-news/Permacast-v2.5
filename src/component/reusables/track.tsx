@@ -12,7 +12,7 @@ import { allANSUsersAtom, loadingPage } from "@/atoms/index";
 import { ARSEED_URL, MESON_ENDPOINT, startId } from "@/constants/index";
 import { ANSMapped, FullEpisodeInfo } from "@/interfaces/index";
 import { showShikwasaPlayerArguments } from "@/interfaces/playback";
-import { useShikwasa } from "@/hooks/index";
+import useShikwasa from "@/hooks/useShikwasa";
 import { queryMarkdownByTX } from "@/utils/markdown";
 import {
   determinePodcastURL,

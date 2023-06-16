@@ -2,7 +2,9 @@ import { useArconnect, defaultSignatureParams } from "react-arconnect";
 import { useRecoilState } from "recoil";
 
 import { selectedProviderAtom } from "@/atoms/index";
-
+import { APP_LOGO, APP_NAME, PERMISSIONS } from "@/constants/arconnect";
+  
+// payload is the data that needs to be wrapped and returned with the needed auth info
 const packageEXMArconnect = async (payload: any, sigMessage: string) => {
   const { createSignature, getPublicKey } = useArconnect();
 
@@ -21,29 +23,31 @@ const useCrossChainAuth = () => {
     address: ArconnectAddress,
     ANS: ArconnectANS,
     walletConnected: ArconnectWalletConnected,
+    arconnectConnect,
     createSignature: ArconnectCreateSignature,
     getPublicKey: ArconnectGetPublicKey,
   } = useArconnect();
   // const { address, walletConnected, createSignature, getPublickKey } = useEth();  
+  const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
 
   const providers = {
     arconnect: {
-      packageEXM: packageEXMArconnect,
       address: ArconnectAddress,
       nameService: ArconnectANS,
       walletConnected: ArconnectWalletConnected,
+      connect,
+      packageEXM: packageEXMArconnect,
       createSignature: ArconnectCreateSignature,
       getPublicKey: ArconnectGetPublicKey,
     },
     rainbowkit: {
-      packageEXM: async (sigMessage: string) => {
-        return { sig: "", jwk_n: "" };
-      },
       address: '0xComeBackLater!',
       nameService: ArconnectANS,
       walletConnected: false,
-      createSignature: () => {},
-      getPublicKey: () => {},  
+      connect: async () => {},
+      packageEXM: async () => {},
+      createSignature: async () => {},
+      getPublicKey: async () => {},  
     },
   };
 

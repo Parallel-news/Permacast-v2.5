@@ -1,6 +1,6 @@
 import Fullscreen from './fullscreen';
 import Background from './background';
-import { useShikwasa } from '../hooks';
+import useShikwasa from '@/hooks/useShikwasa';
 import { useRecoilState } from 'recoil';
 import EpisodeQueue from './episodeQueue';
 import { Toaster } from 'react-hot-toast';
@@ -16,17 +16,18 @@ interface LayoutInterface {
   children: ReactNode;
 };
 
-export const ParentStyling = "w-full overflow-hidden z-[3]";
-export const AppInnerStyling = "h-screen overflow-x-hidden relative";
-export const AppStyling = "select-none h-full overflow-hidden bg-black";
-export const InnerLayoutStyling = "ml-0 md:ml-2 md:pr-8 pt-2 px-5 md:pt-8 z-[3]";
-export const BackgroundWrapperStyling = "w-screen overflow-y-scroll overflow-x-hidden z-[1]";
+const ParentStyling = "w-full overflow-hidden z-[3]";
+const AppInnerStyling = "h-screen overflow-x-hidden relative";
+const AppStyling = "select-none h-full overflow-hidden bg-black";
+const InnerLayoutStyling = "ml-0 md:ml-2 md:pr-8 pt-2 px-5 md:pt-8 z-[3]";
+const BackgroundWrapperStyling = "w-screen overflow-y-scroll overflow-x-hidden z-[1]";
 
 const Layout: FC<LayoutInterface> = ({ children }) => {
 
   const [isFullscreen] = useRecoilState(isFullscreenAtom);
   const [isQueueVisible] = useRecoilState(isQueueVisibleAtom);
-  const [_firstRender, _setFirstRender] = useRecoilState(firstRender)
+  const [_firstRender, _setFirstRender] = useRecoilState(firstRender);
+
   const backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
   const shik = useShikwasa()
@@ -56,7 +57,7 @@ const Layout: FC<LayoutInterface> = ({ children }) => {
               reverseOrder={false}
               toastOptions={{
                 duration: MINT_DURATION,
-                className: "flex justify-center items-center"
+                className: "flexFullCenter"
               }}
             />
             <NavBar />

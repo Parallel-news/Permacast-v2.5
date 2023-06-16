@@ -1,28 +1,28 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { episodeDescStyling, episodeNameStyling } from "../uploadEpisode/uploadEpisodeTools";
-import { categories_en } from "../../utils/languages";
-
-import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, ERROR_TOAST_TIME, EVERPAY_AR_TAG, EVERPAY_EOA, EXTENDED_TOAST_TIME, GIGABYTE, MIN_UPLOAD_PAYMENT, PERMA_TOAST_SETTINGS, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "../../constants";
-import { isValidEmail } from "../reusables/formTools";
-import { calculateARCost, getBundleArFee, upload2DMedia, upload3DMedia } from "../../utils/arseeding";
-import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob } from "../../utils/fileTools";
+import axios from "axios";
+import Everpay, { ChainType } from "everpay";
+import { useRouter } from "next/router";
+import { useTranslation } from "next-i18next";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
+import toast from "react-hot-toast"
+import { useRecoilState } from "recoil";
+
+import { VisibleInput } from "./reusables";
+import { episodeDescStyling, episodeNameStyling } from "../uploadEpisode/uploadEpisodeTools";
+import { categories_en } from "@/utils/languages";
+
+import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, ERROR_TOAST_TIME, EVERPAY_AR_TAG, EVERPAY_EOA, EXTENDED_TOAST_TIME, GIGABYTE, MIN_UPLOAD_PAYMENT, PERMA_TOAST_SETTINGS, PODCAST_AUTHOR_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_DESC_MAX_LEN, PODCAST_DESC_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_NAME_MIN_LEN, SPINNER_COLOR, TOAST_DARK, USER_SIG_MESSAGES } from "@/constants/index";
+import { calculateARCost, getBundleArFee, upload2DMedia, upload3DMedia } from "@/utils/arseeding";
+import { createFileFromBlobUrl, minifyPodcastCover, createFileFromBlob } from "@/utils/fileTools";
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "../../constants/arconnect";
 import { allFieldsFilled, byteSize, checkConnection, handleError, validateLabel } from "../../utils/reusables";
-import Everpay, { ChainType } from "everpay";
-import { useRecoilState } from "recoil";
 import { loadingPage, podcastColorAtom } from "../../atoms";
 
-import axios from "axios";
-import { useTranslation } from "next-i18next";
 import { Podcast } from "../../interfaces";
-import { useRouter } from "next/router";
-import toast from "react-hot-toast"
-import React from "react";
-import { VisibleInput } from "./reusables";
 import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 import { ProgressBar } from "../progressBar";
 import { EditPodcastProps, UploadPodcastProps } from "../../interfaces/exm";
+import { handleValMsg } from "@/utils/validation/podcast";
 
 const MarkDownToolTip = React.lazy(() => import("../reusables/tooltip").then(module => ({ default: module.MarkDownToolTip })));
 const CoverContainer = React.lazy(() => import("./reusables").then(module => ({ default: module.CoverContainer })));
@@ -32,10 +32,6 @@ const ConnectButton = React.lazy(() => import("../uploadEpisode/reusables").then
 const UploadButton = React.lazy(() => import("../uploadEpisode/reusables").then(module => ({ default: module.UploadButton })));
 const ValMsg = React.lazy(() => import("../reusables/formTools").then(module => ({ default: module.ValMsg })))
 const SelectPodcast = React.lazy(() => import("../../component/uploadEpisode/reusables").then(module => ({ default: module.SelectPodcast })));
-
-export default function uploadShowTools() {
-    return false
-}
 
 // 1. Interfaces
 interface ShowFormInter {
@@ -54,52 +50,10 @@ interface ShowFormInter {
 }
 
 // 2. Stylings
-export const spinnerClass = "w-full flex justify-center mt-4"
-export const showFormStyling = "w-full flex flex-col justify-center items-center space-y-2"
-export const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex flex-row justify-start items-start focus-within:ring-white focus-within:ring-2 default-animation "
+const showFormStyling = "w-full flexColFullCenter space-y-2"
+const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex justify-start items-start focus-within:ring-white focus-within:ring-2 default-animation "
 
 // 3. Custom Functions
-/**
- * Determines whether validation message should be placed within input field
- * @param {string|number - input from form} input 
- * @param {string - form type} type 
- * @returns Validation message || ""
- */
-
-export const handleValMsg = (input: string, type: string, input2: any = "") => {
-    switch (type) {
-        case 'podName':
-            if ((input.length > PODCAST_NAME_MAX_LEN || input.length < PODCAST_NAME_MIN_LEN)) {
-                return "uploadshow.validation.name"//, { minLength: PODCAST_NAME_MIN_LEN, maxLength: PODCAST_NAME_MAX_LEN });
-            } else {
-                return "";
-            }
-        case 'podDesc':
-            if ((input.length > PODCAST_DESC_MAX_LEN || input.length < PODCAST_DESC_MIN_LEN)) {
-                return "uploadshow.validation.description"//, { minLength: PODCAST_DESC_MIN_LEN, maxLength: PODCAST_DESC_MAX_LEN });
-            } else {
-                return "";
-            }
-        case 'podAuthor':
-            if ((input.length > PODCAST_AUTHOR_MAX_LEN || input.length < PODCAST_AUTHOR_MIN_LEN)) {
-                return "uploadshow.validation.author"//, { minLength: PODCAST_AUTHOR_MIN_LEN, maxLength: PODCAST_AUTHOR_MAX_LEN };
-            } else {
-                return "";
-            }
-        case 'podEmail':
-            if (isValidEmail(input)) {
-                return "";
-            } else {
-                return "uploadshow.validation.email";
-            }
-        case 'podLabel':
-            if (validateLabel(input, input2).res) {
-                return "";
-            } else {
-                return validateLabel(input, input2).msg
-            }
-    }
-}
 
 // 4. Components
 export const ShowForm = (props: ShowFormInter) => {
@@ -495,7 +449,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
                         {/* Show Podcasts for selection */}
                         {props?.allowSelect && (
-                            <div className="w-full mt-4">
+                            <div className="w-full mt-4 pb-20">
                                 <div className="my-1 border-t-[2px] border-white rounded-full"></div>
                                 <div className='text-center mb-2'>{t("rss.or")}</div>
                                 <SelectPodcast
