@@ -1,14 +1,10 @@
-import axios from "axios";
 import { NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { Suspense, startTransition, useEffect, useState } from "react";
+import React, { startTransition, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
 import { chronStatusAtom, hide0EpisodesAtom, loadingPage } from "@/atoms/index";
-import { EXM_READ_LINK, NO_SHOW } from "@/constants/index";
-
-import { getContractVariables } from "@/utils/contract";
 import { detectTimestampType } from "@/utils/reusables";
 import { Podcast } from "@/interfaces/index";
 
@@ -33,15 +29,18 @@ const FeedPage: NextPage = () => {
   const [sortedPodcasts, setSortedPodcasts] = useState<Podcast[]>([]);
 
   useEffect(() => {
+    
     if (queryPodcastData.isLoading || queryPodcastData.isError) return;
+    console.log("Status: ", !!queryPodcastData?.data?.podcasts?.length)
+    console.log("payload: ", queryPodcastData?.data?.podcasts)
     if (!!queryPodcastData?.data?.podcasts?.length) return;
+    console.log("test if use Effect activates")
     const unifiedTimestamps = queryPodcastData.data.podcasts.map((podcast: Podcast) => {
       if (detectTimestampType(podcast.createdAt) === "seconds") {
         podcast.createdAt = podcast.createdAt * 1000
         return podcast;
       };
     });
-    console.log(unifiedTimestamps)
     setSortedPodcasts(unifiedTimestamps);
   }, [queryPodcastData.data]);
 
@@ -63,17 +62,16 @@ const FeedPage: NextPage = () => {
   }, [])
 
   return (
-    <div>
+    <>
       <div className={titleRow}>
-        <div className="flex md:hidden"></div>
+        {/*<div className="flex md:hidden"></div>*/}
         <h2 className={allPodcastHeader}>{t("feed-page.allpodcasts")}</h2>
         <ViewDropDown />
       </div>
       <>
         {sortedPodcasts.length !== 0 && <PodcastGrid podcasts={sortedPodcasts} />}
       </>
-      <div className="mt-20"></div>
-    </div>
+    </>
   );
 };
 
