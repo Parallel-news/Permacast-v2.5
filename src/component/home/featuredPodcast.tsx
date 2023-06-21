@@ -181,7 +181,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
           <div className="flex flex-row justify-between">
             <EpisodeCount count={episodes.length} textColor={textColor} />
             <Tooltip id={"hidden-tooltip"+pid} offset={0}/>
-            {isVisible ? 
+            {!isVisible ? 
               <Image src={textColor === "rgb(40, 40, 40)" ? "/icons/eye-slash.svg" : "/icons/eye-slash-white.svg"} width={24} height={24} alt="Hidden" className="rounded-md p-0.5" style={{ fill: textColor}}
                 data-tooltip-content={t("tooltips.hidden-content")} data-tooltip-place="top" data-tooltip-id={"hidden-tooltip"+pid}
               /> 
