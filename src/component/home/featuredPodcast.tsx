@@ -124,7 +124,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
   const [, _setLoadingPage] = useRecoilState(loadingPage)
   const [episode, setEpisode] = useState<FullEpisodeInfo | undefined>(undefined);
   let episodes = convertPodcastsToEpisodes([podcastInfo]);
-
+  const { t } = useTranslation();
   useEffect(() => {
     const fetchMarkdown = async (tx: arweaveTX) => {
       const text = await queryMarkdownByTX(tx);
@@ -183,7 +183,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
             <Tooltip id={"hidden-tooltip"+pid} offset={0}/>
             {isVisible ? 
               <Image src="/icons/eye-slash.svg" width={26} height={26} alt="Hidden" className="rounded-md p-0.5"
-                data-tooltip-content="test" data-tooltip-place="top" data-tooltip-id={"hidden-tooltip"+pid}
+                data-tooltip-content={t("tooltips.hidden-content")} data-tooltip-place="top" data-tooltip-id={"hidden-tooltip"+pid}
               /> 
             : null}
           </div>

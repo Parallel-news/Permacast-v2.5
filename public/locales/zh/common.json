@@ -296,5 +296,8 @@
 		"skip-failed": "跳过失败的估计",
 		"limited-size": "文件大小限制为 250MB 以避免网络垃圾邮件。",
 		"downloaded": "已下载"
+	},
+	"tooltips": {
+		"hidden-content": "内容被隐藏"
 	}
 }
