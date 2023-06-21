@@ -271,7 +271,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
                 const { locale } = router;
                 router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
-            }, 6500)
+            }, 7500)
         }, 2000)
     }
     //Submit Episode Function
