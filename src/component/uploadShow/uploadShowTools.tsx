@@ -179,8 +179,8 @@ export const ShowForm = (props: ShowFormInter) => {
         const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
         payloadObj["sig"] = await createSignature(data, defaultSignatureParams, "base64");
         payloadObj["jwk_n"] = await getPublicKey()
-
-
+        console.log("Payload Obj: ", payloadObj)
+        return false
         // Description to Arseeding
         const toastDesc = toast.loading(t("loadingToast.savingDesc"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
         setProgress(props.edit ? 25 : 20)

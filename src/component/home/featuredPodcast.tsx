@@ -14,8 +14,7 @@ import { convertPodcastsToEpisodes } from "../../utils/filters";
 import { determinePodcastURL, fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 import { useRecoilState } from "recoil";
 import { loadingPage } from "../../atoms";
-
-
+import { Tooltip } from "react-tooltip";
 
 /**
  * Index
@@ -116,6 +115,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
     author,
     label,
     description,
+    isVisible
   } = podcastInfo;
 
   const [themeColor, setThemeColor] = useState<string>('');
@@ -178,7 +178,15 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
     >
       <div className={podcastInnerBackgroundStyling}>
         <div onClick={() => _setLoadingPage(true)}>
-          <EpisodeCount count={episodes.length} textColor={textColor} />
+          <div className="flex flex-row justify-between">
+            <EpisodeCount count={episodes.length} textColor={textColor} />
+            <Tooltip id={"hidden-tooltip"+pid} offset={0}/>
+            {isVisible ? 
+              <Image src="/icons/eye-slash.svg" width={26} height={26} alt="Hidden" className="rounded-md p-0.5"
+                data-tooltip-content="test" data-tooltip-place="top" data-tooltip-id={"hidden-tooltip"+pid}
+              /> 
+            : null}
+          </div>
           <PocastCover podcastName={podcastName} cover={cover} />
         </div>
         <div className={podcastBottomStyling}>

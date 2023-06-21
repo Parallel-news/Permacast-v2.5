@@ -20,7 +20,7 @@ const FeedPage: NextPage = () => {
   const { t } = useTranslation();
 
   const [chronStatus,] = useRecoilState<number>(chronStatusAtom);
-  const [hide0Episodes, setHide0Episodes] = useRecoilState<boolean>(hide0EpisodesAtom);
+  const [hide0Episodes, ] = useRecoilState<boolean>(hide0EpisodesAtom);
   const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage);
 
   const querySortedPodcastData = getUnixSortedPodcast()
