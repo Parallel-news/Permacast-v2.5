@@ -38,6 +38,9 @@ export const SPINNER_COLOR = "#e4e4e7" //zinc-200
 
 export const AR_DECIMALS = 1000000000000
 
+export const LOADER_COLOR="#d4e5e1"
+export const LOADER_SIZE=20
+
 /**
  * FADE_IN_STYLE Instructions
  * 1. Call in parent most div or commonly changing components

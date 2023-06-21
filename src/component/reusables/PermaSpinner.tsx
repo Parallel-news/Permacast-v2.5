@@ -1,4 +1,3 @@
-import MoonLoader from "react-spinners/MoonLoader"
 import { BeatLoader } from "react-spinners";
 
 interface PermaSpinnerInter {
