@@ -7,6 +7,7 @@ import { MoonLoader } from "react-spinners";
 import { useRecoilState } from "recoil"
 
 import { calculateEverPayBalance, everPayBalance } from "@/atoms/index";
+import { LOADER_COLOR, LOADER_SIZE } from "@/constants/index";
 
 interface everpayBalanceInterface {
     textClassname?: string;
@@ -21,8 +22,6 @@ export const EverPayBalance = (props: everpayBalanceInterface) => {
     const [balanceError, setBalanceError] = useState<boolean>(false)
     const [balanceLoading, setBalanceLoading] = useState<boolean>(true)
   
-    const LOADER_COLOR="#d4e5e1"
-    const LOADER_SIZE=20
     // When everpay recalculation requested, perform hook
     useEffect(() => {
 

@@ -38,6 +38,9 @@ export const SPINNER_COLOR = "#e4e4e7" //zinc-200
 
 export const AR_DECIMALS = 1000000000000
 
+export const LOADER_COLOR="#d4e5e1"
+export const LOADER_SIZE=20
+
 /**
  * FADE_IN_STYLE Instructions
  * 1. Call in parent most div or commonly changing components
@@ -179,4 +182,5 @@ export const MINT_NFT = "submitRequest"
 // React Query Keys
 export const NFT_INFO = "nftInfo"
 export const ALL_PODCASTS = "allPodcasts"
+export const UNIX_SORTED_PODCASTS = "unixSortedPodcasts"
 

@@ -10,8 +10,13 @@ interface PodcastsGridProps {
 const PodcastGrid = ({ podcasts }: PodcastsGridProps) => {
   return (
     <div className={podcastContainer} id="3x">
-      {podcasts.map((podcast: Podcast) =>
-        <FeaturedPodcast {...podcast} key={podcast.pid} />
+      {podcasts.map((podcast: Podcast) => {
+        if(podcast.isVisible) {
+          return (
+            <FeaturedPodcast {...podcast} key={podcast.pid} />
+          )
+        }
+      }
       )}
     </div>
   );

@@ -14,8 +14,7 @@ import { convertPodcastsToEpisodes } from "../../utils/filters";
 import { determinePodcastURL, fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 import { useRecoilState } from "recoil";
 import { loadingPage } from "../../atoms";
-
-
+import { Tooltip } from "react-tooltip";
 
 /**
  * Index
@@ -116,6 +115,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
     author,
     label,
     description,
+    isVisible
   } = podcastInfo;
 
   const [themeColor, setThemeColor] = useState<string>('');
@@ -124,7 +124,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
   const [, _setLoadingPage] = useRecoilState(loadingPage)
   const [episode, setEpisode] = useState<FullEpisodeInfo | undefined>(undefined);
   let episodes = convertPodcastsToEpisodes([podcastInfo]);
-
+  const { t } = useTranslation();
   useEffect(() => {
     const fetchMarkdown = async (tx: arweaveTX) => {
       const text = await queryMarkdownByTX(tx);
@@ -170,7 +170,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
       passHref
       href={`/podcast/${determinePodcastURL(label, pid)}${startId}`}
       className={podcastOuterBackgroundStyling}
-      style={{ backgroundColor: themeColor }}
+      style={{ backgroundColor: themeColor, opacity: isVisible ? 1 : 0.75 }}
       onClick={() => {
         window.scrollTo(0, 0)
         
@@ -178,7 +178,15 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
     >
       <div className={podcastInnerBackgroundStyling}>
         <div onClick={() => _setLoadingPage(true)}>
-          <EpisodeCount count={episodes.length} textColor={textColor} />
+          <div className="flex flex-row justify-between">
+            <EpisodeCount count={episodes.length} textColor={textColor} />
+            <Tooltip id={"hidden-tooltip"+pid} offset={0}/>
+            {!isVisible ? 
+              <Image src={textColor === "rgb(40, 40, 40)" ? "/icons/eye-slash.svg" : "/icons/eye-slash-white.svg"} width={24} height={24} alt="Hidden" className="rounded-md p-0.5" style={{ fill: textColor}}
+                data-tooltip-content={t("tooltips.hidden-content")} data-tooltip-place="top" data-tooltip-id={"hidden-tooltip"+pid}
+              /> 
+            : null}
+          </div>
           <PocastCover podcastName={podcastName} cover={cover} />
         </div>
         <div className={podcastBottomStyling}>

@@ -1,18 +1,13 @@
-import axios from "axios";
 import { NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { Suspense, startTransition, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useRecoilState } from "recoil";
-
 import { chronStatusAtom, hide0EpisodesAtom, loadingPage } from "@/atoms/index";
-import { EXM_READ_LINK, NO_SHOW } from "@/constants/index";
-
-import { getContractVariables } from "@/utils/contract";
-import { detectTimestampType } from "@/utils/reusables";
 import { Podcast } from "@/interfaces/index";
-
-import { getPodcastData } from "@/features/prefetching";
+import { getVisiblePodcast } from "@/features/prefetching/api";
+import { MoonLoader } from "react-spinners";
+import { LOADER_COLOR } from "@/constants/index";
 
 const ViewDropDown = React.lazy(() => import("../../component/viewDropDown"));
 const PodcastGrid = React.lazy(() => import("../../component/home/PodcastGrid"));
@@ -25,55 +20,38 @@ const FeedPage: NextPage = () => {
   const { t } = useTranslation();
 
   const [chronStatus,] = useRecoilState<number>(chronStatusAtom);
-  const [hide0Episodes, setHide0Episodes] = useRecoilState<boolean>(hide0EpisodesAtom);
+  const [hide0Episodes, ] = useRecoilState<boolean>(hide0EpisodesAtom);
   const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage);
 
-  const queryPodcastData = getPodcastData();
+  const querySortedPodcastData = getVisiblePodcast()
 
-  const [sortedPodcasts, setSortedPodcasts] = useState<Podcast[]>([]);
+  let sortedPodcasts = querySortedPodcastData.data?.podcasts
+  console.log("sp: ", sortedPodcasts)
 
-  useEffect(() => {
-    if (queryPodcastData.isLoading || queryPodcastData.isError) return;
-    if (!!queryPodcastData?.data?.podcasts?.length) return;
-    const unifiedTimestamps = queryPodcastData.data.podcasts.map((podcast: Podcast) => {
-      if (detectTimestampType(podcast.createdAt) === "seconds") {
-        podcast.createdAt = podcast.createdAt * 1000
-        return podcast;
-      };
-    });
-    console.log(unifiedTimestamps)
-    setSortedPodcasts(unifiedTimestamps);
-  }, [queryPodcastData.data]);
-
-  useEffect(() => {
-    let resortedPodcasts = sortedPodcasts
+  if(querySortedPodcastData.isSuccess) {
+    sortedPodcasts = sortedPodcasts
       .sort((a, b) => a.createdAt - b.createdAt)
       .filter((podcast: Podcast) => hide0Episodes ? podcast.episodes.length > 0: podcast);
-    startTransition(() => {
-      if (chronStatus % 2) {
-        setSortedPodcasts(resortedPodcasts.reverse());
-      } else {
-        setSortedPodcasts(resortedPodcasts);
-      };
-    })
-  }, [chronStatus, hide0Episodes]);
+    if (chronStatus % 2) {
+      sortedPodcasts = sortedPodcasts.reverse();
+    } else {
+      sortedPodcasts = querySortedPodcastData.data?.podcasts;
+    }
+  }
 
-  useEffect(() => {
-    _setLoadingPage(false)
-  }, [])
+  useEffect(() => _setLoadingPage(false), [])
 
   return (
-    <div>
+    <>
       <div className={titleRow}>
-        <div className="flex md:hidden"></div>
         <h2 className={allPodcastHeader}>{t("feed-page.allpodcasts")}</h2>
         <ViewDropDown />
       </div>
-      <>
-        {sortedPodcasts.length !== 0 && <PodcastGrid podcasts={sortedPodcasts} />}
-      </>
-      <div className="mt-20"></div>
-    </div>
+      {querySortedPodcastData.isLoading ? <MoonLoader size={50} color={LOADER_COLOR}/> : null}
+      <React.Suspense>
+        {querySortedPodcastData.isSuccess && (<PodcastGrid podcasts={sortedPodcasts} />)}
+      </React.Suspense>
+    </>
   );
 };
 

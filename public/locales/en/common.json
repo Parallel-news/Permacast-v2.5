@@ -302,5 +302,8 @@
 		"skip-failed": "Skip Failed Estimations",
 		"limited-size": "File size is limited to 250MB to avoid spamming the network.",
 		"downloaded": "Downloaded"
+	},
+	"tooltips": {
+		"hidden-content": "Content is Hidden"
 	}
 }

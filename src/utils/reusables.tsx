@@ -195,3 +195,7 @@ export function isValidUrl(str) {
   );
   return pattern.test(str);
 }
+
+export const getNewestEpisodes = (array, qty) => array.flatMap(obj => obj.podcast.episodes)
+.sort((a, b) => b.uploadedAt - a.uploadedAt)
+.slice(0, qty);

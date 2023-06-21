@@ -21,6 +21,8 @@ export function determineMintStatus({ enabled, pid } : GetNftInfo) {
         getNftInfo(),
         getPodcastPayload()
       ])
+      console.log("nftPayload: ", nftPayload)
+      console.log("podcasts: ", podcasts)
 
       const [isMinted, showData, claimableFactories] = await Promise.all([
         collectionExists({ pid: pid, nftPayload: nftPayload }),

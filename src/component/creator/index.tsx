@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 import { loadingPage, podcastColorAtom, userBannerImageAtom } from '@/atoms/index';
 import { ANS_TEMPLATE } from '@/constants/ui';
 
-import { Ans, Episode, FullEpisodeInfo, Podcast } from '@/interfaces/index';
+import { Ans, FullEpisodeInfo, Podcast } from '@/interfaces/index';
 
 import { getPodcastData } from '@/features/prefetching';
 import { hexToRGB } from '@/utils/reusables';
@@ -76,8 +76,6 @@ export const CreatorPageComponent: FC<{ creator: Ans }> = ({ creator }) => {
 
   const { walletConnected, address } = useArconnect();
 
-  const [episodes, setEpisodes] = useState<FullEpisodeInfo[]>([]);
-
   const [, setUserBannerImage] = useRecoilState(userBannerImageAtom);
 
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
@@ -88,19 +86,6 @@ export const CreatorPageComponent: FC<{ creator: Ans }> = ({ creator }) => {
     const isFollowing = PASOM?.followers?.includes(address);
     setIsFollowing(isFollowing);
   }, [PASOM, address]);
-
-  useEffect(() => {
-    if (!creator) return;
-    if (queryPodcastData.isLoading) return;
-    const fetchUserData = async () => {
-      const userEpisodes = podcasts.map((podcast: Podcast) =>
-        podcast.episodes.map((episode: Episode) => ({ episode, podcast }))
-      ).flat(1).splice(-3, 3);
-      const sortedEpisodes = sortByDate(userEpisodes)
-      setEpisodes(sortedEpisodes.slice().reverse());
-    };
-    fetchUserData();
-  }, [creator]);
 
   const queryPodcastData = getPodcastData();
 
@@ -123,11 +108,22 @@ export const CreatorPageComponent: FC<{ creator: Ans }> = ({ creator }) => {
     return () => clearTimeout(timer);
   }, [_loadingPage])
 
+  //Retrieve Creator Podcast & Latest Episodes
   let podcasts: Podcast[] = [];
+  let episodes: FullEpisodeInfo[] = []
   if (queryPodcastData.data) {
     try {
+
       const creatorPodcasts = queryPodcastData.data?.podcasts?.filter((podcast: Podcast) => podcast.owner === user);
       podcasts = creatorPodcasts.reverse() || [];
+
+      episodes = podcasts
+        .flatMap((podcast) =>
+          podcast.episodes.map((episode) => ({ episode, podcast }))
+        )
+        .sort((a, b) => b.episode.uploadedAt - a.episode.uploadedAt)
+        .slice(0, 3);
+      
     } catch {
       podcasts = [];
     }
@@ -160,7 +156,7 @@ export const CreatorPageComponent: FC<{ creator: Ans }> = ({ creator }) => {
         </div>
       </div>
       <>{!!podcasts?.length && <FeaturedPodcastCarousel podcasts={podcasts || []} />}</>
-      <>{episodes?.length !== 0 && <LatestEpisodes {...{ episodes }} />}</>
+      <>{episodes?.length !== 0 && <React.Suspense><LatestEpisodes {...{ episodes }} /></React.Suspense>}</>
     </div>
   );
 };
