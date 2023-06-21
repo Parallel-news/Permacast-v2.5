@@ -1,11 +1,11 @@
 import { NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { chronStatusAtom, hide0EpisodesAtom, loadingPage } from "@/atoms/index";
 import { Podcast } from "@/interfaces/index";
-import { getUnixSortedPodcast } from "@/features/prefetching/api";
+import { getVisiblePodcast } from "@/features/prefetching/api";
 import { MoonLoader } from "react-spinners";
 import { LOADER_COLOR } from "@/constants/index";
 
@@ -23,9 +23,11 @@ const FeedPage: NextPage = () => {
   const [hide0Episodes, ] = useRecoilState<boolean>(hide0EpisodesAtom);
   const [_loadingPage, _setLoadingPage] = useRecoilState(loadingPage);
 
-  const querySortedPodcastData = getUnixSortedPodcast()
+  const querySortedPodcastData = getVisiblePodcast()
 
   let sortedPodcasts = querySortedPodcastData.data?.podcasts
+  console.log("sp: ", sortedPodcasts)
+
   if(querySortedPodcastData.isSuccess) {
     sortedPodcasts = sortedPodcasts
       .sort((a, b) => a.createdAt - b.createdAt)

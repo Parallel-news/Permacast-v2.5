@@ -170,7 +170,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
       passHref
       href={`/podcast/${determinePodcastURL(label, pid)}${startId}`}
       className={podcastOuterBackgroundStyling}
-      style={{ backgroundColor: themeColor }}
+      style={{ backgroundColor: themeColor, opacity: isVisible ? 1 : 0.75 }}
       onClick={() => {
         window.scrollTo(0, 0)
         
@@ -182,7 +182,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
             <EpisodeCount count={episodes.length} textColor={textColor} />
             <Tooltip id={"hidden-tooltip"+pid} offset={0}/>
             {isVisible ? 
-              <Image src="/icons/eye-slash.svg" width={26} height={26} alt="Hidden" className="rounded-md p-0.5"
+              <Image src={textColor === "rgb(40, 40, 40)" ? "/icons/eye-slash.svg" : "/icons/eye-slash-white.svg"} width={24} height={24} alt="Hidden" className="rounded-md p-0.5" style={{ fill: textColor}}
                 data-tooltip-content={t("tooltips.hidden-content")} data-tooltip-place="top" data-tooltip-id={"hidden-tooltip"+pid}
               /> 
             : null}

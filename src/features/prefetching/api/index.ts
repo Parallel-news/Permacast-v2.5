@@ -19,21 +19,14 @@ export function getPodcastData () {
   })
 }
 
-export function getUnixSortedPodcast () {
+export function getVisiblePodcast () {
   return useQuery({
     queryKey: [UNIX_SORTED_PODCASTS],
     queryFn: async () => {
       const payload = await getPodcastPayload();
       const podcasts = payload.podcasts as Podcast[];
-      /*
-      const unifiedTimestamps = podcasts.map((podcast: Podcast) => {
-        if (detectTimestampType(podcast.createdAt) === "seconds") {
-          podcast.createdAt = podcast.createdAt * 1000
-          return podcast;
-        };
-      });
-      */
-      return { podcasts };
+      const visiblePodcast = podcasts.filter((podcast) => podcast.isVisible === true)
+      return { podcasts: visiblePodcast };
     },
     enabled: true
   })
