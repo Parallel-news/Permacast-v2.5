@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 import { loadingPage, podcastColorAtom, userBannerImageAtom } from '@/atoms/index';
 import { ANS_TEMPLATE } from '@/constants/ui';
 
-import { Ans, Episode, FullEpisodeInfo, Podcast } from '@/interfaces/index';
+import { Ans, FullEpisodeInfo, Podcast } from '@/interfaces/index';
 
 import { getPodcastData } from '@/features/prefetching';
 import { hexToRGB } from '@/utils/reusables';
@@ -108,7 +108,7 @@ export const CreatorPageComponent: FC<{ creator: Ans }> = ({ creator }) => {
     return () => clearTimeout(timer);
   }, [_loadingPage])
 
-  //Retrieve Creator Podcast and Latest Episodes
+  //Retrieve Creator Podcast & Latest Episodes
   let podcasts: Podcast[] = [];
   let episodes: FullEpisodeInfo[] = []
   if (queryPodcastData.data) {
