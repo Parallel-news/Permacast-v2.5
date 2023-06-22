@@ -9,7 +9,7 @@ import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, PERMACAST_TELEGRAM_U
 
 import useCrossChainAuth from '@/hooks/useCrossChainAuth'
 
-import { isERCAddress } from '@/utils/reusables'
+import { generateAuthentication, isERCAddress } from '@/utils/reusables'
 
 import { CreateCollectionViewObject, EpisodeTitleObject, ErrorModalObject, MintEpisodeViewObject, NftModalObject } from '../types'
 import { determineMintStatus, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
@@ -36,7 +36,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
   const queryNftInfo = determineMintStatus({ enabled: true, pid: pid })
   const payload = queryNftInfo?.data
 
-  const [checkedEid, setCheckedEid] = useState([""])
+  const [checkedEid, setCheckedEid] = useState([])
 
   const collectionStyling = "flexColYCenter space-y-4"
   const xStyling = "text-white cursor-pointer h-6 absolute right-2 top-2"
@@ -52,15 +52,18 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
       targetInputRef.current.className = "border-2 border-red-300 focus:ring-0 " + targetInputStyle;
       return false
     }
-    const toastLoading = toast.loading(t("nft-collection.minting-episode"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
-    // Post Mint Data
-    mintEpisodeMutation.mutate({
-      eid: checkedEid[0],
-      target: targetAddr,
-      getPublicKey: getPublicKey,
-      createSignature: createSignature
-    },
 
+    const toastLoading = toast.loading(t("nft-collection.minting-episode"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
+    // Loop Mint Data
+    
+    checkedEid.map(async (eid) => {
+      const { sig, jwk_n } = await generateAuthentication({getPublicKey, createSignature})
+      mintEpisodeMutation.mutate({
+        eid: eid,
+        target: targetAddr,
+        jwk_n: jwk_n,
+        sig: sig
+      },
       {
         onSuccess: async () => {
           setTimeout(async () => {
@@ -77,7 +80,19 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
           }, 8000);
         }
       })
+    })
+
   }
+
+  //UNDER CONSTRUCTION
+  //Handle multiple episode mint
+  /*
+  LOOP mintEpisodeMutation.mutate --> check if EP minted already
+    include onError imperative to say issues uploading said episode and move on to the next. 
+
+  We need a way to move away from the checkedEid dependency. 
+  */
+
 
   async function handleCollectionCreation() {
     const toastLoading = toast.loading(t("nft-collection.uploading-collection"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
@@ -140,7 +155,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
 
                 Create Collection - Step 1
 
-              */}
+          */}
           {!queryNftInfo.isLoading && !payload.collectionAddr && payload.claimableFactories && (
             <div className={collectionStyling}>
               <CreateCollectionView showPic={ARSEED_URL + payload.cover} showTitle={payload?.name} />
@@ -183,7 +198,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                   <GenericNftButton
                     text={t("nft-collection.mint")}
                     onClick={() => handleEpisodeMint()}
-                    disabled={payload.allMinted || checkedEid[0].length === 0}
+                    disabled={payload.allMinted || checkedEid.length === 0}
                   />
                 </div>
               )}
@@ -193,7 +208,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
 
                 No Episode Found
 
-              */}
+          */}
           {!queryNftInfo.isLoading && payload.collectionAddr && payload.episodes.length === 0 && (
             <ErrorModalMessage
               helpSrc={`/upload-episode?pid=${pid}`}
@@ -242,18 +257,41 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
 
   const { t } = useTranslation();
 
+  const [uploadAll, setUploadAll] = useState(false)
+
   const episodeRow = "w-full flexBetween items-center"
   const episodeContainer = "bg-zinc-700 rounded-md w-full p-4 space-y-2"
   const titleStyling = "flexBetween items-center w-full text-white text-2xl mb-6"
   const checkBoxStyling = "form-checkbox accent-[#FFFF00] bg-zinc-800 rounded-xl inline w-5 h-5"
 
-  const handleCheckboxChange = (itemId) => {
+  const handleSingleCheckboxChange = (itemId) => {
     if (itemId !== checkedEid[0]) {
       setCheckedEid([itemId])
     } else {
       setCheckedEid([''])
     }
   };
+
+  const handleMultiCheckboxChange = (itemId) => {
+    if (!checkedEid.includes(itemId)) {
+      setCheckedEid(prevState => [...prevState, itemId])
+    } else {
+      setCheckedEid(prevState => prevState.filter(item => item !== itemId));
+      setUploadAll(false)
+    }
+  };
+
+  const handleSelectAllEpisodes = () => {
+    setUploadAll(prev => !prev)
+    if(!uploadAll) { //Logic inversed since state set doesnt immediately take effect
+      const remainingEids = episodes
+      .filter((itemId) => !itemId.minted && !checkedEid.includes(itemId.eid))
+      .map((itemId) => itemId.eid)
+      setCheckedEid(prevState => [...prevState, ...remainingEids])
+    } else {
+      setCheckedEid([])
+    }
+  }
 
   return (
     <div className="flex flex-col w-full">
@@ -269,6 +307,12 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
           />
         </Link>
       </div>
+      <div className="w-full flex flex-row justify-end space-x-2 pr-4">
+          <p>All</p>
+          <input type="checkbox" className={checkBoxStyling}
+            onChange={() => handleSelectAllEpisodes()} checked={uploadAll}
+          />
+      </div>
       <div className={episodeContainer}>
         {episodes.map((episode, index) => (
           <div className={episodeRow} key={index}>
@@ -281,7 +325,7 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
                 <input type="checkbox" className={checkBoxStyling} checked disabled />
                 :
                 <input type="checkbox" className={checkBoxStyling}
-                  onChange={() => handleCheckboxChange(episode.eid)} checked={checkedEid[0] === episode.eid}
+                  onChange={() => handleMultiCheckboxChange(episode.eid)} checked={checkedEid.includes(episode.eid)}
                 />
               }
             </label>
@@ -292,7 +336,7 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
     </div>
   )
 }
-
+//checked={checkedEid[0] === episode.eid}
 export const ErrorModalMessage = ({ helpSrc, primaryMsg, secondaryMsg }: ErrorModalObject) => {
 
   const linkStyling = "text-white hover:text-[#FFFF00] default-animation text-xl"

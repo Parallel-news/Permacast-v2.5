@@ -81,9 +81,7 @@ export function useMintEpisode() {
   });
 }
 
-export const mintEpisode = async({eid, target, getPublicKey, createSignature} : CreateEpisodeNftObject) => {
-
-  const { sig, jwk_n } = await generateAuthentication({getPublicKey, createSignature})
+export const mintEpisode = async({eid, target, jwk_n, sig} : CreateEpisodeNftObject) => {
 
   const mintArgs = {
     "function": MINT_NFT,
