@@ -210,7 +210,7 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
       "desc": await tryDescriptionUpload(description),
       "sig": "",
       "txid": await tryFeePayment(),
-      "isVisible": true,
+      "isVisible": "yes",
       "thumbnail": "",
       "content": uploadPaymentTX,
       "mimeType": determineMediaType(fileType),

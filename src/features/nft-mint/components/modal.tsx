@@ -4,21 +4,14 @@ import Image from 'next/image'
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 import toast from 'react-hot-toast'
-
-import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, PERMACAST_TELEGRAM_URL, PERMA_TOAST_SETTINGS, POLYSCAN_LINK } from '@/constants/index'
-
+import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, MODAL_TOAST_SETTINGS, PERMACAST_TELEGRAM_URL, PERMA_TOAST_SETTINGS, POLYSCAN_LINK } from '@/constants/index'
 import useCrossChainAuth from '@/hooks/useCrossChainAuth'
-
-import { isERCAddress } from '@/utils/reusables'
-
+import { generateAuthentication, isERCAddress } from '@/utils/reusables'
 import { CreateCollectionViewObject, EpisodeTitleObject, ErrorModalObject, MintEpisodeViewObject, NftModalObject } from '../types'
-import { determineMintStatus, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
+import { determineMintStatus, useBatchMint, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
 import { grabEpisodeData } from '../utils'
-
 import { PermaSpinner } from '@/component/reusables'
 import { Icon } from '@/component/icon'
-import { Modal } from "@/component/reusables";
-
 import MintedNotification from './MintedNotification'
 import { GenericNftButton } from './buttons'
 import ModalShell from '@/component/modalShell'
@@ -30,13 +23,14 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
   const { getPublicKey, createSignature } = useCrossChainAuth();
 
   const mintEpisodeMutation = useMintEpisode()
+  const mintBatchMutation = useBatchMint()
   const collectionMutation = useCreateCollection()
 
   const targetInputRef = useRef(null)
   const queryNftInfo = determineMintStatus({ enabled: true, pid: pid })
   const payload = queryNftInfo?.data
 
-  const [checkedEid, setCheckedEid] = useState([""])
+  const [checkedEid, setCheckedEid] = useState([])
 
   const collectionStyling = "flexColYCenter space-y-4"
   const xStyling = "text-white cursor-pointer h-6 absolute right-2 top-2"
@@ -52,15 +46,18 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
       targetInputRef.current.className = "border-2 border-red-300 focus:ring-0 " + targetInputStyle;
       return false
     }
-    const toastLoading = toast.loading(t("nft-collection.minting-episode"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
-    // Post Mint Data
-    mintEpisodeMutation.mutate({
-      eid: checkedEid[0],
-      target: targetAddr,
-      getPublicKey: getPublicKey,
-      createSignature: createSignature
-    },
 
+    const toastLoading = toast.loading(t("nft-collection.minting-episode"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
+    // Loop Mint Data
+    
+    checkedEid.map(async (eid) => {
+      const { sig, jwk_n } = await generateAuthentication({getPublicKey, createSignature})
+      mintEpisodeMutation.mutate({
+        eid: eid,
+        target: targetAddr,
+        jwk_n: jwk_n,
+        sig: sig
+      },
       {
         onSuccess: async () => {
           setTimeout(async () => {
@@ -77,7 +74,40 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
           }, 8000);
         }
       })
+    })
   }
+
+  async function handleBatchMint() {
+    const targetAddr = targetInputRef.current.value;
+    // Real Target Address?
+    if (!isERCAddress(targetAddr)) {
+      toast.error(t("invalid-address"), MODAL_TOAST_SETTINGS(ERROR_TOAST_TIME))
+      targetInputRef.current.className = "border-2 border-red-300 focus:ring-0 " + targetInputStyle;
+      return false
+    }
+
+    const toastLoading = toast.loading(t("nft-collection.minting-episode"), MODAL_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
+
+    const eidPayload = checkedEid.map((eid) => ({ eid, target: targetAddr }));
+
+    const { sig, jwk_n } = await generateAuthentication({getPublicKey, createSignature})
+
+    mintBatchMutation.mutate({
+      payload: eidPayload,
+      jwk_n: jwk_n,
+      sig: sig
+    },
+    {
+      onSuccess: async () => {
+        setTimeout(async () => {
+          await queryNftInfo.refetch();
+          toast.dismiss(toastLoading)
+          toast.success(t("nft-collection.mint-successful"), MODAL_TOAST_SETTINGS(ERROR_TOAST_TIME))
+        }, 8000);
+      }
+    })
+
+  } 
 
   async function handleCollectionCreation() {
     const toastLoading = toast.loading(t("nft-collection.uploading-collection"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
@@ -140,7 +170,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
 
                 Create Collection - Step 1
 
-              */}
+          */}
           {!queryNftInfo.isLoading && !payload.collectionAddr && payload.claimableFactories && (
             <div className={collectionStyling}>
               <CreateCollectionView showPic={ARSEED_URL + payload.cover} showTitle={payload?.name} />
@@ -182,8 +212,8 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                 <div className="flex flex-row w-full justify-end">
                   <GenericNftButton
                     text={t("nft-collection.mint")}
-                    onClick={() => handleEpisodeMint()}
-                    disabled={payload.allMinted || checkedEid[0].length === 0}
+                    onClick={() => handleBatchMint()}
+                    disabled={payload.allMinted || checkedEid.length === 0}
                   />
                 </div>
               )}
@@ -193,7 +223,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
 
                 No Episode Found
 
-              */}
+          */}
           {!queryNftInfo.isLoading && payload.collectionAddr && payload.episodes.length === 0 && (
             <ErrorModalMessage
               helpSrc={`/upload-episode?pid=${pid}`}
@@ -242,12 +272,14 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
 
   const { t } = useTranslation();
 
+  const [uploadAll, setUploadAll] = useState(false)
+
   const episodeRow = "w-full flexBetween items-center"
-  const episodeContainer = "bg-zinc-700 rounded-md w-full p-4 space-y-2"
-  const titleStyling = "flexBetween items-center w-full text-white text-2xl mb-6"
+  const episodeContainer = "bg-zinc-700 rounded-md w-full p-4 space-y-2 max-h-[300px] overflow-y-scroll"
+  const titleStyling = "flexBetween items-center w-full text-white text-2xl mb-2"
   const checkBoxStyling = "form-checkbox accent-[#FFFF00] bg-zinc-800 rounded-xl inline w-5 h-5"
 
-  const handleCheckboxChange = (itemId) => {
+  const handleSingleCheckboxChange = (itemId) => {
     if (itemId !== checkedEid[0]) {
       setCheckedEid([itemId])
     } else {
@@ -255,19 +287,52 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
     }
   };
 
+  const handleMultiCheckboxChange = (itemId) => {
+    if (!checkedEid.includes(itemId)) {
+      setCheckedEid(prevState => [...prevState, itemId])
+    } else {
+      setCheckedEid(prevState => prevState.filter(item => item !== itemId));
+      setUploadAll(false)
+    }
+  };
+
+  const handleSelectAllEpisodes = () => {
+    setUploadAll(prev => !prev)
+    if(!uploadAll) { //Logic inversed since state set doesnt immediately take effect
+      const remainingEids = episodes
+        .filter((itemId) => !itemId.minted && !checkedEid.includes(itemId.eid))
+        .map((itemId) => itemId.eid)
+      setCheckedEid(prevState => [...prevState, ...remainingEids])
+    } else {
+      setCheckedEid([])
+    }
+  }
+
   return (
     <div className="flex flex-col w-full">
       <div className={titleStyling}>
-        <p>{t('nft-collection.mint-for')} <span className="font-bold">{showName}</span></p>
-        <Link href={`${POLYSCAN_LINK}${collectionAddr}`}>
-          <Image
-            src="/polygon_logo.svg"
-            alt="Polygon Icon"
-            width={40}
-            height={40}
-            className="cursor-pointer"
-          />
-        </Link>
+        <div className="flex flex-row space-x-2 items-center text-base md:text-2xl justify-start">
+          <p>{t('nft-collection.mint-for')} <span className="font-bold">{showName}</span></p>
+          <Link href={`${POLYSCAN_LINK}${collectionAddr}`}>
+            <Image 
+              src="/polygon_logo.svg"
+              alt="Polygon Icon"
+              width={40}
+              height={40}
+              className="cursor-pointer"
+            />
+          </Link>
+        </div>
+        <div className="space-x-2 pr-4 items-center flex flex-row text-base">
+          {episodes.some((episode) => !episode.minted) && (
+            <>
+              <p>All</p>
+              <input type="checkbox" className={checkBoxStyling}
+                onChange={() => handleSelectAllEpisodes()} checked={uploadAll}
+              />
+            </>
+          )}
+        </div>
       </div>
       <div className={episodeContainer}>
         {episodes.map((episode, index) => (
@@ -281,7 +346,7 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
                 <input type="checkbox" className={checkBoxStyling} checked disabled />
                 :
                 <input type="checkbox" className={checkBoxStyling}
-                  onChange={() => handleCheckboxChange(episode.eid)} checked={checkedEid[0] === episode.eid}
+                  onChange={() => handleMultiCheckboxChange(episode.eid)} checked={checkedEid.includes(episode.eid)}
                 />
               }
             </label>
@@ -292,7 +357,7 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
     </div>
   )
 }
-
+//checked={checkedEid[0] === episode.eid}
 export const ErrorModalMessage = ({ helpSrc, primaryMsg, secondaryMsg }: ErrorModalObject) => {
 
   const linkStyling = "text-white hover:text-[#FFFF00] default-animation text-xl"

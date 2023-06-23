@@ -44,7 +44,7 @@ interface ExplicitInputInter {
 
 interface VisibleInputInter {
     setVisible: (v: any) => void;
-    visible: boolean;
+    visible: string;
 }
 
 interface CropScreenInter {
@@ -317,8 +317,8 @@ export const VisibleInput = (props: VisibleInputInter) => {
                 id="podcastExplicit"
                 type="checkbox"
                 className={visibleCheckBoxStyling}
-                onChange={() => props.setVisible(!props.visible)}
-                checked={!props.visible}
+                onChange={() => props.setVisible(prev => prev === "yes" ? "no" : "yes")}
+                checked={props.visible === "yes" ? false : true}
             />
         </label>
     )

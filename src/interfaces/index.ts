@@ -59,7 +59,7 @@ export interface Episode {
   type: string;
   uploader: string;
   uploadedAt: number;
-  isVisible?: boolean;
+  isVisible?: string;
   order?: number; // UI only
   thumbnail?: string | null;
   minted?: boolean;

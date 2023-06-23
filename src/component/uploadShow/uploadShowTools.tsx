@@ -79,7 +79,7 @@ export const ShowForm = (props: ShowFormInter) => {
     const [podcastLanguage_, setPodcastLanguage_] = useState('en');
     const [podcastExplicit_, setPodcastExplicit_] = useState(false);
     const [podcastLabel_, setPodcastLabel_] = useState("");
-    const [isVisible, setIsVisible] = useState<boolean>(true)
+    const [isVisible, setIsVisible] = useState<string>("yes")
 
     // Validations
     const [podNameMsg, setPodNameMsg] = useState("");
@@ -166,6 +166,7 @@ export const ShowForm = (props: ShowFormInter) => {
 
     async function submitShow(payloadObj: any) {
         // Check Connection
+        console.log()
         if (!checkConnection(address)) {
             toast.error(CONNECT_WALLET, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
             return false
@@ -229,9 +230,9 @@ export const ShowForm = (props: ShowFormInter) => {
         setTimeout(async function () {
             console.log("createShowPayload: ", createShowPayload);
             const uploadRes = (await axios.post('/api/exm/write', createShowPayload)).data;
+            console.log("uploadRES: ", uploadRes)
             const podcasts = uploadRes.data.execution.state.podcasts;
             const podcast = podcasts[podcasts.length - 1];
-            console.log('uploaded podcast', podcast);
             if (podcasts.length > 0 && props.setUploadedPID) {
                 props?.setUploadedPID(podcast.pid);
                 props?.setUploadedIndex(podcasts.length - 1);
@@ -255,10 +256,12 @@ export const ShowForm = (props: ShowFormInter) => {
     // Inserts Editting Info
     useEffect(() => {
         if (props.edit && props.rssData.length === 0) {
+            
             const restoreSavedData = async () => {
-                console.log("Edit capability executed")
+            
                 const podcast = props.podcasts.filter((podcast,) => podcast.pid === props.selectedPid)
                 const p = podcast[0]
+                console.log("t: ", p)
                 //Set all state variables
                 setPodcastName_(p.podcastName)
                 const description = (await axios.get(ARSEED_URL + p.description)).data;
@@ -321,7 +324,7 @@ export const ShowForm = (props: ShowFormInter) => {
     }, []);
 
     const editCover = (props.edit && !props.rssData.length) ? ARSEED_URL + coverUrl : coverUrl;
-
+    console.log("isVIs: ", isVisible)
     return (
         <div className={showFormStyling + (props?.allowSelect ? " pb-20" : "")}>
             {/*First Row*/}

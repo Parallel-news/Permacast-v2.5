@@ -48,7 +48,15 @@ export type CreateCollectionObject = { pid: string } & AuthenticationActions
 export type CreateEpisodeNftObject = {
     eid: string;
     target: string;
-} & AuthenticationActions
+    jwk_n: void;
+    sig: string | Uint8Array;
+}
+
+export type MintBatchEpisodeObject = {
+    payload: { eid: any; target: any; }[]
+    jwk_n: void;
+    sig: string | Uint8Array;
+}
 
 export type CreateCollectionViewObject = {
     showPic: string;

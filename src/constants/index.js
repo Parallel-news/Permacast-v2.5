@@ -63,9 +63,12 @@ export const ARWEAVE_READ_LINK = "https://arweave.net/";
 export const PERMACAST_HELPER_URL = "https://permacast-bloodstone-helper.herokuapp.com/";
 export const ANS_MAPPED_STATE_URL = "https://ans-metrics.herokuapp.com/mapped-state/";
 export const RSS_FEED_URL = PERMACAST_HELPER_URL + "feeds/rss/"; // requires PID at the end
+
 export const EXM_ANS_CONTRACT_ADDRESS = "VGWeJLDLJ9ify3ezl9tW-9fhB0G-GIUd60FE-5Q-_VI";
+export const NFT_CONTRACT = "4E9PGPTT_uqJWSQ7ulDKireAAWesCUJjEyQsssQ4mxo"
+
 export const MESON_ENDPOINT = "https://pz-znmpfs.meson.network/"
-export const NFT_CONTRACT = "Pagb13mULiD4GJpPW0kwiSlh7eL58dL1bzdoJzeyczw"
+
 export const NFT_ENDPOINT = EXM_READ_LINK + NFT_CONTRACT
 export const RSS_IMPORT_LINK = PERMACAST_HELPER_URL + "import-rss/"
 
@@ -161,6 +164,14 @@ export const PERMA_TOAST_SETTINGS = (time) => {
     }
 }
 
+export const MODAL_TOAST_SETTINGS = (time) => {
+    return {
+        style: TOAST_DARK,
+        
+        duration: time
+    }
+}
+
 // API ERRORS
 export const NO_SHOW = "Unable to fetch shows. Refresh and try again."
 
@@ -183,4 +194,5 @@ export const MINT_NFT = "submitRequest"
 export const NFT_INFO = "nftInfo"
 export const ALL_PODCASTS = "allPodcasts"
 export const UNIX_SORTED_PODCASTS = "unixSortedPodcasts"
+export const SUBMIT_REQUESTS = "submitRequests"
 
