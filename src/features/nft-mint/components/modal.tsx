@@ -330,7 +330,7 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
               <input type="checkbox" className={checkBoxStyling}
                 onChange={() => handleSelectAllEpisodes()} checked={uploadAll}
               />
-            </>
+            </> 
           )}
         </div>
       </div>
