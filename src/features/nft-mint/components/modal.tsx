@@ -12,7 +12,7 @@ import useCrossChainAuth from '@/hooks/useCrossChainAuth'
 import { generateAuthentication, isERCAddress } from '@/utils/reusables'
 
 import { CreateCollectionViewObject, EpisodeTitleObject, ErrorModalObject, MintEpisodeViewObject, NftModalObject } from '../types'
-import { determineMintStatus, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
+import { determineMintStatus, useBatchMint, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
 import { grabEpisodeData } from '../utils'
 
 import { PermaSpinner } from '@/component/reusables'
@@ -30,6 +30,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
   const { getPublicKey, createSignature } = useCrossChainAuth();
 
   const mintEpisodeMutation = useMintEpisode()
+  const mintBatchMutation = useBatchMint()
   const collectionMutation = useCreateCollection()
 
   const targetInputRef = useRef(null)
@@ -81,18 +82,39 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
         }
       })
     })
-
   }
 
-  //UNDER CONSTRUCTION
-  //Handle multiple episode mint
-  /*
-  LOOP mintEpisodeMutation.mutate --> check if EP minted already
-    include onError imperative to say issues uploading said episode and move on to the next. 
+  async function handleBatchMint() {
+    const targetAddr = targetInputRef.current.value;
+    // Real Target Address?
+    if (!isERCAddress(targetAddr)) {
+      toast.error(t("invalid-address"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
+      targetInputRef.current.className = "border-2 border-red-300 focus:ring-0 " + targetInputStyle;
+      return false
+    }
 
-  We need a way to move away from the checkedEid dependency. 
-  */
+    const toastLoading = toast.loading(t("nft-collection.minting-episode"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
 
+    const eidPayload = checkedEid.map((eid) => ({ eid, target: targetAddr }));
+
+    const { sig, jwk_n } = await generateAuthentication({getPublicKey, createSignature})
+
+    mintBatchMutation.mutate({
+      payload: eidPayload,
+      jwk_n: jwk_n,
+      sig: sig
+    },
+    {
+      onSuccess: async () => {
+        setTimeout(async () => {
+          await queryNftInfo.refetch();
+          toast.dismiss(toastLoading)
+          toast.success(t("nft-collection.mint-successful"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
+        }, 8000);
+      }
+    })
+
+  } 
 
   async function handleCollectionCreation() {
     const toastLoading = toast.loading(t("nft-collection.uploading-collection"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
@@ -197,7 +219,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
                 <div className="flex flex-row w-full justify-end">
                   <GenericNftButton
                     text={t("nft-collection.mint")}
-                    onClick={() => handleEpisodeMint()}
+                    onClick={() => handleBatchMint()}
                     disabled={payload.allMinted || checkedEid.length === 0}
                   />
                 </div>
@@ -307,7 +329,7 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
           />
         </Link>
       </div>
-      <div className="w-full flex flex-row justify-end space-x-2 pr-4">
+      <div className="w-full flex flex-row justify-end space-x-2 pr-4 items-center mb-1">
           <p>All</p>
           <input type="checkbox" className={checkBoxStyling}
             onChange={() => handleSelectAllEpisodes()} checked={uploadAll}

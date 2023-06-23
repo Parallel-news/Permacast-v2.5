@@ -52,6 +52,12 @@ export type CreateEpisodeNftObject = {
     sig: string | Uint8Array;
 }
 
+export type MintBatchEpisodeObject = {
+    payload: { eid: any; target: any; }[]
+    jwk_n: void;
+    sig: string | Uint8Array;
+}
+
 export type CreateCollectionViewObject = {
     showPic: string;
     showTitle: string;

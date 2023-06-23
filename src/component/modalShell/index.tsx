@@ -10,7 +10,7 @@ type ModalShellObject = {
 
 export default function ModalShell({children, width, isOpen, setIsOpen} : ModalShellObject) {
 
-    const modalContainer = `w-full ${width} transform overflow-hidden rounded-2xl bg-zinc-800 p-10 text-left align-middle shadow-xl transition-all relative min-h-[200px] flex flex-col justify-center items-center`
+    const modalContainer = `w-full ${width} transform overflow-hidden rounded-2xl bg-zinc-800 p-10 text-left align-middle shadow-xl transition-all relative min-h-[200px] flex flex-col justify-center items-center z-10`
 
     return (
         <Transition appear show={isOpen} as={Fragment}>

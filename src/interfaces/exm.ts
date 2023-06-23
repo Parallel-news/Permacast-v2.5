@@ -29,7 +29,7 @@ export interface EXMPodcastPayloadBase extends EXMBase {
   minifiedCover: arseedTX;
   label: string;
   txid: everpayTX;
-  isVisible: boolean;
+  isVisible: string;
 };
 
 export interface UploadPodcastProps extends EXMPodcastPayloadBase {
@@ -49,7 +49,7 @@ export interface EpisodePayloadBase extends EXMBase {
   name: string;
   desc: arseedTX,
   txid: everpayTX,
-  isVisible: boolean;
+  isVisible: string;
   thumbnail: arseedTX,
   content: arseedTX,
   mimeType: string,

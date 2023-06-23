@@ -76,7 +76,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
 
     //For Edits
     const [epThumbnailUrl, setEpThumbnailUrl] = useState(null)
-    const [visible, setVisible] = useState<boolean>(true)
+    const [visible, setVisible] = useState<string>("yes")
     //Validation
     const [epNameMsg, setEpNameMsg] = useState<string>("")
     const [epDescMsg, setEpDescMsg] = useState<string>("")
