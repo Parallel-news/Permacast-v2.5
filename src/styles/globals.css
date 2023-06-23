@@ -306,3 +306,17 @@ body::-webkit-scrollbar-thumb:hover {
   visibility: visible;
   transform: translateX(-50%) translateY(-8px);
 }
+
+@layer utilities {
+  .hide-scrollbar::-webkit-scrollbar {
+    width: 0.0001rem;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+}
