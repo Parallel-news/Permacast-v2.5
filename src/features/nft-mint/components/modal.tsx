@@ -324,10 +324,14 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
           </Link>
         </div>
         <div className="space-x-2 pr-4 items-center flex flex-row text-base">
-          <p>All</p>
-          <input type="checkbox" className={checkBoxStyling}
-            onChange={() => handleSelectAllEpisodes()} checked={uploadAll}
-          />
+          {episodes.some((episode) => !episode.minted) && (
+            <>
+              <p>All</p>
+              <input type="checkbox" className={checkBoxStyling}
+                onChange={() => handleSelectAllEpisodes()} checked={uploadAll}
+              />
+            </>
+          )}
         </div>
       </div>
       <div className={episodeContainer}>
