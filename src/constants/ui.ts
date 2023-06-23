@@ -47,5 +47,5 @@ export const EPISODE_TEMPLATE: Episode = {
   type: '',
   uploader: '',
   uploadedAt: 0,
-  isVisible: false,
+  isVisible: "yes",
 };
