@@ -1,5 +1,7 @@
+import { MINT_DURATION, TOAST_POSITION } from "@/constants/index";
 import { Dialog, Transition } from "@headlessui/react";
 import { Dispatch, Fragment, ReactElement, SetStateAction } from "react";
+import { Toaster } from "react-hot-toast";
 
 type ModalShellObject = {
     children: ReactElement<any, any>;
@@ -15,8 +17,16 @@ export default function ModalShell({children, width, isOpen, setIsOpen} : ModalS
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={() => setIsOpen(false)}>
-                <div className="fixed inset-0 overflow-y-auto">
-                    <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <div className="fixed inset-0 overflow-y-auto z-10">
+                    <Toaster
+                        position={TOAST_POSITION}
+                        reverseOrder={false}
+                        toastOptions={{
+                            duration: MINT_DURATION,
+                            className: "flexFullCenter",
+                        }}
+                    />
+                    <div className="flex min-h-full items-center justify-center p-4 text-center z-10">
                         <Transition.Child
                             as={Fragment}
                             enter="ease-out duration-300"

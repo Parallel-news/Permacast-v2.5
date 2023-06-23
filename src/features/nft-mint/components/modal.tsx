@@ -4,21 +4,14 @@ import Image from 'next/image'
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 import toast from 'react-hot-toast'
-
-import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, PERMACAST_TELEGRAM_URL, PERMA_TOAST_SETTINGS, POLYSCAN_LINK } from '@/constants/index'
-
+import { ARSEED_URL, ERROR_TOAST_TIME, EXTENDED_TOAST_TIME, MODAL_TOAST_SETTINGS, PERMACAST_TELEGRAM_URL, PERMA_TOAST_SETTINGS, POLYSCAN_LINK } from '@/constants/index'
 import useCrossChainAuth from '@/hooks/useCrossChainAuth'
-
 import { generateAuthentication, isERCAddress } from '@/utils/reusables'
-
 import { CreateCollectionViewObject, EpisodeTitleObject, ErrorModalObject, MintEpisodeViewObject, NftModalObject } from '../types'
 import { determineMintStatus, useBatchMint, useCreateCollection, useMintEpisode } from '../api/get-nft-info'
 import { grabEpisodeData } from '../utils'
-
 import { PermaSpinner } from '@/component/reusables'
 import { Icon } from '@/component/icon'
-import { Modal } from "@/component/reusables";
-
 import MintedNotification from './MintedNotification'
 import { GenericNftButton } from './buttons'
 import ModalShell from '@/component/modalShell'
@@ -88,12 +81,12 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
     const targetAddr = targetInputRef.current.value;
     // Real Target Address?
     if (!isERCAddress(targetAddr)) {
-      toast.error(t("invalid-address"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
+      toast.error(t("invalid-address"), MODAL_TOAST_SETTINGS(ERROR_TOAST_TIME))
       targetInputRef.current.className = "border-2 border-red-300 focus:ring-0 " + targetInputStyle;
       return false
     }
 
-    const toastLoading = toast.loading(t("nft-collection.minting-episode"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
+    const toastLoading = toast.loading(t("nft-collection.minting-episode"), MODAL_TOAST_SETTINGS(EXTENDED_TOAST_TIME))
 
     const eidPayload = checkedEid.map((eid) => ({ eid, target: targetAddr }));
 
@@ -109,7 +102,7 @@ export default function NftModal({ pid, isOpen, setIsOpen }: NftModalObject) {
         setTimeout(async () => {
           await queryNftInfo.refetch();
           toast.dismiss(toastLoading)
-          toast.success(t("nft-collection.mint-successful"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
+          toast.success(t("nft-collection.mint-successful"), MODAL_TOAST_SETTINGS(ERROR_TOAST_TIME))
         }, 8000);
       }
     })
@@ -283,7 +276,7 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
 
   const episodeRow = "w-full flexBetween items-center"
   const episodeContainer = "bg-zinc-700 rounded-md w-full p-4 space-y-2"
-  const titleStyling = "flexBetween items-center w-full text-white text-2xl mb-6"
+  const titleStyling = "flexBetween items-center w-full text-white text-2xl mb-2"
   const checkBoxStyling = "form-checkbox accent-[#FFFF00] bg-zinc-800 rounded-xl inline w-5 h-5"
 
   const handleSingleCheckboxChange = (itemId) => {
@@ -307,8 +300,8 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
     setUploadAll(prev => !prev)
     if(!uploadAll) { //Logic inversed since state set doesnt immediately take effect
       const remainingEids = episodes
-      .filter((itemId) => !itemId.minted && !checkedEid.includes(itemId.eid))
-      .map((itemId) => itemId.eid)
+        .filter((itemId) => !itemId.minted && !checkedEid.includes(itemId.eid))
+        .map((itemId) => itemId.eid)
       setCheckedEid(prevState => [...prevState, ...remainingEids])
     } else {
       setCheckedEid([])
@@ -318,22 +311,24 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
   return (
     <div className="flex flex-col w-full">
       <div className={titleStyling}>
-        <p>{t('nft-collection.mint-for')} <span className="font-bold">{showName}</span></p>
-        <Link href={`${POLYSCAN_LINK}${collectionAddr}`}>
-          <Image
-            src="/polygon_logo.svg"
-            alt="Polygon Icon"
-            width={40}
-            height={40}
-            className="cursor-pointer"
-          />
-        </Link>
-      </div>
-      <div className="w-full flex flex-row justify-end space-x-2 pr-4 items-center mb-1">
+        <div className="flex flex-row space-x-2 items-center">
+          <p>{t('nft-collection.mint-for')} <span className="font-bold">{showName}</span></p>
+          <Link href={`${POLYSCAN_LINK}${collectionAddr}`}>
+            <Image
+              src="/polygon_logo.svg"
+              alt="Polygon Icon"
+              width={40}
+              height={40}
+              className="cursor-pointer"
+            />
+          </Link>
+        </div>
+        <div className="space-x-2 pr-4 items-center flex flex-row text-base">
           <p>All</p>
           <input type="checkbox" className={checkBoxStyling}
             onChange={() => handleSelectAllEpisodes()} checked={uploadAll}
           />
+        </div>
       </div>
       <div className={episodeContainer}>
         {episodes.map((episode, index) => (

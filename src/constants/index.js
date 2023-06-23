@@ -164,6 +164,14 @@ export const PERMA_TOAST_SETTINGS = (time) => {
     }
 }
 
+export const MODAL_TOAST_SETTINGS = (time) => {
+    return {
+        style: TOAST_DARK,
+        
+        duration: time
+    }
+}
+
 // API ERRORS
 export const NO_SHOW = "Unable to fetch shows. Refresh and try again."
 
