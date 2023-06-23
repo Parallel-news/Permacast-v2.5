@@ -311,10 +311,10 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
   return (
     <div className="flex flex-col w-full">
       <div className={titleStyling}>
-        <div className="flex flex-row space-x-2 items-center">
+        <div className="flex flex-row space-x-2 items-center text-base md:text-2xl justify-start">
           <p>{t('nft-collection.mint-for')} <span className="font-bold">{showName}</span></p>
           <Link href={`${POLYSCAN_LINK}${collectionAddr}`}>
-            <Image
+            <Image 
               src="/polygon_logo.svg"
               alt="Polygon Icon"
               width={40}
