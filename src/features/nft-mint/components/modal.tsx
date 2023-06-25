@@ -276,7 +276,7 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
 
   const episodeRow = "w-full flexBetween items-center"
   const episodeContainer = "bg-zinc-700 rounded-md w-full p-4 space-y-2 max-h-[300px] overflow-y-auto hide-scrollbar"
-  const titleStyling = "flexBetween items-center w-full text-white text-2xl mb-2"
+  const titleStyling = "flexBetween items-center w-full text-white text-2xl mb-5"
   const checkBoxStyling = "form-checkbox accent-[#FFFF00] bg-zinc-800 rounded-xl inline w-5 h-5"
 
   const handleSingleCheckboxChange = (itemId) => {
