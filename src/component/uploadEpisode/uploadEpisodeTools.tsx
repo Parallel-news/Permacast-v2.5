@@ -263,7 +263,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         setTimeout(async function () {
             console.log("EP PAYLOAD: ", createEpPayload)
             const result = await axios.post('/api/exm/write', createEpPayload);
-            console.log("EXM RES: ", result)
+            console.log("EXM RES: ", JSON.parse(result.data))
             //EXM call, set timeout, then redirect. 
             setTimeout(async function () {
                 toast.dismiss(toastSaving);
