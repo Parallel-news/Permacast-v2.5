@@ -262,6 +262,7 @@ export const ShowForm = (props: ShowFormInter) => {
                 const podcast = props.podcasts.filter((podcast,) => podcast.pid === props.selectedPid)
                 const p = podcast[0]
                 console.log("t: ", p)
+                setIsVisible(p.isVisible ? "yes" : "no")
                 //Set all state variables
                 setPodcastName_(p.podcastName)
                 const description = (await axios.get(ARSEED_URL + p.description)).data;

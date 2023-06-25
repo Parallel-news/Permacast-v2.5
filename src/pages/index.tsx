@@ -9,7 +9,6 @@ import { loadingPage } from '@/atoms/index';
 
 import { FullEpisodeInfo } from '@/interfaces/index';
 import { getContractVariables, getPASOMContract } from '@/utils/contract';
-import { getPodcastData } from '@/features/prefetching';
 import { sortHomepageInfo } from '@/utils/filters';
 import { HOMAPAGE_STATS_KEY } from '@/constants/query-keys';
 import { EXM_READ_LINK } from '../constants';
@@ -42,8 +41,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
   }, []);
 
   const { isFetched: podcastsFetched, data: EXMstate } = getVisiblePodcast();
-//getVisiblePodcast
-//getPodcastData
+
   const stateQuery = useQuery({
     queryKey: [HOMAPAGE_STATS_KEY],
     queryFn: () => sortHomepageInfo(EXMstate.podcasts),
