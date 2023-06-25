@@ -307,7 +307,7 @@ export const ExplicitInput = (props: ExplicitInputInter) => {
 
 export const VisibleInput = (props: VisibleInputInter) => {
     const { t } = useTranslation();
-
+    console.log(props.visible)
     return (
         <label className={explicitLabelStyling}>
             <span className={explicitTextStyling}>

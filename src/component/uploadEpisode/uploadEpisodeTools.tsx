@@ -140,7 +140,8 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                     const description = (await axios.get(ARSEED_URL + ep.description)).data;
                     setEpDesc(description)
                     setEpThumbnailUrl(ep?.thumbnail ? ep?.thumbnail : "")
-                    setVisible(ep.isVisible)
+                    setVisible(ep.isVisible ? "yes" : "no")
+                    console.log("eee: ", ep)
                     _setLoadingPage(false)
                 }
             } 
@@ -149,7 +150,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         } else {
             _setLoadingPage(false)
         }
-    }, [])
+    }, [props.edit])
 
     /**
      * Determines whether validation message should be placed within input field
@@ -228,8 +229,8 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         }
 
         // Media to Arseeding
+        const toastCover = toast.loading(t("loadingToast.savingMedia"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
         if(!props.edit) {
-            const toastCover = toast.loading(t("loadingToast.savingMedia"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
             setProgress(48)
             try {
                 const media = await upload3DMedia(epMedia, epMedia.type); epPayload["content"] = media?.order?.itemId
@@ -260,6 +261,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         setProgress(props.edit ? 75 : 82)
         // EXM REDIRECT AND ERROR HANDLING NEEDED
         setTimeout(async function () {
+            console.log("EP PAYLOAD: ", createEpPayload)
             const result = await axios.post('/api/exm/write', createEpPayload);
             console.log("EXM RES: ", result)
             //EXM call, set timeout, then redirect. 
