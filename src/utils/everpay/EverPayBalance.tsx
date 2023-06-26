@@ -1,10 +1,13 @@
-import { arweaveAddress, calculateEverPayBalance, everPayBalance } from "../../atoms";
-import { useEffect, useState } from "react"
-import { useRecoilState } from "recoil"
 import Everpay from "everpay";
-import { MoonLoader } from "react-spinners";
 import { useTranslation } from "next-i18next";
-import { Tooltip } from "@nextui-org/react";
+import { useEffect, useState } from "react"
+import { useArconnect } from "react-arconnect";
+import { Tooltip } from "react-tooltip";
+import { MoonLoader } from "react-spinners";
+import { useRecoilState } from "recoil"
+
+import { calculateEverPayBalance, everPayBalance } from "@/atoms/index";
+import { LOADER_COLOR, LOADER_SIZE } from "@/constants/index";
 
 interface everpayBalanceInterface {
     textClassname?: string;
@@ -13,21 +16,18 @@ interface everpayBalanceInterface {
 export const EverPayBalance = (props: everpayBalanceInterface) => {
     const { t } = useTranslation();
     const { textClassname } = props
+    const { walletConnected, address } = useArconnect();
     const [_everPayBalance, _setEverPayBalance] = useRecoilState(everPayBalance)
     const [_calculateEverPayBalance, _setCalculateEverPayBalance] = useRecoilState(calculateEverPayBalance)
-    const [_arweaveAddress, _setArweaveAddress] = useRecoilState<String>(arweaveAddress);
     const [balanceError, setBalanceError] = useState<boolean>(false)
     const [balanceLoading, setBalanceLoading] = useState<boolean>(true)
   
-    const LOADER_COLOR="#d4e5e1"
-    const LOADER_SIZE=20
     // When everpay recalculation requested, perform hook
     useEffect(() => {
 
         async function everBalance() {
             const everpay = new Everpay({
-                //@ts-ignore string vs String
-                account: _arweaveAddress,
+                account: address,
                 //@ts-ignore
                 chainType: 'arweave',
                 arJWK: 'use_wallet',
@@ -37,7 +37,7 @@ export const EverPayBalance = (props: everpayBalanceInterface) => {
                 setBalanceLoading(true)
                 setBalanceError(false)
                 //@ts-ignore string vs String
-                const balance = await everpay.balances({ account: _arweaveAddress });
+                const balance = await everpay.balances({ account: address });
                 //@ts-ignore
                 _setEverPayBalance(balance.find((el: any) => el.chainType === "arweave,ethereum")?.balance);
                 setBalanceLoading(false)
@@ -47,17 +47,20 @@ export const EverPayBalance = (props: everpayBalanceInterface) => {
                 console.log(error)
             }
         }
-        if (_arweaveAddress.length > 0) {
-            everBalance()
-        }
+        if (walletConnected) everBalance();
 
-    }, [_calculateEverPayBalance, _arweaveAddress]);
+    }, [_calculateEverPayBalance, address]);
 
     return (
         <>
-            {_arweaveAddress && _arweaveAddress.length > 0 && (
+            {walletConnected && (
                 (balanceError ?
-                    <Tooltip color='invert' className="helper-tooltip px-1.5 ml-2" content={<div className="text-zinc-200">{t("arconnect.load-failed")}</div>}>?</Tooltip>
+                    <div 
+                        className="helper-tooltip px-1.5 ml-2" 
+                        data-tooltip-id="verifiedTip"
+                        data-tooltip-content={t("arconnect.load-failed")}>
+
+                    ? </div>
                     : balanceLoading ?
                         <div className={`${textClassname} flex justify-center items-center z-50 bg-zinc-900`}>
                             <MoonLoader 
@@ -66,6 +69,7 @@ export const EverPayBalance = (props: everpayBalanceInterface) => {
                             />
                         </div>
                         : <div className={`${textClassname}`}>{Number(_everPayBalance).toFixed(2) + ' AR'}</div>
+                    
                 )
             )}
         </>

@@ -24,7 +24,6 @@ export default function FeaturedPodcastCarousel(props: podcastCarouselInter) {
 
             rowRef.current.scrollTo({left: scrollTo, behavior: 'smooth'})
         }
-        // console.log(rowRef.current?.scrollLeft, rowRef.current?.clientWidth)
     }
 
     return (

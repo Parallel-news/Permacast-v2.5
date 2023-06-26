@@ -1,22 +1,16 @@
-import { useTranslation } from 'next-i18next';
-import { Podcast } from '../../interfaces';
-import { useArconnect } from 'react-arconnect';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { ARSEED_URL, FADE_IN_STYLE, FADE_OUT_STYLE } from '../../constants';
-import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
-import { useRecoilState } from 'recoil';
-import { arweaveAddress } from '../../atoms';
 import Image from 'next/image';
-
+import { useTranslation } from 'next-i18next';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useArconnect } from 'react-arconnect';
 import { FiFile } from 'react-icons/fi';
-import { ArrowUpTrayIcon, XMarkIcon, WalletIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
-/*
-const FiFile = React.lazy(() => import('react-icons/fi').then(module => ({ default: module.FiFile })))
-const ArrowUpTrayIcon = React.lazy(() => import('@heroicons/react/24/outline').then(module => ({ default: module.ArrowUpTrayIcon })))
-const XMarkIcon = React.lazy(() => import('@heroicons/react/24/outline').then(module => ({ default: module.XMarkIcon })))
-const WalletIcon = React.lazy(() => import('@heroicons/react/24/outline').then(module => ({ default: module.WalletIcon })))
-const CurrencyDollarIcon = React.lazy(() => import('@heroicons/react/24/outline').then(module => ({ default: module.CurrencyDollarIcon })))
-*/
+
+import { Podcast } from '@/interfaces/index';
+
+import { ARSEED_URL, FADE_IN_STYLE, FADE_OUT_STYLE } from '@/constants/index';
+import { APP_LOGO, APP_NAME, PERMISSIONS } from '@/constants/arconnect';
+
+import { Icon } from '@/component/icon';
+
 interface EpisodeMediaInter {
     media: File | null;
     setMedia: (v: any) => void;
@@ -24,14 +18,18 @@ interface EpisodeMediaInter {
 
 interface UploadButtonInter {
     width?: string;
-    disable: boolean;
+    disable?: boolean;
     click?: () => void
+}
+
+interface ConnectWalletProps extends UploadButtonInter {
+    className?: string;
 }
 
 interface SelectPodcastInter {
     pid: string;
     setPid: (v: any) => void
-    shows: Podcast[]; 
+    shows: Podcast[];
 }
 
 interface PodcastOptionInter {
@@ -55,36 +53,35 @@ interface SelectPodcastModalInter {
     shows: Podcast[];
 }
 
-const trayIconStyling="h-5 w-5 mr-2"
-const dollarIconStyling="h-10 w-10 mr-2"
-const titleModalStyling = "flex justify-between w-full"
+const trayIconStyling = "h-5 w-5 mr-2"
+const dollarIconStyling = "h-10 w-10 mr-2"
+const titleModalStyling = "flexXCenter w-full"
 const inputEpisodeMediaStyling = "opacity-0 absolute z-[-1]"
 const podcastSelectOptionsStyling = "h-fit w-full space-y-3"
 const hrPodcastStyling = "my-5 border-[1px] border-neutral-400/50"
 const episodeFaFileStyling = "w-7 h-6 cursor-pointer rounded-lg mx-2"
-const episodeMediaStyling = "bg-zinc-800 rounded-xl cursor-pointer w-full"
-const selectPodcastModalStyling = "absolute inset-0 top-0 flex justify-center"
-const podcastOptionBaseStyling = "w-full flex justify-start items-center space-x-4"
+const episodeMediaStyling = "bg-zinc-800 rounded-xl cursor-pointer w-full "
+const selectPodcastModalStyling = "absolute inset-0 top-0 flexXCenter "
+const podcastOptionBaseStyling = "w-full flexYCenter justify-start space-x-4"
 const podcastOptionsContainer = "w-full flex flex-col px-5 overflow-auto h-[120%] mb-[40px]"
 const podcastOptionHoverStyling = "cursor-pointer hover:bg-zinc-600/30 transition duration-650 ease-in-out rounded-3xl p-3"
 export const containerPodcastModalStyling = "w-[98%] sm:w-[75%] lg:w-[50%] h-[420px] bg-zinc-800 rounded-3xl flex flex-col z-10 mb-0 "
 const xMarkStyling = "h-5 w-5 mt-1 cursor-pointer hover:text-red-400 hover:bg-red-400/10 transition duration-400 ease-in-out rounded-full"
-const uploadButtonStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8"
-const submitModalStyling = "btn btn-secondary transition duration-300 ease-in-out hover:text-white rounded-xl px-8 border-0 text-2xl absolute z-30"
-const selectPodcastStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 transition duration-300 ease-in-out hover:text-white rounded-xl px-8 w-full "
-const labelEpisodeMediaStyling = "flex items-center text-zinc-400 transition duration-300 ease-in-out hover:text-white my-1 py-2 px-3 w-full cursor-pointer w-full"
+const uploadButtonStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 default-animation hover:text-white rounded-xl px-8"
+const submitModalStyling = "btn btn-secondary default-animation hover:text-white rounded-xl px-8 border-0 text-2xl absolute z-30"
+const selectPodcastStyling = "btn btn-secondary bg-zinc-800 hover:bg-zinc-600 default-animation hover:text-white rounded-xl px-8 w-full "
+const labelEpisodeMediaStyling = "flexYCenter text-zinc-400 default-animation hover:text-white my-1 py-2 px-3 w-full cursor-pointer"
 
 export const EpisodeMedia = (props: EpisodeMediaInter) => {
 
     const { t } = useTranslation();
-
     return (
         <div className={episodeMediaStyling}>
-            <input className={inputEpisodeMediaStyling} id="file" required type="file" onChange={(e) => props.setMedia(e.target.files?.[0])} name="episodeMedia" />
+            <input className={inputEpisodeMediaStyling} id="file" required type="file" accept="audio/*,video/*" onChange={(e) => props.setMedia(e.target.files?.[0])} name="episodeMedia" />
             <label htmlFor="file" className={labelEpisodeMediaStyling}>
                 <FiFile className={episodeFaFileStyling} />
                 <div>
-                {props.media ? (props.media.name.length > 50 ? props.media.name.substring(0, 50) + "..." : props.media.name) : t("uploadepisode.file")}
+                    {props.media ? (props.media.name.length > 50 ? props.media.name.substring(0, 50) + "..." : props.media.name) : t("uploadepisode.file")}
                 </div>
             </label>
         </div>
@@ -100,24 +97,26 @@ export const UploadButton = (props: UploadButtonInter) => {
             disabled={props.disable}
             onClick={props.click}
         >
-            <ArrowUpTrayIcon className={trayIconStyling} />
+            <Icon className={trayIconStyling} icon={"ARROWUP"} />
             {t("uploadepisode.upload")}
-      </button>
+        </button>
     )
 }
 
-export const ConnectButton = (props: UploadButtonInter) => {
+export const ConnectButton = ({ width, className }: ConnectWalletProps) => {
     const { t } = useTranslation();
+    const { walletConnected, arconnectConnect } = useArconnect();
+
+    if (walletConnected) return (<></>);
 
     return (
         <button
-            className={`${uploadButtonStyling} ${props.width}`}
-            disabled={props.disable}
-            onClick={props.click}
+            className={`${uploadButtonStyling} ${width} ${className}}`}
+            onClick={() => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO })}
         >
-            <WalletIcon className={trayIconStyling} />
+            <Icon className={trayIconStyling} icon="WALLET" />
             {t("uploadshow.connect-wallet")}
-      </button>
+        </button>
     )
 }
 
@@ -129,9 +128,9 @@ export const SubmitTipButton = (props: UploadButtonInter) => {
             disabled={props.disable}
             onClick={props.click}
         >
-            <CurrencyDollarIcon className={dollarIconStyling} />
+            <Icon className={dollarIconStyling} icon="DOLLAR" />
             {t("tipModal.submitTip")}
-      </button>
+        </button>
     )
 }
 
@@ -139,14 +138,14 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
     const { t } = useTranslation();
 
     const [isVisible, setIsVisible] = useState<boolean>(false)
-    const { address,  } = useArconnect();
+    const { address, } = useArconnect();
     const yourShows = props.shows.filter((item: Podcast) => item.owner === address)
 
     let selectedShow;
     let selectedShowIndex;
-    if(props.pid.length > 0) {
+    if (props.pid.length > 0) {
         selectedShow = yourShows.map((item: Podcast, index) => {
-            if(item.pid === props.pid) {
+            if (item.pid === props.pid) {
                 console.log("match found")
                 selectedShowIndex = index
                 return item
@@ -158,32 +157,31 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
         setIsVisible(false)
     }, [props.pid])
 
+    const tx = selectedShow?.[selectedShowIndex]?.minifiedCover;
     return (
         <>
-            {props.pid.length === 0 ? 
-            <button className={selectPodcastStyling+ " relative"} onClick={() => setIsVisible(prev => !prev)}>
-                {t("uploadepisode.select-show")}
-            </button>
-            :
-            <div onClick={() => setIsVisible(true)}>
-                <PodcastOption 
-                    imgSrc={ARSEED_URL+selectedShow[selectedShowIndex].minifiedCover}
-                    title={selectedShow[selectedShowIndex].podcastName}
-                    disableClick={false}
-                />
-            </div>
+            {props.pid.length === 0 ?
+                <button className={selectPodcastStyling + " relative"} onClick={() => setIsVisible(prev => !prev)}>
+                    {t("uploadepisode.select-show")}
+                </button>
+                :
+                <div onClick={() => setIsVisible(true)}>
+                    <PodcastOption
+                        imgSrc={tx ? ARSEED_URL + tx : ''}
+                        title={selectedShow?.[selectedShowIndex]?.podcastName}
+                        disableClick={false}
+                    />
+                </div>
 
             }
-            {isVisible ?
-                <SelectPodcastModal 
+            {isVisible && (
+                <SelectPodcastModal
                     isVisible={isVisible}
                     setVisible={setIsVisible}
                     setPid={props.setPid}
                     shows={yourShows}
                 />
-            :
-            ""
-            }
+            )}
         </>
     )
 }
@@ -191,8 +189,8 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
 export const PodcastSelectOptions = (props: PodcastSelectOptionsInter) => {
     return (
         <div className={podcastSelectOptionsStyling} onClick={() => props.setPid(props.pid)}>
-            <PodcastOption 
-                imgSrc={ARSEED_URL+props.imgSrc}
+            <PodcastOption
+                imgSrc={ARSEED_URL + props.imgSrc}
                 title={props.title}
                 disableClick={props.disable}
             />
@@ -219,35 +217,35 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
     const { t } = useTranslation();
 
     const [showModal, setShowModal] = useState<boolean>(false)
-    const [_arweaveAddress, _setArweaveAddress] = useRecoilState(arweaveAddress)
-    const { arconnectConnect } = useArconnect();
+
+    const { walletConnected, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             setShowModal(prev => !prev);
         }, 100);
-    
+
         return () => {
             clearTimeout(timeoutId);
         };
     }, [props.isVisible])
 
-    return(
+    return (
         <div className={selectPodcastModalStyling}>
-            <div className={`${containerPodcastModalStyling + " p-6"} ${showModal ? FADE_IN_STYLE :FADE_OUT_STYLE}`}>
+            <div className={`${containerPodcastModalStyling + " p-6"} ${showModal ? FADE_IN_STYLE : FADE_OUT_STYLE}`}>
                 {/*Header*/}
                 <div className={titleModalStyling}>
                     <div></div>
                     {/*Show Title*/}
                     <p className="text-white text-xl">{t("uploadepisode.select-show")}</p>
-                    <XMarkIcon className={xMarkStyling} onClick={() => props.setVisible(false)} />
+                    <Icon className={xMarkStyling} onClick={() => props.setVisible(false)} icon="XMARK" />
                 </div>
-                <hr className={hrPodcastStyling}/>
+                <hr className={hrPodcastStyling} />
                 {/*Options*/}
                 <div className={podcastOptionsContainer}>
                     {props.shows && props.shows.map((item, index) => (
-                        <PodcastSelectOptions 
+                        <PodcastSelectOptions
                             imgSrc={item.cover}
                             title={item.podcastName}
                             disable={false}
@@ -257,7 +255,7 @@ export const SelectPodcastModal = (props: SelectPodcastModalInter) => {
                         />
                     ))}
                     {props.shows.length === 0 && <p className="text-white text-lg text-center">{t("uploadepisode.no-shows")}</p>}
-                    {_arweaveAddress.length === 0 && <p className="text-blue-400 mt-2 text-lg text-center cursor-pointer" onClick={connect}>{t("uploadshow.connect-wallet")}</p>}
+                    {!walletConnected ? <p className="text-blue-400 mt-2 text-lg text-center cursor-pointer" onClick={connect}>{t("uploadshow.connect-wallet")}</p> : ""}
                 </div>
             </div>
         </div>

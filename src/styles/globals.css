@@ -7,47 +7,110 @@ html, body {
   background-color: #000;
 }
 
+/* Todo: split utility and component classes */
+
 @layer components {
+
+  .ArConnectButtonStyling {
+    @apply h-12 btn-base-color items-center flex justify-center text-sm md:text-base normal-case default-no-outline-ringed default-animation hover:text-white focus:text-white disabled:text-zinc-400 disabled:bg-zinc-700 disabled:cursor-auto;
+  }
 
   .flexCol {
     @apply flex flex-col;
+  }
+
+  .flexBetween {
+    @apply flex justify-between;
   }
 
   .flexColCenter {
     @apply flexCol items-center;
   }
 
+  .flexColYCenter {
+    @apply flexCol items-center;
+  }
+
+  .flexColXCenter {
+    @apply flexCol justify-center;
+  }
+
+  .flexColFullCenter {
+    @apply flexCol justify-center items-center;
+  }
+
   .flexCenter {
     @apply flex items-center;
+  }
+
+  .flexYCenter {
+    @apply flex items-center;
+  }
+
+  .flexXCenter {
+    @apply flex justify-center;
   }
 
   .flexFill {
     @apply flex w-full h-full;
   }
 
-  .flexCenterGap {
-    @apply flex items-center gap-x-2;
+  .flexYCenterGapX {
+    @apply flexYCenter gap-x-2;
   }
+
+  .flexYCenterGapY {
+    @apply flexYCenter gap-y-2;
+  }
+  
+  .flexXCenterGapX {
+    @apply flexXCenter gap-x-2;
+  }
+  
+  .flexXCenterGapY {
+    @apply flexXCenter gap-y-2;
+  }
+
+  .flexFullCenter {
+    @apply flex justify-center items-center;
+  }
+
   .flexFullCenterGap {
     @apply flex w-full items-center gap-x-2;
+  }
+
+  .flexFullCenterGapY {
+    @apply flexFullCenter gap-y-2;
+  }
+
+  .flexFullCenterGapX {
+    @apply flexFullCenterGap;
+  }
+
+  .whFull {
+    @apply w-full h-full;
   }
 
   .input-styling {
     @apply bg-zinc-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white placeholder:text-zinc-600 text-white;
   }
 
-  .input-default {
-    @apply input input-secondary input-styling;
-  }
-
   .btn-base-color {
     @apply text-zinc-300 hover:text-white cursor-pointer !rounded-full bg-zinc-900 hover:bg-zinc-600;
   }
 
-  .btn-default {
-    @apply btn btn-secondary btn-base-color;
+  .sidenav-button {
+    @apply disabled:text-white hover:text-zinc-200 text-zinc-400 w-9 h-9 default-animation;
+  }
+
+  .pagination-button {
+    @apply bg-zinc-800 hover:bg-zinc-600 default-animation disabled:hover:bg-black disabled:bg-black text-white disabled:text-gray-500 flexFullCenter rounded-lg;
   }
   
+  .dropdown-item {
+    @apply flexXCenter border-0 hover:bg-zinc-800 hover:text-white default-animation;
+  }
+
   .default-animation {
     @apply ease-in-out duration-300 transition-all;
   }
@@ -72,15 +135,28 @@ html, body {
     @apply input input-secondary w-full bg-zinc-900 border-0 rounded-xl default-no-outline-ringed focus:ring-inset;
   }
 
-  .tooltip-base {
-    @apply w-6 h-6 rounded-full border-2 flex justify-center cursor-pointer items-center default-animation font-bold;
-  }
-  .helper-tooltip {
-    @apply tooltip-base hover:text-white text-zinc-400 hover:border-zinc-200 border-zinc-400;
+  .spinner {
+    @apply animate-spin text-gray-200;
   }
 
+  .spinner-yellow {
+    @apply text-gray-200 animate-spin fill-max-yellow;
+  }
+
+  .tooltip-base {
+    @apply rounded-full border-2 flexFullCenter cursor-pointer default-animation font-bold;
+  }
+  .helper-tooltip {
+    @apply tooltip-base w-6 h-6 hover:text-white text-zinc-400 hover:border-zinc-200 border-zinc-400;
+  }
+  .helper-tooltip-inherit-color {
+    @apply tooltip-base w-6 h-6 text-inherit border-inherit;
+  }
   .error-tooltip {
     @apply tooltip-base hover:text-red-300 text-red-500 hover:border-red-300 border-red-500;
+  }
+  .tooltip-button {
+    @apply text-sm text-gray-400 border-2 border-gray-400 rounded-full w-4 h-4 leading-[0] flex items-center justify-center cursor-pointer;
   }
 
   .hover-up-effect {
@@ -202,4 +278,45 @@ body::-webkit-scrollbar-thumb:hover {
 
 #jumbotron {
   transition: width 3s ease-in-out;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-text {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 8px;
+  border-radius: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.tooltip:hover .tooltip-text {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-8px);
+}
+
+@layer utilities {
+  .hide-scrollbar::-webkit-scrollbar {
+    width: 0.0001rem;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
 }

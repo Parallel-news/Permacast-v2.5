@@ -1,31 +1,36 @@
 import axios from 'axios';
 import router from 'next/router';
-import toast from 'react-hot-toast';
-import { useRecoilState } from 'recoil';
-import { Podcast } from '../../interfaces';
-import { arweaveAddress, loadingPage } from '../../atoms';
 import { useTranslation } from 'next-i18next';
 import React, {  useEffect, useState } from 'react';
-import { transferFunds } from '../../utils/everpay';
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
-import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
-import { descContainerStyling, spinnerClass } from '../uploadShow/uploadShowTools';
-import { getBundleArFee, upload2DMedia, upload3DMedia } from '../../utils/arseeding';
-import { allFieldsFilled, byteSize, checkConnection, determineMediaType, handleError } from '../../utils/reusables';
-import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, EVERPAY_EOA, GIGABYTE, SPINNER_COLOR, TOAST_DARK, TOAST_MARGIN, USER_SIG_MESSAGES } from '../../constants';
-import { ValMsg } from '../reusables/formTools';
-import { PermaSpinner } from '../reusables/PermaSpinner';
-import { VisibleInput } from '../uploadShow/reusables';
-import { createFileFromBlobUrl } from '../../utils/fileTools';
-import ProgressBar from '../reusables/progressBar';
+import toast from 'react-hot-toast';
+import { useRecoilState } from 'recoil';
 
-const CoverContainer = React.lazy(() => import('../uploadShow/reusables').then(module => ({ default: module.CoverContainer })));
+import { loadingPage } from '@/atoms/index';
 
-const UploadButton = React.lazy(() => import('./reusables').then(module => ({ default: module.UploadButton })));
-const EpisodeMedia = React.lazy(() => import('./reusables').then(module => ({ default: module.EpisodeMedia })));
-const SelectPodcast = React.lazy(() => import('./reusables').then(module => ({ default: module.SelectPodcast })));
-const ConnectButton = React.lazy(() => import('./reusables').then(module => ({ default: module.ConnectButton })));
+import { APP_LOGO, APP_NAME, PERMISSIONS } from '@/constants/arconnect';
+import { ARSEED_URL, AR_DECIMALS, CONNECT_WALLET, EPISODE_DESC_MAX_LEN, EPISODE_DESC_MIN_LEN, EPISODE_NAME_MAX_LEN, EPISODE_NAME_MIN_LEN, EPISODE_UPLOAD_FEE, ERROR_TOAST_TIME, EVERPAY_EOA, EXTENDED_TOAST_TIME, GIGABYTE, PERMA_TOAST_SETTINGS, SPINNER_COLOR, TOAST_DARK, TOAST_MARGIN, USER_SIG_MESSAGES } from '@/constants/index';
+
+import { Podcast } from '@/interfaces/index';
+import { EditEpisodeProps, UploadEpisodeProps } from '@/interfaces/exm';
+
+import { transferFunds } from '@/utils/everpay';
+import { createFileFromBlobUrl } from '@/utils/fileTools';
+import { getBundleArFee, upload2DMedia, upload3DMedia } from '@/utils/arseeding';
+import { allFieldsFilled, byteSize, checkConnection, determineMediaType, generateAuthentication, handleError } from '@/utils/reusables';
+
+import { getPodcastData } from '@/features/prefetching';
+import { ValMsg } from '@/component/reusables/formTools';
+import { ProgressBar } from '@/component/progressBar';
+import { VisibleInput } from '@/component/uploadShow/reusables';
+
+
+const UploadButton = React.lazy(() => import('./reusables').then(module => ({ default: module.UploadButton })))
+const EpisodeMedia = React.lazy(() => import('./reusables').then(module => ({ default: module.EpisodeMedia })))
+const SelectPodcast = React.lazy(() => import('./reusables').then(module => ({ default: module.SelectPodcast })))
+const ConnectButton = React.lazy(() => import('./reusables').then(module => ({ default: module.ConnectButton })))
 const MarkDownToolTip = React.lazy(() => import('../reusables/tooltip').then(module => ({ default: module.MarkDownToolTip })))
+const CoverContainer = React.lazy(() => import('../uploadShow/reusables').then(module => ({ default: module.CoverContainer })))
 
 export default function uploadEpisode() {
     return false
@@ -44,33 +49,35 @@ export const xBtnModalStyling = "text-neutral-400/75 text-xl cursor-pointer"
 export const buttonColStyling = "w-full flex justify-center items-center relative"
 export const tipModalStyling = "absolute inset-0 bottom-0 flex justify-center items-center z-50 h-full"
 export const episodeFormStyling = "w-[90%] md:w-[75%] lg:w-[50%] flex flex-col justify-center items-center space-y-4"
-export const episodeNameStyling = "input input-secondary w-full py-3 pl-5 pr-10 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-export const episodeDescStyling =  "input input-secondary resize-none w-full h-28 pb-12 py-3 px-5 bg-zinc-800 border-0 rounded-xl outline-none"
+export const episodeNameStyling = "input input-secondary w-full py-3 pl-5 pr-10 bg-zinc-800 border-0 rounded-xl outline-none focus:ring-2 focus:ring-inset focus:ring-white default-animation "
+export const episodeDescStyling =  "input input-secondary resize-none w-full h-28 pb-12 py-3 px-5 bg-zinc-800 border-0 rounded-xl outline-none default-animation "
+const descContainerStyling = "w-[100%] h-32 rounded-xl bg-zinc-800 flex justify-start items-start focus-within:ring-white focus-within:ring-2 default-animation "
 
 // 3. Custom Functions
 
 // 4. Components
 export const EpisodeForm = (props: EpisodeFormInter) => {
 
+    const queryPodcastData = getPodcastData()
     const { t } = useTranslation();
     const [submittingEp, setSubmittingEp] = useState<boolean>(false)
     const { address, ANS, getPublicKey, createSignature, arconnectConnect } = useArconnect();
     const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
-    const [arweaveAddress_, ] = useRecoilState(arweaveAddress)
-    const [arseedCost, setArseedCost] = useState<Number>(0);
-    const [uploadCost, setUploadCost] = useState<Number>(0);
+    const [arseedCost, setArseedCost] = useState<number>(0);
+    const [uploadCost, setUploadCost] = useState<number>(0);
 
     //Inputs
     const [pid, setPid] = useState<string>("")
     const [epName, setEpName] = useState<string>("")
     const [epDesc, setEpDesc] = useState<string>("")
     const [epMedia, setEpMedia] = useState(null)
-    const [epThumbnail, setEpThumbnail] = useState(null)
+    const [epThumbnail, setEpThumbnail] = useState(null) //For Uploading New Thumbnails
+    const [oldThumbnail, setOldThumbnail] = useState("") //In case user doesnt upload new thumbnail during edit
     const [progress, setProgress] = useState(0)
 
     //For Edits
     const [epThumbnailUrl, setEpThumbnailUrl] = useState(null)
-    const [visible, setVisible] = useState<boolean>(true)
+    const [visible, setVisible] = useState<string>("yes")
     //Validation
     const [epNameMsg, setEpNameMsg] = useState<string>("")
     const [epDescMsg, setEpDescMsg] = useState<string>("")
@@ -134,7 +141,8 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                     const description = (await axios.get(ARSEED_URL + ep.description)).data;
                     setEpDesc(description)
                     setEpThumbnailUrl(ep?.thumbnail ? ep?.thumbnail : "")
-                    setVisible(ep.isVisible)
+                    setVisible(ep.isVisible ? "yes" : "no")
+                    console.log("eee: ", ep)
                     _setLoadingPage(false)
                 }
             } 
@@ -143,7 +151,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         } else {
             _setLoadingPage(false)
         }
-    }, [])
+    }, [props.edit])
 
     /**
      * Determines whether validation message should be placed within input field
@@ -168,7 +176,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         }
     }
 
-    const createEpPayload = {
+    const createEpPayload: UploadEpisodeProps | EditEpisodeProps = {
         "function": props.edit ? "editEpisodeMetadata" : "addEpisode",
         "jwk_n": "",
         "pid": pid,
@@ -181,23 +189,23 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         "content": "",
         "mimeType": "",
         "eid": props.edit ? props.eid : ""
-    }
+    };
 
     const submitEpisode = async (epPayload: any) => {
         // Check Connection
-        if (!checkConnection(arweaveAddress_)) {
-            toast.error(CONNECT_WALLET, {style: TOAST_DARK, className:TOAST_MARGIN})
+        if (!checkConnection(address)) {
+            toast.error(CONNECT_WALLET, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
             return false
         }
         setSubmittingEp(true)
         const handleErr = handleError
         // Package EXM Call
-        const data = new TextEncoder().encode(USER_SIG_MESSAGES[0] + await getPublicKey());
-        epPayload["sig"] = await createSignature(data, defaultSignatureParams, "base64");
-        epPayload["jwk_n"] = await getPublicKey()
+        const { sig, jwk_n } = await generateAuthentication({getPublicKey, createSignature})
+        epPayload["sig"] = sig
+        epPayload["jwk_n"] = jwk_n 
 
         // Description to Arseeding
-        const toastDesc = toast.loading(t("loadingToast.savingDesc"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
+        const toastDesc = toast.loading(t("loadingToast.savingDesc"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
         setProgress(props.edit ? 25 : 16)
         try {
             const description = await upload2DMedia(epDesc); epPayload["desc"] = description?.order?.itemId
@@ -207,9 +215,10 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             console.log(e); handleErr(t("errors.descUploadError"), setSubmittingEp); return;
         }
 
-        // Thumbnail to Arseeding
+        // Thumbnail to Arseeding - works for edits
+        !!epThumbnailUrl ? epPayload["thumbnail"] = epThumbnailUrl : null //If no new thumbnail
         if(epThumbnail) {
-            const toastCover = toast.loading(t("loadingToast.savingCover"), {style: TOAST_DARK, duration: 10000000});
+            const toastCover = toast.loading(t("loadingToast.savingCover"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
             setProgress(props.edit ? 50 : 32)
             try {
                 const convertedCover = await createFileFromBlobUrl(epThumbnail, "thumbnail.txt")
@@ -223,8 +232,8 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
 
         // Media to Arseeding
         if(!props.edit) {
-            const toastCover = toast.loading(t("loadingToast.savingMedia"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
             setProgress(48)
+            const toastCover = toast.loading(t("loadingToast.savingMedia"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
             try {
                 const media = await upload3DMedia(epMedia, epMedia.type); epPayload["content"] = media?.order?.itemId
                 epPayload["mimeType"] = determineMediaType(epMedia.type)
@@ -238,7 +247,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
 
         // Pay Upload Fee
         if(!props.edit) {
-            const toastFee = toast.loading(t("loadingToast.payingFee"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
+            const toastFee = toast.loading(t("loadingToast.payingFee"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
             setProgress(66)
             try {
                 const tx = await transferFunds("UPLOAD_EPISODE_FEE", EPISODE_UPLOAD_FEE, EVERPAY_EOA, address)
@@ -250,21 +259,24 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                 console.log(e); handleErr(t("error.everpayError"), setSubmittingEp); return;
             }
         }
-        const toastSaving = toast.loading(t("loadingToast.savingChain"), {style: TOAST_DARK, className:TOAST_MARGIN, duration: 10000000});
+        const toastSaving = toast.loading(t("loadingToast.savingChain"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
         setProgress(props.edit ? 75 : 82)
         // EXM REDIRECT AND ERROR HANDLING NEEDED
         setTimeout(async function () {
+            console.log("EP PAYLOAD: ", createEpPayload)
             const result = await axios.post('/api/exm/write', createEpPayload);
+            console.log("EXM RES: ", JSON.parse(result.data))
             //EXM call, set timeout, then redirect. 
-            toast.dismiss(toastSaving);
-            toast.success(t("success.episodeUploaded"), {style: TOAST_DARK, className:TOAST_MARGIN})
-            setProgress(100)
             setTimeout(async function () {
+                toast.dismiss(toastSaving);
+                toast.success(t("success.episodeUploaded"), PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
+                setProgress(100)
+                queryPodcastData.refetch()
                 const identifier = ANS?.currentLabel ? ANS?.currentLabel : address
                 const { locale } = router;
                 router.push(`/creator/${identifier}`, `/creator/${identifier}`, { locale: locale, shallow: true })
-            }, 3500)
-        }, 4000)
+            }, 7500)
+        }, 2000)
     }
     //Submit Episode Function
     return(
@@ -324,16 +336,11 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                 )}
                 {address && address.length > 0 && submittingEp && (
                     <ProgressBar
-                        value={progress}
+                        progress={String(progress)}
+                        colorHex="#FFFF00"
                     />
                 )}
-                {!address && (
-                    <ConnectButton 
-                        width="w-[75%] md:w-[50%]"
-                        disable={false}
-                        click={() => connect()}
-                    />
-                )}
+                <ConnectButton className="w-[75%] md:w-[50%]" />
                 {/*Is Visible Input*/}
                 {props.edit && !submittingEp && (
                     <div className="absolute right-0"> 
@@ -344,7 +351,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                     </div>
                 )}
             </div>
-            <div className="flex justify-center items-center">
+            <div className="flexFullCenter">
                 {uploadCost !== 0 && epDesc.length > 0 && epMedia && (
                     <p className="mt-2 text-neutral-400">{t("uploadepisode.feetext")} {(Number(uploadCost)).toFixed(6) +" AR"}</p>
                 )}
@@ -353,22 +360,4 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     )
 }  
 
-/*
-{
-    "function": "editEpisodeMetadata",
-    "jwk_n": "lHogurZNFhu_xnTV4HDHpDNhUNbZUL14pJUlBlzydgY8SwNMGTZCEGwJIuzLC5t8S8WfHqAvy5wRG5qu0fKE1SAMdhFFe4-jpesBGmfh9VyF43AQuM_3B5Hl-cjes9-C1PA8Ql25X4aJ2Ln-pfUBZe7oe9PAykEvF5wLb-zBNVfBdvLCj_oBrILe-YOvvqp2NPzcoOecbBNjpM4wCPmd41_tvN1qSfw3znPE0HbK5Ukzs9ETlqEzvOMJYAQ2WFd6lA5Zx3kDYKm68-VNA8vrTHp5yNldrXk8GJW8gsHru2fv2_MrBmdi30CSHNC-rDIh3BQQbcaHQ3W8Fx8RZsKsnZHZBsqiD2zJcTmXuRQDrh8Kw_2mtVYvDh7PWsSNPI_izm45lYNSxw7Wjr2SO9JbpWe_57PgU3eUWbMYHWAMkbneTiGvgDpinYdltEtpA9-Im4I_pCq1FXvWCea4sc5IcP30V8boMsQ6xw-y-07UcCogr9krVTDMdGYEVHkIfObt8d6ZzpcigPVIQLqDEAx6EKeC3I_6dP_G8axSKebdK_5IhZYot39biqPKzWZnZaz5D7zHpBjp1gRDHOJ5cV-XKjPcDvoTKbsFWdno0r6Nutaac6ksP_YPneZvP6Qxxq6To3ieVQyq4sFUMHR5UvslYoDASlE8VDnDu2EZfZhvfI8",
-    "pid": "671ab527a71cded3500cf3b4ad3919a729a6660386ec5fe51f78888c30626da37507e549be9d3dbf801793a6345fc396e2134825cbc977d02e5ba7dcf69cd11f",
-    "name": "Fancy Streets2",
-    "desc": "rySx2WKQyjp2GTUZmgGtMfPWujYK0K2_ReF1y-ifrM8",
-    "sig": "inQzfpOQsr8D6RAX1+eBJvo5uL3JelvJLP5GdAEYRzTI8EOzCxS9J44Rlg/C49d3BAfyCd6nCEcanAbo9ugsGwbouDHoMt7haU1wSh6VI9gUlZSYRQd3Osn2YzDLGrwyjEU61RoR9lpYAg6BYUw3aBYTVZPDu2sXC0LcmCO2RfT6ZeF3sx0XW0bJeR62BkeLHlC/IEHQrKZ+98vQPJK9WfRM9xHMOZrPLcLiFjEjILIAOSZz2r7ajeG4ESb9xbc2/ydD7jexgHf9EB3GTYbmEweINrAV+e1U04GGkzE92InWL+fgfZMcJbE2K15dx/f2XgaHYnKn+K7Ms+hV/OPOWmkBENPUsGkUV4vFMhLbNg1Ap94sAVB2v0ntUq1YVx/AgCck6p71xceAPkeYo2s4CwXwopJj2I1R4K+BZ5xmyoDA+aAL2PcnBILBm07HGDbDkBjrKLLPcWVxZTuRfUGsh3mLGUo9MiyD/kX6hOUzBYw3luFUG/PTSmbRWppapT3BvBglTSkWAp50+IymgKsa03p8IzP3/2tVLwmoQy8aCgw0wysqfMIzSKi4vG4K9bGEVX8H8Pt3ibQoqKDz7xqrIXfFKdrxQOj2BaYe+0UunHernoODgwhnRLGli/uG+1usnA8Ppgb8Yg/EZ+nk3EqiBR28ACtitDWB5TaAjVdfEhw=",
-    "txid": "",
-    "isVisible": false,
-    "thumbnail": "qSSTDA_iIlorslnxi22KoFzAgj4YpitI02VB-Wpc1m0",
-    "content": "",
-    "mimeType": "",
-    "eid": "f12d4503b251e66968ea82b24ade99768232022b9f8b4676f675fc586572e175f4ef544c66f055f4c3f5d01fec453dab1fe26c55872d4474531cb04ec20fe215"
-}
-
-
-*/
 

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { NextPage } from "next";
 import Head from "next/head";
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense } from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { ARSEED_URL, EXM_READ_LINK } from "../../constants";
 import { getContractVariables } from "../../utils/contract";
@@ -44,9 +44,11 @@ const PodcastId: NextPage<{ podcast: Podcast }> = ({ podcast }) => {
                     <meta property="og:image:height" content="630" />
                     <meta property="og:image:alt" content="Show Cover" />
                 </Head>
-                <PodcastSet 
-                    podcast={podcast}
-                />
+                <Suspense fallback={<div></div>}>
+                    <PodcastSet 
+                        podcast={podcast}
+                    />
+                </Suspense>
             </>
         )
     }

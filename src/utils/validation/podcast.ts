@@ -1,13 +1,14 @@
-import { PodcastFormInterface } from "../../interfaces/validation/podcast";
-import { validateStrLength } from "../../utils/uploadValidation";
+import { PodcastFormInterface } from "@/interfaces/validation/podcast";
+import { validateStrLength } from "@/utils/uploadValidation";
 
-// import {
-//   PODCAST_NAME_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_DESC_MIN_LEN,
-//   PODCAST_DESC_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_AUTHOR_MAX_LEN,
-//   PODCAST_LANG_MIN_LEN, PODCAST_LANG_MAX_LEN, PODCAST_CAT_MIN_LEN,
-//   PODCAST_CAT_MAX_LEN, IS_EXPLICIT_VALUES, 
-//   PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN, CONTENT_TYPE_VALUES
-// } from '../../constants';
+import {
+  PODCAST_NAME_MIN_LEN, PODCAST_NAME_MAX_LEN, PODCAST_DESC_MIN_LEN,
+  PODCAST_DESC_MAX_LEN, PODCAST_AUTHOR_MIN_LEN, PODCAST_AUTHOR_MAX_LEN,
+  PODCAST_LANG_MIN_LEN, PODCAST_LANG_MAX_LEN, PODCAST_CAT_MIN_LEN,
+  PODCAST_CAT_MAX_LEN, IS_EXPLICIT_VALUES,
+  PODCAST_COVER_MIN_LEN, PODCAST_COVER_MAX_LEN, CONTENT_TYPE_VALUES
+} from '@/constants/index';
+import { validateLabel } from "../reusables";
 
 
 /**
@@ -26,35 +27,43 @@ export const isValidEmail = email => {
  * @param {string|number - input from form} input 
  * @param {string - form type} type 
  * @returns Validation message || ""
-*/
-// export const handleValMsg = (input, type) => {
-//   switch(type) {
-//     case 'podName':
-//       if((input > PODCAST_NAME_MAX_LEN || input < PODCAST_NAME_MIN_LEN)) {
-//         return PODCAST_NAME_VAL_MSG;
-//       } else {
-//         return "";
-//       }
-//     case 'podDesc': 
-//       if((input > PODCAST_DESC_MAX_LEN || input < PODCAST_DESC_MIN_LEN)) {
-//         return PODCAST_DESC_VAL_MSG;
-//       } else {
-//         return "";
-//       }
-//     case 'podAuthor':
-//       if((input > PODCAST_AUTHOR_MAX_LEN || input < PODCAST_AUTHOR_MIN_LEN)) {
-//         return PODCAST_AUTH_VAL_MSG;
-//       } else {
-//         return "";
-//       }
-//     case 'podEmail':
-//       if(isValidEmail(input)) {
-//         return "";
-//       } else {
-//         return PODCAST_EMAIL_VAL_MSG;
-//       }
-//   }
-// }
+ */
+
+export const handleValMsg = (input: string, type: string, input2: any = "") => {
+  switch (type) {
+    case 'podName':
+      if ((input.length > PODCAST_NAME_MAX_LEN || input.length < PODCAST_NAME_MIN_LEN)) {
+        return "uploadshow.validation.name"//, { minLength: PODCAST_NAME_MIN_LEN, maxLength: PODCAST_NAME_MAX_LEN });
+      } else {
+        return "";
+      }
+    case 'podDesc':
+      if ((input.length > PODCAST_DESC_MAX_LEN || input.length < PODCAST_DESC_MIN_LEN)) {
+        return "uploadshow.validation.description"//, { minLength: PODCAST_DESC_MIN_LEN, maxLength: PODCAST_DESC_MAX_LEN });
+      } else {
+        return "";
+      }
+    case 'podAuthor':
+      if ((input.length > PODCAST_AUTHOR_MAX_LEN || input.length < PODCAST_AUTHOR_MIN_LEN)) {
+        return "uploadshow.validation.author"//, { minLength: PODCAST_AUTHOR_MIN_LEN, maxLength: PODCAST_AUTHOR_MAX_LEN };
+      } else {
+        return "";
+      }
+    case 'podEmail':
+      if (isValidEmail(input)) {
+        return "";
+      } else {
+        return "uploadshow.validation.email";
+      }
+    case 'podLabel':
+      if (validateLabel(input, input2).res) {
+        return "";
+      } else {
+        return validateLabel(input, input2).msg
+      }
+  }
+}
+
 
 
 // /**

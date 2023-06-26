@@ -4,9 +4,10 @@ import { EXM_READ_LINK, NO_SHOW } from "../../../constants";
 import { getContractVariables } from "../../../utils/contract";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from "next-i18next";
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { loadingPage } from "../../../atoms";
 import { useRecoilState } from "recoil";
+import LoadingForm from "../../../component/reusables/loadingForm";
 
 const ShowForm = React.lazy(() => import("../../../component/uploadShow/uploadShowTools").then(module => ({ default: module.ShowForm })));
 
@@ -25,11 +26,22 @@ export default function UploadShow({yourShows, error, pid}) {
     return (
         <div className={uploadShowStyling}>
             <p className={showTitleStyling}>{t("uploadshow.editpodcast")}</p>
-            <ShowForm 
-                podcasts={yourShows}
-                edit={true}
-                selectedPid={pid}
-            />
+            <Suspense fallback={            
+              <LoadingForm 
+                width={"w-[75%]"}
+                height={"h-[500px]"}
+                justify={"justify-center lg:justify-start"}
+              />
+            }>
+              <ShowForm 
+                  rssData={[]}
+                  podcasts={yourShows}
+                  edit={true}
+                  selectedPid={pid}
+                  redirect={true}
+                  submitted={(arg) => {}}
+              />
+            </Suspense>
         </div>
     )
 }

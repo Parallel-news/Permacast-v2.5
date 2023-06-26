@@ -1,8 +1,10 @@
 import { atom } from 'recoil';
-import { CURRENT_EPISODE_TEMPLATE, CURRENT_PODCAST_TEMPLATE, DEFAULT_BACKGROUND_COLOR, DEFAULT_PODCAST_COLOR, DEFAULT_THEME_COLOR } from '../constants/ui';
-import { ANSMapped, Ans, Episode, FullEpisodeInfo, Podcast, availableWallets } from '../interfaces';
-import { RGBorRGBAstring } from '../interfaces/ui';
-import { PASoMProfile } from '../interfaces/pasom';
+
+import { EPISODE_TEMPLATE, PODCAST_TEMPLATE, DEFAULT_BACKGROUND_COLOR, DEFAULT_PODCAST_COLOR, DEFAULT_THEME_COLOR } from '@/constants/ui';
+
+import { ANSMapped, Ans, Episode, FullEpisodeInfo, Podcast, availableProviders } from '@/interfaces/index';
+import { RGBorRGBAstring } from '@/interfaces/ui';
+import { PASoMProfile } from '@/interfaces/pasom';
 
 export const uploadPercent = atom({
     key: 'uploadPercent',
@@ -61,8 +63,8 @@ export const titles = atom({
     default: [],
 });
 
-export const allPodcasts = atom<Podcast[]>({
-    key: "allPodcasts",
+export const allPodcastsAtom = atom<Podcast[]>({
+    key: "allPodcastsAtom",
     default: [],
 });
 
@@ -106,12 +108,12 @@ export const queueAtom = atom<FullEpisodeInfo[]>({
 
 export const currentPodcastAtom = atom<Podcast>({
     key: 'currentPodcastAtom',
-    default: CURRENT_PODCAST_TEMPLATE
+    default: PODCAST_TEMPLATE
 });
 
 export const currentEpisodeAtom = atom<Episode>({
     key: "currentEpisodeAtom",
-    default: CURRENT_EPISODE_TEMPLATE,
+    default: EPISODE_TEMPLATE,
 });
 
 export const queueHistory = atom({
@@ -165,11 +167,6 @@ export const everPayBalance = atom({
     default: 0
   })
 
-// ARWEAVE
-export const arweaveAddress = atom({
-  key: 'arweaveAddress',
-  default: ""
-});
 
 export const PASoMProfileAtom = atom<PASoMProfile>({
     key: 'PASoMProfileAtom',
@@ -202,8 +199,8 @@ export const hide0EpisodesAtom = atom<boolean>({
 });
 // *** ------- ***
 
-export const selectedWalletAtom = atom<availableWallets>({
-    key: 'selectedWalletAtom',
+export const selectedProviderAtom = atom<availableProviders>({
+    key: 'selectedProviderAtom',
     default: 'arconnect'
 });
 

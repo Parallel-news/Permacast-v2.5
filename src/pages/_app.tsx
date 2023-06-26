@@ -1,64 +1,71 @@
-import Head from 'next/head';
-import Script from 'next/script';
-import { appWithTranslation } from 'next-i18next';
-import React from 'react';
-import { RecoilRoot } from 'recoil';
-import { ArconnectProvider } from 'react-arconnect';
-import { PERMISSIONS } from '../constants/arconnect';
 import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import '../styles/globals.css';
-import { SSRProvider } from '@react-aria/ssr';
+import 'react-tooltip/dist/react-tooltip.css'
 
-const QueryPodcasts = React.lazy(() => import('../component/loaders/QueryPodcasts'));
-const QueryANS = React.lazy(() => import('../component/loaders/QueryANS'));
-const Layout = React.lazy(() => import('../component/layout'));
-const ShikwasaProviderLazy = React.lazy(() => import('../hooks').then(module => ({ default: module.ShikwasaProvider })));
+import { appWithTranslation } from 'next-i18next';
+import Head from 'next/head';
+import Script from 'next/script';
+import React from 'react';
 
-// fetch data in _app.tsx -> populate recoil -> re-write search to query from that recoil state, if it fails then fuse.js
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
+import { PERMISSIONS } from '@/constants/arconnect';
+import { queryClient } from '@/lib/react-query';
+
+const ArconnectProvider = React.lazy(() => import('react-arconnect').then(module => ({ default: module.ArconnectProvider })));
+const Layout = React.lazy(() => import('@/component/layout'));
+const QueryAns = React.lazy(() => import('@/features/prefetching').then(module => ({ default: module.QueryAns })));
+const QueryPodcasts = React.lazy(() => import('@/features/prefetching').then(module => ({ default: module.QueryPodcasts })));
+const RecoilRoot = React.lazy(() => import('recoil').then(module => ({ default: module.RecoilRoot })));
+const ShikwasaProviderLazy = React.lazy(() => import('@/hooks/useShikwasa').then(module => ({ default: module.ShikwasaProvider })));
+
 
 function App({ Component, pageProps }) {
-
+  // todo: outsource head to a component / outsource info as variables
   return (
     <RecoilRoot>
       <Head>
         <title>Permacast</title>
-        <meta name="description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
+        <meta name="description" content={`Permanent podcasting on Arweave. Pay once, store forever.`} />
         <meta name="twitter:card" content="summary"></meta>
         <meta name="twitter:image" content={`https://permacast.app/favicon.ico`} />
         <meta name="twitter:title" content={`Permacast`} />
         <meta name="twitter:url" content={`https://permacast.app/`}></meta>
-        <meta name="twitter:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
+        <meta name="twitter:description" content={`Permanent podcasting on Arweave. Pay once, store forever.`} />
 
         <meta property="og:card" content="summary" />
         <meta property="og:image" content={`https://permacast.app/favicon.ico`} />
         <meta property="og:title" content={`Permacast`} />
         <meta property="og:url" content={`https://permacast.app/`} />
-        <meta property="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever, never lose your episodes.`} />
+        <meta property="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever.`} />
       </Head>
         <ArconnectProvider permissions={PERMISSIONS}>
-          <QueryPodcasts />
-          <QueryANS />
-          <Script
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=G-4XDV8F7VJB"
-            strategy="afterInteractive" 
-          />
-          <Script id="gtag-function">
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-4XDV8F7VJB');
-            `}
-          </Script>
-          <ShikwasaProviderLazy>
-            <Layout>
-              <SSRProvider>
+
+          <QueryClientProvider client={queryClient}>
+            <QueryPodcasts />
+            <QueryAns />
+            <ReactQueryDevtools initialIsOpen={true} />
+            <Script
+              async
+              src="https://www.googletagmanager.com/gtag/js?id=G-4XDV8F7VJB"
+              strategy="afterInteractive" 
+            />
+            <Script id="gtag-function">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-4XDV8F7VJB');
+              `}
+            </Script>
+            <ShikwasaProviderLazy>
+              <Layout>
                 <Component {...pageProps} className="scrollbar-container"/>
-              </SSRProvider>
-            </Layout>
-          </ShikwasaProviderLazy>
+              </Layout>
+            </ShikwasaProviderLazy>
+          </QueryClientProvider>
         </ArconnectProvider>
     </RecoilRoot>
   )

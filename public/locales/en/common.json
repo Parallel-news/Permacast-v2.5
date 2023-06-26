@@ -227,8 +227,8 @@
 	},
 	"view": "View",
 	"textTruncate": {
-		"showMore": "Show More",
-		"showLess": "Show Less"
+		"showMore": "Expand",
+		"showLess": "Close"
 	},
 	"share": {
 		"Checkthis": "Check this out",
@@ -242,8 +242,10 @@
 		"everpayError": "There was an issue with your Everpay Balance/Connection",
 		"coverUploadError": "There was an issue uploading your cover. Try Again.",
 		"mediaUploadError": "There was an issue uploading your media. Try Again.",
+		"mediaDownloadError": "Some media failed to download.",
 		"descUploadError": "There was an issue uploading description. Try Again.",
-		"noShowError": "Unable to fetch shows. Refresh and try again."
+		"noShowError": "Unable to fetch shows. Refresh and try again.",
+		"failedToEstimate": "Failed to estimate fee. Try again."
 	},
 	"success": {
 		"showUploaded": "Show Uploaded. Redirecting.",
@@ -256,7 +258,8 @@
 		"savingChain": "Saving to Blockchain",
 		"savingCover": "Uploading Cover",
 		"savingBanner": "Uploading Banner Cover",
-		"uploading": "Uploading"
+		"uploading": "Uploading",
+		"estimating": "Estimating Fee"
 	},
 	"feed-page": {
 		"allpodcasts": "All Podcasts",
@@ -265,6 +268,42 @@
 		"hide0EpisodePodcasts": "Hide 0 Episode Podcasts",
 		"show0EpisodePodcasts": "Show 0 Episode Podcasts"
 	},
-	"edit": "Edit"
-	
+	"edit": "Edit",
+	"nft-collection": {
+		"confirm-msg": "Create a new collection on",
+		"for": "for",
+		"no-episodes": "No Episodes Have Been Published!",
+		"click-to-make": "Click here to make an episode.",
+		"mint-for": "Mint Episodes For",
+		"mint": "Mint",
+		"all-minted": "All Minted",
+		"target-address": "Target Polygon Address",
+		"minting-episode": "Minting Episode...",
+		"mint-successful": "Mint Successful",
+		"uploading-collection": "Uploading Collection...",
+		"collection-uploaded": "Collection Uploaded",
+		"no-factories": "No Claimable Factories to Create Collection!",
+		"no-factories-help": "Message us on Telegram to supply more."
+	},
+	"invalid-address": "Invalid Address",
+	"general-error": "There was an error. Try Again.",
+	"rss": {
+		"importrss": "Import RSS",
+		"or": "or",
+		"episode-already-saved": "This episode has already been uploaded to this channel.",
+		"rssfeedurl": "RSS Feed Url",
+		"norssepisode": "Could not fetch episode data from RSS link.",
+		"norsspodcast": "Could not fetch podcast metadata from RSS link.",
+		"emptyinput": "Please enter a URL.",
+		"invalidurl": "Enter a Valid Url",
+		"http-not-supported": "Unsafe connections (HTTP) are currently not supported.",
+		"estimation-failed": "Estimation Failed For These Episodes. Try again.",
+		"retry-estimation": "Retry Estimation",
+		"skip-failed": "Skip Failed Estimations",
+		"limited-size": "File size is limited to 250MB to avoid spamming the network.",
+		"downloaded": "Downloaded"
+	},
+	"tooltips": {
+		"hidden-content": "Content is Hidden"
+	}
 }

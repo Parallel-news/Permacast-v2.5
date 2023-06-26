@@ -18,6 +18,8 @@ const getContractVariables = () => {
   return { contractAddress, contractAPIToken, isProduction };
 };
 
+// Optional params:
+// parsed: boolean - if true, will return JSON parsed data from the contract instead of stringified
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,14 +27,30 @@ export default async function handler(
 ) {
   try {
     const { contractAddress, contractAPIToken } = getContractVariables();
-
+    
     const data = await axios.post(`https://api.exm.dev/api/transactions?token=${contractAPIToken}`, {
       functionId: contractAddress,
       inputs: [{
         "input": JSON.stringify(req.body)
       }],
-    }, {})
-    res.status(200).json(data.data)
+    }, {});
+    if (req.body?.parsed) {
+      res.status(200).json(data.data);
+      return;
+    }
+    const responseData = JSON.stringify(data.data, (key, value) => {
+      if (typeof value === "object" && value !== null) {
+        if (
+          key === "socket" &&
+          value.constructor.name === "TLSSocket"
+        ) {
+          // Exclude the 'socket' property
+          return undefined;
+        }
+      }
+      return value;
+    });
+    res.status(200).json(responseData)
   } catch (error) {
     console.error(error)
     return res.status(error.status || 500).end(error.message)

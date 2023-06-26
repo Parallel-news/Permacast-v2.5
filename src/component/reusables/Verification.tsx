@@ -1,16 +1,17 @@
 import { FC } from "react";
+import { Tooltip } from 'react-tooltip'
 import { useTranslation } from "next-i18next";
-import { Tooltip } from '@nextui-org/react';
-import { CheckIcon } from "@heroicons/react/24/solid";
-import { XCircleIcon } from "@heroicons/react/24/outline";
-import { flexCol } from "../creator";
-import { dimColorString, isTooDark, RGBstringToObject } from "../../utils/ui";
+
+import { dimColorString, isTooDark, RGBstringToObject } from "@/utils/ui";
+import { Icon } from "../icon";
 
 
 interface VerificationInterface {
   size: number;
   ANSuserExists: boolean;
   includeText?: boolean;
+  iconElem?: { style: { width: number; height: number; }; className: string; icon: string; }
+  icon?: "CHECK"
 };
 
 export const VerificationButtonStyling = `rounded-full p-1.5 text-lg font-medium `;
@@ -26,7 +27,7 @@ const Verification: FC<VerificationInterface> = (props) => {
   const UserVerified = () => {
     const { t } = useTranslation();
     return (
-      <div className={flexCol}>
+      <div className={`flexCol`}>
         <div className={LargeBoldFontStyling}>{t("creator.verification.verified.text")}</div>
         <div className={ExplanationTextStyling}>{t("creator.verification.verified.explanation")}</div>
       </div>
@@ -36,16 +37,16 @@ const Verification: FC<VerificationInterface> = (props) => {
   const UserNotVerified = () => {
     const { t } = useTranslation();
     return (
-      <div className={flexCol}>
+      <div className={`flexCol`}>
         <div className={LargeBoldFontStyling}>{t("creator.verification.unverified.text")}</div>
         <div className={ExplanationTextStyling + "max-w-[200px] "}>{t("creator.verification.unverified.explanation")}</div>
       </div>
     );
   };
 
-  const Icon: FC<VerificationInterface> = ({ size, ANSuserExists }) => (
+  const IconElem: FC<any> = ({ size, ANSuserExists }) => (
     <div className={`rounded-full `}>
-      {ANSuserExists ? <CheckIcon {...{ style }} className="text-emerald-500" /> : <XCircleIcon {...{ style }} className="text-red-500" />}
+      {ANSuserExists ? <Icon style={style} className="text-emerald-500" icon="CHECK" /> : <Icon style={style} className="text-red-500" icon="XCIRCLE"/>}
     </div>
   );
 
@@ -54,19 +55,21 @@ const Verification: FC<VerificationInterface> = (props) => {
   const colorBlack = 'rgb(0, 0, 0)';
 
   return (
-    <Tooltip
-      rounded
-      color="invert"
-      className={`flex items-center ` + VerificationButtonStyling + "gap-x-1 "}
-      style={{
-        backgroundColor: dimColorString(color, 0.25),
-        color: isTooDark(RGBstringToObject(color), 0.2) ? colorBlack : colorWhite ,
-      }}
-      content={ANSuserExists ? <UserVerified /> : <UserNotVerified />
-    }>
-      <Icon {...{ size, ANSuserExists }} />
-      {includeText && <p>{ANSuserExists ? t("creator.verification.verified.text"): t("creator.verification.unverified.text")}</p>}
-    </Tooltip>
+    <>
+      <div
+        className={`flex items-center ` + VerificationButtonStyling + "gap-x-1 "}
+        style={{
+          backgroundColor: dimColorString(color, 0.25),
+          color: isTooDark(RGBstringToObject(color), 0.2) ? colorBlack : colorWhite ,
+        }}
+        data-tooltip-content={ANSuserExists ? "Verified" : "Not Verified"}
+        data-tooltip-id="verifiedTip"
+      >
+        <IconElem {...{ size, ANSuserExists }} />
+        {includeText && <p>{ANSuserExists ? t("creator.verification.verified.text"): t("creator.verification.unverified.text")}</p>}
+      </div>
+      <Tooltip id="verifiedTip" />  
+    </>
   );
 };
 

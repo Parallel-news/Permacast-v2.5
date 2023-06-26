@@ -1,13 +1,11 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
-import { loadingPage } from '../../atoms';
+import React from 'react';
 
-const SearchSet = React.lazy(() =>import('../../component/search/reusables'));
+const SearchResults = React.lazy(() => import('@/features/search'));
 
 const Search: NextPage<{ query: string }> = ({ query }) => {
-  return <SearchSet {...{ query }} />;
+  return <SearchResults {...{ query }} />;
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

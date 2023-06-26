@@ -1,4 +1,3 @@
-import { XMarkIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 import Everpay, { ChainType } from "everpay";
 import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
@@ -6,10 +5,10 @@ import { defaultSignatureParams, useArconnect } from "react-arconnect";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import { useRecoilState } from "recoil";
-import { allPodcasts, arweaveAddress, everPayBalance } from "../../atoms";
-import { EVERPAY_AR_TAG, EVERPAY_FEATURE_TREASURY, FADE_IN_STYLE, FADE_OUT_STYLE, FEATURE_COST_BASE, FEATURE_COST_PER_DAY, SPINNER_COLOR, USER_SIG_MESSAGES } from "../../constants";
+import { everPayBalance } from "@/atoms/index";
+import { ERROR_TOAST_TIME, EVERPAY_AR_TAG, EVERPAY_FEATURE_TREASURY, FADE_IN_STYLE, FADE_OUT_STYLE, FEATURE_COST_BASE, FEATURE_COST_PER_DAY, PERMA_TOAST_SETTINGS, SPINNER_COLOR, USER_SIG_MESSAGES } from "../../constants";
 import { APP_NAME, PERMISSIONS } from "../../constants/arconnect";
-import { Podcast } from "../../interfaces";
+import { Podcast } from "@/interfaces/index";
 import { fetchARPriceInUSD } from "../../utils/redstone";
 import DateSelector from "../dateSelector";
 import { PermaSpinner } from "../reusables/PermaSpinner";
@@ -17,6 +16,7 @@ import { tipModalStyling } from "../uploadEpisode/uploadEpisodeTools";
 import { ConnectButton, SelectPodcast, containerPodcastModalStyling } from "../uploadEpisode/reusables";
 import { GetFeaturedButtonStyling } from "./getFeatured";
 import { getFeaturedChannelsContract } from "../../utils/contract";
+import { Icon } from "../icon";
 
 interface TipModalInter {
   isVisible: boolean;
@@ -63,9 +63,8 @@ const FeaturedChannelModal: FC<TipModalInter> = ({isVisible, setIsVisible}) => {
 
   const { address, getPublicKey, createSignature, arconnectConnect } = useArconnect();
   const [_everPayBalance, _setEverPayBalance] = useRecoilState(everPayBalance)
-  const [allPodcasts_, setAllPodcasts_] = useRecoilState(allPodcasts);
-  const [_arweaveAddress, _setArweaveAddress] = useRecoilState(arweaveAddress);
-  const yourShows: Podcast[] = allPodcasts_.filter((item: Podcast) => item.owner === address);
+
+  const yourShows: Podcast[] = []
 
   const [pid, setPid] = useState<string>("")
 
@@ -116,7 +115,7 @@ const FeaturedChannelModal: FC<TipModalInter> = ({isVisible, setIsVisible}) => {
     };
     const res = (await axios.post('/api/exm/featured-channels/write', req)).data;
     console.log(res);
-    toast.success("Your channel is now featured! 🎉");
+    toast.success("Your channel is now featured! 🎉", PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME));
     setLoading(false)
     setShowModal(false);
     setIsVisible(false);
@@ -129,7 +128,9 @@ const FeaturedChannelModal: FC<TipModalInter> = ({isVisible, setIsVisible}) => {
       <div className={`${containerPodcastModalStyling + " relative overflow-hidden"} ${showModal ? FADE_IN_STYLE : FADE_OUT_STYLE}`}>
         {/*Header*/}
         <div className="text-2xl font-bold text-center mt-4">{t("home.get-featured")}</div>
-        <XMarkIcon className={xMarkModalStyling} onClick={() => setIsVisible(false)} />
+        <button onClick={() => setIsVisible(false)}>
+          <Icon className={xMarkModalStyling} icon="XMARK" />
+        </button>
         <div className="flex flex-col items-center justify-center mt-12">
           <div className="z-[100]">
             {address && (

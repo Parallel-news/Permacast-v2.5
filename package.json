@@ -14,16 +14,16 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.7.14",
-    "@heroicons/react": "^2.0.16",
     "@next/bundle-analyzer": "^13.3.0",
-    "@nextui-org/react": "^1.0.0-beta.12",
+    "@tanstack/react-query": "^4.29.5",
+    "@tanstack/react-query-devtools": "^4.29.6",
     "arseeding-js": "^0.0.23",
-    "arweave": "^1.13.4",
     "axios": "^1.2.4",
     "bignumber.js": "^9.1.1",
     "daisyui": "^2.51.5",
     "everpay": "^0.6.0",
     "fast-average-color": "^9.3.0",
+    "fuse.js": "^6.6.2",
     "i18next": "^22.4.9",
     "next": "latest",
     "next-i18next": "^13.0.3",
@@ -39,15 +39,15 @@
     "react-markdown": "^8.0.6",
     "react-share": "^4.4.1",
     "react-spinners": "^0.13.8",
+    "react-tooltip": "5.8.3",
     "recoil": "^0.7.6",
     "redstone-api": "^0.4.11"
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
-    "@tailwindcss/line-clamp": "^0.4.2",
     "@tailwindcss/typography": "^0.5.9",
     "@types/node": "18.15.3",
-    "@types/react": "^18.0.26",
+    "@types/react": "latest",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.54.1",
     "autoprefixer": "^10.4.2",
@@ -56,7 +56,7 @@
     "eslint-plugin-react": "^7.32.2",
     "husky": "^8.0.0",
     "react-error-overlay": "6.0.9",
-    "tailwindcss": "^3.2.7",
+    "tailwindcss": "^3.3.2",
     "typescript": "4.9.4"
   }
 }

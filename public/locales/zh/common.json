@@ -237,7 +237,9 @@
 		"coverUploadError": "上传您的封面时出现问题。再试一次。",
 		"mediaUploadError": "上传您的媒体时出现问题。再试一次。",
 		"descUploadError": "上传说明时出现问题。再试一次。",
-		"noShowError": "无法获取节目。刷新并重试。"
+		"mediaDownloadError": "部分媒体下载失败。",
+		"noShowError": "无法获取节目。刷新并重试。",
+		"failedToEstimate": "无法估算费用。请重试。"
 	},
 	"success": {
 		"showUploaded": "显示已上传。重定向。",
@@ -250,7 +252,8 @@
 		"savingChain": "保存到区块链",
 		"savingCover": "上传封面",
 		"savingBanner": "上传横幅封面",
-		"uploading": "上传中"
+		"uploading": "上传中",
+		"estimating": "估算费用"
 	},
 	"feed-page": {
 		"allpodcasts": "所有播客",
@@ -259,5 +262,42 @@
 		"hide0EpisodePodcasts": "隐藏 0 集的播客",
 		"show0EpisodePodcasts": "显示有 0 集的播客"
 	},
-	"edit": "编辑"
+	"edit": "编辑",
+	"nft-collection": {
+		"confirm-msg": "创建一个新集合",
+		"for": "为了",
+		"no-episodes": "没有发布任何剧集",
+		"click-to-make": "单击此处制作一集。",
+		"mint-for": "薄荷剧集",
+		"mint": "薄荷",
+		"all-minted": "全部铸造",
+		"target-address": "目标地址",
+		"minting-episode": "铸造情节...",
+		"mint-successful": "铸币成功",
+		"uploading-collection": "上传收藏...",
+		"collection-uploaded": "收藏上传",
+		"no-factories": "没有可声明的工厂来创建集合！",
+		"no-factories-help": "在 Telegram 上给我们留言以提供更多"
+	},
+	"invalid-address": "无效地址",
+	"general-error": "有一个错误。再试一次。",
+	"rss": {
+		"importrss": "导入 RSS",
+		"或": "或",
+		"episode-already-saved": "这一集已经上传到这个频道了。",
+		"rssfeedurl": "RSS 提要网址",
+		"norssepisode": "无法从 RSS 链接获取剧集数据",
+		"norsspodcast": "无法从 RSS 链接获取播客元数据",
+		"emptyinput": "请输入网址",
+		"invalidurl": "输入有效网址",
+		"http-not-supported": "当前不支持不安全连接 (HTTP)。",
+		"estimation-failed": "这些剧集的估计失败。再试一次。",
+		"retry-estimation": "重试估计",
+		"skip-failed": "跳过失败的估计",
+		"limited-size": "文件大小限制为 250MB 以避免网络垃圾邮件。",
+		"downloaded": "已下载"
+	},
+	"tooltips": {
+		"hidden-content": "内容被隐藏"
+	}
 }

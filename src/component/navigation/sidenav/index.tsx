@@ -1,41 +1,41 @@
-import Link from "next/link";
 import { useRouter } from 'next/router';
-import { FC } from "react";
 import { useRecoilState } from "recoil";
-import { SIDENAV_BUTTON } from '../../../styles/constants';
 
-import { HomeIcon, RectangleStackIcon } from "@heroicons/react/24/outline";
-import { HelpDropdown, LanguageDropdown, NavButton, UploadDropdown } from "../sidenavButtons";
-import { Cooyub } from "../../reusables/icons";
-import { currentThemeColorAtom, loadingPage } from "../../../atoms";
+import { currentThemeColorAtom } from "@/atoms/index";
+
+import { Cooyub } from "@/component/reusables/icons";
+import { Icon } from "@/component/icon";
+import { HelpDropdown, LanguageDropdown, NavButton, UploadDropdown } from "./sidenavButtons";
 
 
-export const IconSizeStyling = `w-9 h-9 `;
-export const SideNavStyling = `hidden md:flex items-center flex-col gap-y-9 h-full pt-10 w-[100px] text-zinc-400 z-50 `;
 
-export const Sidenav: FC = () => {
+const size36x2 = `w-9 h-9`;
+const SideNavStyling = `hidden md:flex flex-col items-center gap-y-9 h-full pt-10 w-[100px] text-zinc-400 z-50 `;
 
-  const [currentThemeColor, ] = useRecoilState(currentThemeColorAtom);
-  const [,_setLoadingPage] = useRecoilState(loadingPage)
+export const Sidenav = () => {
 
   const router = useRouter();
 
+  const [currentThemeColor,] = useRecoilState(currentThemeColorAtom);
+
   const isHome = router.pathname === "/";
-  const isViewPodcasts = router.pathname === "/feed"
+  const isFeed = router.pathname === "/feed"
   const isUploadPodcast = router.pathname === "/upload-podcast";
   const isUploadEpisode = router.pathname === "/upload-episode";
-  const isUpload = isUploadPodcast || isUploadEpisode;
-  const engageLoading = () => _setLoadingPage(true)
-  // const isFeed = router.pathname === "feed";
+  const isRSSImport = router.pathname === "/rss";
+  const isUpload = isUploadPodcast || isUploadEpisode || isRSSImport;
 
   return (
     <div className={SideNavStyling}>
-      <Link href="/" className={SIDENAV_BUTTON} onClick={isHome ? ()=>"" : engageLoading}>
-        <Cooyub svgStyle={IconSizeStyling} rectStyle={IconSizeStyling} fill={currentThemeColor} />
-      </Link>
-      <NavButton url="/" condition={isHome} icon={<HomeIcon onClick={isHome ? ()=>"" : engageLoading} />}  />
-      <NavButton url="/feed" condition={isViewPodcasts} icon={<RectangleStackIcon className={IconSizeStyling} onClick={engageLoading} />} />
-      {/* TODO: re-use the dropdown from mobile view */}
+      <NavButton href="/" disabled={isHome} icon={
+        <Cooyub svgStyle={size36x2} rectStyle={size36x2} fill={currentThemeColor} />
+      } />
+      <NavButton href="/" disabled={isHome} icon={
+        <Icon icon="HOME" className={size36x2} />
+      } />
+      <NavButton href="/feed" disabled={isFeed} icon={
+        <Icon icon="RECTANGLESTACK" className={size36x2} />
+      } />
       <LanguageDropdown />
       <UploadDropdown routeMatches={isUpload} />
       <HelpDropdown />

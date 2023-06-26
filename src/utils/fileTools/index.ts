@@ -1,5 +1,35 @@
+import axios from "axios";
 import Resizer from "react-image-file-resizer";
-import { PODCAST_MINIFIED_COVER_MAX_SIZE } from "../../constants";
+
+import { PODCAST_MINIFIED_COVER_MAX_SIZE } from "@/constants/index";
+
+import { rssEpisode, rssEpisodeRetry, RssEpisodeContentLengthAPI, RSSEpisodeEstimate } from "@/interfaces/rss";
+
+export const fetchEpisodeSizes = async (rssEpisodes: rssEpisode[]) => {
+  let orderedEpisodes = rssEpisodes.map((rssEpisode: rssEpisode, index: number) => ({...rssEpisode, order: index}));
+  const fetchedEpisodes: rssEpisode[] = (
+    await axios.post('/api/rss/get-headers', { rssEpisodes: orderedEpisodes })
+  ).data.episodes;
+
+  const orderEpisodes = (a: rssEpisode, b: rssEpisode) => a.order - b.order;
+
+  const knownEpisodeSizes = fetchedEpisodes
+    .filter((rssEpisode: rssEpisode) => (Number(rssEpisode?.length || 0) > 0))
+    .sort(orderEpisodes);
+
+  const unknownEpisodeSizes = fetchedEpisodes
+    .filter((rssEpisode: rssEpisode) => (!rssEpisode?.length))
+    .sort(orderEpisodes);
+
+  return { knownEpisodeSizes, unknownEpisodeSizes };
+};
+
+export const estimateUploadCost = async (episodes: rssEpisodeRetry[]): Promise<RSSEpisodeEstimate[]> => {
+  const fileLinks = episodes.map(episode => episode.link);
+  const sizes = (await axios.post('/api/rss/estimate-size', { fileLinks })).data;
+  return sizes;
+};
+
 
 export const readFileAsArrayBuffer = (file: File): Promise<ArrayBuffer> => {
     return new Promise((resolve, reject) => {

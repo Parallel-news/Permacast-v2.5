@@ -1,8 +1,7 @@
-import { useTranslation } from 'next-i18next';
-import { FC } from 'react';
-
+import useLanguageHook from '@/hooks/useLanguageHook';
+// Todo: move to constants
 export const DEFAULT_LANGUAGE = 'en';
-
+export const DEFAULT_CATEGORY = 'Arts';
 export const categories_en = [
   "Arts",
   "Business",
@@ -573,18 +572,7 @@ export const LANGUAGES: LanguageOptionInterface[] = [
   }
 ]
 
-export const useLanguageHook = () => {
-  const { t, i18n } = useTranslation();
-  const currentLanguage = LANGUAGES.find(
-    (language) => i18n.language === language.code
-  );
-
-  const langsArray = Object.entries(currentLanguage.languages);
-  // example return [ '0', 'Arts' ]
-  const categoriesArray = Object.entries(currentLanguage.categories);
-  return [langsArray, categoriesArray];
-};
-
+// Todo: Move to reusables
 export const findCategoryIndex = (en_category: string) => {
   return categories_en.indexOf(categories_en.find((category: string) => category === en_category));
 };
@@ -597,13 +585,13 @@ interface LanguageOptionsProps {
   languageCode: string; // Set to 0 as default 
 }
 
-export const LanguageOptions: FC<LanguageOptionsProps> = ({ languageCode }) => {
+export const LanguageOptions = ({ languageCode }: LanguageOptionsProps) => {
   const [langsArray, _] = useLanguageHook();
 
   return (
     <>
       {langsArray.map((lang: string[]) => 
-        <option value={lang[0]} key={lang[1]} selected={languageCode === lang[0]}>
+        <option value={lang[0]} key={lang[1]} defaultValue={languageCode === lang[0] ? lang[0]: ""}>
           {lang[1]}
         </option>
       )}
@@ -615,13 +603,13 @@ interface CategoryOptionsProps {
   categoryId: number; // Set to 0 as default 
 }
 
-export const CategoryOptions: FC<CategoryOptionsProps> = ({ categoryId }) => {
+export const CategoryOptions = ({ categoryId }: CategoryOptionsProps) => {
   const [_, categoriesArray] = useLanguageHook();
 
   return (
     <>
       {categoriesArray.map((lang: string[], index: number) => 
-        <option value={lang[1]} key={lang[0]} selected={index === categoryId}>
+        <option value={lang[1]} key={lang[0]} defaultValue={index === categoryId ? lang[1]: ""}>
           {lang[1]}
         </option>
       )}

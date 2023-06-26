@@ -11,10 +11,10 @@ export { default as Tip } from "./tip";
 export { default as ThemedButton } from "./themedButton";
 export { default as Loading } from "./loading";
 export { default as Track } from "./track";
-export { default as Dropdown, openMenuButtonClass, dropdownMenuClass, menuItemClass } from "./dropdown";
+export { default as Dropdown } from "./dropdown";
 export { default as PlayButton } from "./playButton";
 export { default as Verification } from './Verification';
 export { default as Modal } from "./modal";
 
-export type { ExtendedDropdownButtonProps } from "./dropdown";
+export type { DropdownProps, ExtendedDropdownButtonProps } from "./dropdown";
 export type { ModalProps } from "./modal";

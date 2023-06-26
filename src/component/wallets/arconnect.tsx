@@ -1,33 +1,27 @@
 import axios from 'axios';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useTranslation } from 'next-i18next';
-import { FC, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useArconnect, shortenAddress } from 'react-arconnect';
 import { useRecoilState } from 'recoil';
-import { ArrowLeftOnRectangleIcon, BanknotesIcon, NewspaperIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 
-import { PASoMProfileAtom, arweaveAddress, loadingPage, walletNotDetectedModalVisibilityAtom } from '../../atoms';
+import { PASoMProfileAtom, loadingPage, walletNotDetectedModalVisibilityAtom } from '@/atoms/index';
+import { ARSEED_URL } from '@/constants/index';
+import { APP_LOGO, APP_NAME, PERMISSIONS } from '@/constants/arconnect';
+import { ANS_TEMPLATE } from '@/constants/ui';
 
-import { APP_LOGO, APP_NAME, PERMISSIONS } from '../../constants/arconnect';
-import { ProfileImage } from '../creator/reusables';
-import { ANS_TEMPLATE } from '../../constants/ui';
-import { EverPayBalance } from '../../utils/everpay/EverPayBalance';
-import { PASoMProfile } from '../../interfaces/pasom';
-import { ARSEED_URL } from '../../constants';
-import {
-  Dropdown,
-  ExtendedDropdownButtonProps,
-  openMenuButtonClass as prevButtonClass,
-  dropdownMenuClass as prevMenuClass,
-  menuItemClass
-} from '../reusables';
+import { EverPayBalance } from '@/utils/everpay/EverPayBalance';
+import { PASoMProfile } from '@/interfaces/pasom';
 
+import { ProfileImage } from '@/component/creator/reusables';
+import { Dropdown, ExtendedDropdownButtonProps } from '@/component/reusables';
+import { Icon } from '@/component/icon';
 
+interface connectArconnectProps {
+  className: string;
+};
 
-export const ArConnectButtonStyling = `h-12 btn-base-color items-center flex px-3 justify-center text-sm md:text-base normal-case default-no-outline-ringed default-animation hover:text-white focus:text-white disabled:text-zinc-400 disabled:bg-zinc-700 disabled:cursor-auto `;
-
-export const ConnectArconnect: FC<{ className: string }> = ({ className }) => {
+export const ConnectArconnect = ({ className }: connectArconnectProps) => {
   const { t } = useTranslation();
 
   const [walletNotDetectedModalVisibility, setWalletNotDetectedModalVisibility] = useRecoilState<boolean>(walletNotDetectedModalVisibilityAtom);
@@ -49,15 +43,14 @@ export const ConnectArconnect: FC<{ className: string }> = ({ className }) => {
 };
 
 
-const connectButtonStyling = `w-full h-12 hover:bg-zinc-700 bg-zinc-900 rounded-full items-center flex px-1 justify-center mx-auto default-no-outline-ringed default-animation z-0 `;
+const connectButtonStyling = `w-full h-12 hover:bg-zinc-700 bg-zinc-900 rounded-full items-center flex px-1 md:px-5 justify-center mx-auto default-no-outline-ringed default-animation z-0`;
 const avatarStyling = `rounded-full h-6 w-6 overflow-hidden border-[2px] min-w-min `;
 const iconSize = `w-6 h-6 `;
 
-const ArConnect: FC = () => {
+const ArConnect = () => {
   const { t } = useTranslation();
 
   const [PASoMProfile, setPASoMProfile] = useRecoilState(PASoMProfileAtom);
-  const [_, setArweaveAddress_] = useRecoilState(arweaveAddress);
 
   const {
     walletConnected,
@@ -79,7 +72,6 @@ const ArConnect: FC = () => {
   useEffect(() => {
     if (address && address.length > 0) {
       fetchPASoM();
-      setArweaveAddress_(address);
     };
   }, [address, walletConnected]);
 
@@ -87,14 +79,14 @@ const ArConnect: FC = () => {
   const target = "_blank";
   const rel = "noreferrer noopener";
 
-  const Everpay: FC = () => (
+  const Everpay = () => (
     <a {...{ target, rel }} href={"https://app.everpay.io"} className={`flexFullCenterGap `}>
-      <BanknotesIcon className={iconSize} />
+      <Icon className={iconSize} icon="BANKNOTES" strokeWidth='1.5'/>
       {t("wallet.arconnect.everpay")}
     </a>
   );
 
-  const Profile: FC = () => {
+  const Profile = () => {
     const [, _setLoadingPage] = useRecoilState(loadingPage)
     return (
       <Link 
@@ -102,21 +94,21 @@ const ArConnect: FC = () => {
         className={`flexFullCenterGap `}
         onClick={() => _setLoadingPage(true)}
       >
-        <UserCircleIcon className={iconSize} />
+        <Icon className={iconSize} icon="USERCIRCLE" strokeWidth='1.5'/>
         {t("wallet.arconnect.profile")}
       </Link>
   )};
 
-  const Arpage: FC = () => (
+  const Arpage = () => (
     <a {...{ target, rel }} href={`https://${ANS?.currentLabel}.ar.page`} className={`flexFullCenterGap `}>
-      <NewspaperIcon className={iconSize} />
+      <Icon className={iconSize} icon="NEWSPAPER" strokeWidth='1.5'/>
       {t("wallet.arconnect.arpage")}
     </a>
   );
 
-  const DisconnectArconnect: FC = () => (
+  const DisconnectArconnect = () => (
     <button className={`flexFullCenterGap `} onClick={() => arconnectDisconnect()}>
-      <ArrowLeftOnRectangleIcon className={iconSize} />
+      <Icon className={iconSize} icon="ARROWLEFTRECT" strokeWidth='1.5'/>
       {t("wallet.arconnect.disconnect")}
     </button>
   );
@@ -128,7 +120,7 @@ const ArConnect: FC = () => {
     { key: 'disconnect', jsx: <DisconnectArconnect /> }
   ];
 
-  const OpenDropdownButton: FC = () => (
+  const OpenDropdownButton = () => (
     <div className={connectButtonStyling}>
       {avatar && <img className={avatarStyling} src={ARSEED_URL + avatar} alt="Profile" />}
       {!avatar && <ProfileImage {...{ currentLabel: currentLabel || address, avatar, address_color, size: 20, borderWidth: 3 }} unclickable />}
@@ -139,17 +131,19 @@ const ArConnect: FC = () => {
     </div>
   );
 
-  const UserDropdown: FC = () => {
+  const UserDropdown = () => {
     const openMenuButton = <OpenDropdownButton />;
-    const openMenuButtonClass = prevButtonClass + `rounded-full w-full z-0 `;
-    const dropdownMenuClass = prevMenuClass + ` w-72`;
+    const openMenuButtonClass = `flexFullCenter bg-zinc-900 h-12 w-12 rounded-3xl default-animation rounded-full w-full z-0 `;
+    const dropdownMenuClass = `absolute z-50 right-[3%] lg:right-[8%] mt-2 w-64 origin-top-right rounded-md bg-zinc-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none border-[2px] border-zinc-400 default-animation`
+    const menuItemClass = `border-0 p-[10px] hover:bg-zinc-800 hover:text-white default-animation `
+    
     return <Dropdown {...{ openMenuButton, items, openMenuButtonClass, dropdownMenuClass, menuItemClass }} />;
   };
 
   return (
     <>
       {walletConnected && <UserDropdown />}
-      {!walletConnected && <ConnectArconnect className={ArConnectButtonStyling + `w-full mx-auto `} />}
+      {!walletConnected && <ConnectArconnect className={`ArConnectButtonStyling w-full mx-auto `} />}
     </>
   );
 };

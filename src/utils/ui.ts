@@ -10,6 +10,12 @@ import Player from '../shikwasa-src/player.js';
 
 export const determinePodcastURL = (label: string, pid: string) => label || trimChars(pid);
 
+export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+export const sortDuplicateStrings = (arr: string[]) => arr.filter(
+  (item: string, index: number) => arr.indexOf(item) === index
+);
+
 // Allows for Alpha
 export function rgba2hex(orig) {
   let a, isPercent,

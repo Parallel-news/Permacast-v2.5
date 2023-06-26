@@ -2,12 +2,12 @@ import axios from 'axios';
 import { useTranslation } from 'next-i18next';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { defaultSignatureParams, useArconnect } from 'react-arconnect';
-import { UserPlusIcon, UserMinusIcon } from '@heroicons/react/24/solid';
-import ThemedButton, { themedButtonIconStyling } from '../reusables/themedButton';
-import { flexCenterGap } from './featuredCreators';
-import { PASOM_SIG_MESSAGES, SPINNER_COLOR } from '../../constants';
-import { follow, unfollow } from '../../interfaces/pasom';
-import { PermaSpinner } from '../reusables/PermaSpinner';
+
+import ThemedButton, { themedButtonIconStyling } from '@/component/reusables/themedButton';
+import { PASOM_SIG_MESSAGES, SPINNER_COLOR } from '@/constants/index';
+import { follow, unfollow } from '@/interfaces/pasom';
+import { PermaSpinner } from '@/component/reusables/PermaSpinner';
+import { Icon } from '@/component/icon';
 
 interface FollowButtonProps {
   user: string;
@@ -50,24 +50,24 @@ export const FollowButton: FC<FollowButtonProps> = ({ user, walletConnected, isF
     }
   };
 
-  const FollowText: FC = () => (
-    <div className={flexCenterGap}>
+  const FollowText = () => (
+    <div className={`flexYCenterGapX`}>
       {loading ? <PermaSpinner
         spinnerColor={SPINNER_COLOR}
         size={1}
         divClass={""}
-      />: <UserPlusIcon className={themedButtonIconStyling} />}
+      />: <Icon className={themedButtonIconStyling} icon="USERPLUS" fill="currentColor" viewBox='0 0 20 20' strokeWidth='0'/>}
       {t('creator.follow')}
     </div>
   );
 
-  const UnfollowText: FC = () => (
-    <div className={flexCenterGap}>
+  const UnfollowText = () => (
+    <div className={`flexYCenterGapX`}>
       {loading ? <PermaSpinner
         spinnerColor={SPINNER_COLOR}
         size={1}
         divClass={""}
-      />: <UserMinusIcon className={themedButtonIconStyling} />}
+      />: <Icon className={themedButtonIconStyling} icon="USERMINUS" fill="currentColor" viewBox='0 0 20 20' strokeWidth='0' />}
       {t('creator.unfollow')}
     </div>
   );

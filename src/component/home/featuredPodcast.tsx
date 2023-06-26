@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useTranslation } from "next-i18next";
 import React, { useState, useEffect, FC } from "react";
 
-import { arweaveTX, Podcast } from "../../interfaces/index";
+import { arweaveTX, FullEpisodeInfo, Podcast } from "../../interfaces/index";
 import { showShikwasaPlayerArguments } from "../../interfaces/playback";
 
 import MarkdownRenderer from "../markdownRenderer";
@@ -14,8 +14,7 @@ import { convertPodcastsToEpisodes } from "../../utils/filters";
 import { determinePodcastURL, fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 import { useRecoilState } from "recoil";
 import { loadingPage } from "../../atoms";
-
-
+import { Tooltip } from "react-tooltip";
 
 /**
  * Index
@@ -116,13 +115,16 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
     author,
     label,
     description,
+    isVisible
   } = podcastInfo;
 
   const [themeColor, setThemeColor] = useState<string>('');
   const [textColor, setTextColor] = useState<string>('');
   const [markdownText, setMarkdownText] = useState<string>('');
   const [, _setLoadingPage] = useRecoilState(loadingPage)
-  
+  const [episode, setEpisode] = useState<FullEpisodeInfo | undefined>(undefined);
+  let episodes = convertPodcastsToEpisodes([podcastInfo]);
+  const { t } = useTranslation();
   useEffect(() => {
     const fetchMarkdown = async (tx: arweaveTX) => {
       const text = await queryMarkdownByTX(tx);
@@ -144,10 +146,10 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
     } catch (error) {
       console.log(error);
     };
+
+    setEpisode(episodes.length ? episodes[0]: undefined);
   }, [podcastInfo]);
 
-  const episodes = convertPodcastsToEpisodes([podcastInfo]);
-  const episode = episodes.length ? episodes[0]: undefined
   const playerInfo: showShikwasaPlayerArguments = {
     playerColorScheme: themeColor,
     openFullscreen: true,
@@ -162,17 +164,13 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
   const prevent = (event: any) => {
     event.preventDefault();
   };
-  // console.log("HEADS UP: ")
-  // console.log("playerInfo: ", playerInfo)
-  // console.log("podcastInfo ", podcastInfo)
-  // console.log("episodes: ", episodes)
 
   return (
     <Link 
       passHref
       href={`/podcast/${determinePodcastURL(label, pid)}${startId}`}
       className={podcastOuterBackgroundStyling}
-      style={{ backgroundColor: themeColor }}
+      style={{ backgroundColor: themeColor, opacity: isVisible ? 1 : 0.75 }}
       onClick={() => {
         window.scrollTo(0, 0)
         
@@ -180,7 +178,15 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
     >
       <div className={podcastInnerBackgroundStyling}>
         <div onClick={() => _setLoadingPage(true)}>
-          <EpisodeCount count={episodes.length} textColor={textColor} />
+          <div className="flex flex-row justify-between">
+            <EpisodeCount count={episodes.filter((item) => !!item.episode.isVisible === true)?.length} textColor={textColor} />
+            <Tooltip id={"hidden-tooltip"+pid} offset={0}/>
+            {!isVisible ? 
+              <Image src={textColor === "rgb(40, 40, 40)" ? "/icons/eye-slash.svg" : "/icons/eye-slash-white.svg"} width={24} height={24} alt="Hidden" className="rounded-md p-0.5" style={{ fill: textColor}}
+                data-tooltip-content={t("tooltips.hidden-content")} data-tooltip-place="top" data-tooltip-id={"hidden-tooltip"+pid}
+              /> 
+            : null}
+          </div>
           <PocastCover podcastName={podcastName} cover={cover} />
         </div>
         <div className={podcastBottomStyling}>
@@ -198,5 +204,3 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
 };
 
 export default FeaturedPodcast;
-//<PodcastDescription podcastDescription={description} />
-//<MarkdownRenderer markdownText={markdownText} />

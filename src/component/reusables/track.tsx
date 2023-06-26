@@ -1,21 +1,19 @@
-import Image from "next/image";
-import Link from "next/link";
-import { useTranslation } from "next-i18next";
-import React, { FC, useState, useMemo, useEffect } from "react";
+import Image from 'next/image';
+import Link from 'next/link';
+import { useTranslation } from 'next-i18next';
+import React, { useState, useMemo, useEffect } from 'react';
 import { shortenAddress } from "react-arconnect";
-import { useRecoilState } from "recoil";
-import { Tooltip } from "@nextui-org/react";
-import { MicrophoneIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
-
+import { Tooltip } from 'react-tooltip'
+import { useRecoilState } from 'recoil';
 import PlayButton from "./playButton";
-import MarkdownRenderer from "../markdownRenderer";
+import MarkdownRenderer from '../markdownRenderer';
 
-import { allANSUsersAtom, loadingPage } from "../../atoms";
-import { ARSEED_URL, MESON_ENDPOINT, startId } from "../../constants";
-import { ANSMapped, FullEpisodeInfo } from "../../interfaces";
-import { showShikwasaPlayerArguments } from "../../interfaces/playback";
-import { useShikwasa } from "../../hooks";
-import { queryMarkdownByTX } from "../../utils/markdown";
+import { allANSUsersAtom, loadingPage } from "@/atoms/index";
+import { ARSEED_URL, MESON_ENDPOINT, startId } from "@/constants/index";
+import { ANSMapped, FullEpisodeInfo } from "@/interfaces/index";
+import { showShikwasaPlayerArguments } from "@/interfaces/playback";
+import useShikwasa from "@/hooks/useShikwasa";
+import { queryMarkdownByTX } from "@/utils/markdown";
 import {
   determinePodcastURL,
   fetchDominantColor,
@@ -24,9 +22,10 @@ import {
   RGBAstringToObject,
   RGBobjectToString,
   RGBstringToObject
-} from "../../utils/ui";
-import { trimChars } from "../../utils/filters";
-import { detectTimestampType, hasBeen10Min } from "../../utils/reusables";
+} from "@/utils/ui";
+import { trimChars } from "@/utils/filters";
+import { detectTimestampType, hasBeen10Min } from "@/utils/reusables";
+import { Icon } from "../icon";
 
 /**
  * Index
@@ -107,15 +106,7 @@ export const trackDescriptionStyling = `mx-1.5 w-full line-clamp-1 text-xs `;
 export const trackMainInfoStyling = `ml-4 flex flex-col text-wrap `;
 export const trackPodcastInfoContainer = `flex flex-row md:items-center w-full md:min-w-[25%] `;
 
-// 3. Custom Functions
-
-// const ShortenAuthor = (author: string, maxLength: number) => {
-//   return author.split(0, 20);
-// }
-
-// 4. Reusable Components
-
-export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, timestamp }) => {
+export const PodcastCover = ({ podcastURL, cover, alt, timestamp }: PodcastCoverProps) => {
   const [, _setLoadingPage] = useRecoilState(loadingPage)
   if (cover) return (
     <Link
@@ -134,7 +125,7 @@ export const PodcastCover: FC<PodcastCoverProps> = ({ podcastURL, cover, alt, ti
   );
 };
 
-export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ podcastURL, eid, episodeName }) => {
+export const EpisodeLinkableTitle = ({ podcastURL, eid, episodeName }: EpisodeLinkableTitleProps) => {
   const [, _setLoadingPage] = useRecoilState(loadingPage)
   return (
     <Link
@@ -147,7 +138,7 @@ export const EpisodeLinkableTitle: FC<EpisodeLinkableTitleProps> = ({ podcastURL
   );
 };
 
-export const TrackCreatorLink: FC<TrackCreatorLinkProps> = ({ uploader, buttonStyles, coverColor, minified, fontSize }) => {
+export const TrackCreatorLink = ({ uploader, buttonStyles, coverColor, minified, fontSize }: TrackCreatorLinkProps) => {
   const text = uploader || "";
   const uploaderText = shortenAddress(text, minified ? 8 : 16);
   const [, _setLoadingPage] = useRecoilState(loadingPage);
@@ -168,7 +159,7 @@ export const TrackCreatorLink: FC<TrackCreatorLinkProps> = ({ uploader, buttonSt
   );
 };
 
-export const TrackDescription: FC<TrackDescriptionProps> = ({ includeDescription, description }) => {
+export const TrackDescription = ({ includeDescription, description }: TrackDescriptionProps) => {
   if (includeDescription && description) return (
     <div className={trackDescriptionStyling}>
       <MarkdownRenderer markdownText={description} />
@@ -176,19 +167,32 @@ export const TrackDescription: FC<TrackDescriptionProps> = ({ includeDescription
   );
 };
 
-export const TrackContentTypeIcon: FC<TrackContentTypeIconProps> = ({ isVideo, className, includeContentType }) => {
+export const TrackContentTypeIcon = ({ isVideo, className, includeContentType }: TrackContentTypeIconProps) => {
 
   const { t } = useTranslation();
 
   if (includeContentType) return (
-    <Tooltip color="invert" content={t(isVideo ? "track.video" : "track.audio")}>
-      {isVideo ? <VideoCameraIcon {...{ className }} /> : <MicrophoneIcon {...{ className }} />}
-    </Tooltip>
+    <>
+      <div
+        data-tooltip-id="my-tooltip"
+        data-tooltip-content={t(isVideo ? "track.video" : "track.audio")}
+        data-tooltip-place="top"
+      >
+        {isVideo ? <Icon {...{ className }} icon="CAM" /> : <Icon {...{ className }} icon="MIC" />}
+      </div>
+      <Tooltip id="my-tooltip" />
+    </>
   );
 };
 
 
-export const TrackPlayButton: FC<TrackPlayButtonProps> = ({ playerInfo, episode, includePlayButton, buttonColor, accentColor }) => {
+export const TrackPlayButton = ({
+  playerInfo,
+  episode,
+  includePlayButton,
+  buttonColor,
+  accentColor
+}: TrackPlayButtonProps) => {
 
   const { playerState, launchPlayer, togglePlay } = useShikwasa();
 
@@ -224,7 +228,7 @@ export const TrackPlayButton: FC<TrackPlayButtonProps> = ({ playerInfo, episode,
   return <PlayButton isPlaying={isPlaying && currentEpisode && (currentEpisode.eid === episodeInfo.eid)} onClick={handlePlay} {...buttonStyleArgs} />;
 };
 
-const Track: FC<TrackProps> = (props: TrackProps) => {
+const Track = (props: TrackProps) => {
 
   const { t } = useTranslation();
 
@@ -245,7 +249,8 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
     type,
     eid,
     uploader,
-    uploadedAt
+    uploadedAt,
+    isVisible
   } = episode.episode;
 
   const coverUsed = thumbnail || minifiedCover || cover;
@@ -311,6 +316,12 @@ const Track: FC<TrackProps> = (props: TrackProps) => {
               <div className={`flexCenter `}>
                 <TrackCreatorLink {...{ uploader: artist, buttonStyles, coverColor }} minified />
                 <TrackContentTypeIcon {...{ isVideo, className, includeContentType }} />
+                <Tooltip id={"hidden-tooltip"+eid} offset={0}/>
+                {isVisible ? null 
+                  : 
+                <Image src={"/icons/eye-slash-white.svg"} width={20} height={20} alt="Hidden Episode" className="rounded-md p-0.5"
+                  data-tooltip-content={t("tooltips.hidden-content")} data-tooltip-place="top" data-tooltip-id={"hidden-tooltip"+eid}
+                />}
               </div>
             </div>
           </div>

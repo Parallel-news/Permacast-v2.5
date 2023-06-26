@@ -1,6 +1,8 @@
 import toast from "react-hot-toast";
-import { CONNECT_WALLET, PODCAST_LABEL_MAX_LEN, PODCAST_LABEL_MIN_LEN, TOAST_DARK } from "../constants";
+import { CONNECT_WALLET, ERROR_TOAST_TIME, PERMA_TOAST_SETTINGS, PODCAST_LABEL_MAX_LEN, PODCAST_LABEL_MIN_LEN, TOAST_DARK, USER_SIG_MESSAGES } from "../constants";
 import { Podcast } from "../interfaces";
+import { createSignatureInterface, defaultSignatureParams } from "react-arconnect";
+import { AuthenticationActions } from "../types";
 
 interface hexToRgbInter {
   hex: string
@@ -63,7 +65,7 @@ export function formatStringByLen(str, beginLength, endLength) {
  */
 export const checkConnection = (arAddress: string) => {
   if (arAddress === undefined) {
-    toast.error(CONNECT_WALLET)
+    toast.error(CONNECT_WALLET, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
     return false
   } else {
     return true
@@ -95,17 +97,15 @@ export const allFieldsFilled = (fieldsObj: any) => {
 }
 
 export function handleError(errorMessage: string, loadingSetter: (v: boolean) => void) {
-  toast.error(errorMessage, { style: TOAST_DARK })
+  toast.error(errorMessage, PERMA_TOAST_SETTINGS(ERROR_TOAST_TIME))
   loadingSetter(false)
 }
 
 export const determineMediaType = (mime: string) => mime.match(/^(audio\/|video\/)/)[0];
+export const audioOrVideoAllowed = (mime: string) => determineMediaType(mime) !== null;
 
-export function validateLabel(label, podcasts: Podcast[]) {
+export function validateLabel(label: string, podcasts: Podcast[]) {
 
-  if (!label) {
-    return { res: false, msg: "uploadshow.validation.label.limit" }
-  };
   if (label.length < PODCAST_LABEL_MIN_LEN || label.length > PODCAST_LABEL_MAX_LEN) {
     return { res: false, msg: "uploadshow.validation.label.limit" }
   }
@@ -113,7 +113,7 @@ export function validateLabel(label, podcasts: Podcast[]) {
   if (existingLabels.includes(label)) {
     return { res: false, msg: "uploadshow.validation.label.in-use" }
   }
-  if (/^(?!-)[a-zA-Z0-9-]{1,35}(?<!-)$/.test(label)) {
+  if (/^(?!-)[a-zA-Z0-9-]{0,35}(?<!-)$/.test(label)) {
     return { res: true, msg: label };
   }
 }
@@ -149,3 +149,53 @@ export function svgToDataUrl(svg) {
 export const reRoute = (url, router) => {
   router.push(url, undefined, { scroll: true });
 };
+
+export function findKey(obj, key) {
+  for (let objKey in obj) {
+    if (objKey === key) {
+      return obj[objKey];
+    }
+  }
+  return null; // key not found
+}
+
+export async function generateAuthentication({ getPublicKey, createSignature } : AuthenticationActions) {
+  const data = new TextEncoder().encode(USER_SIG_MESSAGES[0]+ await getPublicKey());
+  const sig = await createSignature(data, defaultSignatureParams, "base64");
+  const jwk_n = await getPublicKey();
+  return {
+    sig: sig,
+    jwk_n: jwk_n
+  }
+}
+
+export function isERCAddress(address: string) {
+  // Check if the address starts with "0x" and has a length of 42 characters
+  if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
+    return false;
+  }
+
+  return true;
+  
+}
+export function convertLinktoBase64(url: string) {
+  //return btoa(encodeURIComponent(url).toString())
+  return btoa(url.toString())
+}
+
+export function isValidUrl(str) {
+  const pattern = new RegExp(
+    '^([a-zA-Z]+:\\/\\/)?' + // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR IP (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+      '(\\#[-a-z\\d_]*)?$', // fragment locator
+    'i'
+  );
+  return pattern.test(str);
+}
+
+export const getNewestEpisodes = (array, qty) => array.flatMap(obj => obj.podcast.episodes)
+.sort((a, b) => b.uploadedAt - a.uploadedAt)
+.slice(0, qty);

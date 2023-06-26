@@ -1,13 +1,13 @@
 import { useTranslation } from 'next-i18next';
 import React, { FC } from 'react';
 import { useRecoilState } from 'recoil';
-import { PlusIcon } from '@heroicons/react/24/solid';
 
 import Track from './reusables/track';
 
 import { isQueueVisibleAtom, queueAtom } from '../atoms';
 import { FullEpisodeInfo } from '../interfaces';
 import { DEFAULT_BACKGROUND_COLOR } from '../constants/ui';
+import { Icon } from './icon';
 
 /**
  * Index
@@ -26,15 +26,11 @@ export interface CrossIconProps {
 // 2. Stylings
 const episodeQueueStyling = "rounded-l-3xl w-72 text-white h-screen overflow-y-auto p-4 default-animation absolute z-50 bottom-0 right-0";
 const topTextWrapperStyling = "flex items-center justify-between mb-4 font-bold text-xl";
-const crossStyling = "rotate-45 text-zinc-400 hover:text-white default-animation";
-
-// 3. Custom Functions
-
-// 4. reusables
+const crossStyling = "text-zinc-400 hover:text-white default-animation h-6 w-6 mt-1";
 
 export const CrossIcon: FC<CrossIconProps> = ({ size, onClick }) => (
   <button onClick={onClick}>
-    <PlusIcon className={crossStyling} style={{ width: size, height: size }} />
+    <Icon icon="XMARK" className={crossStyling} />
   </button>
 );
 
@@ -42,8 +38,8 @@ const EpisodeQueue: FC = () => {
 
   const { t } = useTranslation();
 
-  const [queue, setQueue] = useRecoilState(queueAtom);
-  const [isQueueVisible, setIsQueueVisible] = useRecoilState(isQueueVisibleAtom);
+  const [queue, ] = useRecoilState(queueAtom);
+  const [, setIsQueueVisible] = useRecoilState(isQueueVisibleAtom);
 
   const TopText: FC = () => (
     <div className={topTextWrapperStyling}>

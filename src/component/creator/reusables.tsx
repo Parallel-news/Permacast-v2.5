@@ -5,13 +5,14 @@ import React, { useState, Dispatch, FC, SetStateAction } from 'react';
 import { shortenAddress } from 'react-arconnect';
 import { useRecoilState } from 'recoil';
 
-import { PASoMProfile } from '../../interfaces/pasom';
-import { FullEpisodeInfo, Podcast } from '../../interfaces';
-import { ARSEED_URL } from '../../constants';
-import { dimColorString, hexToRGB, isTooLight } from '../../utils/ui';
-import { currentThemeColorAtom, loadingPage } from '../../atoms';
-import { hoverableLinkButtonStyling } from '../reusables/themedButton';
+import { currentThemeColorAtom, loadingPage } from '@/atoms/index';
+import { ARSEED_URL } from '@/constants/index';
 
+import { PASoMProfile } from '@/interfaces/pasom';
+import { FullEpisodeInfo, Podcast } from '@/interfaces/index';
+import { dimColorString, hexToRGB, isTooLight } from '@/utils/ui';
+
+import { hoverableLinkButtonStyling } from '@/component/reusables/themedButton';
 const Verification = React.lazy(() => import('../reusables/Verification'))
 const Track = React.lazy(() => import('../reusables/track'))
 const FeaturedPodcast = React.lazy(() => import('../home/featuredPodcast'))

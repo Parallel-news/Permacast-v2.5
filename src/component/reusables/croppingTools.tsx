@@ -1,9 +1,15 @@
-import { FC, MouseEventHandler, ReactNode, useCallback, useRef, useState } from "react"
-import { PhotoIcon } from "@heroicons/react/24/outline";
-import Cropper, { Area } from "react-easy-crop";
-import getCroppedImg from "../../utils/croppedImage";
 import { useTranslation } from "next-i18next";
-import { cropScreenDivStyling, cropScreenStyling, cropSelectionDivStyling, cropSelectionTextStyling } from "../uploadShow/reusables";
+import { FC, MouseEventHandler, ReactNode, useCallback, useRef, useState } from "react";
+import Cropper, { Area } from "react-easy-crop";
+
+import getCroppedImg from "@/utils/croppedImage";
+import {
+  cropScreenDivStyling,
+  cropScreenStyling,
+  cropSelectionDivStyling,
+  cropSelectionTextStyling
+} from "@/component/uploadShow/reusables";
+import { Icon } from "../icon";
 
 // 1. Interfaces
 interface PreviewImageInterface {
@@ -35,9 +41,9 @@ interface UploadImageContainerInterface {
 const photoIconStyling = `h-11 w-11 text-zinc-400 `;
 const emptyCoverIconTextStyling = `text-lg tracking-wider pt-2 text-zinc-400 `;
 const hidden = `opacity-0 z-index-[-1] absolute pointer-events-none `;
-const imgStyling = `h-48 w-48 text-slate-400 rounded-[20px] `;
-const emptyCoverIconStyling = `input input-secondary flex flex-col items-center justify-center cursor-pointer bg-zinc-800 h-48 w-48 rounded-[20px] outline-none focus:ring-2 focus:ring-inset focus:ring-white hover:bg-zinc-600 `;
-const imgCoverStyling = `flex items-center justify-center bg-slate-400 h-48 w-48 rounded-[20px] `;
+const imgStyling = `h-48 w-48 text-slate-400 rounded-[20px] default-animation `;
+const emptyCoverIconStyling = `input input-secondary flexColFullCenter cursor-pointer bg-zinc-800 h-48 w-48 rounded-[20px] outline-none focus:ring-2 focus:ring-inset focus:ring-white hover:bg-zinc-600 default-animation `;
+const imgCoverStyling = `flexFullCenter bg-slate-400 h-48 w-48 rounded-[20px] `;
 
 // 3. Functions
 
@@ -45,10 +51,10 @@ const imgCoverStyling = `flex items-center justify-center bg-slate-400 h-48 w-48
 
 export const CropScreen: FC<CropScreenInterface> = ({ inputImg, rotation, cropAspect, setRotation, onCropComplete, onClickResp }) => {
   const { t } = useTranslation();
-  
+
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  
+
   return (
     <div className={cropScreenStyling}>
       <div className={cropScreenDivStyling}>
@@ -165,7 +171,7 @@ export const DefaultPlaceholderImage: FC = ({ }) => {
   return (
     <div className={emptyCoverIconStyling}>
       {/*Image Logo*/}
-      <PhotoIcon className={photoIconStyling} />
+      <Icon className={photoIconStyling} icon="PHOTO" />
       {/*Cover Image Text*/}
       <div className={emptyCoverIconTextStyling}>
         {t("uploadshow.image")}
