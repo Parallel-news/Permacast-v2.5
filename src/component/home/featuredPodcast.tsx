@@ -164,8 +164,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
   const prevent = (event: any) => {
     event.preventDefault();
   };
-  console.log("E LEN: :", episodes)
-  //const visEpLen = episodes.filter((item) => !!item.episode.isVisible === true)?.length
+
   return (
     <Link 
       passHref
