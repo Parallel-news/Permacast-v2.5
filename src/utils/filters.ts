@@ -68,8 +68,12 @@ export const attemptIndexPodcastID = async (podcasts: Podcast[], index: number, 
 export const sortHomepageInfo = async (podcasts: Podcast[]) => {
   const episodes: FullEpisodeInfo[] = podcasts
     .map((podcast: Podcast) => podcast.episodes
-      .map((episode: Episode, index: number) =>
-        ({ podcast, episode: { ...episode, order: index } })))
+      .map((episode: Episode, index: number) => {
+        if(episode.isVisible) {
+          return ({ podcast, episode: { ...episode, order: index } })
+        }
+      }
+    ))
     .flat();
   const sortedEpisodes = episodes.sort(
     (episodeA, episodeB) => episodeB.episode.uploadedAt - episodeA.episode.uploadedAt

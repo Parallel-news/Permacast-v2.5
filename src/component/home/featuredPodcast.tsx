@@ -164,7 +164,8 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
   const prevent = (event: any) => {
     event.preventDefault();
   };
-
+  console.log("E LEN: :", episodes)
+  //const visEpLen = episodes.filter((item) => !!item.episode.isVisible === true)?.length
   return (
     <Link 
       passHref
@@ -179,7 +180,7 @@ const FeaturedPodcast: FC<Podcast> = (podcastInfo) => {
       <div className={podcastInnerBackgroundStyling}>
         <div onClick={() => _setLoadingPage(true)}>
           <div className="flex flex-row justify-between">
-            <EpisodeCount count={episodes.length} textColor={textColor} />
+            <EpisodeCount count={episodes.filter((item) => !!item.episode.isVisible === true)?.length} textColor={textColor} />
             <Tooltip id={"hidden-tooltip"+pid} offset={0}/>
             {!isVisible ? 
               <Image src={textColor === "rgb(40, 40, 40)" ? "/icons/eye-slash.svg" : "/icons/eye-slash-white.svg"} width={24} height={24} alt="Hidden" className="rounded-md p-0.5" style={{ fill: textColor}}
