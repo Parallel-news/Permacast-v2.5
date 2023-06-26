@@ -152,6 +152,7 @@ export const ShikwasaProvider = ({ children }) => {
     setIsFullscreen(false);
   }, [router.asPath]);
 
+
   return <ShikwasaContext.Provider value={{ playerState, launchPlayer, togglePlay }}>
     {children}
   </ShikwasaContext.Provider>
