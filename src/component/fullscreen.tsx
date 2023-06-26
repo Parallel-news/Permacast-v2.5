@@ -22,7 +22,7 @@ export const FullscreenInnerContentStyling = `mt-28 absolute w-full text-center 
 export const LargeGrayTextStyling = `text-xl text-gray-300 `;
 export const FullscreenOuterStyling = `absolute h-full w-full z-20 bg-black overflow-y-hidden `;
 export const FullscreenVideoWrapperStyling = `flex items-center justify-center w-full h-screen `;
-export const FullscreenEpisodeTextStyling = `absolute bottom-[110px] left-[0px] md:bottom-[75px] md:left-[92px] default-animation w-full `;
+export const FullscreenEpisodeTextStyling = `absolute bottom-[110px] left-[0px] md:bottom-[75px] default-animation w-[100%] `;
 
 export const BackgroundImage: FC<BackgroundImageProps> = ({ cover, episodeName }) => (
   <Image
@@ -76,7 +76,7 @@ export const FullscreenVideo: FC<FullscreenStaticImageProps> = ({ episodeName, c
     <div className={FullscreenVideoWrapperStyling}>
       {/*DETECT*/}
       <div id="video-player" className="relative w-full h-0 aspect-w-16 aspect-h-9"></div>  
-      <div className={FullscreenEpisodeTextStyling + (loaded ? "hover:opacity-100 opacity-0 hover:bg-black/40 p-6 lg:p-5" : "opacity-100")}>
+      <div className={FullscreenEpisodeTextStyling + (loaded ? "hover:opacity-100 opacity-0 hover:bg-black/40 px-12 pb-6 lg:pb-10" : "opacity-100")}>
         <FullscreenEpisodeText {...{ currentEpisodeIndex, episodeName }} />
       </div>
     </div>
