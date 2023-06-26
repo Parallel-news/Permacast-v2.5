@@ -11,7 +11,7 @@ import { useRecoilState } from "recoil";
 import { loadingPage } from "../../atoms";
 
 const PodcastSet = React.lazy(() => import("../../component/podcast/podcastSet"))
-//import PodcastSet from "../../component/podcast/podcastSet";
+
 const PodcastId: NextPage<{ podcast: Podcast }> = ({ podcast }) => {
     if (podcast) {
         //State Calls Here

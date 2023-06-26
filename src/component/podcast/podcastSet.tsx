@@ -9,6 +9,7 @@ import { convertPodcastsToEpisodes, findPodcast, trimChars } from "../../utils/f
 import { useTranslation } from "next-i18next";
 import { TipModal } from "../../component/tipModal";
 import { ShareButtons } from "../../component/shareButtons";
+import { useArconnect } from "react-arconnect";
 
 const PodcastBanner = React.lazy(() => import("../../component/podcast/pidTools").then(module => ({ default: module.PodcastBanner })));
 const ErrorTag = React.lazy(() => import("../../component/episode/eidTools").then(module => ({ default: module.ErrorTag })));
@@ -25,6 +26,8 @@ interface podcastInter {
 
 export default function PodcastSet(props: podcastInter) {
     const {podcast} = props
+
+    const { address } = useArconnect()
 
     const [, setBackgroundColor] = useRecoilState(backgroundColorAtom);
     const [loadTipModal, setLoadTipModal] = useState<boolean>(false)
@@ -80,11 +83,24 @@ export default function PodcastSet(props: podcastInter) {
                     {/*Title Track*/}
                     <p className={nextEpisodeTitleStyling + " pt-10"}>{t("episode.number")}</p>
                     {/*Episode Track*/}
-                    {fullEpisodeInfo.map((episode: FullEpisodeInfo, index: number) => (
-                        <div key={index}>
-                            <Track {...{ episode }} includeDescription includePlayButton includeContentType />
-                        </div>
-                    )) || <Loading />}
+                    {fullEpisodeInfo.map((episode: FullEpisodeInfo, index: number) => {
+                        if(!episode.episode.isVisible && episode.episode.uploader === address) {
+                            return (
+                                <div key={index}>
+                                    <Track {...{ episode }} includeDescription includePlayButton includeContentType />
+                                </div>
+                            )
+                        } else if(episode.episode.isVisible) {
+                            return (
+                                <div key={index}>
+                                    <Track {...{ episode }} includeDescription includePlayButton includeContentType />
+                                </div>
+                            )
+                        } else {
+                            return <></>
+                        }
+
+                    }) || <Loading />}
                 </div>
                 {loadTipModal && (
                     <TipModal
