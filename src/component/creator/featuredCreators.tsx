@@ -7,8 +7,8 @@ import { useQuery } from '@tanstack/react-query';
 
 import { currentThemeColorAtom, loadingPage } from "@/atoms/index";
 
-import { Ans, Podcast } from '@/interfaces/index';
-import { dimColorString } from "@/utils/ui";
+import { PermacastANS } from '@/interfaces/helpers';
+import { dimColorString, stringToHexColor } from "@/utils/ui";
 
 import { CreatorNamesSmall, ProfileImage } from './reusables';
 
@@ -56,32 +56,34 @@ const Loading: FC<{ loading: boolean, dummyArray: any[] }> = ({ loading, dummyAr
   </>
 );
 
-export const Creator: FC<{ creator: Ans }> = ({ creator }) => (
-  <div>
-    <div className={borderCreatorStyling}>
-      <div className={`flexCenter `}>
-        {(({ currentLabel, avatar, address_color }) =>
-          <ProfileImage {...{ currentLabel, avatar, address_color, size: 48 }} squared />)
-          (creator)}
-        <div className={"flexCol ml-4"}>
-          {(({ nickname, currentLabel }) =>
-            <CreatorNamesSmall {...{ nickname, currentLabel }} />
-          )(creator)}
+export const Creator: FC<{ creator: PermacastANS }> = ({ creator }) => {
+  const { address, nickname, avatar, extension } = creator;
+  const address_color = extension?.ansDomain ? stringToHexColor(extension.ansDomain) : stringToHexColor(address);
+  return (
+    <div>
+      <div className={borderCreatorStyling}>
+        <div className={`flexCenter `}>
+          <ProfileImage {...{ currentLabel: nickname, avatar, address_color, size: 48 }} squared />
+          <div className={"flexCol ml-4"}>
+            <CreatorNamesSmall
+              {...{ nickname: nickname || extension?.ansDomain, currentLabel: extension?.ansDomain }}
+            />
+          </div>
         </div>
+        <ViewANSButton currentLabel={creator.nickname} />
       </div>
-      <ViewANSButton currentLabel={creator.currentLabel} />
     </div>
-  </div>
-);
+  )
+};
 
 const fetchANSProfiles = async (addresses: string[]) => {
-  const ans: Ans[] = await Promise.all(
+  const ans: PermacastANS[] = await Promise.all(
     addresses.map(async (address: string) => {
       try {
-        return (await axios.get(`/api/ans/${address}`)).data
+        return (await axios.get(`/api/ans/full/${address}`)).data
       } catch (e) {
         console.log(e);
-        return {} as Ans;
+        return {} as PermacastANS;
       }
     })
   );
@@ -105,7 +107,7 @@ export const FeaturedCreators: FC<{ addresses: string[] }> = ({ addresses }) => 
       {creatorQuery.isLoading ?
         <Loading {...{ loading: true, dummyArray: [1, 1, 1] }} />
         :
-        creatorQuery.data.creators.map((creator: Ans, index: number) => (
+        creatorQuery.data.creators.map((creator: PermacastANS, index: number) => (
           <Fragment key={index}>
             <Creator {... { creator }} />
           </Fragment>

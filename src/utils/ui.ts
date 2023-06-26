@@ -257,6 +257,20 @@ export const stringToHexColor = (str: string): HexString => {
   return hexColor;
 };
 
+// official algorithm for generating domain colors
+export const generateDomainColor = (domain: string) => {
+  let hash = 0;
+  for (let i = 0; i < domain.length; i++) {
+    hash = domain.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  let color = "#";
+  for (let i = 0; i < 3; i++) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += ("00" + value.toString(16)).substr(-2);
+  }
+  return color;
+}
+
 export const showShikwasaPlayer: ShowShikwasaPlayerInterface = ({
   playerColorScheme,
   title,
