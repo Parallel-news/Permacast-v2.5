@@ -5,6 +5,7 @@ import { currentEpisodeAtom, currentPodcastAtom } from '../atoms';
 import Image from 'next/image';
 import { ARSEED_URL } from '../constants';
 import { WhiteLargeFont } from './creator';
+import { MoonLoader } from 'react-spinners';
 
 interface BackgroundImageProps {
   cover: string;
@@ -75,10 +76,13 @@ export const FullscreenVideo: FC<FullscreenStaticImageProps> = ({ episodeName, c
   return (
     <div className={FullscreenVideoWrapperStyling}>
       {/*DETECT*/}
-      <div id="video-player" className="relative w-full h-0 aspect-w-16 aspect-h-9"></div>  
-      <div className={FullscreenEpisodeTextStyling + (loaded ? "hover:opacity-100 opacity-0 hover:bg-black/40 px-12 pb-6 lg:pb-10" : "opacity-100")}>
-        <FullscreenEpisodeText {...{ currentEpisodeIndex, episodeName }} />
-      </div>
+      {!loaded && (<MoonLoader />)}
+      <div id="video-player" className="relative w-full h-0 aspect-w-16 aspect-h-9"></div>
+      {loaded && (
+        <div className={FullscreenEpisodeTextStyling + "hover:opacity-100 opacity-0 hover:bg-black/40 px-12 pb-6 lg:pb-10" }>
+          <FullscreenEpisodeText {...{ currentEpisodeIndex, episodeName }} />
+        </div>
+      )}
     </div>
   );
 };
