@@ -116,10 +116,18 @@ export const CreatorPageComponent: FC<{ creator: Ans }> = ({ creator }) => {
 
       const creatorPodcasts = queryPodcastData.data?.podcasts?.filter((podcast: Podcast) => podcast.owner === user);
       podcasts = creatorPodcasts.reverse() || [];
-
-      episodes = podcasts
+        //Sort Episodes & Check if Hidden 
+        episodes = podcasts
         .flatMap((podcast) =>
-          podcast.episodes.map((episode) => ({ episode, podcast }))
+          podcast.episodes.flatMap((episode) => {
+            if (!episode.isVisible && episode.uploader === address) {
+              return [{ episode, podcast }];
+            } else if (episode.isVisible) {
+              return [{ episode, podcast }];
+            } else {
+              return [];
+            }
+          })
         )
         .sort((a, b) => b.episode.uploadedAt - a.episode.uploadedAt)
         .slice(0, 3);

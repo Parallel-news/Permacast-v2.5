@@ -71,7 +71,8 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
     const [epName, setEpName] = useState<string>("")
     const [epDesc, setEpDesc] = useState<string>("")
     const [epMedia, setEpMedia] = useState(null)
-    const [epThumbnail, setEpThumbnail] = useState(null)
+    const [epThumbnail, setEpThumbnail] = useState(null) //For Uploading New Thumbnails
+    const [oldThumbnail, setOldThumbnail] = useState("") //In case user doesnt upload new thumbnail during edit
     const [progress, setProgress] = useState(0)
 
     //For Edits
@@ -140,7 +141,8 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
                     const description = (await axios.get(ARSEED_URL + ep.description)).data;
                     setEpDesc(description)
                     setEpThumbnailUrl(ep?.thumbnail ? ep?.thumbnail : "")
-                    setVisible(ep.isVisible)
+                    setVisible(ep.isVisible ? "yes" : "no")
+                    console.log("eee: ", ep)
                     _setLoadingPage(false)
                 }
             } 
@@ -149,7 +151,7 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         } else {
             _setLoadingPage(false)
         }
-    }, [])
+    }, [props.edit])
 
     /**
      * Determines whether validation message should be placed within input field
@@ -213,7 +215,8 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
             console.log(e); handleErr(t("errors.descUploadError"), setSubmittingEp); return;
         }
 
-        // Thumbnail to Arseeding
+        // Thumbnail to Arseeding - works for edits
+        !!epThumbnailUrl ? epPayload["thumbnail"] = epThumbnailUrl : null //If no new thumbnail
         if(epThumbnail) {
             const toastCover = toast.loading(t("loadingToast.savingCover"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
             setProgress(props.edit ? 50 : 32)
@@ -229,8 +232,8 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
 
         // Media to Arseeding
         if(!props.edit) {
-            const toastCover = toast.loading(t("loadingToast.savingMedia"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
             setProgress(48)
+            const toastCover = toast.loading(t("loadingToast.savingMedia"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
             try {
                 const media = await upload3DMedia(epMedia, epMedia.type); epPayload["content"] = media?.order?.itemId
                 epPayload["mimeType"] = determineMediaType(epMedia.type)
@@ -260,8 +263,9 @@ export const EpisodeForm = (props: EpisodeFormInter) => {
         setProgress(props.edit ? 75 : 82)
         // EXM REDIRECT AND ERROR HANDLING NEEDED
         setTimeout(async function () {
+            console.log("EP PAYLOAD: ", createEpPayload)
             const result = await axios.post('/api/exm/write', createEpPayload);
-            console.log("EXM RES: ", result)
+            console.log("EXM RES: ", JSON.parse(result.data))
             //EXM call, set timeout, then redirect. 
             setTimeout(async function () {
                 toast.dismiss(toastSaving);
