@@ -249,7 +249,8 @@ const Track = (props: TrackProps) => {
     type,
     eid,
     uploader,
-    uploadedAt
+    uploadedAt,
+    isVisible
   } = episode.episode;
 
   const coverUsed = thumbnail || minifiedCover || cover;
@@ -315,6 +316,12 @@ const Track = (props: TrackProps) => {
               <div className={`flexCenter `}>
                 <TrackCreatorLink {...{ uploader: artist, buttonStyles, coverColor }} minified />
                 <TrackContentTypeIcon {...{ isVideo, className, includeContentType }} />
+                <Tooltip id={"hidden-tooltip"+eid} offset={0}/>
+                {isVisible ? null 
+                  : 
+                <Image src={"/icons/eye-slash-white.svg"} width={20} height={20} alt="Hidden Episode" className="rounded-md p-0.5"
+                  data-tooltip-content={t("tooltips.hidden-content")} data-tooltip-place="top" data-tooltip-id={"hidden-tooltip"+eid}
+                />}
               </div>
             </div>
           </div>

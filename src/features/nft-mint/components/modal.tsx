@@ -275,8 +275,8 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
   const [uploadAll, setUploadAll] = useState(false)
 
   const episodeRow = "w-full flexBetween items-center"
-  const episodeContainer = "bg-zinc-700 rounded-md w-full p-4 space-y-2 max-h-[300px] overflow-y-scroll"
-  const titleStyling = "flexBetween items-center w-full text-white text-2xl mb-2"
+  const episodeContainer = "bg-zinc-700 rounded-md w-full p-4 space-y-2 max-h-[300px] overflow-y-auto hide-scrollbar"
+  const titleStyling = "flexBetween items-center w-full text-white text-2xl mb-5"
   const checkBoxStyling = "form-checkbox accent-[#FFFF00] bg-zinc-800 rounded-xl inline w-5 h-5"
 
   const handleSingleCheckboxChange = (itemId) => {
@@ -330,7 +330,7 @@ export const MintEpisodeView = ({ episodes, showName, cover, setCheckedEid, chec
               <input type="checkbox" className={checkBoxStyling}
                 onChange={() => handleSelectAllEpisodes()} checked={uploadAll}
               />
-            </>
+            </> 
           )}
         </div>
       </div>

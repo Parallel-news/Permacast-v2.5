@@ -9,10 +9,10 @@ import { loadingPage } from '@/atoms/index';
 
 import { FullEpisodeInfo } from '@/interfaces/index';
 import { getContractVariables, getPASOMContract } from '@/utils/contract';
-import { getPodcastData } from '@/features/prefetching';
 import { sortHomepageInfo } from '@/utils/filters';
 import { HOMAPAGE_STATS_KEY } from '@/constants/query-keys';
 import { EXM_READ_LINK } from '../constants';
+import { getVisiblePodcast } from '@/features/prefetching/api';
 
 const FeaturedPodcastCarousel = React.lazy(() => import('@/component/reusables/FeaturedPodcastCarousel'));
 // const GetFeatured = React.lazy(() => import('../component/home/getFeatured'))
@@ -40,7 +40,7 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
     _setLoadingPage(false)
   }, []);
 
-  const { isFetched: podcastsFetched, data: EXMstate } = getPodcastData();
+  const { isFetched: podcastsFetched, data: EXMstate } = getVisiblePodcast();
 
   const stateQuery = useQuery({
     queryKey: [HOMAPAGE_STATS_KEY],
