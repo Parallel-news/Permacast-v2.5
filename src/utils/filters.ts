@@ -1,4 +1,5 @@
-import { Episode, FullEpisodeInfo, Podcast } from "../interfaces";
+import axios from "axios";
+import { EXMState, Episode, FullEpisodeInfo, Podcast } from "../interfaces";
 import { sleep, sortDuplicateStrings } from "./ui";
 
 export const removeDuplicates = (list: FullEpisodeInfo[]) => {
@@ -42,18 +43,19 @@ export const convertPodcastsToEpisodes = (podcasts: Podcast[]) => podcasts
       ({ podcast, episode: { ...episode, order: index } })))
   .flat();
 
-export const fetchPodcast = async (podcasts: Podcast[], index: number, pid?: string) => {
-  const podcastViaPID = podcasts.find(podcast => podcast.pid === pid);
-  const podcastViaIndex = index !== 0 ? podcasts[index] : undefined;
+export const fetchPodcast = async (index: number, pid?: string) => {
+  const state: EXMState = (await axios.get('/api/exm/read')).data;
+  const podcastViaPID = state.podcasts.find(podcast => podcast.pid === pid);
+  const podcastViaIndex = index !== 0 ? state.podcasts[index] : undefined;
 
   return { podcastViaPID, podcastViaIndex };
 };
 
-export const attemptIndexPodcastID = async (podcasts: Podcast[], index: number, pid?: string) => {
+export const attemptIndexPodcastID = async (index: number, pid?: string) => {
   let attempts = 3;
 
   for (let i = 0; i < attempts; i++) {
-    const { podcastViaPID, podcastViaIndex } = await fetchPodcast(podcasts, index, pid);
+    const { podcastViaPID, podcastViaIndex } = await fetchPodcast(index, pid);
     const foundPod = podcastViaIndex || podcastViaPID;
     console.log('foundPod', foundPod)
     console.log('pid and index', pid, index)

@@ -75,7 +75,7 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
   const router = useRouter();
   const { walletConnected, address, nameService: ANS, getPublicKey, packageEXM } = useCrossChainAuth();
 
-  const { data: podcastQuery } = getPodcastData();
+  const podcastQuery = getPodcastData();
   const { data: GIGABYTE_COST } = getGigabyteCost();
   const balanceQuery = getEverpayARBalance(address);
   const userBalance = Number(balanceQuery.data || 0);
@@ -142,7 +142,7 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
   useEffect(() => {
     const asyncFn = async () => {
       if (!realPid) {
-        const result = await attemptIndexPodcastID(podcastQuery.podcasts, index, pid);
+        const result = await attemptIndexPodcastID(index, pid);
         setRealPid(result);
       };
       const savedEpisodeLinksValue = RSSFeedManager.getValueFromObject(realPid + '/' + RSSLink);
@@ -159,7 +159,7 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
       };
     };
     asyncFn();
-  }, [realPid]);
+  }, [realPid, podcastQuery.data]);
 
   useEffect(() => {
     if (GIGABYTE_COST) asyncs();
@@ -270,7 +270,7 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
     // EXM sometimes returns fake PID and that will cause issues
     // This fix guarantees to get the real PID
     if (!realPid) {
-      const attemptPid = await attemptIndexPodcastID(podcastQuery.podcasts, index, pid);
+      const attemptPid = await attemptIndexPodcastID(index, pid);
       if (!attemptPid) {
         toast.error("Podcast not found, wait a little and try again", { style: TOAST_DARK });
         console.log('FAILED TO DOWNLOAD: ', pid);
