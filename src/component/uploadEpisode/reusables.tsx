@@ -187,6 +187,7 @@ export const SelectPodcast = (props: SelectPodcastInter) => {
 }
 
 export const PodcastSelectOptions = (props: PodcastSelectOptionsInter) => {
+    console.log('podcastselect ', props)
     return (
         <div className={podcastSelectOptionsStyling} onClick={() => props.setPid(props.pid)}>
             <PodcastOption
