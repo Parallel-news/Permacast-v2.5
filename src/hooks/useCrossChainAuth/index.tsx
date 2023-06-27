@@ -5,7 +5,7 @@ import { selectedProviderAtom } from "@/atoms/index";
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "@/constants/arconnect";
 
 const useCrossChainAuth = () => {
-  const [selectedProvider] = useRecoilState(selectedProviderAtom);
+  const [selectedProvider] = useRecoilState(selectedProviderAtom );
 
   const {
     address: ArconnectAddress,
@@ -22,10 +22,10 @@ const useCrossChainAuth = () => {
 
   const packageEXMArconnect = async (payload: any, sigMessage: string) => {
     const msgToEncode = new TextEncoder().encode(sigMessage);
-    const newPayload = { ...payload };
-    newPayload.sig = String(await ArconnectCreateSignature(msgToEncode, defaultSignatureParams, "base64"));
-    newPayload.jwk_n = await ArconnectGetPublicKey();
-    return newPayload;
+    payload["sig"] = String(await ArconnectCreateSignature(msgToEncode, defaultSignatureParams, "base64"));
+    payload["jwk_n"] = await ArconnectGetPublicKey();
+    console.log(payload);
+    return payload;
   };
 
   const providers = {
