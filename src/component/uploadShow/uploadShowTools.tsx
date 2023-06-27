@@ -23,6 +23,7 @@ import { fetchDominantColor, getCoverColorScheme } from "../../utils/ui";
 import { ProgressBar } from "../progressBar";
 import { EditPodcastProps, UploadPodcastProps } from "../../interfaces/exm";
 import { handleValMsg } from "@/utils/validation/podcast";
+import { getPodcastData } from "@/features/prefetching";
 
 const MarkDownToolTip = React.lazy(() => import("../reusables/tooltip").then(module => ({ default: module.MarkDownToolTip })));
 const CoverContainer = React.lazy(() => import("./reusables").then(module => ({ default: module.CoverContainer })));
@@ -67,6 +68,7 @@ export const ShowForm = (props: ShowFormInter) => {
     const [arseedCostPerGig, setArseedCostPerGig] = useState<number>(0);
     const [uploadCost, setUploadCost] = useState<number>(0);
     const router = useRouter();
+    const podcastQuery = getPodcastData();
 
     // inputs
     const [podcastDescription_, setPodcastDescription_] = useState("");
@@ -237,6 +239,8 @@ export const ShowForm = (props: ShowFormInter) => {
                 props?.setUploadedPID(podcast.pid);
                 props?.setUploadedIndex(podcasts.length - 1);
             };
+            await podcastQuery.refetch();
+
             props?.returnedPodcasts && props?.returnedPodcasts(podcasts);
             //EXM call, set timeout, then redirect.
             setTimeout(async function () {
