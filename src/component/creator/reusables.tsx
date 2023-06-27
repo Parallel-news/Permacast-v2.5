@@ -126,7 +126,16 @@ export const ProfileImage: FC<ProfileImageProps> = ({ currentLabel, avatar, addr
       className="default-no-outline-ringed default-animation"
       onClick={() => _setLoadingPage(true)}
     >
-      {avatar && <Image width={imageSize} height={imageSize} alt={avatar} src={ARSEED_URL + avatar} className="object-fit aspect-square rounded-full" />}
+      {avatar && (
+        <Image 
+          style={{ borderRadius: squaredInnerBorderRadius }}
+          width={imageSize}
+          height={imageSize}
+          alt={avatar}
+          src={ARSEED_URL + avatar}
+          className="object-fit aspect-square"
+        />
+      )}
       {!avatar && (
         <div style={{
           width: imageSize,

@@ -73,12 +73,13 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
   // hooks
   const { t } = useTranslation();
   const router = useRouter();
-  const { address, nameService: ANS, getPublicKey, packageEXM } = useCrossChainAuth();
+  const { walletConnected, address, nameService: ANS, getPublicKey, packageEXM } = useCrossChainAuth();
 
-  const { data: podcastQuery } = getPodcastData();
+  const podcastQuery = getPodcastData();
   const { data: GIGABYTE_COST } = getGigabyteCost();
   const balanceQuery = getEverpayARBalance(address);
   const userBalance = Number(balanceQuery.data || 0);
+  console.log('userBalance', userBalance)
 
   const [_, setPodcastColor] = useRecoilState(podcastColorAtom);
   const [, _setLoadingPage] = useRecoilState(loadingPage);
@@ -92,7 +93,6 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
   const [isReverseOrder, setIsReverseOrder] = useState<boolean>(false);
   const [currentEpisodes, setCurrentEpisodes] = useState<rssEpisode[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [navigatePage, setNavigatePage] = useState<number>(1);
   const [uploadedEpisodesLinks, setUploadedEpisodesLinks] = useState<string[]>([]);
   const [retryEpisodes, setRetryEpisodes] = useState<rssEpisode[]>([]);
   const [uploadedCount, setUploadCount] = useState<number>(0);
@@ -110,12 +110,16 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
 
   const calculateTotalAndSetEpisodes = async (episodes: rssEpisode[]) => {
     const { knownEpisodeSizes, unknownEpisodeSizes } = await fetchEpisodeSizes(episodes);
+    console.log('knownEpisodeSizes', knownEpisodeSizes)
+    console.log('unknownEpisodeSizes', unknownEpisodeSizes)
     setCurrentEpisodes(knownEpisodeSizes);
     setRetryEpisodes(unknownEpisodeSizes);
     const total = knownEpisodeSizes.map((rssEpisode: rssEpisode) =>
       calculateSizeCost(GIGABYTE_COST, Number(rssEpisode.length)) + EPISODE_SLIPPAGE
     );
+    console.log('total', total)
     const totalCost = total.reduce((a, b) => a + b, 0);
+    console.log('totalCost', totalCost)
     setTotalUploadCost(totalCost);
   };
 
@@ -138,11 +142,11 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
   useEffect(() => {
     const asyncFn = async () => {
       if (!realPid) {
-        const result = await attemptIndexPodcastID(podcastQuery.podcasts, index);
+        const result = await attemptIndexPodcastID(index, pid);
         setRealPid(result);
       };
       const savedEpisodeLinksValue = RSSFeedManager.getValueFromObject(realPid + '/' + RSSLink);
-      console.log(savedEpisodeLinksValue);
+      console.log('savedEpisodeLinksValue', savedEpisodeLinksValue);
       if (savedEpisodeLinksValue) {
         const parsedLinks = JSON.parse(savedEpisodeLinksValue);
         setUploadedEpisodesLinks(parsedLinks);
@@ -155,12 +159,11 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
       };
     };
     asyncFn();
-  }, [realPid]);
+  }, [realPid, podcastQuery.data]);
 
   useEffect(() => {
-    setNavigatePage(currentPage);
-    asyncs();
-  }, [currentPage]);
+    if (GIGABYTE_COST) asyncs();
+  }, [currentPage, GIGABYTE_COST]);
 
   const tryDescriptionUpload = async (description: string) => {
     try {
@@ -207,32 +210,32 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
       "jwk_n": "",
       "pid": realPid,
       "name": title,
-      "desc": await tryDescriptionUpload(description),
+      "desc": "",
       "sig": "",
-      "txid": await tryFeePayment(),
+      "txid": "",
       "isVisible": "yes",
       "thumbnail": "",
       "content": uploadPaymentTX,
       "mimeType": determineMediaType(fileType),
     };
 
-    // // Description to Arseeding
-    // const descriptionTx = await tryDescriptionUpload(description, handleErr);
-    // console.log(descriptionTx);
-    // // @ts-ignore
-    // uploadEpisodePayload["desc"] = descriptionTx;
+    // Description to Arseeding
+    const descriptionTx = await tryDescriptionUpload(description);
+    console.log(descriptionTx);
+    // @ts-ignore
+    uploadEpisodePayload["desc"] = descriptionTx;
 
-    // // Pay Permacast's Episode Upload Fee
-    // const feeTX = await tryFeePayment();
-    // console.log(feeTX);
-    // // @ts-ignore
-    // uploadEpisodePayload["txid"] = feeTX;
+    // Pay Permacast's Episode Upload Fee
+    const feeTX = await tryFeePayment();
+    console.log(feeTX);
+    // @ts-ignore
+    uploadEpisodePayload["txid"] = feeTX;
 
-    const finalPayload = packageEXM(uploadEpisodePayload, USER_SIG_MESSAGES[0] + await getPublicKey());
+    const finalPayload = await packageEXM(uploadEpisodePayload, USER_SIG_MESSAGES[0] + await getPublicKey());
 
     try {
       const result = await axios.post('/api/exm/write', finalPayload);
-      console.log(result.data);
+      console.log('write result: ', result.data);
       // we need to save the episode link to the RSSFeedManager
       // the key is podcast's PID + RSSLink
       // the value is an array of all the already uploaded episode links
@@ -267,7 +270,7 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
     // EXM sometimes returns fake PID and that will cause issues
     // This fix guarantees to get the real PID
     if (!realPid) {
-      const attemptPid = await attemptIndexPodcastID(podcastQuery.podcasts, index);
+      const attemptPid = await attemptIndexPodcastID(index, pid);
       if (!attemptPid) {
         toast.error("Podcast not found, wait a little and try again", { style: TOAST_DARK });
         console.log('FAILED TO DOWNLOAD: ', pid);
@@ -284,14 +287,14 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
       paymentTXes.push(tx);
       await sleep(1000);
     };
-    console.log(currentEpisodes);
+    console.log('currentEpisodes', currentEpisodes);
 
     const contentTXPromises = currentEpisodes.map((episode: rssEpisode, number: number) => uploadEpisode(episode.link, number));
 
     const contentTXResults = (
       await Promise.all(contentTXPromises)
     ).sort((a: uploadEpisodeInter, b: uploadEpisodeInter) => a.number - b.number);
-    console.log(contentTXResults);
+    console.log('contentTXResults', contentTXResults);
     toast.dismiss(toastSaving);
     const savingBlockchainToast = toast.loading(t("loadingToast.savingChain"), PERMA_TOAST_SETTINGS(EXTENDED_TOAST_TIME));
 
@@ -429,30 +432,6 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
     );
   };
 
-  const AuthButtonsRow = ({ userBalance, totalUploadCost }) => {
-    const { walletConnected } = useCrossChainAuth();
-    const userHasEnoughAR = Number(userBalance) >= totalUploadCost;
-    // console.log('!userHasEnoughAR || isCalculating || !!retryEpisodes?.length || balanceQuery.isLoading')
-    // console.log(!userHasEnoughAR, isCalculating, !!retryEpisodes?.length, balanceQuery.isLoading)
-    return (
-      <div className="w-full flexColFullCenter">
-        {walletConnected && !isUploadingEpisodes && (
-          <>
-            <UploadButton
-              disable={!userHasEnoughAR || isCalculating || !!retryEpisodes?.length || balanceQuery.isLoading}
-              width="w-[50%]"
-              click={startEpisodesUpload}
-            />
-            {!userHasEnoughAR && (
-              <p>{t("home.featured-modal.insufficient-balance")}</p>
-            )}
-          </>
-        )}
-        <ConnectButton className="w-[75%] md:w-[50%]" />
-      </div>
-    );
-  };
-
   const Progress = () => {
     if (!isUploadingEpisodes) return <></>;
     return (
@@ -472,6 +451,14 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
   const TotalCost = () => (
     <p className="mt-2 text-zinc-300">{t("uploadshow.uploadCost") + ": " + (Number(totalUploadCost)).toFixed(6) + " AR"}</p>
   );
+
+  useEffect(() => {
+    console.log("userBalance:", userBalance);
+    console.log("totalUploadCost:", totalUploadCost);
+    console.log("isCalculating:", isCalculating);
+    console.log("retryEpisodes:", retryEpisodes);
+    console.log("balanceQuery.isLoading:", balanceQuery.isLoading);
+  }, [userBalance, totalUploadCost, isCalculating, retryEpisodes, balanceQuery.isLoading])
 
   return (
     <div className={showFormStyling}>
@@ -501,7 +488,22 @@ function ImportedEpisodes({ pid, RSSLink, rssEpisodes, coverUrl, index, redirect
           </div>
           {/* Upload */}
           <div className="w-full flexColFullCenter">
-            <AuthButtonsRow {...{ userBalance, totalUploadCost }} />
+          <div className="w-full flexColFullCenter">
+            {walletConnected && !isUploadingEpisodes && (
+              <>
+                <UploadButton
+                  disable={Number(userBalance) < totalUploadCost || isCalculating || !!retryEpisodes?.length || balanceQuery.isLoading}
+                  width="w-[50%]"
+                  click={startEpisodesUpload}
+                />
+                {Number(userBalance) < totalUploadCost && (
+                  <p>{t("home.featured-modal.insufficient-balance")}</p>
+                )}
+              </>
+            )}
+            <ConnectButton className="w-[75%] md:w-[50%]" />
+          </div>
+
             <Progress />
             <TotalCost />
           </div>

@@ -1,7 +1,7 @@
 import '../shikwasa-src/css/base.css';
 import '../shikwasa-src/css/chapter.css';
 import '../styles/globals.css';
-import 'react-tooltip/dist/react-tooltip.css'
+import 'react-tooltip/dist/react-tooltip.css';
 
 import { appWithTranslation } from 'next-i18next';
 import Head from 'next/head';
@@ -20,7 +20,6 @@ const QueryAns = React.lazy(() => import('@/features/prefetching').then(module =
 const QueryPodcasts = React.lazy(() => import('@/features/prefetching').then(module => ({ default: module.QueryPodcasts })));
 const RecoilRoot = React.lazy(() => import('recoil').then(module => ({ default: module.RecoilRoot })));
 const ShikwasaProviderLazy = React.lazy(() => import('@/hooks/useShikwasa').then(module => ({ default: module.ShikwasaProvider })));
-
 
 function App({ Component, pageProps }) {
   // todo: outsource head to a component / outsource info as variables
@@ -41,32 +40,32 @@ function App({ Component, pageProps }) {
         <meta property="og:url" content={`https://permacast.app/`} />
         <meta property="og:description" content={`Permanent podcasting on Arweave. Pay once, store forever.`} />
       </Head>
-        <ArconnectProvider permissions={PERMISSIONS}>
+      <ArconnectProvider permissions={PERMISSIONS}>
+        <QueryClientProvider client={queryClient}>
+          <QueryPodcasts />
+          <QueryAns />
+          <ReactQueryDevtools initialIsOpen={true} />
+          <Script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-EZZBP4GXJK"
+            strategy="afterInteractive"
+          />
+          <Script id="gtag-function">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
 
-          <QueryClientProvider client={queryClient}>
-            <QueryPodcasts />
-            <QueryAns />
-            <ReactQueryDevtools initialIsOpen={true} />
-            <Script
-              async
-              src="https://www.googletagmanager.com/gtag/js?id=G-4XDV8F7VJB"
-              strategy="afterInteractive" 
-            />
-            <Script id="gtag-function">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', 'G-4XDV8F7VJB');
-              `}
-            </Script>
-            <ShikwasaProviderLazy>
-              <Layout>
-                <Component {...pageProps} className="scrollbar-container"/>
-              </Layout>
-            </ShikwasaProviderLazy>
-          </QueryClientProvider>
-        </ArconnectProvider>
+              gtag('config', 'G-EZZBP4GXJK');
+            `}
+          </Script>
+          <ShikwasaProviderLazy>
+            <Layout>
+              <Component {...pageProps} className="scrollbar-container" />
+            </Layout>
+          </ShikwasaProviderLazy>
+        </QueryClientProvider>
+      </ArconnectProvider>
     </RecoilRoot>
   )
 }
