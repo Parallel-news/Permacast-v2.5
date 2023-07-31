@@ -60,9 +60,12 @@ function App({ Component, pageProps }) {
             `}
           </Script>
           <ShikwasaProviderLazy>
-            <Layout>
-              <Component {...pageProps} className="scrollbar-container" />
-            </Layout>
+            <div className='w-full flexFullCenter text-white font-bold text-3xl md:text-6xl'>Permacast is under maintenance. Check back later.</div>
+            <div className='w-full justify-between mt-8'>
+              <a href="https://twitter.com/permacastapp">Twitter</a>
+              <a href="https://t.me/permacast">Telegram</a>
+              <a href="https://discord.gg/YJGJTQeQgZ">Discord</a>
+            </div>
           </ShikwasaProviderLazy>
         </QueryClientProvider>
       </ArconnectProvider>
