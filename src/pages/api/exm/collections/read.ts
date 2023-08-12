@@ -9,9 +9,11 @@ export default async function handler(
   res: NextApiResponse<ResponseData>
 ) {
   try {
-    const { collectionsContract } = getContractVariables();
-    const data = await axios.get(`https://api.exm.dev/read/${collectionsContract}`)
-    res.status(200).json(data.data)
+    res.status(200).json({})
+
+    // const { collectionsContract } = getContractVariables();
+    // const data = await axios.get(`https://api.exm.dev/read/${collectionsContract}`)
+    // res.status(200).json(data.data)
   } catch (error) {
     console.error(error)
     return res.status(error.status || 500).end(error.message)

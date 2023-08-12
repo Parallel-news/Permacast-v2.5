@@ -63,6 +63,7 @@ export async function getServerSideProps(context) {
     const { params } = context
     const podcastId = params.pid
     const EXM: EXMState = (await axios.post(EXM_READ_LINK + contractAddress)).data;
+
     const { podcasts } = EXM;
 
     let podcast = findPodcast(podcastId, podcasts);

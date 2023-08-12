@@ -57,7 +57,8 @@ export const STR_LEN_EPISODE_BOX = 100
 export const STR_LEN_EPISODE_DESC = 400
 
 // API
-export const EXM_READ_LINK = "https://api.exm.dev/read/";
+export const EXM_READ_LINK = "https://arweave.net/";
+
 // !Please use ARSEED_URL insead of ARWEAVE_READ_LINK for instant retrieval on user-uploaded content
 export const ARWEAVE_READ_LINK = "https://arweave.net/";
 export const PERMACAST_HELPER_URL = "https://permacast-bloodstone-helper.herokuapp.com/";

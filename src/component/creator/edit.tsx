@@ -309,9 +309,9 @@ export const EditButton: FC<EditButtonProps> = ({ PASoMProfile }) => {
 
   return (
     <>
-      <ThemedButton onClick={() => setIsVisible(true)}>
+      {/* <ThemedButton onClick={() => setIsVisible(true)}>
         <EditText />
-      </ThemedButton>
+      </ThemedButton> */}
       {isVisible && <EditModal {...{ isVisible, setIsVisible, className, PASoMProfile }} />}
     </>
   );

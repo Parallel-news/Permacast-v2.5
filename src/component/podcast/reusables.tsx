@@ -243,7 +243,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
           onClick={props.setLoadTipModal}
         />
       )}
-      {address === props.podcastOwner && <NftButton pid={props.podcastId} />}
+      {/* {address === props.podcastOwner && <NftButton pid={props.podcastId} />}
       {address === props.podcastOwner && (
         <Link href={`/upload-episode?pid=${props.podcastId}`} onClick={() => _setLoadingPage(true)}>
           <DescriptionButton
@@ -261,7 +261,7 @@ export const PodcastButtons = (props: EpisodeInfoButtonsInter) => {
             color={color}
           />
         </Link>
-      )}
+      )} */}
       <DescriptionButton
         icon={<Icon className={episodeIconStyling} icon="ARROWTOPSQUARE" strokeWidth="0" fill="currentColor" />}
         text={""}
