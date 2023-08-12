@@ -19,15 +19,16 @@ export default async function handler(
   res: NextApiResponse<ResponseData>
 ) {
   try {
-    const { contractAddress, contractAPIToken } = getContractVariables();
+    res.status(200).json({})
+    // const { contractAddress, contractAPIToken } = getContractVariables();
 
-    const data = await axios.post(`https://api.exm.dev/api/transactions?token=${contractAPIToken}`, {
-      functionId: contractAddress,
-      inputs: [{
-        "input": JSON.stringify({function: "getFeaturedChannel"})
-      }],
-    }, {})
-    res.status(200).json(data.data.data.execution);
+    // const data = await axios.post(`https://api.exm.dev/api/transactions?token=${contractAPIToken}`, {
+    //   functionId: contractAddress,
+    //   inputs: [{
+    //     "input": JSON.stringify({function: "getFeaturedChannel"})
+    //   }],
+    // }, {})
+    // res.status(200).json(data.data.data.execution);
   } catch (error) {
     console.error(error)
     return res.status(error.status || 500).end(error.message)

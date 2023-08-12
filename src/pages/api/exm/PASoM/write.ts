@@ -19,6 +19,7 @@ export default async function handler(
   res: NextApiResponse<ResponseData>
 ) {
   try {
+    throw new Error('API is in maintenance')
     const { contractAddress, contractAPIToken } = getContractVariables();
 
     const data = await axios.post(`https://api.exm.dev/api/transactions?token=${contractAPIToken}`, {

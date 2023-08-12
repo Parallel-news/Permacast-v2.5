@@ -58,7 +58,7 @@ const Loading: FC<{ loading: boolean, dummyArray: any[] }> = ({ loading, dummyAr
 
 export const Creator: FC<{ creator: PermacastANS }> = ({ creator }) => {
   const { address, nickname, avatar, extension } = creator;
-  const address_color = extension?.ansDomain ? stringToHexColor(extension.ansDomain) : stringToHexColor(address);
+  const address_color = extension?.ansDomain ? stringToHexColor(extension?.ansDomain || '000000') : stringToHexColor(address || '000000');
   return (
     <div>
       <div className={borderCreatorStyling}>

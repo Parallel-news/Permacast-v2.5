@@ -15,13 +15,13 @@ export const getContractVariables = (): ContractVariables => {
   const IS_PROD = process.env.IS_PROD;
   
 
-  const contractAddress = IS_PROD === 'true' ? PROD_CONTRACT : DEV_CONTRACT;
-  const isProduction = IS_PROD === 'true' ? true : false;  
-  const { contractAddress: PASOMContract } = getPASOMContract();
-  const { contractAddress: featuredChannelsContract } = getFeaturedChannelsContract();
-
+  // const contractAddress = IS_PROD === 'true' ? PROD_CONTRACT : DEV_CONTRACT;
+  // const isProduction = IS_PROD === 'true' ? true : false;  
+  // const { contractAddress: PASOMContract } = getPASOMContract();
+  // const { contractAddress: featuredChannelsContract } = getFeaturedChannelsContract();
+  const contractAddress = "umgZPnh_b_AfHHk9x4eCcFGy6QF0OYd9_7oe5ki3Afs"
   //! DO NOT RETURN API TOKEN TO AVOID EXPOSING IT!
-  return { contractAddress, isProduction, collectionsContract, featuredChannelsContract, PASOMContract };
+  return { contractAddress, isProduction: true, collectionsContract, featuredChannelsContract: '', PASOMContract: '' };
 };
 
 export const getFeaturedChannelsContract = (): ContractVariables => {

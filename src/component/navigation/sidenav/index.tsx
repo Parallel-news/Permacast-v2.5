@@ -37,7 +37,7 @@ export const Sidenav = () => {
         <Icon icon="RECTANGLESTACK" className={size36x2} />
       } />
       <LanguageDropdown />
-      <UploadDropdown routeMatches={isUpload} />
+      {/* <UploadDropdown routeMatches={isUpload} /> */}
       <HelpDropdown />
     </div>
   );

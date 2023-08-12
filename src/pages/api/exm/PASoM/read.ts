@@ -11,9 +11,11 @@ export default async function handler(
   res: NextApiResponse<ResponseData>
 ) {
   try {
-    const { contractAddress } = getPASOMContract();
-    const data = await axios.get(`https://api.exm.dev/read/${contractAddress}`);
-    res.status(200).json(data.data);
+
+    // const { contractAddress } = getPASOMContract();
+    // const data = await axios.get(`https://api.exm.dev/read/${contractAddress}`);
+    // res.status(200).json(data.data);
+    res.status(200).json({})
   } catch (error) {
     console.error(error);
     return res.status(error.status || 500).end(error.message);

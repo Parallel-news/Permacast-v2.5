@@ -64,7 +64,8 @@ const ArConnect = () => {
 
   const fetchPASoM = async () => {
     const state = (await axios.get('/api/exm/PASoM/read')).data;
-    const profiles: PASoMProfile[] = state.profiles;
+    const profiles: PASoMProfile[] = state?.profiles;
+    if (!profiles) return;
     const profile = profiles.find((profile: PASoMProfile) => profile.address === address);
     setPASoMProfile(profile);
   };

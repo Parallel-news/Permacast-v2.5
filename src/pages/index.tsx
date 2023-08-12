@@ -79,13 +79,13 @@ const Home: NextPage<HomeProps> = ({ isProduction, contractAddress, featuredCont
     <Suspense fallback={<HomeLoader />}>
       <div className="w-full pb-10 mb-10">
         <Greeting />
-        {(isProduction !== true && contractAddress && PASoMContractAddress) &&
+        {/* {(isProduction !== true && contractAddress && PASoMContractAddress) &&
           <div className="select-text">
             <div className='text-yellow-500 font-bold'>Heads up: isProduction !== "true"</div>
             <div className="text-teal-300 flex gap-x-1">EXM Main Address: <a href={EXM_READ_LINK + (contractAddress)} target="_blank" ref="noreferrer noopener" className="underline font-medium">{contractAddress}</a></div>
             <div className="text-pink-300 flex gap-x-1">(PRODUCTION) PASoM Contract Address: <a href={EXM_READ_LINK + PASoMContractAddress} target="_blank" ref="noreferrer noopener">{PASoMContractAddress}</a></div>
           </div>
-        }
+        } */}
         {isHomepageLoading ? <Loading /> : (isSuccess && <FeaturedPodcastCarousel podcasts={homeData.sortedPodcasts} />)}
         <div className="my-9 flexCol xl:flex-row md:justify-between space-y-10 xl:space-y-0">
           <div className="w-[100%] xl:w-[71%]">
