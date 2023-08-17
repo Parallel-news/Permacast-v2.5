@@ -94,7 +94,7 @@ export const discordObject = {
 export const twitterObject = {
     "name": "Twitter",
     "href": PERMACAST_TWITTER_URL,
-    "icon": <FaTwitter className={iconStyling} />
+    "icon": <xIcon className={iconStyling} />
 }
 
 export const telegramObject = {
