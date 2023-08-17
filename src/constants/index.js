@@ -1,5 +1,5 @@
 import { FaDiscord, FaTwitter, FaTelegram } from "react-icons/fa";
-
+import { XIcon } from "@/component/icon";
 // Upload Podcast Constants
 export const PODCAST_NAME_MIN_LEN = 2;
 export const PODCAST_NAME_MAX_LEN = 500;
@@ -93,9 +93,9 @@ export const discordObject = {
 }
 
 export const twitterObject = {
-    "name": "Twitter",
+    "name": "X",
     "href": PERMACAST_TWITTER_URL,
-    "icon": <FaTwitter className={iconStyling} />
+    "icon": <XIcon className={iconStyling} />
 }
 
 export const telegramObject = {
@@ -104,7 +104,7 @@ export const telegramObject = {
     "icon": <FaTelegram className={iconStyling} />
 }
 
-export const HELP_LINKS = [discordObject, twitterObject, telegramObject]
+export const HELP_LINKS = [twitterObject, discordObject, telegramObject]
 
 
 // ERRORS

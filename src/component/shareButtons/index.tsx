@@ -6,7 +6,7 @@ import { containerPodcastModalStyling } from '../uploadEpisode/reusables'
 import { FADE_IN_STYLE, FADE_OUT_STYLE } from '../../constants'
 import { xMarkModalStyling } from '../tipModal'
 import { useTranslation } from 'next-i18next'
-import { Icon } from '../icon'
+import { Icon, XIcon } from '../icon'
 
 interface ShareButtonsInter {
     url: string;
@@ -47,13 +47,16 @@ export const ShareButtons = (props: ShareButtonsInter) => {
                     <TwitterShareButton url={url} title={title}>
                         <div className={circleStyling}> 
                             <div className="bg-black w-fit h-fit p-1">
-                            <Image 
-                                src="/twitterLogo.svg"
-                                width={width}
-                                height={height}
-                                alt="Twitter Logo"
-                                className="p-1"
-                            />
+                                {/* 
+                                <Image 
+                                    src="/twitterLogo.svg"
+                                    width={width}
+                                    height={height}
+                                    alt="Twitter Logo"
+                                    className="p-1"
+                                />
+                                */} 
+                                <XIcon className="p-1 w-[66px] h-[66px] text-white"/>
                             </div>
                         </div>
                     </TwitterShareButton>
