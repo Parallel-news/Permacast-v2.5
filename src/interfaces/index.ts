@@ -11,7 +11,11 @@ export type arweaveTX = string;
 export type arseedTX = string;
 export type everpayTX = string;
 export type availableProviders = "arconnect" | "rainbowkit";
-export type contractType = "primaryEXMContract" | "featuredChannelsContract" | "collectionsContract" | "PASOMContract";
+export type contractType =
+  | "permacastContract"
+  | "featuredChannelsContract"
+  | "collectionsContract"
+  | "PASOMContract";
 
 export interface EXMState {
   podcasts: Podcast[];
@@ -26,7 +30,7 @@ export interface EXMState {
   ar_molecule_endpoint: URL;
   paid_fees: tx[];
   signatures: signature[];
-};
+}
 
 export interface Podcast {
   pid: string;
@@ -46,9 +50,9 @@ export interface Podcast {
   isVisible: boolean;
   episodes: Episode[];
   minifiedCover: arweaveTX;
-};
+}
 
-export type PodcastMinified = Omit<Podcast, 'episodes'>;
+export type PodcastMinified = Omit<Podcast, "episodes">;
 
 export interface Episode {
   eid: string;
@@ -63,13 +67,13 @@ export interface Episode {
   order?: number; // UI only
   thumbnail?: string | null;
   minted?: boolean;
-};
+}
 
 export interface FullEpisodeInfo {
   episode: Episode;
   //!TODO: USE PodcastMinified
-  podcast: Podcast;//PodcastMinified,
-};
+  podcast: Podcast; //PodcastMinified,
+}
 
 export interface Ans {
   ANSuserExists?: boolean; // only on UI
@@ -85,23 +89,23 @@ export interface Ans {
   subdomains: any;
   freeSubdomains: number;
   PASOM?: PASoMProfile;
-};
+}
 
 export interface Links {
   github?: string;
   twitter?: string;
   customUrl?: string;
   instagram?: string;
-};
+}
 
 export interface OwnedLabel {
   label: string;
   scarcity: string;
   acquisationBlock: number;
   mintedFor: number;
-};
+}
 
 export interface ANSMapped {
-  address: string,
-  primary: string
-};
+  address: string;
+  primary: string;
+}

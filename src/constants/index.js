@@ -1,5 +1,7 @@
 import { FaDiscord, FaTwitter, FaTelegram } from "react-icons/fa";
 
+export const PERMACAST_CONTRACT_ADDRESS = "HW-h6BOu3BzHMsKY4jsgjh0Yme0dhWwpozja9qA278w";
+
 // Upload Podcast Constants
 export const PODCAST_NAME_MIN_LEN = 2;
 export const PODCAST_NAME_MAX_LEN = 500;
@@ -65,7 +67,7 @@ export const PERMACAST_HELPER_URL = "https://permacast-bloodstone-helper.herokua
 export const ANS_MAPPED_STATE_URL = "https://ans-metrics.herokuapp.com/mapped-state/";
 export const RSS_FEED_URL = PERMACAST_HELPER_URL + "feeds/rss/"; // requires PID at the end
 
-export const EXM_ANS_CONTRACT_ADDRESS = "VGWeJLDLJ9ify3ezl9tW-9fhB0G-GIUd60FE-5Q-_VI";
+export const ANS_CONTRACT = "Tih8T1uESATJNzdwBIY3rpe25kWTzjw8uNiMRYe9I5M";
 export const NFT_CONTRACT = "4E9PGPTT_uqJWSQ7ulDKireAAWesCUJjEyQsssQ4mxo"
 
 export const MESON_ENDPOINT = "https://pz-znmpfs.meson.network/"

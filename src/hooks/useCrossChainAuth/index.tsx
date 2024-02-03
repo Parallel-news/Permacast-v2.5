@@ -3,30 +3,40 @@ import { useRecoilState } from "recoil";
 
 import { selectedProviderAtom } from "@/atoms/index";
 import { APP_LOGO, APP_NAME, PERMISSIONS } from "@/constants/arconnect";
+import useArconnectSignature from "../useArconnectSignature";
 
 const useCrossChainAuth = () => {
-  const [selectedProvider] = useRecoilState(selectedProviderAtom );
+  const [selectedProvider] = useRecoilState(selectedProviderAtom);
+  const { createSignature: arconnectCreateSignature } = useArconnectSignature();
 
   const {
     address: ArconnectAddress,
     ANS: ArconnectANS,
     walletConnected: ArconnectWalletConnected,
     arconnectConnect,
-    createSignature: ArconnectCreateSignature,
+    createSignature,
     getPublicKey: ArconnectGetPublicKey,
   } = useArconnect();
 
   // rainbowkit comes here
 
-  const connect = () => arconnectConnect(PERMISSIONS, { name: APP_NAME, logo: APP_LOGO });
+  const connect = async () => {
+    arconnectConnect(
+      PERMISSIONS,
+      { name: APP_NAME, logo: APP_LOGO },
+      { host: "arweave.net", port: 443, protocol: "https" },
+      "arconnect"
+    );
+  };
 
-  const packageEXMArconnect = async (payload: any, sigMessage: string) => {
-    const msgToEncode = new TextEncoder().encode(sigMessage);
-    payload["sig"] = String(await ArconnectCreateSignature(msgToEncode, defaultSignatureParams, "base64"));
-    payload["jwk_n"] = await ArconnectGetPublicKey();
-    console.log(payload);
+  const packageMEMPayloadArconnect = async (payload: any) => {
+    const { jwk_n, sig } = await arconnectCreateSignature();
+    payload["jwk_n"] = jwk_n;
+    payload["sig"] = sig;
     return payload;
   };
+
+  const packageMEMPayloadEth = async () => "";
 
   const providers = {
     arconnect: {
@@ -34,17 +44,17 @@ const useCrossChainAuth = () => {
       nameService: ArconnectANS,
       walletConnected: ArconnectWalletConnected,
       connect,
-      packageEXM: packageEXMArconnect,
-      createSignature: ArconnectCreateSignature,
+      packageMEMPayload: packageMEMPayloadArconnect,
+      createSignature: createSignature,
       getPublicKey: ArconnectGetPublicKey,
     },
     rainbowkit: {
-      address: '0xComeBackLater!',
+      address: "0xComeBackLater!",
       nameService: ArconnectANS,
       walletConnected: false,
       connect,
-      packageEXM: packageEXMArconnect,
-      createSignature: ArconnectCreateSignature,
+      packageMEMPayload: packageMEMPayloadEth,
+      createSignature: arconnectCreateSignature,
       getPublicKey: ArconnectGetPublicKey,
     },
   };
