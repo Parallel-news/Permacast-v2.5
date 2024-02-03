@@ -54,7 +54,7 @@ const useCrossChainAuth = () => {
       walletConnected: false,
       connect,
       packageMEMPayload: packageMEMPayloadEth,
-      createSignature: arconnectCreateSignature,
+      createSignature: createSignature,
       getPublicKey: ArconnectGetPublicKey,
     },
   };
